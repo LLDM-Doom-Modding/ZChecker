@@ -1,0 +1,416 @@
+version "2.4.0"
+
+#include "ZScript/ZCMapScripts.zsc"
+#include "ZScript/ZCBaseClasses.zsc"
+
+#include "ZScript/ZCCommandsGeneral.zsc"
+#include "ZScript/ZCCommandsActorAlter.zsc"
+#include "ZScript/ZCCommandsMap.zsc"
+
+
+const MaxTestee = 3;
+const ZCheckerVersion = "0.6b";
+
+const ZCheckerHandlerOrder = 0x7FFFFFF0;
+const ZCheckerMapHandlerOrder = 0x7FFFFFF1;
+
+
+const ZCToggle = "ZCToggle";
+const ZCAdd = "ZCAdd";
+const ZCRem = "ZCRem";
+const ZCBud = "ZCBud";
+const ZCAddSelf = "ZCAddSelf";
+const ZCAddWeap = "ZCAddWeap";
+
+const ZCHelp = "ZCHelp";
+
+enum EZCheckerFieldFlags {
+	ZCF_Main		= 0x0001,
+	ZCF_Extended	= 0x0002, // Position, velocity, args, special, TIDs...
+	ZCF_Inventory	= 0x0004,
+	ZCF_States		= 0x0008, // States and frames.
+	ZCF_Friends		= 0x0010, // "FriendPlayer", "HitFriend()", "DesignatedTeam", ...
+	ZCF_Visual		= 0x0020,
+	ZCF_Sectors		= 0x0040, // "floorsector", "ceilingsector", ...
+	ZCF_Interaction	= 0x0080, // "BlockingMobj", "BlockingLine", "Master", "Target", "LastHeard", "LastLookPlayerNumber", ...
+	ZCF_OtherActors	= 0x0100, // "snext", "Alternative", "goal", "Poisoner", "TelefogSourceType", ...
+	ZCF_Other		= 0x0200, // "PainThreshold", "WoundHealth", ...
+	ZCF_Code		= 0x0400
+}
+
+enum EZCheckerFieldTypes {
+	ZCT_Actor = 0,
+	ZCT_StateProvider,
+	ZCT_Player,
+	ZCT_
+}
+
+enum EZCheckerLogLevels {
+	LL_Emergency = 0,
+	LL_General = 1,
+	LL_Detailed,
+	LL_Debug,
+
+	LL_Common = LL_General,
+	LL_Normal = LL_General,
+	LL_Main = LL_General,
+	LL_Extended = LL_Detailed,
+
+	LL_NoPrefix = 0x8000
+}
+
+const LLCOLOR_MAIN = "\c-";
+const LLCOLOR_DEBUG = TEXTCOLOR_GRAY;
+const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
+
+const CCMDCOLOR_TITLE = TEXTCOLOR_GREEN;
+const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
+const CCMDCOLOR_DESC = "\c-";
+
+
+class ZCGlobal: Thinker {
+	int zcCurLogLevel;
+
+	static void UpdateLogLevel( void ) {
+		ZCGlobal.Get().zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+	}
+
+	static play ZCGlobal Get( void ) {
+		ZCGlobal it = ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
+
+		if ( !it ) {
+			// Creating and initializating a singleton global object:
+			it = new( "ZCGlobal" );
+			it.ChangeStatNum( STAT_STATIC );
+			it.UpdateLogLevel(); // This one calls "Get()" again, yeah...
+		}
+
+		return it;
+	} // of static play ZCGlobal Get( void ) {
+
+	// Prints well-decorated information string:
+	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
+		String logPrefix = "";
+
+		if ( !( loglevel & LL_NoPrefix ) ) {
+			switch ( loglevel & ~LL_NoPrefix ) {
+				case LL_Debug:
+					logPrefix = LLCOLOR_DEBUG .. "[Debug] ";
+					break;
+				case LL_Emergency:
+					logPrefix = TEXTCOLOR_RED .. "[ZChecker emergency] " .. LLCOLOR_EMERGENCY;
+					break;
+				default:
+					logPrefix = TEXTCOLOR_GRAY .. "[ZCh] " .. LLCOLOR_MAIN;
+					break;
+			} // of switch ( loglevel & ~LL_NoPrefix ) {
+		} // of if ( !( loglevel & LL_NoPrefix ) ) {
+
+		console.printf( logPrefix .. text .. ( text.Mid( text.Length() - 1 ) == "."? "" : "." ) );
+	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
+
+	// A play-scope wrapper around a data-scope method (mostly used):
+	static play void Log( EZCheckerLogLevels loglevel, String text ) {
+		if ( ZCGlobal.Get().zcCurLogLevel >= ( loglevel & ~LL_NoPrefix ) )
+			ClearscopeLog( loglevel, text );
+	}
+
+	// Test for the special ZChecker level:
+	static clearscope bool IsEverythingLevel( void ) {
+		// Got from "mapchecksum everything" CCMD:
+		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
+
+		//console.printf( "level.mapname: \"" .. level.mapname .. "\", level.levelname: \"" .. level.levelname .. "\"" );
+		return ( ( level.mapname ~== "EVERYTHING" ) && ( level.levelname == "ZChecker: Everything" ) )
+			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
+	}
+
+} // of class ZCGlobal: Thinker {
+
+
+class ZCheckerHandler: EventHandler {
+	private Array<ZCConsoleClass> zcConsoleHandleClasses;
+
+	ZCheckerField Testee[ MaxTestee ];
+	ZCheckerCCMDInfo zcCCMDInfo;
+
+
+	ui PlayerPawn getItemPlayerOwner( Inventory item ) {
+		PlayerPawn ownerPlayer = PlayerPawn( item.Owner );
+		return ( ownerPlayer && ownerPlayer.player && ownerPlayer.player.ReadyWeapon )? ownerPlayer : NULL;
+	}
+
+	ui bool isItemPickedupWeapon( Actor item ) {
+		return ( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
+	}
+
+	// Especially for ZCHelp:
+	ZCConsoleClass GetZCConsoleClass( int index ) {
+		ZCConsoleClass ccmd = NULL;
+
+		if ( index >= 0 && index < zcConsoleHandleClasses.Size() ) {
+			ccmd = zcConsoleHandleClasses[ index ];
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleCommand(). CCMD #" .. index .. " is \"" .. zcConsoleHandleClasses[ index ] .. "\"." );
+		}
+
+		return ccmd;
+	} // of ZCConsoleClass GetZCConsoleClass( int index ) {
+
+
+	private void addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
+		zcConsoleHandleClasses.push( ZCConsoleClass.Create( classname, importantFlag ) );
+	}
+	private void addConsoleSeparator( bool importantFlag = false ) {
+		zcConsoleHandleClasses.push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
+	}
+
+	override void OnRegister() {
+		SetOrder( ZCheckerHandlerOrder );
+
+		//console.printf( "ZCGlobal.Get(): " .. ZCGlobal.Get() .. ", zcCurLogLevel: " .. ZCGlobal.Get().zcCurLogLevel );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
+
+		for ( int i = 0; i < MaxTestee; i++ ) {
+			Testee[ i ] = new( 'ZCheckerField' );
+			Testee[ i ].inv = new( 'ZCheckerInvField' );
+		}
+
+		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
+		zcCCMDInfo.handler = self;
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating console classes handlers..." );
+
+		// 
+		addConsoleClass( 'ZCHelpCommand', true );
+		addConsoleClass( 'ZCAddCommand', true );
+		addConsoleClass( 'ZCRemCommand', true );
+		addConsoleClass( 'ZCSetStateCommand' );
+		addConsoleClass( 'ZCBuddhaCommand' );
+		addConsoleClass( 'ZCToggleFlagCommand' );
+		addConsoleClass( 'ZCGiveCommand' );
+		addConsoleClass( 'ZCTakeCommand' );
+
+		addConsoleSeparator( true );
+		addConsoleClass( 'ZCEvmapCommand', true );
+		addConsoleClass( 'ZCEvmapCommand_goto' );
+		addConsoleClass( 'ZCEvmapCommand_pause' );
+		addConsoleClass( 'ZCEvmapCommand_recreate', true );
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initialized successfully." );
+
+		Super.OnRegister();
+	}
+
+	override void RenderOverlay( RenderEvent e ) {
+		//if ( !CVar.GetCVar( "mcm_zchecker_enabled" ).GetBool() )
+		//	return;
+
+		Font ZCFont = Font.FindFont( "smallfont" );
+
+// ============================================================================================
+//   Next horrible "for" block will be fully rewritten. It's just working legacy code yet...
+// ============================================================================================
+
+		for ( int i = 0; i < MaxTestee; i++ ) {
+			if ( !Testee[ i ] || !Testee[ i ].mo )
+				continue;
+
+			Actor CurTestee = Testee[ i ].mo;
+			String outStr;
+			bool pickedUpWeaponHandle = isItemPickedupWeapon( CurTestee );
+
+// zchecker_info_main -------------------------------------------------------------------------
+			if ( CVar.GetCVar( "mcm_zchecker_info_main" ).GetBool() ) {
+				if ( pickedUpWeaponHandle )
+					outStr = "\c-" .. i + 1 .. ". \c[DarkGreen]Last stored class\c-: \c[Green]" .. CurTestee.GetClassName() .. "\c-;\c[Orange]\n"
+							.. "Last stored tag\c-: \c[Yellow]" .. CurTestee.GetTag() .. "\c-.\n\n";
+				else
+					outStr = "\c-" .. i + 1 .. ". \c[DarkRed]health" 
+								.. ( CurTestee.bBUDDHA? " (buddha)" : "" ) .. "\c-: \c[Red]"
+							.. CurTestee.health .. "\c[Darkgreen]\n"
+							.. "Class\c-: \c[Green]" .. CurTestee.GetClassName() .. "\c-;\c[Orange]\n"
+							.. "Tag\c-: \c[Yellow]" .. CurTestee.GetTag() .. "\c-.\n\n";
+			}
+
+// zchecker_info_inventory --------------------------------------------------------------------
+			if ( CVar.GetCVar( "mcm_zchecker_info_inventory" ).GetBool() && !pickedUpWeaponHandle ) {
+				outStr = outStr .. "\c[Darkgray]Inventory\c-: \c[Gray]";
+				Inventory item = CurTestee.Inv;
+
+				if ( item ) {
+					//ZCheckerInvField cmpItem = Testee[ i ].inv;
+					//ZCheckerInvField nextItem = cmpItem.Next;
+
+					while ( item ) {
+						//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
+						/*	ZCheckerInvField cmpNextItem = nextItem;
+							bool finded = false;
+							while ( ( cmpNextItem = cmpNextItem.Next ) && !finded ) {
+								if ( cmpNextItem.type == item.Inv.GetClassName() )
+									finded = true;
+							}
+							if ( !finded ) {}
+						}
+                        */
+						outStr = outStr .. "\n* " .. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
+						item = item.Inv;
+
+						/*if ( cmpItem.visualTicks > 0 )
+							--cmpItem.visualTicks;
+						else if ( cmpItem.visualTicks < 0 )
+							++cmpItem.visualTicks;
+
+						outStr = outStr .. "\n* " .. "\c[" .. ( cmpItem.visualTicks > 0? "Green" : ( cmpItem.visualTicks < 0? "Red" : "Gray" ) ) .. "]"
+								.. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
+
+						item = item.Inv;
+						cmpItem = nextItem;
+						nextItem = nextItem.Next;*/
+					} // of while ( item ) {
+
+				} else {
+					outStr = outStr .. "none";
+				}
+
+				outStr = outStr .. ". \n\n";
+			} // of if ( CVar.GetCVar( "mcm_zchecker_info_inventory" ).GetBool() )
+
+// zchecker_info_extended ---------------------------------------------------------------------
+			if ( CVar.GetCVar( "mcm_zchecker_info_extended" ).GetBool() ) {
+				outStr = outStr .. "\c-" ..
+						"Tilt: (" .. int( CurTestee.angle ) .. ", " ..
+									int( CurTestee.pitch ) .. ", " .. 
+									int( CurTestee.roll ) .. ");\n" ..
+						"Pos: (" .. int( CurTestee.pos.X ) .. ", " .. 
+									int( CurTestee.pos.Y ) .. ", " .. 
+									int( CurTestee.pos.Z ) .. ");\n" ..
+						"Vel: (" .. int( CurTestee.vel.X ) .. ", " .. 
+									int( CurTestee.vel.Y ) .. ", " .. 
+									int( CurTestee.vel.Z ) .. ")\n  (vector length " .. CurTestee.vel.length() .. ");\n" ..
+						"Radius/Height: " .. CurTestee.radius .. "/" .. CurTestee.height .. ";\n"
+						"Special: " .. CurTestee.special .. "\n  with args [";
+				for ( int arg = 0; arg < 4; arg++ )
+					outStr = outStr .. CurTestee.Args[ arg ] .. ", ";
+				outStr = outStr .. CurTestee.Args[ 4 ] .. "]; \n" ..
+						"TID: " .. CurTestee.TID .. "; \n" ..
+						"TID to hate: " .. CurTestee.TIDtoHate .. "\n\n";
+			}
+
+// zchecker_info_states -----------------------------------------------------------------------
+			if ( CVar.GetCVar( "mcm_zchecker_info_states" ).GetBool() ) {
+
+				if ( pickedUpWeaponHandle ) {
+					PlayerPawn owner = getItemPlayerOwner( Inventory( CurTestee ) );
+
+					if ( owner.player.psprites ) {
+						PSprite st = owner.player.psprites;
+
+						outStr = outStr .. "State \c[Sapphire]" .. st.Sprite .. 
+							String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.CurState.Tics ) .. "\c-\n"
+							"  Current tic: " .. st.Tics .. "\n" ..
+							"  Pos: " .. st.x .. "/" .. st.y .. "\n" ..
+							"  Flags: " .. 
+								( st.bCVarFast? "\c[Green]Fast\c- " : "" ) ..
+								( st.processPending? "\c[Gray]Pend\c- " : "" ) .. "\n" ..
+							"  Flags 2: " ..
+								( st.bFlip? "\c[Red]Flip\c- " : "" ) ..
+								( st.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
+								( st.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
+								( st.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
+								( st.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n\n";
+					} // of if ( owner.player.psprites ) {
+
+				} else {
+
+					State st = CurTestee.CurState;
+					outStr = outStr .. "State \c[Sapphire]" .. CurTestee.Sprite .. 
+						String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.Tics ) .. "\c-\n"
+						"  Current tic: " .. CurTestee.Tics .. "\n" ..
+						"  Flags: " .. 
+							( st.bFast? "\c[Fire]Fst\c- " : "" ) ..
+							( st.bSlow? "\c[Fire]Slw\c- " : "" ) ..
+							( st.bFullbright? "\c[Yellow]Lit\c- " : "" ) ..
+							( st.bNoDelay? "\c[Sapphire]NoDelay\c- " : "" ) .. "\n"
+						"  Flags 2:" ..
+							( st.bSameFrame? "\c[Sapphire]SameFrm\c- " : "" ) ..
+							( st.bCanRaise? "\c[Green]CanRaise\c- " : "" ) ..
+							( st.bDehacked? "\c[Red]Deh\c- " : "" ) .. "\n" ..
+						"  UseFlags: " .. st.UseFlags .. ", TicRange: " .. st.TicRange .. "; \n" ..
+						"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n\n";
+				}
+			}
+
+// zchecker_info_friends ----------------------------------------------------------------------
+			if ( CVar.GetCVar( "mcm_zchecker_info_friends" ).GetBool() ) {
+				int fplayer;
+
+				if ( fplayer = CurTestee.FriendPlayer ) {
+					outStr = outStr .. "Friendly to player #" .. fplayer .. "\n  (" ..
+							( playeringame[ fplayer - 1 ] && players[ fplayer - 1 ].mo? ( "named " .. players[ fplayer - 1 ].GetUserName() ): "not in game" ) .. ");\n";
+				}
+				outStr = outStr .. "Designated to team " .. CurTestee.DesignatedTeam .. ".\n";
+				for ( int testeepos = 0; testeepos < MaxTestee; testeepos++ )
+					if ( testeepos != i && Testee[ testeepos ].mo && CurTestee.isFriend( Testee[ testeepos ].mo ) )
+						outStr = outStr .. "Is a friend for Testee #" .. testeepos .. ".\n";
+				outStr = outStr .. "\n";
+			}
+
+// zchecker_info_visual -----------------------------------------------------------------------
+
+// zchecker_info_sectors ----------------------------------------------------------------------
+
+// zchecker_info_interaction ------------------------------------------------------------------
+
+// zchecker_info_otheractors ------------------------------------------------------------------
+
+// zchecker_info_other ------------------------------------------------------------------------
+
+
+// ZChecker output ----------------------------------------------------------------------------
+			Screen.DrawText( ZCFont, Font.CR_GRAY, 5 + ( 220 * i ), 30, 
+							outStr, DTA_VirtualWidth, 640, DTA_VirtualHeight, 480 );
+		} // of for ( int i = 0; i < MaxTestee; i++ ) {
+
+		Super.RenderOverlay( e );
+	} // of override void RenderOverlay( RenderEvent e ) {
+
+
+
+	override void NetworkProcess( ConsoleEvent e ) {
+		// ZChecker CCMDs parsing:
+		String ccmdName = zcCCMDInfo.InitFromEvent( e );
+
+		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD name: " .. ccmdName );
+
+			for ( int i = 0; i < zcCCMDInfo.args.Size(); i++ )
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD arg " .. i + 1 .. ": " .. zcCCMDInfo.args[ i ] );
+		}
+
+		// Polling ZChecker CCMD handlers by stored netevent name:
+		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
+			if ( !( zcConsoleHandleClasses[ i ] is 'ZCConsoleCommand' ) )
+				continue;
+
+			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
+
+			if ( ccmdName ~== curCCMD.GetCommand() )
+				if ( curCCMD.HandleArguments( zcCCMDInfo ) ) {
+					curCCMD.DoCommand();
+					break;
+				} else {
+					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage\c-:\n" .. curCCMD.GetHelpString() );
+				}
+		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
+
+		Super.NetworkProcess( e );
+	} // of override void NetworkProcess( ConsoleEvent e ) {
+
+	override void WorldTick() {
+		if ( !( level.maptime % 5 ) )
+			ZCGlobal.UpdateLogLevel();
+
+		Super.WorldTick();
+	} // of override void WorldTick() {
+
+} // of class ZCheckerHandler: EventHandler {

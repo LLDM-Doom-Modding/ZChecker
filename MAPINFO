@@ -1,0 +1,10 @@
+//
+
+GameInfo {
+	AddEventHandlers = "ZCheckerHandler", "ZCheckerEverythingMapHandler"
+}
+
+Map EVERYTHING "ZChecker: Everything" {
+	Sky1 = "RSKY3"
+	Music = "D_RUNNIN"
+}

@@ -1,0 +1,29 @@
+// ZChecker general control:
+alias zchelp "netevent zc_help:%1"
+
+// ZChecker actors control:
+alias zcadd "netevent zc_add:%1:%2"
+alias zcaddself "zcadd self %1"
+alias zcaddweap "zcadd weapon %1"
+alias zcrem "netevent zc_rem:%1"
+
+alias zcsets "netevent zc_setState:%1:%2"
+alias zcsetstate "zcsets %1 %2"
+
+alias zcbuddha "netevent zc_buddha:%1:%2"
+alias zcbud "zcbuddha %1 %2"
+alias zctgf "netevent zc_toggleFlag:%1:%2:%3"
+alias zctoggleflag "zctgf %1 %2 %3"
+
+alias zcgive "netevent zc_give:%1:%2:%3"
+alias zctake "netevent zc_take:%1:%2:%3"
+
+// The Everything map aliases:
+alias zcev "netevent zc_ev:%1:%2:%3:%4" // add|new, optimize|pause, goto
+alias zcmap "zcev %1 %2 %3 %4"
+
+alias zcevre "zcev recreate"
+
+alias zcarena "netevent zc_arena:%1:%2:%3:%4"
+alias zcar "zcarena %1 %2 %3 %4"
+

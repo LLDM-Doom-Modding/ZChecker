@@ -1,0 +1,599 @@
+struct ZCheckerEvMapConfig {
+	ZCheckerPlayerLastPos posMain, posArena;
+
+	bool mainlocPaused, arenaPaused;
+
+	vector2 mainlocStart, mainlocEnd;
+	vector2 arenaCreatePos;
+	vector2 arenaStart, arenaEnd;
+}
+
+class ZCheckerEvSectorSetters {
+	uint evType;
+
+	Array<Sector> startSectors; // At least one must be presented.
+	uint curSegment;
+	ZCheckerSectorSetter setter;
+}
+
+class ZCheckerEverythingMapHandler: EventHandler {
+	const ZCUDMF_Type = "user_zcsector_type";	// Category.
+	const ZCUDMF_TypeSegment = "user_zcsector_typesegment";	// Next segment in the category.
+
+	const ZCUDMF_JumpX = "user_zcsector_jump_x";
+	const ZCUDMF_JumpY = "user_zcsector_jump_y";
+	const ZCUDMF_JumpAmount = "user_zcsector_jumpamount";
+	const ZCUDMF_InfoOfsX = "user_zcsector_infoofs_x";
+	const ZCUDMF_InfoOfsY = "user_zcsector_infoofs_y";
+
+	const ZCUDMF_SpecialDef = "user_zcsector_specialdef";
+
+	enum ESectorStarts {
+		S__Nothing = -1,
+
+		S_Monster = 0, S_LargeMonster, S_Boss,
+
+		S_Weapon, S_Ammo, S_Health_Armor, S_Powerup, S_Key, S_OtherItem,
+
+		S_SolidDecor, S_SwitchableDecor, S_EtherialDecor, S_NoInteractionDecor,
+
+		S_Player, S_OtherSpecial, // "S_Sound" will not be on level due to its bNOSECTOR nature.
+
+		S__Quantity
+	};
+
+	static const String ESectorStartAliases[] = { // Case-insensitive.
+		"Monsters", "Large monsters", "Boss monsters",
+
+		"Weapons", "Ammo", "Health and armor", "Powerups", "Keys", "Other items", 
+
+		"Impassible decor", "Switchable decor", "Etherial decor", "Non-interactive decor",
+
+		"Players", "Other special"
+	};
+
+	ZCheckerEvSectorSetters evSectors[ S__Quantity ];
+
+	bool canRecreateEverything;
+	Font rfont; // For RenderOverlay().
+
+	ZCheckerEvMapConfig configuration;
+
+
+
+	static String getESectorName( int which ) {
+		String outStr = "";
+
+		if ( which <= S__Nothing || which >= S__Quantity )
+			outStr = "(\c[Fire]unknown\c-)";
+		else
+			outStr = ZCheckerEverythingMapHandler.ESectorStartAliases[ which ];
+
+		return outStr;
+	}
+
+	// Main function corresponds to the class directing:
+	virtual ESectorStarts getSectorStartForClass( class<Actor> testcls ) {
+		ESectorStarts outValue = S__Nothing;
+		readonly<Actor> cls = GetDefaultByType( testcls );
+
+		if ( !cls.bNOSECTOR && !cls.bNOCLIP && !( testcls is 'RandomSpawner' ) ) {
+			if ( cls.bISMONSTER ) {
+				if ( cls.bBOSS /*|| cls.bBOSSDEATH*/ )
+					outValue = S_Boss;
+				else if ( cls.radius > 32 )
+					outValue = S_LargeMonster;
+				else
+					outValue = S_Monster;
+			} else if ( cls.bSPECIAL ) {
+				if ( testcls is 'Weapon' || testcls is 'WeaponPiece' )
+					outValue = S_Weapon;
+				else if ( testcls is 'Ammo' || testcls is 'BackpackItem' )
+					outValue = S_Ammo;
+				else if ( testcls is 'Armor' || testcls is 'BasicArmor' || testcls is 'BasicArmorBonus' || testcls is 'Health' )
+					outValue = S_Health_Armor;
+				else if ( testcls is 'PowerupGiver' || testcls is 'Powerup' )
+					outValue = S_Powerup;
+				else if ( testcls is 'Key' || testcls is 'OraclePass' )
+					outValue = S_Key;
+				else
+					outValue = S_OtherItem;
+			} else if ( testcls is 'PlayerPawn' ) {
+				outValue = S_Player;
+			} else if ( testcls is 'SwitchableDecoration' ) {
+				outValue = S_SwitchableDecor;
+			} else if ( testcls is 'Unknown' || cls.bACTLIKEBRIDGE || testcls is 'MapMarker' || testcls is 'ItemFog' || testcls is 'PickupFlash' || testcls is 'TeleportFog' ) {
+				outValue = S_OtherSpecial;
+			} else if ( cls.bNOINTERACTION ) {
+				outValue = S_NoInteractionDecor;
+			} else if ( cls.bSOLID ) {
+				outValue = S_SolidDecor;
+			} else if ( !( cls.bMISSILE || cls.bNOBLOCKMAP ) ) {
+				outValue = S_EtherialDecor;
+			}
+		}
+
+		return outValue;
+	} // of virtual ESectorStarts getSectorStartForClass( class<Actor> cls ) {
+
+
+	// 2D vector to 3D vector with zero last coordinate:
+	static vector3 vec2dto3d( vector2 original ) {
+		return ( original.x, original.y, 0 );
+	}
+
+	// Next classes forces the game to crash/end the level/etc:
+	bool IsClassRestricted( class<Actor> cur ) {
+		return (cur is "DynamicLight"
+			||  cur is "Decal"
+			||  cur is "BossBrain"
+			||  cur is "BossEye"
+			||  cur is "SpecialSpot"
+			||  cur is "SpawnShot"
+			||  cur is "ZCheckerSectorSetter"
+			||  cur is "ProgLevelEnder"
+			||  cur is "WeaponPiece"
+			||  cur is "SectorAction"
+			||  cur is "SlideshowStarter"
+		);
+	}
+
+	// Test for actor which is forbidden for operating in the ZChecker level:
+	bool IsActorRestricted( Actor cur ) {
+		return cur && (
+			  ( cur is "Inventory" && Inventory( cur ).owner )
+			||( cur is "PlayerPawn" && cur.player )
+			||  IsClassRestricted( cur.GetClass() )
+		);
+	}
+
+	// Clears all previous spawned actors excluding forbidden and summons all of them again:
+	void RecreateEverything( void ) {
+		if ( !canRecreateEverything ) {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "RecreateEverything(). Error: not all defined sectors presented." );
+			return;
+		}
+
+		ThinkerIterator it = ThinkerIterator.Create( "Actor" );
+		Actor curActor;
+
+		// Destroy everything:
+		while ( curActor = Actor( it.Next() ) ) {
+			if ( !IsActorRestricted( curActor ) )
+				curActor.Destroy();
+		}
+
+		// Reset e-sector setters:
+		for ( int i = 0; i < S__Quantity; i++ ) {
+			evSectors[ i ].curSegment = 0;
+			evSectors[ i ].setter.SetOrigin( vec2dto3d( evSectors[ i ].startSectors[ 0 ].centerspot ), false );
+			evSectors[ i ].setter.curJumpAmount = 0;
+		}
+
+		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
+		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
+		bool spawnPLYC = CVar.FindCVar( "mcm_zchecker_ev_spawnplyc" ).GetBool();
+		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
+
+		// Recreate everything:
+		for ( int i = 0; i < AllActorClasses.Size(); i++ ) {
+			class<Actor> cls = AllActorClasses[ i ];
+
+			if ( !IsClassRestricted( cls ) ) {
+				ESectorStarts clsType = getSectorStartForClass( cls );
+				String spawnSprite = TexMan.GetName( GetDefaultByType( cls ).SpawnState.GetSpriteTexture( 0 ) );
+
+				if ( ( spawnSprite == "TNT1A0" && !spawnTNT1A0 ) || ( spawnSprite.Left( 4 ) == "PLYC" && !spawnPLYC ) ) {
+					ZCGlobal.Log( LL_Detailed, "RecreateEverything(): class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite." );
+
+				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
+					ZCGlobal.Log( LL_Detailed, "RecreateEverything(): class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
+
+				} else {
+					if ( clsType != S__Nothing ) {
+						ZCGlobal.Log( LL_Detailed, "RecreateEverything(): \c[Green]summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
+						evSectors[ clsType ].setter.DoJump( cls );
+					}
+				}
+
+			} else if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(): class \"" .. cls.GetClassName() .. "\" is restricted." );
+			}
+		}
+	} // of void RecreateEverythingMapLevel( void ) {
+
+
+	override void OnRegister() {
+		SetOrder( ZCheckerMapHandlerOrder );
+		Super.OnRegister();
+	}
+
+	// Loads an Everything map:
+	override void WorldLoaded( WorldEvent e ) {
+		if ( !ZCGlobal.IsEverythingLevel() )
+			return;
+
+		rfont = Font.FindFont( "smallfont" );
+
+		for ( int i = 0; i < S__Quantity; i++ ) {
+			evSectors[ i ] = new( 'ZCheckerEvSectorSetters' );
+			evSectors[ i ].evType = i;
+		}
+
+		// Finding special sectors and spawning ev-setters:
+		for ( int i = 0; i < level.sectors.Size(); i++ ) {
+			String evSectorType = level.Sectors[ i ].GetUDMFString( ZCUDMF_Type );
+
+			bool isSectorTyped = ( evSectorType != "" );
+			bool continueFlag = !isSectorTyped;
+
+			// Setting up every e-start sector type:
+			for ( int j = 0; !continueFlag && j < S__Quantity; j++ ) {
+				if ( evSectorType ~== ESectorStartAliases[ j ] ) {
+
+					Sector s = level.Sectors[ i ];
+
+					int typeseg = s.GetUDMFInt( ZCUDMF_TypeSegment );
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). For type \"" .. evSectorType .. "\" found segment index " .. typeseg );
+
+					if ( typeseg ) {
+						if ( typeseg < 0 || typeseg > 0xFFFF )
+							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). It's better not to use too small and too large values, seriously (sector #" .. s.Index() .. " has the \"" .. ZCUDMF_TypeSegment .. "\" value of " .. typeseg );
+
+						if ( typeseg < evSectors[ j ].startSectors.Size() ) {
+							if ( evSectors[ j ].startSectors[ typeseg ] )
+								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Warning: double define of the sector type " .. getESectorName( j ) .. " segment " .. typeseg .. ". Changing from the sector #" .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to the sector #" .. s.Index() );
+
+							evSectors[ j ].startSectors.Delete( typeseg, 1 );
+						}
+
+						evSectors[ j ].startSectors.Insert( typeseg, s );
+
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Post typeseg setted evSectors[ " .. j .. " ].startSectors.Size(): " .. evSectors[ j ].startSectors.Size() );
+					} else {
+						evSectors[ j ].startSectors.Insert( 0, s );
+
+						if ( evSectors[ j ].setter ) {
+							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Warning: destroying previous e-sector setter for type " .. getESectorName( j ) );
+							evSectors[ j ].setter.Destroy();
+						}
+
+						vector3 setterPos = vec2dto3d( evSectors[ j ].startSectors[ 0 ].centerspot );
+
+						evSectors[ j ].setter = ZCheckerSectorSetter( Actor.Spawn( "ZCheckerSectorSetter", setterPos ) );
+						evSectors[ j ].setter.evSectorDef = evSectors[ j ];
+						evSectors[ j ].setter.InitFromPos();
+						//evSectorSetters[ j ].Init( jumpLen, jumpAmount, ( 0, 64 ) );
+					}
+
+					continueFlag = true;
+				} // of if ( evSectorType ~== ESectorStartAliases[ j ] ) {
+			} // of for ( int j = 0; j < S__Quantity; j++ ) {
+
+			//console.printf( level.Sectors[ i ].Index() .. ". st: " .. evSectorType .. "/" .. isSectorTyped .. ", sdef: " .. level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) );
+
+			// Special main location/arena definition:
+			if ( !isSectorTyped && ( evSectorType = level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) ) != "" ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Found special sector definition \"" .. evSectorType .. "\" (sector #" .. level.Sectors[ i ].Index() .. ")." );
+
+				if ( evSectorType ~== "arena" ) {
+					configuration.arenaCreatePos = level.Sectors[ i ].centerspot;
+				} else if ( evSectorType ~== "arena_start" ) {	// Top-left arena point.
+					configuration.arenaStart = level.Sectors[ i ].centerspot;
+				} else if ( evSectorType ~== "arena_end" ) {		// Bottom-right arena point.
+					configuration.arenaEnd = level.Sectors[ i ].centerspot;
+				} else if ( evSectorType ~== "main_location_start" ) {	// Top-left main location point.
+					configuration.mainlocStart = level.Sectors[ i ].centerspot;
+				} else if ( evSectorType ~== "main_location_end" ) {		// Bottom-right main location point.
+					configuration.mainlocEnd = level.Sectors[ i ].centerspot;
+				}
+			}
+		} // of for ( int i = 0; i < level.sectors.Size(); i++ ) {
+
+
+		// Check for existing of each sector:
+		canRecreateEverything = true;
+
+		for ( int i = 0; i < S__Quantity; i++ )
+			if ( !evSectors[ i ].startSectors.Size() ) {
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no e-start " .. getESectorName( i ) );
+				canRecreateEverything = false;
+			}
+
+		// Create all:
+		RecreateEverything();
+
+		Super.WorldLoaded( e );
+	} // of override void WorldLoaded( WorldEvent e ) {
+
+	override void NetworkProcess( ConsoleEvent e ) {
+		if ( ZCGlobal.IsEverythingLevel() ) {
+
+			if ( e.Name ~== "zchecker_recreate_evmap" ) {
+				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Recreating/reloading map..." );
+				RecreateEverything();
+			} else if ( e.Name ~== "zchecker_pause_level_part" ) {
+				vector2 pauseFrom, pauseTo;
+				bool isPausing = false;
+				String logStr = GetClassName() .. "::NetworkProcess(). ";
+
+				if ( e.args[ 0 ] == 0 ) {
+					pauseFrom = configuration.mainlocStart;
+					pauseTo = configuration.mainlocEnd;
+
+					logStr = logStr .. ( configuration.mainlocPaused? "L" : "Unl" );
+					isPausing = configuration.mainlocPaused;
+					configuration.mainlocPaused ^= true;
+
+					logStr = logStr .. "oading main part...";
+				} else {
+					pauseFrom = configuration.arenaStart;
+					pauseTo = configuration.arenaEnd;
+
+					logStr = logStr .. ( configuration.arenaPaused? "L" : "Unl" );
+					isPausing = configuration.arenaPaused;
+					configuration.arenaPaused ^= true;
+
+					logStr = logStr .. "oading arena part...";
+				}
+
+				ZCGlobal.Log( LL_Main, logStr );
+
+				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
+				Actor curActor;
+
+				// Load/unload all from selected level part:
+				while ( curActor = Actor( it.Next() ) ) {
+					if ( !IsActorRestricted( curActor ) && curActor.pos.x >= pauseFrom.x && curActor.pos.y <= pauseFrom.y && curActor.pos.x <= pauseTo.x && curActor.pos.y >= pauseTo.y ) {
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Handling actor " .. curActor.GetClassName() );
+
+						// This line has no check for the already setted INVISIBLE flag:
+						curActor.bNOINTERACTION = curActor.bINVISIBLE = curActor.bDORMANT = !isPausing;
+						curActor.A_ChangeLinkFlags( !isPausing, !isPausing );
+
+						// Crashes:
+						//if ( isPausing ) 
+						//	curActor.UnlinkFromWorld();
+						//else
+						//	curActor.LinkToWorld();
+					}
+				} // of while ( curActor = Actor( it.Next() ) ) {
+
+			} // of } else if ( e.Name ~== "zchecker_pause_level_part" ) {
+
+		} // of if ( ZCGlobal.IsEverythingLevel() ) {
+
+		Super.NetworkProcess( e );
+	} // of override void NetworkProcess( ConsoleEvent e ) {
+
+	override void WorldTick() {
+		if ( playeringame[ 0 ] && players[ 0 ].mo ) {
+			PlayerPawn pl = players[ 0 ].mo;
+			FLineTraceData lt;
+			pl.LineTrace( pl.angle, pl.radius + 64.0, pl.pitch, TRF_ALLACTORS, pl.player.viewheight, data: lt );
+
+			if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClassName() == "ZCheckerActorInfo" ) {
+				pl.SetInventory( "ZCheckerInfoInventory", 1 );
+				ZCheckerInfoInventory zcii = ZCheckerInfoInventory( pl.FindInventory( "ZCheckerInfoInventory" ) );
+				zcii.Init( ZCheckerActorInfo( lt.HitActor ).GetInfoString() );
+			}
+		}
+
+		Super.WorldTick();
+	} // of override void WorldTick() {
+
+	override void RenderOverlay( RenderEvent e ) {
+		if ( ZCGlobal.IsEverythingLevel() && PlayerPawn( e.Camera ) ) {
+			ZCheckerInfoInventory zcii = ZCheckerInfoInventory( e.Camera.FindInventory( "ZCheckerInfoInventory" ) );
+
+			if ( zcii ) {
+				String actorInfo = zcii.info;
+
+				Screen.DrawText( rfont, Font.CR_GRAY, 320 - actorInfo.Length() / 2 * rfont.GetCharWidth( "A" ), 60, 
+						actorInfo, DTA_VirtualWidth, 640, DTA_VirtualHeight, 480 );
+			}
+		}
+
+		Super.RenderOverlay( e );
+	} // of override void RenderOverlay( RenderEvent e ) {
+
+} // of class ZCheckerEverythingMapHandler: EventHandler {
+
+
+class ZCheckerSectorSetter: Actor {
+	const ZCUDMF_Type = ZCheckerEverythingMapHandler.ZCUDMF_Type;
+	ZCheckerEvSectorSetters evSectorDef;
+
+	vector2 jumpLen;
+	int jumpMaxAmount;
+	vector2 infoActorOffset;
+
+	int curJumpAmount;
+
+	Default {
+		+NOINTERACTION;
+		+NOBLOCKMAP;
+	}
+
+	void InitFromPos( void ) {
+		bool continueFlag = true;
+
+		if ( !floorsector ) {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" performed outside the map." );
+			continueFlag = false;
+		} else if ( floorsector.GetUDMFString( ZCUDMF_Type ) != ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) ) {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" now on sector type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"." );
+			continueFlag = false;
+		}
+
+		if ( continueFlag ) {
+			Sector s = floorsector;
+
+			jumpLen = ( s.GetUDMFInt( ZCheckerEverythingMapHandler.ZCUDMF_JumpX ), s.GetUDMFInt( ZCheckerEverythingMapHandler.ZCUDMF_JumpY ) );
+			infoActorOffset = ( s.GetUDMFInt( ZCheckerEverythingMapHandler.ZCUDMF_InfoOfsX ), s.GetUDMFInt( ZCheckerEverythingMapHandler.ZCUDMF_InfoOfsY ) );
+			jumpMaxAmount = s.GetUDMFInt( ZCheckerEverythingMapHandler.ZCUDMF_JumpAmount );
+			curJumpAmount = 0;
+		}
+	} // of void InitFromPos( void ) {
+
+	/*void Init( vector2 initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {
+		jumpLen = initJumpLen;
+		jumpMaxAmount = initJumpMax;
+		infoActorOffset = initInfoActorOffset;
+
+		curJumpAmount = 0;
+		angle = 270.0; // South (bottom).
+	} // of void Init( int initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {*/
+
+	protected bool jumpToNextTypeSegment( void ) {
+		bool success = true;
+
+		if ( curJumpAmount >= jumpMaxAmount ) {
+			if ( ++evSectorDef.curSegment >= evSectorDef.startSectors.Size() ) {
+				success = false;
+			} else {
+				SetOrigin( ZCheckerEverythingMapHandler.vec2dto3d( evSectorDef.startSectors[ evSectorDef.curSegment ].centerspot ), false );
+				InitFromPos();
+			}
+		}
+
+		return success;
+	}
+
+	void DoJump( class<Actor> cls ) {
+		if ( jumpToNextTypeSegment() ) {
+			Actor testeeActor = Actor.Spawn( cls, pos );
+
+			if ( testeeActor ) {
+				vector3 infoActorPos = pos + ZCheckerEverythingMapHandler.vec2dto3d( infoActorOffset );
+
+				ZCheckerActorInfo infoActor = ZCheckerActorInfo( Actor.Spawn( "ZCheckerActorInfo", infoActorPos ) );
+				infoActor.master = testeeActor;
+				infoActor.masterClass = cls;
+
+				infoActor.SetMasterZ();
+
+				SetOrigin( pos + ( jumpLen.x, jumpLen.y, 0 ), false );
+				curJumpAmount++;
+			} else {
+				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. cls.GetClassName() .. "\", is it abstract?" );
+			}
+		} else {
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DoJump(). Warning: maximal amount of jumps (" .. jumpMaxAmount .. ") was reached, actor \"" .. cls.GetClassName() .. "\" not spawned." );
+		}
+
+	} // of void DoJump( class<Actor> cls ) {
+
+} // of class ZCheckerSectorSetter: Actor {
+
+
+class ZCheckerPlayerLastPos: Actor {
+	Default {
+		+NOINTERACTION;
+		+NOBLOCKMAP;
+	}
+}
+
+
+class ZCheckerActorInfo: Actor {
+	class<Actor> masterClass;
+	String masterInfo;
+	vector3 masterOffset;
+
+	Default {
+		-SOLID;
+		-SHOOTABLE;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		Scale 0.25;
+		Height 64;
+		Radius 30;
+		Activation THINGSPEC_Switch;
+		+USESPECIAL;
+	}
+
+	override void PostBeginPlay() {
+		if ( !masterClass ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::PostBeginPlay(). No master class defined, set to self." );
+			masterClass = GetClass();
+			master = self;
+		}
+
+		if ( master ) {
+			//masterClass = master.GetClassName();
+			masterOffset = pos - master.pos;
+
+			masterInfo = master.GetClassName();
+
+			if ( !( master.GetParentClass().GetClassName() == "Actor" ) )
+				masterInfo = masterInfo .. "\cf: \c-" .. master.GetParentClass().GetClassName();
+
+			if ( Actor.GetReplacee( masterClass ) != masterClass )
+				masterInfo = masterInfo .. " \cnreplaces\c- " .. Actor.GetReplacee( masterClass ).GetClassName();
+
+		} else {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::PostBeginPlay() at " .. pos .. ". No master of class \"" .. masterClass.GetClassName() .. "\", destroying self." );
+			Destroy();
+		}
+
+		Super.PostBeginPlay();
+	}
+
+	void SetMasterZ( void ) {
+		if ( master.bSPAWNCEILING )
+			master.SetZ( master.ceilingz - master.height );
+		else if ( master.bNOGRAVITY || master.bNOINTERACTION )
+			master.SetOrigin( master.pos + ( 0, 0, 32.0 ), false );
+	}
+
+	override void Activate( Actor other ) {
+		if ( PlayerPawn( other ) && !master ) {
+			master = Spawn( masterClass, pos - masterOffset );
+			ZCGlobal.Log( LL_Detailed, GetClassName() .. "::Activate(). Spawned " .. master.GetClassName() .. "." );
+			SetMasterZ();
+		}
+	}
+
+	override void Deactivate( Actor other ) {
+		Activate( other );
+	}
+
+	override void Tick() {
+		if ( master is 'Inventory' && Inventory( master ).owner )
+			master = NULL;
+
+		Super.Tick();
+	}
+
+	String GetInfoString( void ) {
+		return masterInfo;
+	}
+
+	States {
+	Spawn:
+		TROO A -1 Bright;
+		stop;
+	}
+} // of class ZCheckerActorInfo: Actor {
+
+class ZCheckerInfoInventory: Inventory {
+	String info;
+	int ticks;
+
+	Default {
+		Inventory.MaxAmount 0x7FFFFFFF;
+		Inventory.Amount 1;
+	}
+
+	void Init( String initInfo ) {
+		info = initInfo;
+		ticks = 0;
+	}
+
+	override void Tick() {
+		Super.Tick();
+
+		if ( ticks++ > 2 )
+			Destroy();
+	}
+} // of class ZCheckerInfoInventory: Inventory {

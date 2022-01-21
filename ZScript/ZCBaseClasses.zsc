@@ -1,0 +1,267 @@
+class ZCheckerCCMDInfo play {
+	Array<String> args;			// Arguments exclude ZC-CCMD name;
+	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on "FindEventHandler()" calls);
+	ConsoleEvent e;				// Pointer to the pure and non-altered structure.
+
+	// Init or reinit:
+	String InitFromEvent( ConsoleEvent initEvent, String argsSplitDelim = ":" ) {
+		args.Clear();
+
+		e = initEvent;
+		e.Name.Split( args, argsSplitDelim, TOK_SKIPEMPTY );
+
+		// If debug, display maximal amount of arguments (sometimes it saves 
+		//about ten minutes of the bug-hunt...):
+		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+			int delimetersAmount = 0;
+
+			for ( int i = 0; i < e.Name.Length(); i++ )
+				if ( e.Name.CharAt( i ) == argsSplitDelim )
+					delimetersAmount++;
+
+			ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::InitFromEvent(). Maximal amount of arguments (excluding name): " .. delimetersAmount );
+		}
+
+		String zcCommandName = "";
+
+		if ( args.Size() ) {
+			// Get rid of the event name:
+			zcCommandName = args[ 0 ];
+			args.Delete( 0, 1 );
+		} else {
+			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::InitFromEvent(). Arguments is omitted." );
+		}
+
+		return zcCommandName;
+	}
+} // of class ZCheckerCCMDInfo {
+
+// Not really done yet...
+class ZCheckerInvField {
+	name type;				// Item class name.
+	int amount;
+	int visualTicks;		// Positive: green (inv. added); negative: red (inv. taken).
+	ZCheckerInvField Next;
+}
+
+class ZCheckerField {
+	Actor mo;				// Testee actor.
+	uint fflags, ftype;
+	ZCheckerInvField inv;
+}
+
+
+// Base ZChecker CCMD class:
+class ZCConsoleClass: Thinker abstract {
+	enum ConsoleClassFlags {
+		CCF_None			= 0x0000,
+		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
+		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in red.
+		CCF_NoCacheHelp		= 0x0004	// No precache help string.
+	};
+
+	ConsoleClassFlags zcFlags;
+
+	protected String helpCacheString;
+
+	// Returns a new console class with determined importantment flag:
+	static ZCConsoleClass Create( class<ZCConsoleClass> classname, bool important = false ) {
+		ZCConsoleClass created = ZCConsoleClass( new( classname ) );
+		created.zcFlags = important? CCF_Important : CCF_None;
+
+		return created;
+	}
+
+	// Override to set up flags (excluding CCF_Important) and other special stuff:
+	virtual void OnLoad( void ) {
+		zcFlags = CCF_None;
+	}
+
+	override void PostBeginPlay() {
+		Super.PostBeginPlay();
+		helpCacheString = "";
+		ChangeStatNum( STAT_STATIC );
+
+		bool important = zcFlags & CCF_Important;
+		OnLoad();
+		zcFlags = important? ( zcFlags | CCF_Important ) : ( zcFlags & ~CCF_Important );
+	}
+
+	// A wrapper which unites aliases and description to one nice string:
+	virtual String GetHelpString( void ) {
+		return "\c[Red]Wrong inheriting (\"ZCConsoleClass::GetHelpString()\" isn't overrided).";
+	}
+} // of class ZCConsoleHelpClass: Thinker abstract {
+
+class ZCConsoleSeparator: ZCConsoleClass {
+	virtual String GetHelpSeparatorName( void ) {
+		return "";
+	}
+
+	override String GetHelpString( void ) {
+		// Attempt to speed up help strings processing:
+		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+			helpCacheString = "";
+			String title = GetHelpSeparatorName();
+			int titleLen = title.Length();
+
+			if ( titleLen > 70 ) {
+				helpCacheString = " - - " .. title;
+			} else {
+				String sepDecor = " - - - - - - - - - - - - - - -";
+
+				if ( titleLen != 0 ) {
+					sepDecor = sepDecor.Left( sepDecor.Length() - titleLen );
+
+					if ( sepDecor.Length() & 1 )
+						sepDecor = sepDecor .. " ";
+				}
+
+				helpCacheString = sepDecor .. title .. sepDecor;
+			}
+		}
+
+		return helpCacheString;
+	}
+}
+
+
+class ZCConsoleCommand: ZCConsoleClass abstract {
+	const NOT_INT = 0x7FFFFFFF;
+	const NOT_INT_REPLACER = 0x7FFFFFFE;
+
+	ZCheckerCCMDInfo ccmd;
+
+	protected clearscope bool checkTesteePlace( uint place ) {
+		return ( place >= 0 && place < MaxTestee );
+	}
+
+	// Returns converted int or "NOT_INT" if string isn't an integer:
+	protected clearscope int str2int( in String str ) {
+		int outConverted = NOT_INT;
+
+		if ( str && str.Length() ) {
+			int converted = str.ToInt();
+			int firstChar = str.CharCodeAt( 0 );
+
+			if ( ( firstChar >= 0x31 && firstChar <= 0x39 && converted != 0 ) || ( firstChar == 0x30 && str.Length() == 1 ) )
+				outConverted = ( converted != NOT_INT )? converted : NOT_INT_REPLACER;
+		}
+
+		return outConverted;
+	}
+
+	// Returns "true" is string is an integer; "converted" is a pointer:
+	protected clearscope bool str2int_Ptr( in String str, out int converted ) {
+		bool isInteger = false;
+
+		if ( str && str.Length() ) {
+			int tempConverted = str.ToInt();
+			int firstChar = str.CharCodeAt( 0 );
+
+			if ( ( firstChar >= 0x31 && firstChar <= 0x39 && converted != 0 ) || ( firstChar == 0x30 && str.Length() == 1 ) ) {
+				isInteger = true;
+				converted = tempConverted;
+			}
+		}
+
+		return isInteger;
+	}
+
+	// Returns "-1" if argument cannot be resolved as boolean, and "0"/"1" otherwise:
+	protected int getBoolArg( uint argnum ) {
+		int argxtype = -1;
+
+		if ( argnum < ccmd.args.Size() ) {
+			String argx = ccmd.args[ argnum ];
+
+			if ( argx == "0" || argx ~== "false" || argx ~== "f" || argx ~== "reset" )
+				argxtype = 0;
+			else if ( argx == "1" || argx ~== "true" || argx ~== "t" || argx ~== "set" )
+				argxtype = 1;
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::getBoolArg(). Argument " .. argnum .. " is too large (max " .. ccmd.args.Size() .. ")." );
+		}
+
+		return argxtype;
+	}
+
+	// Gets a linetarget actor:
+	protected play Actor LinetraceActor( Actor from ) {
+		Actor outActor = NULL;
+        FLineTraceData RemoteRay;
+
+		from.LineTrace( from.Angle, 0xFFFF, from.Pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: RemoteRay );
+
+        if ( RemoteRay.HitType == TRACE_HitActor ) {
+			outActor = RemoteRay.HitActor;
+		} else {
+			ZCGlobal.Log( LL_Normal, "No actors found in nearest 65535 mappixels." );
+		}
+
+		return outActor;
+	} // of protected play Actor LinetraceActor( void ) {
+
+	// Returns help aliases/description string for a class:
+	protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {
+		ZCConsoleCommand temp = ZCConsoleCommand( new( classname ) );
+
+		String outHelpString = desc? temp.GetHelpDescString() : temp.GetHelpNameString();
+
+		temp.Destroy();
+		return outHelpString;
+	} // of protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {
+
+
+	// Returns linked netevent command name (see KEYCONF):
+	virtual String GetCommand( void ) {
+		return "";
+	}
+
+	// Returns aliases separated by a semicolon:
+	virtual String GetHelpNameString( void ) {
+		return "\c[Red]GetHelpNameString() usage example: \"zcAlias #1;zcAlias2;zc-alias [pos] [3]\"\c-";
+	}
+
+	// Returns usage quick help (comman description):
+	virtual String GetHelpDescString( void ) {
+		return GetCommand() .. " help!";
+	}
+
+	// A wrapper which unites aliases and description to one nice string:
+	final override String GetHelpString( void ) {
+		// Attempt to speed up help strings processing:
+		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+			helpCacheString = "";
+			Array<String> aliases;
+			GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
+
+			bool unreleased = !!( zcFlags & CCF_Unreleased );
+
+			// Extra aliases:
+			for ( int i = 0; i < aliases.Size() - 1; i++ )
+				helpCacheString = helpCacheString .. ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE ) .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
+
+			// Last alias and a description:
+			helpCacheString = helpCacheString .. ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE ) .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. GetHelpDescString();
+
+			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
+
+			if ( !( lastChar == "." || lastChar == "!" || lastChar == "?" ) )
+				helpCacheString = helpCacheString .. ".";
+		}
+
+		return helpCacheString;
+	}
+
+	// Returns "true" if all args provieded right, "false" otherwise:
+	play virtual bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		return false;
+	}
+
+	// Command itself:
+	play virtual void DoCommand( void ) { }
+
+} // of class ZCConsoleCommand abstract {
+

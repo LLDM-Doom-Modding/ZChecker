@@ -1,0 +1,168 @@
+class ZCHelpCommand: ZCConsoleCommand {
+	bool verboseHelp;
+
+	override String GetCommand() {
+		return "zc_help";
+	}
+
+	override String GetHelpNameString() {
+		return "zchelp [all|a|full|more|verbose|v]";
+	}
+
+	override String GetHelpDescString() {
+		return "this help. If argument is provided, displays complete help.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		verboseHelp = false;
+		bool outValue = ( ccmd.args.Size() == 0 );
+
+		if ( ccmd.args.Size() == 1 ) {
+			String arg = ccmd.args[ 0 ];
+
+			if ( arg ~== "a" || arg ~== "all" || arg ~== "full" || arg ~== "more" || arg ~== "verbose" || arg ~== "v" )
+				verboseHelp = outValue = true;
+		}
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		// Description and credits:
+		if ( verboseHelp ) {
+			console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion 
+					.. "\c- by " .. TEXTCOLOR_WHITE .. "JSO_x\c- a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare\c-.\n\n" );
+		}
+
+		console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
+
+		ZCConsoleClass curCC = NULL;
+
+		for ( int i = 0; curCC = ccmd.handler.GetZCConsoleClass( i ); i++ )
+			if ( verboseHelp || ( curCC.zcFlags & CCF_Important ) )
+				console.printf( curCC.GetHelpString() .. "\n\n" );
+	}
+} // of class ZCHelpCommand: ZCConsoleCommand {
+
+
+class ZCAddCommand: ZCConsoleCommand {
+	String zcSpecialType;
+	int zcPos;
+
+	override String GetCommand() {
+		return "zc_add";
+	}
+
+	override String GetHelpNameString() {
+		return "zcadd [self|weapon] [<pos>];zcaddself [<pos>];zcaddweap [<pos>]";
+	}
+
+	override String GetHelpDescString() {
+		return "add a linetarget OR player OR current weapon into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+
+		// For 0 args: zcPos == "-1" (to check it later).
+		bool outValue = ( ccmd.args.Size() == 0 );
+		zcPos = -1;
+
+		// Next lines ("if {}" block) are hard to understand, but they're right.
+		if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
+
+			// "zcadd self|weapon [pos]"
+			if ( ( ccmd.args[ 0 ] ~== "self" || ccmd.args[ 0 ] ~== "weapon" ) ) {
+
+				if ( ccmd.args.Size() == 2 ) {
+					if ( str2int_Ptr( ccmd.args[ 1 ], +zcPos ) )
+						outValue = checkTesteePlace( --zcPos );
+				} else {
+					outValue = true;
+				}
+
+			// "zcadd [pos]"
+			} else {
+				if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+					outValue = checkTesteePlace( --zcPos );
+			}
+		} // of if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
+
+		// Find next free testee place ("-1" if not found):
+		if ( outValue && zcPos == -1 ) {
+			for ( int i = 0; i < MaxTestee && zcPos == -1; i++ )
+				if ( ccmd.handler.Testee[ i ].mo == NULL )
+					zcPos = i;
+		}
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		if ( zcPos != -1 ) {
+			PlayerInfo player = players[ ccmd.e.Player ];
+
+			if ( ccmd.args.Size() && ccmd.args[ 0 ] ~== "weapon" && player.ReadyWeapon ) {
+				ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
+				ZCGlobal.Log( LL_Detailed, "added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+			} else if ( ccmd.args.Size() && ccmd.args[ 0 ] ~== "self" ) {
+				ccmd.handler.Testee[ zcPos ].mo = player.mo;
+				ZCGlobal.Log( LL_Detailed, "added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+			} else {
+                if ( ccmd.handler.Testee[ zcPos ].mo = LinetraceActor( player.mo ) )
+					ZCGlobal.Log( LL_Detailed, "added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+			} 
+
+		} else {
+			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insuffienty place. Try set target to list directly with \"zcadd [1.." .. MaxTestee .. "]\"." );
+		} // of else of if ( zcPos != -1 ) {
+	}
+} // of class ZCAddCommand: ZCConsoleCommand {
+
+class ZCRemCommand: ZCConsoleCommand {
+	int zcPos;
+
+	override String GetCommand() {
+		return "zc_rem";
+	}
+
+	override String GetHelpNameString() {
+		return "zcrem [<pos>]";
+	}
+
+	override String GetHelpDescString() {
+		return "remove testee(s) from <pos> or from whole list if omitted.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		zcPos = -1;
+		bool outValue = ( ccmd.args.Size() == 0 );
+
+		if ( ccmd.args.Size() == 1 ) {
+			if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+				outValue = checkTesteePlace( --zcPos );
+		}
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		if ( zcPos != -1 ) {
+			Actor testee = ccmd.handler.Testee[ zcPos ].mo;
+			if ( testee ) {
+				ZCGlobal.Log( LL_Detailed, "Removed actor \"" .. testee.GetClassName() .. "\" <" .. testee .. "> from position " .. zcPos + 1 .. "." );
+				ccmd.handler.Testee[ zcPos ].mo = NULL;
+			} else {
+				ZCGlobal.Log( LL_Detailed, "Cannot remove, there's no actor in position " .. zcPos + 1 .. "." );
+			}
+		} else {
+			for ( int i = 0; i < MaxTestee; i++ )
+				ccmd.handler.Testee[ i ].mo = NULL;
+
+			ZCGlobal.Log( LL_Detailed, "All actors cleared from the hotbar." );
+		}
+	}
+} // of class ZCRemCommand: ZCConsoleCommand {
+

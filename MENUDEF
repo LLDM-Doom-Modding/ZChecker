@@ -1,0 +1,39 @@
+//
+
+OptionMenu "ZCheckerControl" {
+    Title "ZChecker control"
+    StaticText " "
+	StaticText "What kind of information must be shown: ", "Gold"
+	Option "Main", "mcm_zchecker_info_main", "OnOff"
+	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
+	Option "Extended", "mcm_zchecker_info_extended", "OnOff"
+	Option "States", "mcm_zchecker_info_states", "OnOff"
+	Option "Friends", "mcm_zchecker_info_friends", "OnOff"
+	Option "Visual", "mcm_zchecker_info_visual", "OnOff"
+	Option "Sectors", "mcm_zchecker_info_sectors", "OnOff"
+	Option "Interaction", "mcm_zchecker_info_interaction", "OnOff"	
+	Option "Other actors", "mcm_zchecker_info_otheractors", "OnOff"
+	Option "Other", "mcm_zchecker_info_other", "OnOff"
+    StaticText " "
+	StaticText "Other settings:", "Gold"
+	Option "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels"
+    StaticText " "
+	StaticText "\"Everything\" map settings:", "Gold"
+	Option "Force use \"Everything\" map scripts", "mcm_zchecker_ev_forcemap", "OnOff"
+	Option "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo"
+	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
+	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
+	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+}
+
+AddOptionMenu "OptionsMenu" {
+	StaticText  " "
+	Submenu     "ZChecker Control", "ZCheckerControl"
+}
+
+OptionValue "mcm_zchecker_LogLevels" {
+	0, "Emergency only"
+	1, "Main"
+	2, "Detailed"
+	3, "Debug mode"
+}

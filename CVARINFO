@@ -1,0 +1,21 @@
+//
+
+server int mcm_zchecker_loglevel = 1;
+
+server bool mcm_zchecker_info_main			= true;
+server bool mcm_zchecker_info_extended		= false; // Position, velocity, args, special, TIDs...
+server bool mcm_zchecker_info_inventory		= true;
+server bool mcm_zchecker_info_states		= false; // States and frames.
+server bool mcm_zchecker_info_friends		= false; // "FriendPlayer", "HitFriend()", "DesignatedTeam", ...
+server bool mcm_zchecker_info_visual		= false;
+server bool mcm_zchecker_info_sectors		= false; // "floorsector", "ceilingsector", ...
+server bool mcm_zchecker_info_interaction	= false; // "BlockingMobj", "BlockingLine", "Master", "Target", "LastHeard", "LastLookPlayerNumber", ...
+server bool mcm_zchecker_info_otheractors	= false; // "snext", "Alternative", "goal", "Poisoner", "TelefogSourceType", ...
+server bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
+
+server bool mcm_zchecker_ev_forcemap		= false; // Skip the Everything map check (use the code attached to it on any map).
+server bool mcm_zchecker_ev_spawninvisible	= true;
+server bool mcm_zchecker_ev_spawnstealth	= true;
+server bool mcm_zchecker_ev_spawnplyc		= false;
+server bool mcm_zchecker_ev_spawntnt1a0		= false;
+

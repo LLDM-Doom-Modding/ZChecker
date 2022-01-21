@@ -1,0 +1,38 @@
+// Not all parameters normally accessible via ZScript...
+
+#include "zcommon.acs"
+
+// Log levels enum:
+#define LL_Emergency -1
+#define LL_General 0
+#define LL_Detailed 1
+#define LL_Debug 2
+
+#define LL_Common LL_General
+#define LL_Normal LL_General
+#define LL_Extended LL_Detailed
+
+
+script "ZChecker_CCMD_SetState" ( void ) {
+	str newStateName = ScriptCall( "ZCSetStateCommand", "ACS_GetStateName" );
+
+	if ( SetActorState( 0, newStateName, true ) ) {
+		ScriptCall( "ZCGlobal", "Log", LL_Detailed, StrParam( s:"State \"", s:newStateName, s:"\" succesfully set" ) );
+	} else {
+		ScriptCall( "ZCGlobal", "Log", LL_Common, StrParam( s:"Cannot set state \"", s:newStateName, s:"\"" ) );
+	}
+}
+
+// Argument: "-1" is a toggle, "0"/"1" is a reset/set.
+script "ZChecker_CCMD_SetFlag" ( int setType ) {
+	str flagName = ScriptCall( "ZCToggleFlagCommand", "ACS_GetFlagName" );
+	int newValue = setType;
+
+	newValue = ( setType == -1 )? CheckFlag( 0, flagName ) : setType;
+
+	if ( SetActorFlag( 0, flagName, newValue ) ) {
+		ScriptCall( "ZCGlobal", "Log", LL_Detailed, StrParam( s:"Flag \"", s:flagName, s:"\" succesfully set to ", i:newValue ) );
+	} else {
+		ScriptCall( "ZCGlobal", "Log", LL_Common, StrParam( s:"Cannot set flag \"", s:flagName, s:"\"" ) );
+	}
+}
