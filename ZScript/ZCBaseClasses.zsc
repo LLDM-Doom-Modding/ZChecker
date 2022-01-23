@@ -265,3 +265,24 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 } // of class ZCConsoleCommand abstract {
 
+
+class ZCBaseInfoPanelPart abstract {
+	clearscope virtual String GetCVarName( void ) {
+		return "mcm_zchecker_info_...";
+	}
+
+	ui virtual String GetInfo( Actor thing, int testeepos ) {
+		return "Nothing.";
+	}
+
+
+	clearscope protected PlayerPawn getItemPlayerOwner( Inventory item ) {
+		PlayerPawn ownerPlayer = PlayerPawn( item.Owner );
+
+		return ( ( ownerPlayer && ownerPlayer.player && ownerPlayer.player.ReadyWeapon )? ownerPlayer : NULL );
+	}
+
+	clearscope protected bool isItemPickedupWeapon( Actor item ) {
+		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
+	}
+} // of class ZCBaseInfoPanelPart ui abstract {}

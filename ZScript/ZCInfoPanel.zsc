@@ -1,0 +1,174 @@
+class ZCMainInfoPanel: ZCBaseInfoPanelPart {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_main";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		if ( isItemPickedupWeapon( thing ) )
+			return "\c-" .. testeepos + 1 .. "\c[DarkGreen]Last stored class\c-: \c[Green]" .. thing.GetClassName() .. "\c-;\c[Orange]\n"
+					.. "Last stored tag\c-: \c[Yellow]" .. thing.GetTag() .. "\c-.\n\n";
+		else
+			return "\c-" .. testeepos + 1 .. "\c[DarkRed]health" 
+						.. ( thing.bBUDDHA? " (buddha)" : "" ) .. "\c-: \c[Red]"
+					.. thing.health .. "\c[Darkgreen]\n"
+					.. "Class\c-: \c[Green]" .. thing.GetClassName() .. "\c-;\c[Orange]\n"
+					.. "Tag\c-: \c[Yellow]" .. thing.GetTag() .. "\c-.\n\n";
+	}
+} // of class ZCMainInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCExtendedInfoPanel: ZCBaseInfoPanelPart {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_extended";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		String outStr = "\c-";
+
+		outStr = "Tilt: (a" .. int( thing.angle ) .. ", p" ..
+							int( thing.pitch ) .. ", r" .. 
+							int( thing.roll ) .. ");\n" ..
+				"Pos: (" .. int( thing.pos.X ) .. ", " .. 
+							int( thing.pos.Y ) .. ", " .. 
+							int( thing.pos.Z ) .. ");\n" ..
+				"Vel: (" .. int( thing.vel.X ) .. ", " .. 
+							int( thing.vel.Y ) .. ", " .. 
+							int( thing.vel.Z ) .. ")\n  (len " .. thing.vel.length() .. ");\n" ..
+				"Radius/Height: " .. thing.radius .. "/" .. thing.height .. ";\n"
+				"Special: " .. thing.special .. "\n  with args [";
+
+		for ( int arg = 0; arg < 4; arg++ )
+			outStr = outStr .. thing.Args[ arg ] .. ", ";
+
+		outStr = outStr .. thing.Args[ 4 ] .. "]; \n" ..
+				"TID: " .. thing.TID .. "; \n" ..
+				"TID to hate: " .. thing.TIDtoHate .. "\n\n";
+
+		return outStr;
+	}
+} // of class ZCExtendedInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_inventory";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		String outStr = "\c[Darkgray]Inventory\c-: \c[Gray]";
+		Inventory item = thing.Inv;
+
+		if ( item ) {
+			//ZCheckerInvField cmpItem = Testee[ i ].inv;
+			//ZCheckerInvField nextItem = cmpItem.Next;
+
+			while ( item ) {
+				//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
+				/*	ZCheckerInvField cmpNextItem = nextItem;
+					bool finded = false;
+					while ( ( cmpNextItem = cmpNextItem.Next ) && !finded ) {
+						if ( cmpNextItem.type == item.Inv.GetClassName() )
+							finded = true;
+					}
+					if ( !finded ) {}
+				}
+                */
+				outStr = outStr .. "\n* " .. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
+				item = item.Inv;
+
+				/*if ( cmpItem.visualTicks > 0 )
+					--cmpItem.visualTicks;
+				else if ( cmpItem.visualTicks < 0 )
+					++cmpItem.visualTicks;
+
+				outStr = outStr .. "\n* " .. "\c[" .. ( cmpItem.visualTicks > 0? "Green" : ( cmpItem.visualTicks < 0? "Red" : "Gray" ) ) .. "]"
+						.. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
+
+				item = item.Inv;
+				cmpItem = nextItem;
+				nextItem = nextItem.Next;*/
+			} // of while ( item ) {
+
+		} else {
+			outStr = outStr .. "none";
+		}
+
+		return outStr .. ". \n\n";
+	}
+} // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_states";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		String outStr = "";
+
+		if ( isItemPickedupWeapon( thing ) ) {
+			PlayerPawn owner = getItemPlayerOwner( Inventory( thing ) );
+
+			if ( owner.player.psprites ) {
+				PSprite st = owner.player.psprites;
+
+				outStr = "State \c[Sapphire]" .. st.Sprite .. 
+					String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.CurState.Tics ) .. "\c-\n"
+					"  Current tic: " .. st.Tics .. "\n" ..
+					"  Pos: " .. st.x .. "/" .. st.y .. "\n" ..
+					"  Flags: " .. 
+						( st.bCVarFast? "\c[Green]Fast\c- " : "" ) ..
+						( st.processPending? "\c[Gray]Pend\c- " : "" ) .. "\n" ..
+					"  Flags 2: " ..
+						( st.bFlip? "\c[Red]Flip\c- " : "" ) ..
+						( st.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
+						( st.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
+						( st.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
+						( st.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n\n";
+			} // of if ( owner.player.psprites ) {
+
+		} else {
+
+			State st = thing.CurState;
+			outStr = "State \c[Sapphire]" .. thing.Sprite .. 
+				String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.Tics ) .. "\c-\n"
+				"  Current tic: " .. thing.Tics .. "\n" ..
+				"  Flags: " .. 
+					( st.bFast? "\c[Fire]Fst\c- " : "" ) ..
+					( st.bSlow? "\c[Fire]Slw\c- " : "" ) ..
+					( st.bFullbright? "\c[Yellow]Lit\c- " : "" ) ..
+					( st.bNoDelay? "\c[Sapphire]NoDelay\c- " : "" ) .. "\n"
+				"  Flags 2:" ..
+					( st.bSameFrame? "\c[Sapphire]SameFrm\c- " : "" ) ..
+					( st.bCanRaise? "\c[Green]CanRaise\c- " : "" ) ..
+					( st.bDehacked? "\c[Red]Deh\c- " : "" ) .. "\n" ..
+				"  UseFlags: " .. st.UseFlags .. ", TicRange: " .. st.TicRange .. "; \n" ..
+				"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n\n";
+		}
+
+		return outStr;
+	}
+} // of class ZCStatesInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCFriendsInfoPanel: ZCBaseInfoPanelPart {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_friends";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		String outStr = "";
+
+		int friendPlayer;
+
+		if ( friendPlayer = thing.FriendPlayer ) {
+			outStr = outStr .. "Friendly to player #" .. friendPlayer .. "\n  (" ..
+					( playeringame[ friendPlayer - 1 ] && players[ friendPlayer - 1 ].mo? ( "named " .. players[ friendPlayer - 1 ].GetUserName() ) : "not in game" ) .. ");\n";
+		}
+		outStr = outStr .. "Designated to team " .. thing.DesignatedTeam .. ".\n";
+
+		/*for ( int comparepos = 0; comparepos < MaxTestee; comparepos++ )
+			if ( testeepos != comparepos && Testee[ comparepos ].mo && thing.isFriend( Testee[ comparepos ].mo ) )
+				outStr = outStr .. "Is a friend for Testee #" .. comparepos .. ".\n";
+		*/
+
+		return outStr .. "\n";
+	}
+} // of class ZCFriendsInfoPanel: ZCBaseInfoPanelPart {}
+
