@@ -505,7 +505,7 @@ class ZCheckerActorInfo: Actor {
 		-SHOOTABLE;
 		+NOGRAVITY;
 		+DONTSPLASH;
-		Scale 0.25;
+		Scale 0.5;
 		Height 64;
 		Radius 30;
 		Activation THINGSPEC_Switch;
@@ -540,10 +540,15 @@ class ZCheckerActorInfo: Actor {
 	}
 
 	void SetMasterZ( void ) {
-		if ( master.bSPAWNCEILING )
+		if ( master.bSPAWNCEILING ) {
 			master.SetZ( master.ceilingz - master.height );
-		else if ( master.bNOGRAVITY || master.bNOINTERACTION )
+			floorclip = -64.0;
+		} else if ( master.bNOGRAVITY || master.bNOINTERACTION ) {
 			master.SetOrigin( master.pos + ( 0, 0, 32.0 ), false );
+			floorclip = -22.0;
+		} else {
+			floorclip = -3.5;
+		}
 	}
 
 	override void Activate( Actor other ) {
@@ -562,6 +567,11 @@ class ZCheckerActorInfo: Actor {
 		if ( master is 'Inventory' && Inventory( master ).owner )
 			master = NULL;
 
+		if ( !master || master == self )
+			A_SetTranslation( "mcm_ZChecker_ActorInfoWrongMaster" );
+		else
+			A_SetTranslation( "mcm_ZChecker_ActorInfoReady" );
+
 		Super.Tick();
 	}
 
@@ -571,7 +581,7 @@ class ZCheckerActorInfo: Actor {
 
 	States {
 	Spawn:
-		TROO A -1 Bright;
+		BAL1 B -1 Bright;
 		stop;
 	}
 } // of class ZCheckerActorInfo: Actor {

@@ -180,7 +180,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 
 	override String GetHelpDescString() {
 		return "give <amount> <item>s to the testee <pos> (or linetarget if omitted)";
-	}	
+	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
 		ccmd = initCCMD;
@@ -244,7 +244,7 @@ class ZCTakeCommand: ZCGiveCommand {
 
 	override String GetHelpDescString() {
 		return "take <amount> <item>s from the testee <pos> (or linetarget if omitted)";
-	}	
+	}
 
 	override void DoCommand( void ) {
 		// Linetarget if position is omitted or testee[pos] otherwise:
@@ -305,7 +305,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 	override String GetHelpDescString() {
 		return "Does something with actor on <pos> (or linetarget if omitted). Possible values: \"revive\"|\"resurrect\", \"kill\", \"destroy\"|\"remove\"";
-	}	
+	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
 		ccmd = initCCMD;
@@ -352,7 +352,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			}
 		}
 
-		
+
 		if ( !reviveBlocked ) {
 			ZCGlobal.Log( LL_Detailed, "Revived actor " .. testee.GetClassName() );
 
@@ -368,7 +368,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 	override void DoCommand( void ) {
 		// Linetarget if position is omitted or testee[ pos ] otherwise:
-		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
+		Actor testee = ( ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo );
 
 		if ( testee ) {
 			switch ( actoraction ) {
@@ -389,5 +389,5 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			}
 		} // of if ( testee ) {
 
-	}	
+	}
 } // of class ZCActorActionCommand: ZCConsoleCommand {}

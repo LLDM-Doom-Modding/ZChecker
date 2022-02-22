@@ -6,7 +6,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zchelp [all|a|full|more|verbose|v]";
+		return "zchelp [all|a|full|more|-a|v]";
 	}
 
 	override String GetHelpDescString() {
@@ -21,7 +21,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 		if ( ccmd.args.Size() == 1 ) {
 			String arg = ccmd.args[ 0 ];
 
-			if ( arg ~== "a" || arg ~== "all" || arg ~== "full" || arg ~== "more" || arg ~== "verbose" || arg ~== "v" )
+			if ( arg ~== "a" || arg ~== "all" || arg ~== "full" || arg ~== "more" || arg ~== "-a" || arg ~== "v" )
 				verboseHelp = outValue = true;
 		}
 
