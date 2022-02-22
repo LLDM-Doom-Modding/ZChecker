@@ -110,7 +110,7 @@ class ZCToggleFlagCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zctgf [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zctoggleflag [<pos>] <flag name> [<value>]";
+		return "zctf [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zctoggleflag [<pos>] <flag name> [<value>]";
 	}
 
 	override String GetHelpDescString() {
@@ -283,3 +283,111 @@ class ZCTakeCommand: ZCGiveCommand {
 
 	}
 } // of class ZCTakeCommand: ZCGiveCommand {
+
+class ZCActorActionCommand: ZCConsoleCommand {
+	enum EActorActions {
+		AC_Wrong = 0,
+		AC_Revive,
+		AC_Kill,
+		AC_Destroy
+	};
+
+	int zcPos;
+	EActorActions actoraction;
+
+	override String GetCommand() {
+		return "zc_actoraction";
+	}
+
+	override String GetHelpNameString() {
+		return "zcact [<pos>] <action>";
+	}
+
+	override String GetHelpDescString() {
+		return "Does something with actor on <pos> (or linetarget if omitted). Possible values: \"revive\"|\"resurrect\", \"kill\", \"destroy\"|\"remove\"";
+	}	
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		zcPos = -1;
+		bool outValue = false;
+
+		if ( ccmd.args.Size() == 1 || ccmd.args.Size() == 2 ) {
+			outValue = true;
+			String what = ccmd.args[ ccmd.args.Size() - 1 ];
+
+			if ( what == "resurrect" || what == "revive" )
+				actoraction = AC_Revive;
+			else if ( what == "kill" )
+				actoraction = AC_Kill;
+			else if ( what == "destroy" || what == "remove" )
+				actoraction = AC_Destroy;
+			else
+				outValue = false;
+
+			if ( outValue ) {
+				outValue = false;
+
+				if ( ccmd.args.Size() == 1 )
+					outValue = true;
+				else if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+					outValue = checkTesteePlace( --zcPos );
+			} // of if ( outValue ) {}
+
+		}
+
+		return outValue;
+	}
+
+	protected void TryRevive( Actor testee ) {
+		bool reviveBlocked = false;
+		readonly<Actor> defactor = GetDefaultByType( testee.GetClass() );
+
+		if ( defactor.bSOLID || defactor.bBLOCKEDBYSOLIDACTORS ) {
+			BlockThingsIterator it = BlockThingsIterator.CreateFromPos( testee.pos.x, testee.pos.y, testee.pos.z, testee.height, testee.radius, false );
+
+			while ( it.Next() && !reviveBlocked ) {
+				if ( it.thing != testee && testee.Distance2D( it.thing ) < testee.radius && it.thing.bSOLID )
+					reviveBlocked = true;
+			}
+		}
+
+		
+		if ( !reviveBlocked ) {
+			ZCGlobal.Log( LL_Detailed, "Revived actor " .. testee.GetClassName() );
+
+			// Compatibility with older versions.
+			Actor prevMaster = testee.master;
+			testee.master = testee;
+			testee.A_RaiseMaster();
+			testee.master = prevMaster;
+		} else {
+			ZCGlobal.Log( LL_Detailed, "Actor " .. testee.GetClassName() .. " reviving " .. TEXTCOLOR_RED .. "blocked\c-." );
+		}
+	}
+
+	override void DoCommand( void ) {
+		// Linetarget if position is omitted or testee[ pos ] otherwise:
+		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
+
+		if ( testee ) {
+			switch ( actoraction ) {
+			case AC_Revive:
+				TryRevive( testee );
+				break;
+			case AC_Kill:
+				ZCGlobal.Log( LL_Detailed, "Killed actor " .. testee.GetClassName() );
+				testee.A_Die();
+				break;
+			case AC_Destroy:
+				ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. testee.GetClassName() );
+				testee.Destroy();
+				break;
+			default:
+				ZCGlobal.Log( LL_Emergency, "Unknown action id \"" .. actoraction .. "\" for testee " .. testee.GetClassName() );
+				break;
+			}
+		} // of if ( testee ) {
+
+	}	
+} // of class ZCActorActionCommand: ZCConsoleCommand {}

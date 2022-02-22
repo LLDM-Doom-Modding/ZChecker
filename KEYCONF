@@ -12,11 +12,13 @@ alias zcsetstate "zcsets %1 %2"
 
 alias zcbuddha "netevent zc_buddha:%1:%2"
 alias zcbud "zcbuddha %1 %2"
-alias zctgf "netevent zc_toggleFlag:%1:%2:%3"
+alias zctf "netevent zc_toggleFlag:%1:%2:%3"
 alias zctoggleflag "zctgf %1 %2 %3"
 
 alias zcgive "netevent zc_give:%1:%2:%3"
 alias zctake "netevent zc_take:%1:%2:%3"
+
+alias zcact "netevent zc_actoraction:%1:%2"
 
 // The Everything map aliases:
 alias zcev "netevent zc_ev:%1:%2:%3:%4" // add|new, optimize|pause, goto

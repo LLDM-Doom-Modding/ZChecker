@@ -161,7 +161,8 @@ class ZCheckerHandler: EventHandler {
 	}
 
 	private void addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		zcInfoPanelClasses.push( new( classname ) );
+		ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart( new( classname ) );
+		zcInfoPanelClasses.push( newPanelPart );
 	}
 
 
@@ -193,6 +194,7 @@ class ZCheckerHandler: EventHandler {
 		addConsoleClass( 'ZCToggleFlagCommand' );
 		addConsoleClass( 'ZCGiveCommand' );
 		addConsoleClass( 'ZCTakeCommand' );
+		addConsoleClass( 'ZCActorActionCommand' );
 
 		addConsoleSeparator( true );
 		addConsoleClass( 'ZCEvmapCommand', true );
