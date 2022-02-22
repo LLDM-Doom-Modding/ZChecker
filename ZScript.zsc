@@ -62,7 +62,7 @@ enum EZCheckerLogLevels {
 }
 
 const LLCOLOR_MAIN = "\c-";
-const LLCOLOR_DEBUG = TEXTCOLOR_GRAY;
+const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
 const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
 
 const CCMDCOLOR_TITLE = TEXTCOLOR_GREEN;
@@ -97,13 +97,13 @@ class ZCGlobal: Thinker {
 		if ( !( loglevel & LL_NoPrefix ) ) {
 			switch ( loglevel & ~LL_NoPrefix ) {
 				case LL_Debug:
-					logPrefix = LLCOLOR_DEBUG .. "[Debug] ";
+					logPrefix = LLCOLOR_DEBUG .. "[ZC Debug] ";
 					break;
 				case LL_Emergency:
 					logPrefix = TEXTCOLOR_RED .. "[ZChecker emergency] " .. LLCOLOR_EMERGENCY;
 					break;
 				default:
-					logPrefix = TEXTCOLOR_GRAY .. "[ZCh] " .. LLCOLOR_MAIN;
+					logPrefix = TEXTCOLOR_GRAY .. "[ZC] " .. LLCOLOR_MAIN;
 					break;
 			} // of switch ( loglevel & ~LL_NoPrefix ) {
 		} // of if ( !( loglevel & LL_NoPrefix ) ) {
