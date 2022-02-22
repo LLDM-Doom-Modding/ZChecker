@@ -24,16 +24,16 @@ class ZCExtendedInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, int testeepos ) {
 		String outStr = "\c-";
 
-		outStr = "Tilt: (a" .. int( thing.angle ) .. ", p" ..
-							int( thing.pitch ) .. ", r" .. 
-							int( thing.roll ) .. ");\n" ..
-				"Pos: (" .. int( thing.pos.X ) .. ", " .. 
-							int( thing.pos.Y ) .. ", " .. 
-							int( thing.pos.Z ) .. ");\n" ..
-				"Vel: (" .. int( thing.vel.X ) .. ", " .. 
-							int( thing.vel.Y ) .. ", " .. 
-							int( thing.vel.Z ) .. ")\n  (len " .. thing.vel.length() .. ");\n" ..
-				"Radius/Height: " .. thing.radius .. "/" .. thing.height .. ";\n"
+		outStr = "Tilt: (\cUa\c-" .. int( thing.angle ) .. ", \cUp\c-" ..
+							int( thing.pitch ) .. ", \cUr\c-" ..
+							int( thing.roll ) .. ");\n" .. TEXTCOLOR_TEAL ..
+				"Pos: (" .. int( thing.pos.X ) .. ", " ..
+							int( thing.pos.Y ) .. ", " ..
+							int( thing.pos.Z ) .. ");\n\c-" ..
+				"Vel: (" .. int( thing.vel.X ) .. ", " ..
+							int( thing.vel.Y ) .. ", " ..
+							int( thing.vel.Z ) .. ")\n  (len " .. thing.vel.length() .. ");\n" .. TEXTCOLOR_TEAL ..
+				"Radius/Height: " .. thing.radius .. "/" .. thing.height .. ";\n\c-"
 				"Special: " .. thing.special .. "\n  with args [";
 
 		for ( int arg = 0; arg < 4; arg++ )

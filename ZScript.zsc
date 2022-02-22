@@ -10,7 +10,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.6c_nightly";
+const ZCheckerVersion = "0.61";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -280,7 +280,7 @@ class ZCheckerHandler: EventHandler {
 
 
 	override void WorldTick() {
-		if ( !( level.maptime % 5 ) )
+		if ( ( gamestate == GS_LEVEL || gamestate == GS_DEMOSCREEN ) && !( level.maptime % 5 ) )
 			ZCGlobal.UpdateLogLevel();
 
 		Super.WorldTick();
