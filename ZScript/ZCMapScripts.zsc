@@ -65,7 +65,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		String outStr = "";
 
 		if ( which <= S__Nothing || which >= S__Quantity )
-			outStr = "(\c[Fire]unknown\c-)";
+			outStr = "(" .. TEXTCOLOR_FIRE .. "unknown\c-)";
 		else
 			outStr = ZCheckerEverythingMapHandler.ESectorStartAliases[ which ];
 
@@ -191,7 +191,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				} else {
 					if ( clsType != S__Nothing ) {
-						ZCGlobal.Log( LL_Detailed, "RecreateEverything(): \c[Green]summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
+						ZCGlobal.Log( LL_Detailed, "RecreateEverything(): " .. TEXTCOLOR_GREEN .. "summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
 						evSectors[ clsType ].setter.DoJump( cls );
 					}
 				}

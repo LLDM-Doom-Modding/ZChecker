@@ -89,7 +89,7 @@ class ZCConsoleClass: Thinker abstract {
 
 	// A wrapper which unites aliases and description to one nice string:
 	virtual String GetHelpString( void ) {
-		return "\c[Red]Wrong inheriting (\"ZCConsoleClass::GetHelpString()\" isn't overrided).";
+		return TEXTCOLOR_RED .. "Wrong inheriting (\"ZCConsoleClass::GetHelpString()\" isn't overrided).";
 	}
 } // of class ZCConsoleHelpClass: Thinker abstract {
 
@@ -220,7 +220,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 	// Returns aliases separated by a semicolon:
 	virtual String GetHelpNameString( void ) {
-		return "\c[Red]GetHelpNameString() usage example: \"zcAlias #1;zcAlias2;zc-alias [pos] [3]\"\c-";
+		return TEXTCOLOR_RED .. "GetHelpNameString() usage example: \"zcAlias #1;zcAlias2;zc-alias [pos] [3]\"\c-";
 	}
 
 	// Returns usage quick help (comman description):
