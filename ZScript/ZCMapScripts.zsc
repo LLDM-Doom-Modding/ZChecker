@@ -254,7 +254,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						evSectors[ j ].startSectors.Insert( 0, s );
 
 						if ( evSectors[ j ].setter ) {
-							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Warning: destroying previous e-sector setter for type " .. getESectorName( j ) );
+							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Warning: destroying previous e-sector setter for type " .. getESectorName( j ) .. " (sector index " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")" );
 							evSectors[ j ].setter.Destroy();
 						}
 
@@ -422,7 +422,7 @@ class ZCheckerSectorSetter: Actor {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" performed outside the map." );
 			continueFlag = false;
 		} else if ( floorsector.GetUDMFString( ZCUDMF_Type ) != ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" now on sector type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" now on sector " .. floorsector.Index() .. " type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"." );
 			continueFlag = false;
 		}
 

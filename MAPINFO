@@ -8,3 +8,8 @@ Map EVERYTHING "ZChecker: Everything" {
 	Sky1 = "RSKY3"
 	Music = "D_RUNNIN"
 }
+
+Map EVERYTHING_SIMPLED "ZChecker: Everything (simpled map)" {
+	Sky1 = "RSKY3"
+	Music = "D_RUNNIN"
+}
