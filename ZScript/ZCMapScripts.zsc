@@ -531,6 +531,7 @@ class ZCheckerActorInfo: Actor {
 			if ( Actor.GetReplacee( masterClass ) != masterClass )
 				masterInfo = masterInfo .. " \cnreplaces\c- " .. Actor.GetReplacee( masterClass ).GetClassName();
 
+			SetZ( floorZ );
 		} else {
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::PostBeginPlay() at " .. pos .. ". No master of class \"" .. masterClass.GetClassName() .. "\", destroying self." );
 			Destroy();
