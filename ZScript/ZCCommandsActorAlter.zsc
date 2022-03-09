@@ -1,3 +1,51 @@
+// Auxilary asynchronous classes (in other words, API for ACS):
+
+class ZCToggleFlagCommandThinker: Thinker {
+	Array<String> storedStrings;
+
+	override void PostBeginPlay() {
+		ChangeStatNum( STAT_STATIC );
+	}
+
+	String PopString( void ) {
+		String outname = "";
+
+		if ( storedStrings.Size() ) {
+			outname = storedStrings[ storedStrings.Size() - 1 ];
+			storedStrings.Pop();
+		}
+
+		return outname;
+	}
+
+	void AddString( String flagname ) {
+		storedStrings.push( flagname );
+	}
+
+	static ZCToggleFlagCommandThinker Get( void ) {
+		ZCToggleFlagCommandThinker it = ZCToggleFlagCommandThinker( ThinkerIterator.Create( "ZCToggleFlagCommandThinker", STAT_STATIC ).Next() );
+
+		if ( !it )
+			it = new( 'ZCToggleFlagCommandThinker' );
+
+		return it;
+	}
+}
+
+class ZCSetStateCommandThinker: ZCToggleFlagCommandThinker {
+	static ZCSetStateCommandThinker Get( void ) {
+		ZCSetStateCommandThinker it = ZCSetStateCommandThinker( ThinkerIterator.Create( "ZCSetStateCommandThinker", STAT_STATIC ).Next() );
+
+		if ( !it )
+			it = new( 'ZCSetStateCommandThinker' );
+
+		return it;
+	}
+}
+
+
+// Real commands:
+
 class ZCSetStateCommand: ZCConsoleCommand {
 	int zcPos;
 	String newState;
@@ -36,15 +84,14 @@ class ZCSetStateCommand: ZCConsoleCommand {
 		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
 
 		if ( testee ) {
+			ZCSetStateCommandThinker.Get().AddString( newState );
 			// Cannot get ACS asynchronous "SetResultValue()" here.
 			testee.ACS_NamedExecute( "ZChecker_CCMD_SetState", 0 );
 		}
 	}
 
 	static String ACS_GetStateName( Actor activator ) {
-		ZCSetStateCommand it = ZCSetStateCommand( ThinkerIterator.Create( "ZCSetStateCommand", STAT_STATIC ).Next() );
-
-		return ( it )? it.newState : "";
+		return ZCSetStateCommandThinker.Get().PopString();
 	}
 } // of class ZCSetStateCommand: ZCConsoleCommand {
 
@@ -153,15 +200,14 @@ class ZCToggleFlagCommand: ZCConsoleCommand {
 		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
 
 		if ( testee ) {
+			ZCToggleFlagCommandThinker.Get().AddString( flagName );
 			// Cannot get ACS asynchronous "SetResultValue()" here.
 			testee.ACS_NamedExecute( "ZChecker_CCMD_SetFlag", 0, flagSetType );
 		}
 	}
 
 	static String ACS_GetFlagName( Actor activator ) {
-		ZCToggleFlagCommand it = ZCToggleFlagCommand( ThinkerIterator.Create( "ZCToggleFlagCommand", STAT_STATIC ).Next() );
-
-		return ( it )? it.flagName : "";
+		return ZCToggleFlagCommandThinker.Get().PopString();
 	}
 } // of class ZCSetStateCommand: ZCConsoleCommand {
 

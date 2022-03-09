@@ -55,7 +55,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	ZCheckerEvSectorSetters evSectors[ S__Quantity ];
 
 	bool canRecreateEverything;
-	Font rfont; // For RenderOverlay().
 
 	ZCheckerEvMapConfig configuration;
 
@@ -212,8 +211,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	override void WorldLoaded( WorldEvent e ) {
 		if ( !ZCGlobal.IsEverythingLevel() )
 			return;
-
-		rfont = Font.FindFont( "smallfont" );
 
 		for ( int i = 0; i < S__Quantity; i++ ) {
 			evSectors[ i ] = new( 'ZCheckerEvSectorSetters' );
@@ -388,6 +385,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			if ( zcii ) {
 				String actorInfo = zcii.info;
+
+				Font rfont = Font.FindFont( "smallfont" );
 
 				Screen.DrawText( rfont, Font.CR_GRAY, 320 - actorInfo.Length() / 2 * rfont.GetCharWidth( "A" ), 60, 
 						actorInfo, DTA_VirtualWidth, 640, DTA_VirtualHeight, 480 );

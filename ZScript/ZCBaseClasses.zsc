@@ -1,7 +1,7 @@
 class ZCheckerCCMDInfo play {
 	Array<String> args;			// Arguments exclude ZC-CCMD name;
 	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on "FindEventHandler()" calls);
-	ConsoleEvent e;				// Pointer to the pure and non-altered structure.
+	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
 
 	// Init or reinit:
 	String InitFromEvent( ConsoleEvent initEvent, String argsSplitDelim = ":" ) {
@@ -52,7 +52,7 @@ class ZCheckerField {
 
 
 // Base ZChecker CCMD class:
-class ZCConsoleClass: Thinker abstract {
+class ZCConsoleClass abstract play {
 	enum ConsoleClassFlags {
 		CCF_None			= 0x0000,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
@@ -77,10 +77,9 @@ class ZCConsoleClass: Thinker abstract {
 		zcFlags = CCF_None;
 	}
 
-	override void PostBeginPlay() {
-		Super.PostBeginPlay();
+	virtual void PostBeginPlay() {
 		helpCacheString = "";
-		ChangeStatNum( STAT_STATIC );
+		//ChangeStatNum( STAT_STATIC );
 
 		bool important = zcFlags & CCF_Important;
 		OnLoad();

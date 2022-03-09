@@ -115,14 +115,16 @@ class ZCGlobal: Thinker {
 
 
 
-class ZCheckerHandler: EventHandler {
+class ZCheckerHandler: StaticEventHandler {
 	private Array<ZCConsoleClass> zcConsoleHandleClasses;
 	private Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
 
+	// It's impossible to avoid unloading actors (and pointers to them) from 
+	//memory on level reloading. Or I don't know something.
 	ZCheckerField Testee[ MaxTestee ];
-	ZCheckerCCMDInfo zcCCMDInfo;
 
-	Font ZCheckerInfoPanelFont;
+	ZCheckerCCMDInfo zcCCMDInfo;
+	transient Font zcInfoPanelFont;
 
 	// Especially for ZCHelp:
 	ZCConsoleClass GetZCConsoleClass( int index ) {
@@ -164,12 +166,10 @@ class ZCheckerHandler: EventHandler {
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
 
-		ZCheckerInfoPanelFont = Font.FindFont( "smallfont" );
+		zcInfoPanelFont = Font.FindFont( "smallfont" );
 
-
+		//
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating console classes handlers..." );
-
-		// 
 		addConsoleClass( 'ZCHelpCommand', true );
 		addConsoleClass( 'ZCAddCommand', true );
 		addConsoleClass( 'ZCRemCommand', true );
@@ -186,7 +186,11 @@ class ZCheckerHandler: EventHandler {
 		addConsoleClass( 'ZCEvmapCommand_pause' );
 		addConsoleClass( 'ZCEvmapCommand_recreate', true );
 
+		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ )
+			zcConsoleHandleClasses[ i ].PostBeginPlay();
+
 		//
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating information panels..." );
 		addInfoPanelClass( 'ZCMainInfoPanel' );
 		addInfoPanelClass( 'ZCExtendedInfoPanel' );
 		addInfoPanelClass( 'ZCInventoryInfoPanel' );
@@ -198,16 +202,12 @@ class ZCheckerHandler: EventHandler {
 		//addInfoPanelClass( 'ZCOtherActorsInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherInfoPanel' );
 
-
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initialized successfully." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console classes, " .. zcInfoPanelClasses.Size() .. " info panel classes." );
 
 		Super.OnRegister();
 	}
 
 	override void RenderOverlay( RenderEvent e ) {
-		//if ( !CVar.GetCVar( "mcm_zchecker_enabled" ).GetBool() )
-		//	return;
-
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			if ( !Testee[ i ] || !Testee[ i ].mo )
 				continue;
@@ -218,12 +218,11 @@ class ZCheckerHandler: EventHandler {
 			for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
 				CVar curInfoPanelCVar = CVar.GetCVar( zcInfoPanelClasses[ iCurInfoPanel ].GetCVarName() );
 
-				if ( curInfoPanelCVar && curInfoPanelCVar.GetBool() ) {
+				if ( curInfoPanelCVar && curInfoPanelCVar.GetBool() )
 					outStr = outStr .. zcInfoPanelClasses[ iCurInfoPanel ].GetInfo( curTestee, i );
-				}
 			}
 
-			Screen.DrawText( ZCheckerInfoPanelFont, Font.CR_GRAY, 5 + ( 220 * i ), 30, 
+			Screen.DrawText( zcInfoPanelFont, Font.CR_GRAY, 5 + ( 220 * i ), 30, 
 							outStr, DTA_VirtualWidth, 640, DTA_VirtualHeight, 480 );
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {
 
@@ -231,13 +230,12 @@ class ZCheckerHandler: EventHandler {
 	} // of override void RenderOverlay( RenderEvent e ) {
 
 
-
 	override void NetworkProcess( ConsoleEvent e ) {
 		// ZChecker CCMDs parsing:
 		String ccmdName = zcCCMDInfo.InitFromEvent( e );
 
 		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD name: " .. ccmdName );
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD name: " .. ccmdName .. ". Has " .. zcConsoleHandleClasses.Size() .. " available commands." );
 
 			for ( int i = 0; i < zcCCMDInfo.args.Size(); i++ )
 				ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD arg " .. i + 1 .. ": " .. zcCCMDInfo.args[ i ] );
@@ -250,13 +248,14 @@ class ZCheckerHandler: EventHandler {
 
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 
-			if ( ccmdName ~== curCCMD.GetCommand() )
-				if ( curCCMD.HandleArguments( zcCCMDInfo ) ) {
+			if ( ccmdName ~== curCCMD.GetCommand() ) {
+				if ( curCCMD.HandleArguments( zcCCMDInfo ) )
 					curCCMD.DoCommand();
-					break;
-				} else {
+				else
 					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage\c-:\n" .. curCCMD.GetHelpString() );
-				}
+
+				break;
+			}
 		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
 
 		Super.NetworkProcess( e );
