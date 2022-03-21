@@ -18,6 +18,8 @@ alias zctoggleflag "zctgf %1 %2 %3"
 alias zcgive "netevent zc_give:%1:%2:%3"
 alias zctake "netevent zc_take:%1:%2:%3"
 
+alias zcsummon "netevent zc_summon:%1:%2"
+
 alias zcact "netevent zc_actoraction:%1:%2"
 
 // The Everything map aliases:

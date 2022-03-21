@@ -178,6 +178,7 @@ class ZCheckerHandler: StaticEventHandler {
 		addConsoleClass( 'ZCToggleFlagCommand' );
 		addConsoleClass( 'ZCGiveCommand' );
 		addConsoleClass( 'ZCTakeCommand' );
+		addConsoleClass( 'ZCSummonCommand' );
 		addConsoleClass( 'ZCActorActionCommand' );
 
 		addConsoleSeparator( true );

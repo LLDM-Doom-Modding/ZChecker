@@ -437,3 +437,65 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 	}
 } // of class ZCActorActionCommand: ZCConsoleCommand {}
+
+class ZCSummonCommand: ZCConsoleCommand {
+	String summonee;
+	int summoneeAmount;
+
+	override String GetCommand() {
+		return "zc_summon";
+	}
+
+	override String GetHelpNameString() {
+		return "zcsummon <class> [<amount=1>]";
+	}
+
+	override String GetHelpDescString() {
+		return "summon <amount> of <class>es on position like in build-in eponymous command.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		summoneeAmount = 1;
+		summonee = "";
+		bool outValue = false;
+
+		if ( ccmd.args.Size() == 2 ) {
+			if ( str2int_Ptr( ccmd.args[ ccmd.args.Size() - 1 ], +summoneeAmount ) )
+				outValue = true;
+		} else if ( ccmd.args.Size() == 1 ) {
+			summonee = ccmd.args[ 0 ];
+			outValue = true;
+		}
+
+		if ( outValue )
+			summonee = ccmd.args[ 0 ];
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		class<Actor> summoneeClass = summonee;
+
+		if ( summoneeClass is 'Actor' ) {
+			// See GZDoom source code -> "src/d_net.cpp" -> "Net_DoCommand()".
+			Actor player = players[ ccmd.e.Player ].mo;
+
+			if ( player ) {
+				if ( GetDefaultByType( summoneeClass ).bMISSILE ) {
+					for ( int i = 0; i < summoneeAmount; i++ )
+						player.SpawnPlayerMissile( summoneeClass );
+				} else {
+					readonly<Actor> summoneeDef = GetDefaultByType( summoneeClass );
+					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius, player.angle, 8.0 );
+
+					for ( int i = 0; i < summoneeAmount; i++ )
+						Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE );
+				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
+			} // of if ( player ) {}
+
+		} else {
+			ZCGlobal.Log( LL_Main, "\"" .. summoneeClass .. "\" isn't an actor class." );
+		}
+	}
+} // of class ZCGiveCommand: ZCConsoleCommand {
