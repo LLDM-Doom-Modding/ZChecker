@@ -4,48 +4,79 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	override String GetInfo( Actor thing, int testeepos ) {
-		if ( isItemPickedupWeapon( thing ) )
-			return "\c-" .. testeepos + 1 .. "\c[DarkGreen]Last stored class\c-: \c[Green]" .. thing.GetClassName() .. "\c-;\c[Orange]\n"
-					.. "Last stored tag\c-: \c[Yellow]" .. thing.GetTag() .. "\c-.\n\n";
-		else
-			return "\c-" .. testeepos + 1 .. "\c[DarkRed]health" 
-						.. ( thing.bBUDDHA? " (buddha)" : "" ) .. "\c-: \c[Red]"
-					.. thing.health .. "\c[Darkgreen]\n"
-					.. "Class\c-: \c[Green]" .. thing.GetClassName() .. "\c-;\c[Orange]\n"
-					.. "Tag\c-: \c[Yellow]" .. thing.GetTag() .. "\c-.\n\n";
+		String info = ( testeepos + 1 ) .. ". ";
+
+		if ( !isItemPickedupWeapon( thing ) ) {
+			info = info .. GREEN .. thing.GetClassName();
+
+			if ( thing.GetTag() != thing.GetClassName() )
+				info = info .. "\c-;\n" .. ORANGE .. "Tag\c- " .. YELLOW .. thing.GetTag();
+
+			info = info .. String.Format( DARKGRAY .. ";\n " .. DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(%.2f%%",
+					thing.health, thing.GetSpawnHealth(), ( thing.GetSpawnHealth()? 100.0 * thing.health / double( thing.GetSpawnHealth() ) : 0.0 ) );
+
+			if ( thing.bNODAMAGE )
+				info = info .. " nodmg";
+			if ( thing.bBUDDHA )
+				info = info .. " buddha";
+			if ( thing.bINVULNERABLE )
+				info = info .. " invul";
+
+			info = info .. ")" .. DARKGRAY .. ".\n";
+		} else {
+			info = DARKGREEN .. "Inventory item\c-: " .. GREEN .. thing.GetClassName() .. "\c-;\n" .. ORANGE ..
+					"Tag\c-: " .. YELLOW .. thing.GetTag() .. "\c-.\n";
+		}
+
+		return info;
 	}
 } // of class ZCMainInfoPanel: ZCBaseInfoPanelPart {}
 
-class ZCExtendedInfoPanel: ZCBaseInfoPanelPart {
+class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_extended";
+		return "mcm_zchecker_info_worldpos";
 	}
 
 	override String GetInfo( Actor thing, int testeepos ) {
-		String outStr = "\c-";
+		String outStr = "";
 
 		outStr = "Tilt: (\cUa\c-" .. int( thing.angle ) .. ", \cUp\c-" ..
 							int( thing.pitch ) .. ", \cUr\c-" ..
-							int( thing.roll ) .. ");\n" .. TEXTCOLOR_TEAL ..
+							int( thing.roll ) .. ");\n" .. TEAL ..
 				"Pos: (" .. int( thing.pos.X ) .. ", " ..
 							int( thing.pos.Y ) .. ", " ..
 							int( thing.pos.Z ) .. ");\n\c-" ..
 				"Vel: (" .. int( thing.vel.X ) .. ", " ..
 							int( thing.vel.Y ) .. ", " ..
-							int( thing.vel.Z ) .. ")\n  (len " .. thing.vel.length() .. ");\n" .. TEXTCOLOR_TEAL ..
-				"Radius/Height: " .. thing.radius .. "/" .. thing.height .. ";\n\c-"
-				"Special: " .. thing.special .. "\n  with args [";
+							int( thing.vel.Z ) .. ")\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
+				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".\n", thing.radius, thing.height );
+
+		return outStr;
+	}
+} // of class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_args";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		String outStr = "Special: " .. thing.special .. "\n  with args [";
 
 		for ( int arg = 0; arg < 4; arg++ )
 			outStr = outStr .. thing.Args[ arg ] .. ", ";
 
 		outStr = outStr .. thing.Args[ 4 ] .. "]; \n" ..
-				"TID: " .. thing.TID .. "; \n" ..
-				"TID to hate: " .. thing.TIDtoHate .. "\n\n";
+				"TID " .. thing.TID .. "; \n" ..
+				"TID to hate: " .. thing.TIDtoHate .. ".\n";
 
 		return outStr;
 	}
-} // of class ZCExtendedInfoPanel: ZCBaseInfoPanelPart {}
+} // of class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {}
+
+/*class ZCXYZInfoPanel: ZCBaseInfoPanelPart {
+} // of class ZCXYZInfoPanel: ZCBaseInfoPanelPart {}
+*/
 
 class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	override String GetCVarName( void ) {
@@ -91,7 +122,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 			outStr = outStr .. "none";
 		}
 
-		return outStr .. ". \n\n";
+		return outStr .. ".\n";
 	}
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
 
@@ -121,7 +152,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 						( st.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
 						( st.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
 						( st.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
-						( st.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n\n";
+						( st.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
 			} // of if ( owner.player.psprites ) {
 
 		} else {
@@ -140,7 +171,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					( st.bCanRaise? "\c[Green]CanRaise\c- " : "" ) ..
 					( st.bDehacked? "\c[Red]Deh\c- " : "" ) .. "\n" ..
 				"  UseFlags: " .. st.UseFlags .. ", TicRange: " .. st.TicRange .. "; \n" ..
-				"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n\n";
+				"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n";
 		}
 
 		return outStr;
@@ -159,8 +190,9 @@ class ZCFriendsInfoPanel: ZCBaseInfoPanelPart {
 
 		if ( friendPlayer = thing.FriendPlayer ) {
 			outStr = outStr .. "Friendly to player #" .. friendPlayer .. "\n  (" ..
-					( playeringame[ friendPlayer - 1 ] && players[ friendPlayer - 1 ].mo? ( "named " .. players[ friendPlayer - 1 ].GetUserName() ) : "not in game" ) .. ");\n";
+					( playeringame[ friendPlayer - 1 ]? ( "named " .. players[ friendPlayer - 1 ].GetUserName() ) : "not in game" ) .. ");\n";
 		}
+
 		outStr = outStr .. "Designated to team " .. thing.DesignatedTeam .. ".\n";
 
 		/*for ( int comparepos = 0; comparepos < MaxTestee; comparepos++ )

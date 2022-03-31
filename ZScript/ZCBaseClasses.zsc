@@ -266,6 +266,35 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 
 class ZCBaseInfoPanelPart abstract {
+	const NORMAL	= TEXTCOLOR_NORMAL;
+	const N			= NORMAL;
+	const BRICK		= TEXTCOLOR_BRICK;
+	const TAN		= TEXTCOLOR_TAN;
+	const GRAY		= TEXTCOLOR_GRAY;
+	const GREY		= TEXTCOLOR_GREY;
+	const GREEN		= TEXTCOLOR_GREEN;
+	const BROWN		= TEXTCOLOR_BROWN;
+	const GOLD		= TEXTCOLOR_GOLD;
+	const RED		= TEXTCOLOR_RED;
+	const BLUE		= TEXTCOLOR_BLUE;
+	const ORANGE	= TEXTCOLOR_ORANGE;
+	const WHITE		= TEXTCOLOR_WHITE;
+	const YELLOW	= TEXTCOLOR_YELLOW;
+	const BLACK		= TEXTCOLOR_BLACK;
+	const LIGHTBLUE	= TEXTCOLOR_LIGHTBLUE;
+	const CREAM		= TEXTCOLOR_CREAM;
+	const OLIVE		= TEXTCOLOR_OLIVE;
+	const DARKGREEN	= TEXTCOLOR_DARKGREEN;
+	const DARKRED	= TEXTCOLOR_DARKRED;
+	const DARKBROWN	= TEXTCOLOR_DARKBROWN;
+	const PURPLE	= TEXTCOLOR_PURPLE;
+	const DARKGRAY	= TEXTCOLOR_DARKGRAY;
+	const CYAN		= TEXTCOLOR_CYAN;
+	const ICE		= TEXTCOLOR_ICE;
+	const FIRE		= TEXTCOLOR_FIRE;
+	const SAPPHIRE	= TEXTCOLOR_SAPPHIRE;
+	const TEAL		= TEXTCOLOR_TEAL;
+
 	clearscope virtual String GetCVarName( void ) {
 		return "mcm_zchecker_info_...";
 	}

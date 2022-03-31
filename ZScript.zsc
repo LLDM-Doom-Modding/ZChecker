@@ -17,7 +17,7 @@ const ZCheckerHandlerOrder = 0x7FAA0005;
 const ZCheckerMapHandlerOrder = 0x7FAA0006;
 
 
-enum EZCheckerFieldFlags {
+/*enum EZCheckerFieldFlags {
 	ZCF_Main		= 0x0001,
 	ZCF_Extended	= 0x0002, // Position, velocity, args, special, TIDs...
 	ZCF_Inventory	= 0x0004,
@@ -29,7 +29,7 @@ enum EZCheckerFieldFlags {
 	ZCF_OtherActors	= 0x0100, // "snext", "Alternative", "goal", "Poisoner", "TelefogSourceType", ...
 	ZCF_Other		= 0x0200, // "PainThreshold", "WoundHealth", ...
 	ZCF_Code		= 0x0400
-}
+}*/
 
 enum EZCheckerLogLevels {
 	LL_Emergency = 0,
@@ -193,7 +193,8 @@ class ZCheckerHandler: StaticEventHandler {
 		//
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating information panels..." );
 		addInfoPanelClass( 'ZCMainInfoPanel' );
-		addInfoPanelClass( 'ZCExtendedInfoPanel' );
+		addInfoPanelClass( 'ZCWorldPositionInfoPanel' );
+		addInfoPanelClass( 'ZCSpecialsArgsInfoPanel' );
 		addInfoPanelClass( 'ZCInventoryInfoPanel' );
 		addInfoPanelClass( 'ZCStatesInfoPanel' );
 		addInfoPanelClass( 'ZCFriendsInfoPanel' );
@@ -220,7 +221,7 @@ class ZCheckerHandler: StaticEventHandler {
 				CVar curInfoPanelCVar = CVar.GetCVar( zcInfoPanelClasses[ iCurInfoPanel ].GetCVarName() );
 
 				if ( curInfoPanelCVar && curInfoPanelCVar.GetBool() )
-					outStr = outStr .. zcInfoPanelClasses[ iCurInfoPanel ].GetInfo( curTestee, i );
+					outStr = outStr .. "\c-" .. zcInfoPanelClasses[ iCurInfoPanel ].GetInfo( curTestee, i ) .. "\n";
 			}
 
 			Screen.DrawText( zcInfoPanelFont, Font.CR_GRAY, 5 + ( 220 * i ), 30, 

@@ -3,7 +3,8 @@
 server int mcm_zchecker_loglevel = 1;
 
 server bool mcm_zchecker_info_main			= true;
-server bool mcm_zchecker_info_extended		= false; // Position, velocity, args, special, TIDs...
+server bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
+server bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 server bool mcm_zchecker_info_inventory		= true;
 server bool mcm_zchecker_info_states		= false; // States and frames.
 server bool mcm_zchecker_info_friends		= false; // "FriendPlayer", "HitFriend()", "DesignatedTeam", ...
