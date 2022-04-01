@@ -10,7 +10,7 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 			info = info .. GREEN .. thing.GetClassName();
 
 			if ( thing.GetTag() != thing.GetClassName() )
-				info = info .. "\c-;\n" .. ORANGE .. "Tag\c- " .. YELLOW .. thing.GetTag();
+				info = info .. "\c-;\n" .. ORANGE .. "Tag" .. ORANGE .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
 
 			info = info .. String.Format( DARKGRAY .. ";\n " .. DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(%.2f%%",
 					thing.health, thing.GetSpawnHealth(), ( thing.GetSpawnHealth()? 100.0 * thing.health / double( thing.GetSpawnHealth() ) : 0.0 ) );
@@ -24,8 +24,8 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 			info = info .. ")" .. DARKGRAY .. ".\n";
 		} else {
-			info = DARKGREEN .. "Inventory item\c-: " .. GREEN .. thing.GetClassName() .. "\c-;\n" .. ORANGE ..
-					"Tag\c-: " .. YELLOW .. thing.GetTag() .. "\c-.\n";
+			info = DARKGREEN .. "Inv\c-: " .. GREEN .. thing.GetClassName() .. "\c-;\n" .. ORANGE ..
+					"Tag" .. ORANGE .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
 		}
 
 		return info;
@@ -61,14 +61,14 @@ class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	override String GetInfo( Actor thing, int testeepos ) {
-		String outStr = "Special: " .. thing.special .. "\n  with args [";
+		String outStr = "Special: " .. thing.special .. OLIVE .. "\n\\_ args [" .. N;
 
 		for ( int arg = 0; arg < 4; arg++ )
-			outStr = outStr .. thing.Args[ arg ] .. ", ";
+			outStr = outStr .. thing.Args[ arg ] .. OLIVE .. ", " .. N;
 
-		outStr = outStr .. thing.Args[ 4 ] .. "]; \n" ..
-				"TID " .. thing.TID .. "; \n" ..
-				"TID to hate: " .. thing.TIDtoHate .. ".\n";
+		outStr = outStr .. thing.Args[ 4 ] .. OLIVE .. "]; \n" ..
+				DARKGRAY .. "TID: " .. ( thing.TID? N : "" ) .. thing.TID .. "; \n" ..
+				DARKGRAY .. "TID to hate: " .. ( thing.TIDtoHate? N : "" ) .. thing.TIDtoHate .. ".\n";
 
 		return outStr;
 	}
@@ -84,7 +84,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	override String GetInfo( Actor thing, int testeepos ) {
-		String outStr = "\c[Darkgray]Inventory\c-: \c[Gray]";
+		String outStr = DARKGRAY .. "Inventory\c-: " .. GRAY;
 		Inventory item = thing.Inv;
 
 		if ( item ) {
@@ -94,12 +94,12 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 			while ( item ) {
 				//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
 				/*	ZCheckerInvField cmpNextItem = nextItem;
-					bool finded = false;
-					while ( ( cmpNextItem = cmpNextItem.Next ) && !finded ) {
+					bool found = false;
+					while ( ( cmpNextItem = cmpNextItem.Next ) && !found ) {
 						if ( cmpNextItem.type == item.Inv.GetClassName() )
-							finded = true;
+							found = true;
 					}
-					if ( !finded ) {}
+					if ( !found ) {}
 				}
                 */
 				outStr = outStr .. "\n* " .. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
@@ -157,11 +157,59 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		} else {
 			State st = thing.CurState;
+			Array<State> prevstates;
 
-			outStr = "State \c[Sapphire]" .. thing.Sprite .. 
-				String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.Tics ) .. "\c-\n"
-				"  Current tic: " .. thing.Tics .. "\n" ..
-				"  Flags: " .. 
+			//outStr = String.format( N .. "State \n" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-\n",
+			//						"" .. thing.Sprite, st.Frame + 65, st.Tics );
+			prevstates.Clear();
+			outStr = outStr .. "States:\n";
+			int statesCnt = 0;
+
+			do {
+				outStr = outStr .. String.format( SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-\n",
+							"" .. thing.Sprite, st.Frame + 65, st.Tics );
+
+				prevstates.Push( st );
+				st = st.NextState;
+
+				statesCnt++;
+			} while ( st && st != thing.CurState && statesCnt < 5 && ( prevstates.Find( st ) == prevstates.Size() ) );
+
+			while ( statesCnt < 5 ) {
+				outStr = outStr .. "\n";
+				statesCnt++;
+			}
+
+
+			st = thing.CurState;
+
+			if ( st.Tics <= 0 ) {
+				outStr = outStr .. DARKGREEN .. "===== static =====";
+			} else {
+				int ticsbarLeft = 1;
+
+				if ( thing.tics > 1 )
+					ticsbarLeft = int( 20 * ( thing.tics - 1 ) / ( st.Tics? st.Tics : 1 ) );
+
+				if ( ticsbarLeft > 20 ) {
+					outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
+				} else {
+					String ticbar = DARKGREEN;
+
+					for ( int i = 0; i < 20 - ticsbarLeft; i++ )
+						ticbar = ticbar .. "=";
+
+					ticbar = ticbar .. ">" .. BLACK;
+
+					for ( int i = 0; i < ticsbarLeft - 1; i++ )
+						ticbar = ticbar .. "+";
+
+					outStr = outStr .. ticbar .. DARKGRAY;
+				}
+			}
+
+			outStr = outStr .. " (" .. thing.tics .. ")\c-\n" ..
+				"  Flags: " ..
 					( st.bFast? "\c[Fire]Fst\c- " : "" ) ..
 					( st.bSlow? "\c[Fire]Slw\c- " : "" ) ..
 					( st.bFullbright? "\c[Yellow]Lit\c- " : "" ) ..
