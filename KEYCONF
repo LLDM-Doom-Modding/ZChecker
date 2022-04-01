@@ -12,8 +12,10 @@ alias zcsetstate "zcsets %1 %2"
 
 alias zcbuddha "netevent zc_buddha:%1:%2"
 alias zcbud "zcbuddha %1 %2"
-alias zctf "netevent zc_toggleFlag:%1:%2:%3"
-alias zctoggleflag "zctgf %1 %2 %3"
+alias zcsetf "netevent zc_setFlag:%1:%2:%3"
+alias zcsetflag "zcsetf %1 %2 %3"
+alias zcsf "zcsetf %1 %2 %3"
+alias zctf "zcsetf %1 %2 %3"
 
 alias zcgive "netevent zc_give:%1:%2:%3"
 alias zctake "netevent zc_take:%1:%2:%3"

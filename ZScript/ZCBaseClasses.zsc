@@ -296,7 +296,7 @@ class ZCBaseInfoPanelPart abstract {
 	const SAPPHIRE	= TEXTCOLOR_SAPPHIRE;
 	const TEAL		= TEXTCOLOR_TEAL;
 
-	clearscope virtual String GetCVarName( void ) {
+	virtual String GetCVarName( void ) {
 		return "mcm_zchecker_info_...";
 	}
 
@@ -305,13 +305,13 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 
-	clearscope protected PlayerPawn getItemPlayerOwner( Inventory item ) {
+	protected PlayerPawn getItemPlayerOwner( Inventory item ) {
 		PlayerPawn ownerPlayer = PlayerPawn( item.Owner );
 
 		return ( ( ownerPlayer && ownerPlayer.player && ownerPlayer.player.ReadyWeapon )? ownerPlayer : NULL );
 	}
 
-	clearscope protected bool isItemPickedupWeapon( Actor item ) {
+	protected bool isItemPickedupWeapon( Actor item ) {
 		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
 	}
 } // of class ZCBaseInfoPanelPart ui abstract {}

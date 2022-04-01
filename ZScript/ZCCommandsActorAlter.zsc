@@ -1,6 +1,8 @@
+// Real commands placed below.
+
 // Auxilary asynchronous classes (in other words, API for ACS):
 
-class ZCToggleFlagCommandThinker: Thinker {
+class ZCSetFlagCommandThinker: Thinker {
 	Array<String> storedStrings;
 
 	override void PostBeginPlay() {
@@ -22,17 +24,17 @@ class ZCToggleFlagCommandThinker: Thinker {
 		storedStrings.push( flagname );
 	}
 
-	static ZCToggleFlagCommandThinker Get( void ) {
-		ZCToggleFlagCommandThinker it = ZCToggleFlagCommandThinker( ThinkerIterator.Create( "ZCToggleFlagCommandThinker", STAT_STATIC ).Next() );
+	static ZCSetFlagCommandThinker Get( void ) {
+		ZCSetFlagCommandThinker it = ZCSetFlagCommandThinker( ThinkerIterator.Create( "ZCSetFlagCommandThinker", STAT_STATIC ).Next() );
 
 		if ( !it )
-			it = new( 'ZCToggleFlagCommandThinker' );
+			it = new( 'ZCSetFlagCommandThinker' );
 
 		return it;
 	}
 }
 
-class ZCSetStateCommandThinker: ZCToggleFlagCommandThinker {
+class ZCSetStateCommandThinker: ZCSetFlagCommandThinker {
 	static ZCSetStateCommandThinker Get( void ) {
 		ZCSetStateCommandThinker it = ZCSetStateCommandThinker( ThinkerIterator.Create( "ZCSetStateCommandThinker", STAT_STATIC ).Next() );
 
@@ -59,7 +61,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "set a testee in <pos> (or actor on line of sight if omitted) state to <state label>. Info: because of asynchronous ZScript/ACS execution result will be delayed for one tick.";
+		return "set a state for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
@@ -96,72 +98,21 @@ class ZCSetStateCommand: ZCConsoleCommand {
 } // of class ZCSetStateCommand: ZCConsoleCommand {
 
 
-class ZCBuddhaCommand: ZCConsoleCommand {
-	int zcPos;
-	int flagSetType;
-
-	override String GetCommand() {
-		return "zc_buddha";
-	}
-
-	override String GetHelpNameString() {
-		return "zcbuddha <pos> [<set>];zcbud <pos> [<set>]";
-	}
-
-	override String GetHelpDescString() {
-		return "operates on the BUDDHA flag at <pos> or linetarget, if omitted. If <set> is omitted, toggles it, or sets/resets ('0'/'1') otherwise.";
-	}
-
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
-		zcPos = -1;
-		flagSetType = -1;
-		int ccmdArgsSize = ccmd.args.Size();
-		bool outValue = ( ccmdArgsSize == 0 );
-
-		if ( !outValue && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) ) {
-			if ( ccmdArgsSize == 1 )
-				outValue = checkTesteePlace( --zcPos );
-			else if ( ccmdArgsSize == 2 && ( (flagSetType = getBoolArg( 1 )) != -1 ) )
-				outValue = checkTesteePlace( --zcPos );
-		}
-
-		// One arg is a position (flag will be toggled), two args are a 
-		//position and a flag value:
-		//if ( ccmdArgsSize > 0 && ccmdArgsSize < 3 && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) && ( ( ccmdArgsSize != 2 ) || str2int_Ptr( ccmd.args[ 1 ], +flagValue ) ) )
-		//	outValue = checkTesteePlace( --zcPos );
-
-		return outValue;
-	}
-
-	override void DoCommand( void ) {
-		// Linetarget if position is omitted or testee[pos] otherwise:
-		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
-
-		if ( testee ) {
-			if ( flagSetType == -1 )
-				testee.bBuddha ^= true;
-			else
-				testee.bBuddha = flagSetType;
-		}
-	}
-} // of class ZCBudCommand: ZCConsoleCommand {
-
-class ZCToggleFlagCommand: ZCConsoleCommand {
+class ZCSetFlagCommand: ZCConsoleCommand {
 	int zcPos;
 	String flagName;
 	int flagSetType;
 
 	override String GetCommand() {
-		return "zc_toggleFlag";
+		return "zc_setFlag";
 	}
 
 	override String GetHelpNameString() {
-		return "zctf [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zctoggleflag [<pos>] <flag name> [<value>]";
+		return "zcsf [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zcsetflag [<pos>] <flag name> [<value>];zcsetf [<pos>] <flag name> [<value>];zctf [<pos>] <flag name> [<value>]";
 	}
 
 	override String GetHelpDescString() {
-		return "toggle or set/reset a flag for the testee in <pos> (or actor on line of sight if omitted). Info: because of asynchronous ZScript/ACS execution result will be delayed for one tick.";
+		return "set/reset a flag for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
@@ -200,16 +151,68 @@ class ZCToggleFlagCommand: ZCConsoleCommand {
 		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
 
 		if ( testee ) {
-			ZCToggleFlagCommandThinker.Get().AddString( flagName );
+			ZCSetFlagCommandThinker.Get().AddString( flagName );
 			// Cannot get ACS asynchronous "SetResultValue()" here.
 			testee.ACS_NamedExecute( "ZChecker_CCMD_SetFlag", 0, flagSetType );
 		}
 	}
 
 	static String ACS_GetFlagName( Actor activator ) {
-		return ZCToggleFlagCommandThinker.Get().PopString();
+		return ZCSetFlagCommandThinker.Get().PopString();
 	}
 } // of class ZCSetStateCommand: ZCConsoleCommand {
+
+class ZCBuddhaCommand: ZCConsoleCommand {
+	int zcPos;
+	int flagSetType;
+
+	override String GetCommand() {
+		return "zc_buddha";
+	}
+
+	override String GetHelpNameString() {
+		return "zcbuddha <pos> [<set>];zcbud <pos> [<set>]";
+	}
+
+	override String GetHelpDescString() {
+		return "operate on the BUDDHA flag at <pos> or linetarget, if omitted. If <set> is omitted, toggles it, or sets/resets ('0'/'1') otherwise.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		zcPos = -1;
+		flagSetType = -1;
+		int ccmdArgsSize = ccmd.args.Size();
+		bool outValue = ( ccmdArgsSize == 0 );
+
+		if ( !outValue && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) ) {
+			if ( ccmdArgsSize == 1 )
+				outValue = checkTesteePlace( --zcPos );
+			else if ( ccmdArgsSize == 2 && ( (flagSetType = getBoolArg( 1 )) != -1 ) )
+				outValue = checkTesteePlace( --zcPos );
+		}
+
+		// One arg is a position (flag will be toggled), two args are a 
+		//position and a flag value:
+		//if ( ccmdArgsSize > 0 && ccmdArgsSize < 3 && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) && ( ( ccmdArgsSize != 2 ) || str2int_Ptr( ccmd.args[ 1 ], +flagValue ) ) )
+		//	outValue = checkTesteePlace( --zcPos );
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		// Linetarget if position is omitted or testee[pos] otherwise:
+		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
+
+		if ( testee ) {
+			if ( flagSetType == -1 )
+				testee.bBuddha ^= true;
+			else
+				testee.bBuddha = flagSetType;
+		}
+	}
+} // of class ZCBudCommand: ZCConsoleCommand {
+
 
 class ZCGiveCommand: ZCConsoleCommand {
 	int zcPos;
@@ -268,7 +271,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 
 			if ( itemClass is 'Inventory' ) {
 				if ( testee.A_GiveInventory( itemName, itemAmount ) )
-					ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" given to the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
+					ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" is given to the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
 				else
 					ZCGlobal.Log( LL_Main, "Actor " .. testee.GetClassName() .. " cannot receive item." );
 			} else {
@@ -311,7 +314,7 @@ class ZCTakeCommand: ZCGiveCommand {
 					if ( inv && inv.amount == 0 )
 						inv.Destroy();
 
-					ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" taken from the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
+					ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" is taken from the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
 
 					/*if ( inv && !inv.bKEEPDEPLETED ) {
 						ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" destroyed from the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
@@ -350,7 +353,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Does something with actor on <pos> (or linetarget if omitted). Possible values: \"revive\"|\"resurrect\", \"kill\", \"destroy\"|\"remove\"";
+		return "Do something with actor on <pos> (or linetarget if omitted). Possible values: \"revive\"|\"resurrect\"|\"rev\", \"kill\", \"destroy\"|\"remove\"";
 	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
@@ -362,7 +365,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			outValue = true;
 			String what = ccmd.args[ ccmd.args.Size() - 1 ];
 
-			if ( what == "resurrect" || what == "revive" )
+			if ( what == "resurrect" || what == "revive" || what == "rev" )
 				actoraction = AC_Revive;
 			else if ( what == "kill" )
 				actoraction = AC_Kill;
@@ -451,7 +454,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "summon <amount> of <class>es on position like in build-in eponymous command.";
+		return "summon <amount> of <class>es on position by rules of build-in eponymous command.";
 	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {

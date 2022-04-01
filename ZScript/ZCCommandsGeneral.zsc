@@ -6,7 +6,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zchelp [all|a|full|more|-a|v]";
+		return "zchelp [all|a|full|-a|-v]";
 	}
 
 	override String GetHelpDescString() {
@@ -21,7 +21,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 		if ( ccmd.args.Size() == 1 ) {
 			String arg = ccmd.args[ 0 ];
 
-			if ( arg ~== "a" || arg ~== "all" || arg ~== "full" || arg ~== "more" || arg ~== "-a" || arg ~== "v" )
+			if ( arg ~== "a" || arg ~== "all" || arg ~== "full" || arg ~== "-a" || arg ~== "-v" )
 				verboseHelp = outValue = true;
 		}
 
@@ -31,7 +31,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 	override void DoCommand( void ) {
 		// Description and credits:
 		if ( verboseHelp ) {
-			console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion 
+			console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion
 					.. "\c- by " .. TEXTCOLOR_WHITE .. "JSO_x\c- a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare\c-.\n\n" );
 		}
 
@@ -43,7 +43,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			if ( verboseHelp || ( curCC.zcFlags & CCF_Important ) )
 				console.printf( curCC.GetHelpString() .. "\n\n" );
 	}
-} // of class ZCHelpCommand: ZCConsoleCommand {
+} // of class ZCHelpCommand: ZCConsoleCommand {}
 
 
 class ZCAddCommand: ZCConsoleCommand {
@@ -55,7 +55,7 @@ class ZCAddCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcadd [self|weapon] [<pos>];zcaddself [<pos>];zcaddweap [<pos>]";
+		return "zcadd [self|weap|weapon] [<pos>];zcaddself [<pos>];zcaddweap [<pos>]";
 	}
 
 	override String GetHelpDescString() {
@@ -72,8 +72,8 @@ class ZCAddCommand: ZCConsoleCommand {
 		// Next lines ("if {}" block) are hard to understand, but they're right.
 		if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
 
-			// "zcadd self|weapon [pos]"
-			if ( ( ccmd.args[ 0 ] ~== "self" || ccmd.args[ 0 ] ~== "weapon" ) ) {
+			// "zcadd self|weap|weapon [pos]"
+			if ( ( ccmd.args[ 0 ] ~== "self" || ccmd.args[ 0 ] ~== "weap" || ccmd.args[ 0 ] ~== "weapon" ) ) {
 
 				if ( ccmd.args.Size() == 2 ) {
 					if ( str2int_Ptr( ccmd.args[ 1 ], +zcPos ) )
@@ -103,7 +103,7 @@ class ZCAddCommand: ZCConsoleCommand {
 		if ( zcPos != -1 ) {
 			PlayerInfo player = players[ ccmd.e.Player ];
 
-			if ( ccmd.args.Size() && ccmd.args[ 0 ] ~== "weapon" && player.ReadyWeapon ) {
+			if ( ccmd.args.Size() && ccmd.args[ 0 ].Left( 4 ) ~== "weap" && player.ReadyWeapon ) {
 				ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
 				ZCGlobal.Log( LL_Detailed, "added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
 			} else if ( ccmd.args.Size() && ccmd.args[ 0 ] ~== "self" ) {
@@ -116,9 +116,9 @@ class ZCAddCommand: ZCConsoleCommand {
 
 		} else {
 			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insuffienty place. Try set target to list directly with \"zcadd [1.." .. MaxTestee .. "]\"." );
-		} // of else of if ( zcPos != -1 ) {
+		} // of else of if ( zcPos != -1 ) {}
 	}
-} // of class ZCAddCommand: ZCConsoleCommand {
+} // of class ZCAddCommand: ZCConsoleCommand {}
 
 class ZCRemCommand: ZCConsoleCommand {
 	int zcPos;

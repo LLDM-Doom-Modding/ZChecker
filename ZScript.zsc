@@ -10,7 +10,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.61";
+const ZCheckerVersion = "0.62";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -174,8 +174,8 @@ class ZCheckerHandler: StaticEventHandler {
 		addConsoleClass( 'ZCAddCommand', true );
 		addConsoleClass( 'ZCRemCommand', true );
 		addConsoleClass( 'ZCSetStateCommand' );
+		addConsoleClass( 'ZCSetFlagCommand' );
 		addConsoleClass( 'ZCBuddhaCommand' );
-		addConsoleClass( 'ZCToggleFlagCommand' );
 		addConsoleClass( 'ZCGiveCommand' );
 		addConsoleClass( 'ZCTakeCommand' );
 		addConsoleClass( 'ZCSummonCommand' );
