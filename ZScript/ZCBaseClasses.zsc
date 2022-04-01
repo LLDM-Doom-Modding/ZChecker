@@ -10,7 +10,7 @@ class ZCheckerCCMDInfo play {
 		e = initEvent;
 		e.Name.Split( args, argsSplitDelim, TOK_SKIPEMPTY );
 
-		// If debug, display maximal amount of arguments (sometimes it saves 
+		// If debug, display maximal amount of arguments (sometimes it saves
 		//about ten minutes of the bug-hunt...):
 		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
 			int delimetersAmount = 0;
@@ -52,7 +52,7 @@ class ZCheckerField {
 
 
 // Base ZChecker CCMD class:
-class ZCConsoleClass abstract play {
+class ZCConsoleClass abstract {
 	enum ConsoleClassFlags {
 		CCF_None			= 0x0000,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
@@ -125,7 +125,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 }
 
 
-class ZCConsoleCommand: ZCConsoleClass abstract {
+class ZCConsoleCommand: ZCConsoleClass abstract play {
 	const NOT_INT = 0x7FFFFFFF;
 	const NOT_INT_REPLACER = 0x7FFFFFFE;
 
@@ -208,22 +208,23 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		String outHelpString = desc? temp.GetHelpDescString() : temp.GetHelpNameString();
 
 		temp.Destroy();
+
 		return outHelpString;
 	} // of protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {
 
 
 	// Returns linked netevent command name (see KEYCONF):
-	virtual String GetCommand( void ) {
+	clearscope virtual String GetCommand( void ) const {
 		return "";
 	}
 
 	// Returns aliases separated by a semicolon:
-	virtual String GetHelpNameString( void ) {
+	virtual String GetHelpNameString( void ) const {
 		return TEXTCOLOR_RED .. "GetHelpNameString() usage example: \"zcAlias #1;zcAlias2;zc-alias [pos] [3]\"\c-";
 	}
 
 	// Returns usage quick help (comman description):
-	virtual String GetHelpDescString( void ) {
+	virtual String GetHelpDescString( void ) const {
 		return GetCommand() .. " help!";
 	}
 
@@ -254,15 +255,15 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 	}
 
 	// Returns "true" if all args provieded right, "false" otherwise:
-	play virtual bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+	virtual bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
 		ccmd = initCCMD;
 		return false;
 	}
 
 	// Command itself:
-	play virtual void DoCommand( void ) { }
+	virtual void DoCommand( void ) { }
 
-} // of class ZCConsoleCommand abstract {
+} // of class ZCConsoleCommand abstract {}
 
 
 class ZCBaseInfoPanelPart abstract {

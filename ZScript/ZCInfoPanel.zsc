@@ -116,7 +116,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 				item = item.Inv;
 				cmpItem = nextItem;
 				nextItem = nextItem.Next;*/
-			} // of while ( item ) {
+			} // of while ( item ) {}
 
 		} else {
 			outStr = outStr .. "none";
@@ -153,11 +153,11 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 						( st.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
 						( st.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
 						( st.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
-			} // of if ( owner.player.psprites ) {
+			} // of if ( owner.player.psprites ) {}
 
 		} else {
-
 			State st = thing.CurState;
+
 			outStr = "State \c[Sapphire]" .. thing.Sprite .. 
 				String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.Tics ) .. "\c-\n"
 				"  Current tic: " .. thing.Tics .. "\n" ..
