@@ -6,7 +6,10 @@ version "2.4.0"
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
 #include "ZScript/ZCCommandsMap.zsc"
-#include "ZScript/ZCInfoPanel.zsc"
+
+#include "ZScript/ZCInfoPanelMain.zsc"
+#include "ZScript/ZCInfoPanelPointers.zsc"
+#include "ZScript/ZCInfoPanelOther.zsc"
 
 
 const MaxTestee = 3;
@@ -111,6 +114,15 @@ class ZCGlobal: Thinker {
 			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
 	}
 
+
+    static clearscope String squeezeVector2( vector2 vec ) {
+        return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ")";
+    }
+
+    static clearscope String squeezeVector3( vector3 vec ) {
+        return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ", " .. int( vec.z ) .. ")";
+    }
+
 } // of class ZCGlobal: Thinker {
 
 
@@ -147,7 +159,7 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	private void addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart( new( classname ) );
+		ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
 		zcInfoPanelClasses.push( newPanelPart );
 	}
 
@@ -197,10 +209,12 @@ class ZCheckerHandler: StaticEventHandler {
 		addInfoPanelClass( 'ZCSpecialsArgsInfoPanel' );
 		addInfoPanelClass( 'ZCInventoryInfoPanel' );
 		addInfoPanelClass( 'ZCStatesInfoPanel' );
-		addInfoPanelClass( 'ZCFriendsInfoPanel' );
+		addInfoPanelClass( 'ZCPlayersInfoPanel' );
+		addInfoPanelClass( 'ZCCommonPointersInfoPanel' );
+		addInfoPanelClass( 'ZCInteractionPointersInfoPanel' );
+
 		//addInfoPanelClass( 'ZCVisualInfoPanel' );
 		//addInfoPanelClass( 'ZCSectorsInfoPanel' );
-		//addInfoPanelClass( 'ZCInteractionInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherActorsInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherInfoPanel' );
 

@@ -1,0 +1,71 @@
+class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
+	Actor testeething;
+
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_mainpointers";
+	}
+
+	protected String decoratePointerString( Actor ptr, String desc, String ptrcolor = WHITE ) {
+		String str = DARKGRAY .. desc .. "\c-: " .. ptrcolor;
+
+		if ( ptr ) {
+			str = str .. ptr.GetClassName() .. DARKGRAY .. " ";
+
+			if ( ptr == players[ consoleplayer ].mo ) {
+				str = str .. "(you)";
+			} else if ( ptr == testeething ) {
+				str = str .. "(self)";
+			} else {
+				bool found = false;
+
+				for ( int i = 0; i < MAXPLAYERS; i++ ) {
+					if ( playeringame[ i ] && ptr == players[ i ].mo ) {
+						str = str .. "(pl" .. ( i + 1 ) .. ")";
+						found = true;
+						break;
+					}
+				}
+
+				if ( !found ) {
+					for ( int i = 0; i < MaxTestee; i++ ) {
+						if ( ptr == handler.Testee[ i ].mo ) {
+							str = str .. "(" .. ( i + 1 ) .. ")";
+							break;
+						}
+					}
+				}
+			} // of else of if ( ptr == testeething ) {}
+		} else {
+			str = str .. DARKGRAY .. "NULL";
+		}
+
+		return str;
+	} // of protected String decoratePointerString( Actor ptr, String desc, String ptrcolor ) {}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		testeething = thing;
+
+		return
+			decoratePointerString( thing.target, "Target", RED ) .. "\n" ..
+			decoratePointerString( thing.master, "Master", TEAL ) .. "\n" ..
+			decoratePointerString( thing.tracer, "Tracer", ORANGE );
+	}
+} // of class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_levelpointers";
+	}
+
+	override String GetInfo( Actor thing, int testeepos ) {
+		testeething = thing;
+
+		return
+			decoratePointerString( thing.BlockingMobj, "Blocking" ) .. "\n" ..
+			decoratePointerString( thing.LastHeard, "LastHeard", OLIVE ) .. "\n" ..
+			decoratePointerString( thing.LastEnemy, "LastEnemy", RED ) .. "\n" ..
+			decoratePointerString( thing.LastLookActor, "LastLook", OLIVE ) .. "\n" ..
+			decoratePointerString( thing.Poisoner, "Poisoner", DARKGREEN );
+	}
+}
+

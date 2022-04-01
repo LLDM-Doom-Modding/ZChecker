@@ -2,22 +2,36 @@
 
 OptionMenu "ZCheckerControl" {
     Title "ZChecker control"
+
+
     StaticText " "
-	StaticText "What kind of information must be shown: ", "Gold"
-	Option "Main", "mcm_zchecker_info_main", "OnOff"
-	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
+	StaticText "What kind of information must be shown:", "Gold"
+
+	Option "Index, classname & health", "mcm_zchecker_info_main", "OnOff"
 	Option "World positioning", "mcm_zchecker_info_worldpos", "OnOff"
-	Option "Arguments & TIDs", "mcm_zchecker_info_args", "OnOff"
+	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
 	Option "States", "mcm_zchecker_info_states", "OnOff"
-	Option "Friends", "mcm_zchecker_info_friends", "OnOff"
+
+    StaticText "Pointers", "Darkgray"
+	Option "Common pointers", "mcm_zchecker_info_mainpointers", "OnOff"
+	Option "Interaction pointers", "mcm_zchecker_info_levelpointers", "OnOff"
+	Option "Other pointers", "mcm_zchecker_info_otherpointers", "OnOff"
+
+    StaticText "Other", "Darkgray"
+	Option "Arguments & TIDs", "mcm_zchecker_info_args", "OnOff"
+	Option "Players & teams", "mcm_zchecker_info_players", "OnOff"
+
+    StaticText "WIP", "Darkgray"
 	Option "[Visual (WIP)]", "mcm_zchecker_info_visual", "OnOff"
 	Option "[Sectors (WIP)]", "mcm_zchecker_info_sectors", "OnOff"
-	Option "[Interaction (WIP)]", "mcm_zchecker_info_interaction", "OnOff"
-	Option "[Other actors (WIP)]", "mcm_zchecker_info_otheractors", "OnOff"
 	Option "[Other (WIP)]", "mcm_zchecker_info_other", "OnOff"
+
+
     StaticText " "
-	StaticText "Other settings:", "Gold"
+	StaticText "General settings:", "Gold"
 	Option "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels"
+
+
     StaticText " "
 	StaticText "\"Everything\" map settings:", "Gold"
 	Option "Force use \"Everything\" map scripts", "mcm_zchecker_ev_forcemap", "OnOff"
@@ -26,6 +40,7 @@ OptionMenu "ZCheckerControl" {
 	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
 	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
 }
+
 
 AddOptionMenu "OptionsMenu" {
 	StaticText  " "

@@ -296,6 +296,16 @@ class ZCBaseInfoPanelPart abstract {
 	const SAPPHIRE	= TEXTCOLOR_SAPPHIRE;
 	const TEAL		= TEXTCOLOR_TEAL;
 
+	ZCheckerHandler handler;
+
+	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
+		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
+
+		panel.handler = globalHandler;
+
+		return panel;
+	}
+
 	virtual String GetCVarName( void ) {
 		return "mcm_zchecker_info_...";
 	}
