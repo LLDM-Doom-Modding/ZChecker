@@ -51,12 +51,15 @@ class ZCheckerField {
 }
 
 
-// Base ZChecker CCMD class:
-class ZCConsoleClass abstract {
+// Base ZChecker CCMD class.
+// Hmmm... It's regrettable, but some older versions cannot understand
+//scoping changes in the heirs properly. So this one must be a data-scoped
+//class, actually.
+class ZCConsoleClass abstract play {
 	enum ConsoleClassFlags {
 		CCF_None			= 0x0000,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
-		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in red.
+		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in gray.
 		CCF_NoCacheHelp		= 0x0004	// No precache help string.
 	};
 
@@ -125,7 +128,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 }
 
 
-class ZCConsoleCommand: ZCConsoleClass abstract play {
+class ZCConsoleCommand: ZCConsoleClass abstract {
 	const NOT_INT = 0x7FFFFFFF;
 	const NOT_INT_REPLACER = 0x7FFFFFFE;
 
