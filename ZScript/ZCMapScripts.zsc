@@ -146,10 +146,28 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		);
 	}
 
+	// Really just a wrapper around a some extremely rough algorithm (will be rewritten).
+	static int FindNextExistingSectorIndex( ZCheckerEvSectorSetters evSector, int fromIndex = -1 ) {
+		if ( !evSector )
+			return -1;
+
+		int firstExistingSectorIndex = -1;
+
+		for ( int k = fromIndex + 1; k < evSector.startSectors.Size(); k++ ) {
+			if ( evSector.startSectors[ k ] ) {
+				firstExistingSectorIndex = k;
+				break;
+			}
+		}
+
+		return firstExistingSectorIndex;
+	}
+
+
 	// Clears all previous spawned actors excluding forbidden and summons all of them again:
 	void RecreateEverything( void ) {
 		if ( !canRecreateEverything ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "RecreateEverything(). Error: not all defined sectors presented." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). Cannot run due to map errors, terminating." );
 			return;
 		}
 
@@ -164,8 +182,11 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 		// Reset e-sector setters:
 		for ( int i = 0; i < S__Quantity; i++ ) {
+			// Always exists because "RecreateEverything()" method is called after all error checks.
+			int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ i ] );
+
 			evSectors[ i ].curSegment = 0;
-			evSectors[ i ].setter.SetOrigin( vec2dto3d( evSectors[ i ].startSectors[ 0 ].centerspot ), false );
+			evSectors[ i ].setter.SetOrigin( vec2dto3d( evSectors[ i ].startSectors[ firstExistingSectorIndex ].centerspot ), false );
 			evSectors[ i ].setter.curJumpAmount = 0;
 		}
 
@@ -217,8 +238,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			evSectors[ i ].evType = i;
 		}
 
+		canRecreateEverything = true;
+
 		// Finding special sectors and spawning ev-setters:
-		for ( int i = 0; i < level.sectors.Size(); i++ ) {
+		for ( int i = 0; i < level.sectors.Size() && canRecreateEverything; i++ ) {
 			String evSectorType = level.Sectors[ i ].GetUDMFString( ZCUDMF_Type );
 
 			bool isSectorTyped = ( evSectorType != "" );
@@ -235,32 +258,43 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 					if ( typeseg ) {
 						if ( typeseg < 0 || typeseg > 0xFFFF )
-							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). It's better not to use too small and too large values, seriously (sector #" .. s.Index() .. " has the \"" .. ZCUDMF_TypeSegment .. "\" value of " .. typeseg );
+							ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). It's better not to use too small and too large values, seriously (sector #" .. s.Index() .. " has the \"" .. ZCUDMF_TypeSegment .. "\" value of " .. typeseg );
 
 						if ( typeseg < evSectors[ j ].startSectors.Size() ) {
 							if ( evSectors[ j ].startSectors[ typeseg ] )
-								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Warning: double define of the sector type " .. getESectorName( j ) .. " segment " .. typeseg .. ". Changing from the sector #" .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to the sector #" .. s.Index() );
+								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Warning\c-: double define of the sector type " .. getESectorName( j ) .. " segment " .. typeseg .. ". Changing from sector #" .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to sector #" .. s.Index() );
 
 							evSectors[ j ].startSectors.Delete( typeseg, 1 );
 						}
 
 						evSectors[ j ].startSectors.Insert( typeseg, s );
 
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Post typeseg setted evSectors[ " .. j .. " ].startSectors.Size(): " .. evSectors[ j ].startSectors.Size() );
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). New start sector added to evSectors[ " .. j .. " ]. StartSectors.Size(): " .. evSectors[ j ].startSectors.Size() );
 					} else {
 						evSectors[ j ].startSectors.Insert( 0, s );
 
 						if ( evSectors[ j ].setter ) {
-							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Warning: destroying previous e-sector setter for type " .. getESectorName( j ) .. " (sector index " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")" );
+							ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Warning\c-: destroying previous e-sector setter for type " .. getESectorName( j ) .. " (sector index " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")" );
 							evSectors[ j ].setter.Destroy();
 						}
+					}
 
-						vector3 setterPos = vec2dto3d( evSectors[ j ].startSectors[ 0 ].centerspot );
+					if ( !evSectors[ j ].setter ) {
+						int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ j ] );
 
-						evSectors[ j ].setter = ZCheckerSectorSetter( Actor.Spawn( "ZCheckerSectorSetter", setterPos ) );
-						evSectors[ j ].setter.evSectorDef = evSectors[ j ];
-						evSectors[ j ].setter.InitFromPos();
-						//evSectorSetters[ j ].Init( jumpLen, jumpAmount, ( 0, 64 ) );
+						if ( firstExistingSectorIndex != -1 ) {
+							vector3 setterPos = vec2dto3d( evSectors[ j ].startSectors[ firstExistingSectorIndex ].centerspot );
+
+							evSectors[ j ].setter = ZCheckerSectorSetter( Actor.Spawn( "ZCheckerSectorSetter", setterPos ) );
+							evSectors[ j ].setter.evSectorDef = evSectors[ j ];
+							evSectors[ j ].setter.InitFromPos();
+
+							//ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Spawned ev-setter for the sector type \"" .. getESectorName( j ) .. "\"." );
+						} else {
+							canRecreateEverything = false;
+							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Sector type \"" .. getESectorName( j ) .. "\" has no start sectors." );
+							break;
+						}
 					}
 
 					continueFlag = true;
@@ -289,13 +323,15 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 		// Check for existing of each sector:
-		canRecreateEverything = true;
-
-		for ( int i = 0; i < S__Quantity; i++ )
+		for ( int i = 0; i < S__Quantity; i++ ) {
 			if ( !evSectors[ i ].startSectors.Size() ) {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no e-start " .. getESectorName( i ) );
 				canRecreateEverything = false;
+			} else if ( !evSectors[ i ].setter ) {
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no sector setter for " .. getESectorName( i ) );
+				canRecreateEverything = false;
 			}
+		}
 
 		// Create all:
 		RecreateEverything();
@@ -448,9 +484,12 @@ class ZCheckerSectorSetter: Actor {
 		bool success = true;
 
 		if ( curJumpAmount >= jumpMaxAmount ) {
-			if ( ++evSectorDef.curSegment >= evSectorDef.startSectors.Size() ) {
+			int nextSegment = ZCheckerEverythingMapHandler.FindNextExistingSectorIndex( evSectorDef, evSectorDef.curSegment );
+
+			if ( nextSegment < 0 || nextSegment >= evSectorDef.startSectors.Size() ) {
 				success = false;
 			} else {
+				evSectorDef.curSegment = nextSegment;
 				SetOrigin( ZCheckerEverythingMapHandler.vec2dto3d( evSectorDef.startSectors[ evSectorDef.curSegment ].centerspot ), false );
 				InitFromPos();
 			}
