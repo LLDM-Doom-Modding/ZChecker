@@ -48,8 +48,8 @@ AddOptionMenu "OptionsMenu" {
 }
 
 OptionValue "mcm_zchecker_LogLevels" {
-	0, "Emergency only"
-	1, "Main"
-	2, "Detailed"
-	3, "Debug mode"
+	0, "0. Emergency only"
+	1, "1. Main/default"
+	2, "2. Detailed"
+	3, "3. Debug mode"
 }
