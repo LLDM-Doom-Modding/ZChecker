@@ -13,7 +13,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.62";
+const ZCheckerVersion = "0.63";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -163,7 +163,6 @@ class ZCheckerHandler: StaticEventHandler {
 		zcInfoPanelClasses.push( newPanelPart );
 	}
 
-
 	override void OnRegister() {
 		SetOrder( ZCheckerHandlerOrder );
 
@@ -238,8 +237,28 @@ class ZCheckerHandler: StaticEventHandler {
 					outStr = outStr .. "\c-" .. zcInfoPanelClasses[ iCurInfoPanel ].GetInfo( curTestee, i ) .. "\n";
 			}
 
-			Screen.DrawText( zcInfoPanelFont, Font.CR_GRAY, 5 + ( 220 * i ), 30, 
-							outStr, DTA_VirtualWidth, 640, DTA_VirtualHeight, 480 );
+			// Thanks to m8f for the "drawTextCenter()" function code from "Hellscape Navigator".
+
+			double bordersXMargin = 4.0;
+			double scale = 1.0 / CVar.FindCVar( "mcm_zchecker_infopanel_scale" ).GetFloat();
+			double x = CVar.FindCVar( "mcm_zchecker_infopanel_startx" ).GetFloat() * 0.01 + i * CVar.FindCVar( "mcm_zchecker_infopanel_offsetx" ).GetFloat() * 0.01;
+			double y = CVar.FindCVar( "mcm_zchecker_infopanel_starty" ).GetFloat() * 0.01;
+
+			int width = int( scale * Screen.GetWidth() );
+			int height = int( scale * Screen.GetHeight() );
+			double stringWidth = zcInfoPanelFont.StringWidth( outStr );
+
+			x = ( width * x ) - stringWidth / 2;
+			y *= height;
+
+			// Push the text out from the borders:
+			if ( x < bordersXMargin )
+				x = bordersXMargin;
+			else if ( x > width - stringWidth - bordersXMargin )
+				x = width - stringWidth - bordersXMargin;
+
+			Screen.DrawText( zcInfoPanelFont, Font.CR_GRAY, x, y, outStr,
+							DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {
 
 		Super.RenderOverlay( e );

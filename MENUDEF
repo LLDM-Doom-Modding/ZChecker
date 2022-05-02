@@ -1,6 +1,6 @@
 //
 
-OptionMenu "ZCheckerControl" {
+OptionMenu "mcm_ZChecker_Control" {
     Title "ZChecker control"
 
 
@@ -29,6 +29,7 @@ OptionMenu "ZCheckerControl" {
 
     StaticText " "
 	StaticText "General settings:", "Gold"
+	Submenu "Information panel settings", "mcm_ZChecker_InfoPanelControl"
 	Option "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels"
 
 
@@ -41,10 +42,20 @@ OptionMenu "ZCheckerControl" {
 	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
 }
 
+OptionMenu "mcm_ZChecker_InfoPanelControl" {
+    Title "Information panel control"
+    StaticText " "
+
+	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
+	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
+	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
+	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 2.0, 0.1, 1
+}
+
 
 AddOptionMenu "OptionsMenu" {
-	StaticText  " "
-	Submenu     "ZChecker Control", "ZCheckerControl"
+	StaticText " "
+	Submenu "ZChecker Control", "mcm_ZChecker_Control"
 }
 
 OptionValue "mcm_zchecker_LogLevels" {
