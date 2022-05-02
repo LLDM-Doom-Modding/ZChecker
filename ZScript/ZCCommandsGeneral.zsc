@@ -110,8 +110,12 @@ class ZCAddCommand: ZCConsoleCommand {
 				ccmd.handler.Testee[ zcPos ].mo = player.mo;
 				ZCGlobal.Log( LL_Detailed, "added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
 			} else {
-                if ( ccmd.handler.Testee[ zcPos ].mo = LinetraceActor( player.mo ) )
+				Actor linetracedActor = LinetraceActor( player.mo );
+
+                if ( linetracedActor ) {
+					ccmd.handler.Testee[ zcPos ].mo = linetracedActor;
 					ZCGlobal.Log( LL_Detailed, "added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+				}
 			} 
 
 		} else {

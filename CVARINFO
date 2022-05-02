@@ -1,30 +1,30 @@
 // Common console variables.
-server int mcm_zchecker_loglevel = 1;
+user int mcm_zchecker_loglevel = 1;
 
 
 // Information panel console variables.
-server float mcm_zchecker_infopanel_startx	= 2.0;
-server float mcm_zchecker_infopanel_starty	= 1.0;
-server float mcm_zchecker_infopanel_offsetx	= 50.0;
-server float mcm_zchecker_infopanel_scale	= 1.0;
+user float mcm_zchecker_infopanel_startx	= 2.0;
+user float mcm_zchecker_infopanel_starty	= 1.0;
+user float mcm_zchecker_infopanel_offsetx	= 50.0;
+user float mcm_zchecker_infopanel_scale		= 1.0;
 
-server bool mcm_zchecker_info_main			= true;
-server bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
-server bool mcm_zchecker_info_inventory		= true;
-server bool mcm_zchecker_info_states		= false; // States and frames.
+user bool mcm_zchecker_info_main			= true;
+user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
+user bool mcm_zchecker_info_inventory		= true;
+user bool mcm_zchecker_info_states			= false; // States and frames.
 
-server bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
-server bool mcm_zchecker_info_levelpointers = false; // BlockingMobj, LastHeard, LastEnemy, LastLookActor, Poisoner.
-server bool mcm_zchecker_info_otherpointers	= false; // snext, alternative, goal.
+user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
+user bool mcm_zchecker_info_levelpointers 	= false; // BlockingMobj, LastHeard, LastEnemy, LastLookActor, Poisoner.
+user bool mcm_zchecker_info_otherpointers	= false; // snext, alternative, goal.
 
-server bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
-server bool mcm_zchecker_info_players		= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
+user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
+user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
 
-//server bool mcm_zchecker_info_interaction	= false; // BlockingLine, ...
-//server bool mcm_zchecker_info_visual		= false;
-//server bool mcm_zchecker_info_sectors		= false; // "floorsector", "ceilingsector", ...
-//server bool mcm_zchecker_info_other		= false; // "PainThreshold", "WoundHealth", ...
+//user bool mcm_zchecker_info_interaction	= false; // BlockingLine, ...
+//user bool mcm_zchecker_info_visual		= false;
+//user bool mcm_zchecker_info_sectors		= false; // "floorsector", "ceilingsector", ...
+//user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
 
 
 // The "Everything" map console variables.

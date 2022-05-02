@@ -217,7 +217,7 @@ class ZCheckerHandler: StaticEventHandler {
 		//addInfoPanelClass( 'ZCOtherActorsInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherInfoPanel' );
 
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console classes, " .. zcInfoPanelClasses.Size() .. " info panel classes." );
+		ZCGlobal.Log( LL_Detailed, GetClassName() .. "::OnRegister(). ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console classes, " .. zcInfoPanelClasses.Size() .. " info panel classes." );
 
 		Super.OnRegister();
 	}
@@ -230,11 +230,17 @@ class ZCheckerHandler: StaticEventHandler {
 			Actor curTestee = Testee[ i ].mo;
 			String outStr = "";
 
-			for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
-				CVar curInfoPanelCVar = CVar.GetCVar( zcInfoPanelClasses[ iCurInfoPanel ].GetCVarName() );
+			PlayerInfo pl = players[ consoleplayer ];
 
-				if ( curInfoPanelCVar && curInfoPanelCVar.GetBool() )
-					outStr = outStr .. "\c-" .. zcInfoPanelClasses[ iCurInfoPanel ].GetInfo( curTestee, i ) .. "\n";
+			for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
+				ZCBaseInfoPanelPart panel = zcInfoPanelClasses[ iCurInfoPanel ];
+				CVar curInfoPanelCVar = CVar.GetCVar( panel.GetCVarName(), pl );
+
+				if ( !curInfoPanelCVar ) {
+					ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" has no user CVar \"" .. TEXTCOLOR_RED .. panel.GetCVarName() .. LLCOLOR_EMERGENCY .."\"." );
+				} else if ( curInfoPanelCVar.GetBool() ) {
+					outStr = outStr .. "\c-" .. panel.GetInfo( curTestee, i ) .. "\n";
+				}
 			}
 
 			// Thanks to m8f for the "drawTextCenter()" function code from "Hellscape Navigator".
