@@ -31,6 +31,10 @@ alias zcsummon "netevent zc_summon:%1:%2"
 
 alias zcact "netevent zc_actoraction:%1:%2"
 
+
+// ZChecker information:
+alias zclistthinkers "netevent zc_listthinkers:%1"
+
 // The Everything map aliases:
 alias zcev "netevent zc_ev:%1:%2:%3:%4" // add|new, optimize|pause, goto
 alias zcmap "zcev %1 %2 %3 %4"

@@ -5,6 +5,7 @@ version "2.4.0"
 
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
+#include "ZScript/ZCCommandsInfo.zsc"
 #include "ZScript/ZCCommandsMap.zsc"
 
 #include "ZScript/ZCInfoPanelMain.zsc"
@@ -191,6 +192,9 @@ class ZCheckerHandler: StaticEventHandler {
 		addConsoleClass( 'ZCTakeCommand' );
 		addConsoleClass( 'ZCSummonCommand' );
 		addConsoleClass( 'ZCActorActionCommand' );
+
+		addConsoleSeparator();
+		addConsoleClass( 'ZCListThinkersCommand' );
 
 		addConsoleSeparator( true );
 		addConsoleClass( 'ZCEvmapCommand', true );

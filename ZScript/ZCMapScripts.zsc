@@ -571,7 +571,7 @@ class ZCheckerActorInfo: Actor {
 
 			SetZ( floorZ );
 		} else {
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::PostBeginPlay() at " .. pos .. ". No master of class \"" .. masterClass.GetClassName() .. "\", destroying self." );
+			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. " at " .. ZCGlobal.squeezeVector3( pos ) .. ". Master class \"" .. LLCOLOR_MAIN .. masterClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\" vanishes, destroying self." );
 			Destroy();
 		}
 
