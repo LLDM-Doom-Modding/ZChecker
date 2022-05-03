@@ -25,10 +25,10 @@ script "ZChecker_CCMD_SetState" ( void ) {
 
 // Argument: "-1" is a toggle, "0"/"1" is a reset/set.
 script "ZChecker_CCMD_SetFlag" ( int setType ) {
-	str flagName = ScriptCall( "ZCToggleFlagCommand", "ACS_GetFlagName" );
+	str flagName = ScriptCall( "ZCSetFlagCommand", "ACS_GetFlagName" );
 	int newValue = setType;
 
-	newValue = ( setType == -1 )? CheckFlag( 0, flagName ) : setType;
+	newValue = ( setType == -1 )? !CheckFlag( 0, flagName ) : setType;
 
 	if ( SetActorFlag( 0, flagName, newValue ) ) {
 		ScriptCall( "ZCGlobal", "Log", LL_Detailed, StrParam( s:"Flag \"", s:flagName, s:"\" succesfully set to ", i:newValue ) );

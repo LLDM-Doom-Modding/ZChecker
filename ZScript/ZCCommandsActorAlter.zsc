@@ -57,7 +57,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsets [<pos>] <state label>;zcsetstate [<pos>] <state label>";
+		return "zcsetstate [<pos>] <state label>;zcstate [<pos>] <state label>;zcsets[t] [<pos>] <state label>;zcst [<pos>] <state label>";
 	}
 
 	override String GetHelpDescString() {
@@ -108,7 +108,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsf [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zcsetflag [<pos>] <flag name> [<value>];zcsetf [<pos>] <flag name> [<value>];zctf [<pos>] <flag name> [<value>]";
+		return "zcsetflag [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]; zctoggleflag [<pos>] <flag name>; zctf [<pos>] <flag name>";
 	}
 
 	override String GetHelpDescString() {
