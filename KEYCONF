@@ -1,6 +1,7 @@
 // ZChecker general control:
 alias zchelp "netevent zc_help:%1"
 
+
 // ZChecker actors control:
 alias zcadd "netevent zc_add:%1:%2"
 alias zcaddself "zcadd self %1"
@@ -34,6 +35,8 @@ alias zcact "netevent zc_actoraction:%1:%2"
 
 // ZChecker information:
 alias zclistthinkers "netevent zc_listthinkers:%1"
+//alias zcacstrack "netevent zc_acstracking:%1"
+
 
 // The Everything map aliases:
 alias zcev "netevent zc_ev:%1:%2:%3:%4" // add|new, optimize|pause, goto

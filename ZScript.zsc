@@ -195,6 +195,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		addConsoleSeparator();
 		addConsoleClass( 'ZCListThinkersCommand' );
+		//addConsoleClass( 'ZCACSTrackingCommand' );
 
 		addConsoleSeparator( true );
 		addConsoleClass( 'ZCEvmapCommand', true );
@@ -294,6 +295,8 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 
 			if ( ccmdName ~== curCCMD.GetCommand() ) {
+				//curCCMD.ccmd = zcCCMDInfo; // Let's uncomment!
+
 				if ( curCCMD.HandleArguments( zcCCMDInfo ) )
 					curCCMD.DoCommand();
 				else

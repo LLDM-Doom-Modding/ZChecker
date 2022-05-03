@@ -99,7 +99,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 		helpListStr = helpListStr .. helpListValuesColor .. node .. CCMDCOLOR_DESC .. "; ";
 	}
 
-	override void DoCommand( void ) {
+	override void DoCommand() {
 		if ( zcStatNumType == ZCSTAT_LIST ) {
 			helpListStr = helpListValuesColor = "";
 
@@ -132,15 +132,103 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 
 			console.printf( "Possible types (plural is optional): \n" .. helpListStr .. "or a digit for the non-standard StatNums." );
 		} else if ( zcStatNumType >= 0 && zcStatNumType <= Thinker.MAX_STATNUM ) {
-			console.printf( "Thinkers of type " .. zcStatNumType .. ":" );
 			ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
 			Thinker curThinker;
 
+			uint thinkersAmount = 0;
+
 			while ( curThinker = it.Next( true ) ) {
-				console.printf( "  " .. curThinker.GetClassName() );
+				thinkersAmount++;
+				console.printf( " \c-\"" .. curThinker.GetClassName() .. "\" " .. TEXTCOLOR_DARKGRAY .. "(parent class \"\c-" .. ( curThinker.GetParentClass()? curThinker.GetParentClass().GetClassName() .. "\"" : "NULL" ) .. TEXTCOLOR_DARKGRAY .. ")" );
 			}
+
+			console.printf( "Total " .. thinkersAmount .. " thinkers of enum type " .. zcStatNumType .. "." );
 		} else {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). False StatNum " .. zcStatNumType );
 		}
 	}
 } // of class ZCListThinkersCommand: ZCConsoleCommand {}
+
+
+/*
+class ZCACSTrackingThinker: Thinker {
+	Array<Thinker> prevTicACS;
+
+	override void PostBeginPlay() {
+		ZCGlobal.Log( LL_Main, GetClassName() .. "::PostBeginPlay(). Warning: unstable and WIP command." );
+
+		//ChangeStatNum( STAT_USER );
+		prevTicACS.Clear();
+
+		ThinkerIterator it = ThinkerIterator.Create( "Thinker", STAT_SCRIPTS );
+		Thinker curThinker;
+
+		while ( curThinker = it.Next( true ) )
+			prevTicACS.Push( curThinker );
+
+		ZCGlobal.Log( LL_Main, GetClassName() .. "::PostBeginPlay(). ACS thinkers amount: " .. prevTicACS.Size() );
+
+		Super.PostBeginPlay();
+	}
+
+	override void Tick() {
+		ThinkerIterator it = ThinkerIterator.Create( "Thinker", STAT_SCRIPTS );
+		Thinker curThinker;
+
+		int startedACSAmount = 0;
+		int finishedACSAmount = 0;
+
+		int prevTicACSIndex = 0;
+
+		while ( curThinker = it.Next( true ) ) {
+			if ( prevTicACSIndex >= prevTicACS.Size() ) {
+				prevTicACS.Push( curThinker );
+				startedACSAmount++;
+			} else if ( curThinker != prevTicACS[ prevTicACSIndex ] ) {
+				prevTicACS.Delete( prevTicACSIndex, 1 );
+				finishedACSAmount++;
+				prevTicACSIndex--;
+			}
+
+			prevTicACSIndex++;
+		}
+
+		if ( startedACSAmount != 0 || finishedACSAmount != 0 )
+			ZCGlobal.Log( LL_Main, "ACS tracker. Started " .. startedACSAmount .. ", finished " .. finishedACSAmount );
+
+		Super.Tick();
+	}
+}
+
+class ZCACSTrackingCommand: ZCConsoleCommand {
+	int zcACSTrackingEnable;
+	ZCACSTrackingThinker tracker;
+
+	override String GetCommand() {
+		return "zc_acstracking";
+	}
+
+	override String GetHelpNameString() {
+		return "zcacstrack <bool: 0/false/reset or 1/true/set>";
+	}
+
+	override String GetHelpDescString() {
+		return "Tracks ACS calls (as much as possible). " .. TEXTCOLOR_RED .. "Turned out to be an unnecessary command because there's only one ACS Thinker for all scripts.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		return ( initCCMD.args.Size() == 1 ) && ( -1 != ( zcACSTrackingEnable = getBoolArg( 0 ) ) );
+	}
+
+	override void DoCommand() {
+		//ZCACSTrackingThinker( ThinkerIterator.Create( "ZCACSTrackingThinker", STAT_SCRIPTS ).Next() );
+
+		if ( zcACSTrackingEnable == 0 && tracker ) {
+			tracker.Destroy();
+		} else if ( zcACSTrackingEnable == 1 && !tracker ) {
+			tracker = new( "ZCACSTrackingThinker" );
+		}
+	}
+} // of class ZCACSTrackingCommand: ZCConsoleCommand {}
+*/
