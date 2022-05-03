@@ -11,6 +11,7 @@ OptionMenu "mcm_ZChecker_Control" {
 	Option "World positioning", "mcm_zchecker_info_worldpos", "OnOff"
 	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
 	Option "States", "mcm_zchecker_info_states", "OnOff"
+	Option "States amount", "mcm_zchecker_infoset_statesmode", "mcm_zchecker_StatesAmount"
 
     StaticText "Pointers", "Darkgray"
 	Option "Common pointers", "mcm_zchecker_info_mainpointers", "OnOff"
@@ -63,4 +64,13 @@ OptionValue "mcm_zchecker_LogLevels" {
 	1, "1. Main/default"
 	2, "2. Detailed"
 	3, "3. Debug mode"
+}
+
+OptionValue "mcm_zchecker_StatesAmount" {
+	0, "Current state only"
+	1, "5 states (default)"
+	2, "7 states"
+	3, "10 states"
+	4, "15 states"
+	5, "Unlimited"
 }

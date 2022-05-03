@@ -100,87 +100,118 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
+	enum EStatesAmountModes {
+		SAM_CurrentOnly = 0,
+		SAM_5 = 1,
+		SAM_7 = 2,
+		SAM_10 = 3,
+		SAM_15 = 4,
+		SAM_Unlimited = 5
+	};
+
 	override String GetCVarName( void ) {
 		return "mcm_zchecker_info_states";
 	}
 
 	override String GetInfo( Actor thing, int testeepos ) {
 		String outStr = "";
+		State st = thing.CurState;
 
-		if ( isItemPickedupWeapon( thing ) ) {
-			PlayerPawn owner = getItemPlayerOwner( Inventory( thing ) );
+		bool isWeapon = isItemPickedupWeapon( thing );
+		PlayerPawn weapOwner = NULL;
 
-			if ( owner.player.psprites ) {
-				PSprite st = owner.player.psprites;
+		Array<State> prevstates;
+		Array<String> prevstatesstr;
+		uint maxStatesAmount = 1;
+		EStatesAmountModes statesAmountMode = CVar.GetCVar( "mcm_zchecker_infoset_statesmode", players[ consoleplayer ] ).GetInt();
 
-				outStr = "State \c[Sapphire]" .. st.Sprite .. 
-					String.format( " \c[LightBlue]%c \c[Sapphire]%i\c-", st.Frame + 65, st.CurState.Tics ) .. "\c-\n"
-					"  Current tic: " .. st.Tics .. "\n" ..
-					"  Pos: " .. st.x .. "/" .. st.y .. "\n" ..
-					"  Flags: " .. 
-						( st.bCVarFast? "\c[Green]Fast\c- " : "" ) ..
-						( st.processPending? "\c[Gray]Pend\c- " : "" ) .. "\n" ..
-					"  Flags 2: " ..
-						( st.bFlip? "\c[Red]Flip\c- " : "" ) ..
-						( st.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
-						( st.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
-						( st.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
-						( st.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
-			} // of if ( owner.player.psprites ) {}
+		if ( isWeapon ) {
+			weapOwner = getItemPlayerOwner( Inventory( thing ) );
 
-		} else {
-			State st = thing.CurState;
-			Array<State> prevstates;
+			if ( weapOwner.player.psprites )
+				st = weapOwner.player.psprites.CurState;
+		}
 
-			//outStr = String.format( N .. "State \n" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-\n",
-			//						"" .. thing.Sprite, st.Frame + 65, st.Tics );
-			prevstates.Clear();
-			outStr = outStr .. "States:\n";
-			int statesCnt = 0;
+		switch ( statesAmountMode ) {
+			case SAM_CurrentOnly: maxStatesAmount = 1; break;
+			case SAM_5: maxStatesAmount = 5; break;
+			case SAM_7: maxStatesAmount = 7; break;
+			case SAM_10: maxStatesAmount = 10; break;
+			case SAM_15: maxStatesAmount = 15; break;
+			case SAM_Unlimited: maxStatesAmount = 0xFFFF; break;
+			default:
+				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::GetInfo(). Unknown value " .. statesAmountMode .. " for CVar \"mcm_zchecker_infoset_statesmode\"." );
+				break;
+		}
 
-			do {
-				outStr = outStr .. String.format( SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-\n",
-							"" .. thing.Sprite, st.Frame + 65, st.Tics );
+		prevstates.Clear();
+		prevstatesstr.Clear();
+		outStr = outStr .. "States:\n";
 
-				prevstates.Push( st );
-				st = st.NextState;
+		bool loopFound = false;
+		int statesCnt = 0;
 
-				statesCnt++;
-			} while ( st && st != thing.CurState && statesCnt < 5 && ( prevstates.Find( st ) == prevstates.Size() ) );
+		do {
+			prevstates.Push( st );
+			prevstatesstr.Push( String.Format( "\c-" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-",
+								( isWeapon? "" .. weapOwner.player.psprites.sprite : "" .. thing.Sprite ),
+								st.Frame + 65, st.Tics ) );
 
-			while ( statesCnt < 5 ) {
-				outStr = outStr .. "\n";
-				statesCnt++;
-			}
+			st = st.NextState;
+			int backloopStateIndex = prevstates.Find( st );
 
-
-			st = thing.CurState;
-
-			if ( st.Tics <= 0 ) {
-				outStr = outStr .. DARKGREEN .. "===== static =====";
-			} else {
-				int ticsbarLeft = 1;
-
-				if ( thing.tics > 1 )
-					ticsbarLeft = int( 20 * ( thing.tics - 1 ) / ( st.Tics? st.Tics : 1 ) );
-
-				if ( ticsbarLeft > 20 ) {
-					outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
+			if ( loopFound = ( backloopStateIndex != prevstates.Size() ) ) {
+				// Difference the one-state loop (waiting) and the normal loop:
+				if ( backloopStateIndex == statesCnt ) {
+					prevstatesstr[ statesCnt ] = prevstatesstr[ statesCnt ] .. TEXTCOLOR_WHITE .. " (loop here)";
 				} else {
-					String ticbar = DARKGREEN;
-
-					for ( int i = 0; i < 20 - ticsbarLeft; i++ )
-						ticbar = ticbar .. "=";
-
-					ticbar = ticbar .. ">" .. BLACK;
-
-					for ( int i = 0; i < ticsbarLeft - 1; i++ )
-						ticbar = ticbar .. "+";
-
-					outStr = outStr .. ticbar .. DARKGRAY;
+					prevstatesstr[ backloopStateIndex ] = prevstatesstr[ backloopStateIndex ] .. TEXTCOLOR_WHITE .. " <<loop";
+					prevstatesstr[ statesCnt ] = prevstatesstr[ statesCnt ] .. TEXTCOLOR_WHITE .. " ^ loop";
 				}
 			}
 
+			statesCnt++;
+		} while ( st && st != thing.CurState && statesCnt < maxStatesAmount && !loopFound );
+
+		for ( int i = 0; i < prevstatesstr.Size(); i++ )
+			outStr = outStr .. prevstatesstr[ i ] .. "\n";
+
+		if ( statesAmountMode != SAM_Unlimited ) {
+			while ( statesCnt < maxStatesAmount ) {
+				outStr = outStr .. "\n";
+				statesCnt++;
+			}
+		}
+
+
+		st = thing.CurState;
+
+		if ( st.Tics <= 0 ) {
+			outStr = outStr .. DARKGREEN .. "===== static =====";
+		} else {
+			int ticsbarLeft = 1;
+
+			if ( thing.tics > 1 )
+				ticsbarLeft = int( 20 * ( thing.tics - 1 ) / ( st.Tics? st.Tics : 1 ) );
+
+			if ( ticsbarLeft > 20 ) {
+				outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
+			} else {
+				String ticbar = DARKGREEN;
+
+				for ( int i = 0; i < 20 - ticsbarLeft; i++ )
+					ticbar = ticbar .. "=";
+
+				ticbar = ticbar .. ">" .. BLACK;
+
+				for ( int i = 0; i < ticsbarLeft - 1; i++ )
+					ticbar = ticbar .. "+";
+
+				outStr = outStr .. ticbar .. DARKGRAY;
+			}
+		}
+
+		if ( !isWeapon ) {
 			outStr = outStr .. " (" .. thing.tics .. ")\c-\n" ..
 				"  Flags: " ..
 					( st.bFast? "\c[Fire]Fst\c- " : "" ) ..
@@ -193,6 +224,22 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					( st.bDehacked? "\c[Red]Deh\c- " : "" ) .. "\n" ..
 				"  UseFlags: " .. st.UseFlags .. ", TicRange: " .. st.TicRange .. "; \n" ..
 				"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n";
+		} else {
+			PSprite pst = weapOwner.player.psprites;
+
+			//"State \c[Sapphire]" .. st.Sprite .. String.format( " \c[LightBlue]%c(%c) \c[Sapphire]%i\c-", st.Frame + 65, st.CurState.Frame + 65, st.CurState.Tics ) .. "\c-\n" .. "  Current tic: " .. st.Tics .. "\n"
+
+			outStr = outStr .. " (" .. pst.tics .. ")\c-\n" ..
+				"  Pos: " .. pst.x .. "/" .. pst.y .. "\n" ..
+				"  Flags: " .. 
+					( pst.bCVarFast? "\c[Green]Fast\c- " : "" ) ..
+					( pst.processPending? "\c[Gray]Pend\c- " : "" ) .. "\n" ..
+				"  Flags 2: " ..
+					( pst.bFlip? "\c[Red]Flip\c- " : "" ) ..
+					( pst.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
+					( pst.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
+					( pst.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
+					( pst.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
 		}
 
 		return outStr;
