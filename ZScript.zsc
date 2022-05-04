@@ -47,7 +47,12 @@ enum EZCheckerLogLevels {
 	LL_Extended = LL_Detailed,
 
 	LL_NoPrefix = 0x8000
-}
+};
+
+enum EZCheckerInfoActorType {
+	IAT_Normal = 0,
+	IAT_StateProvider
+};
 
 const LLCOLOR_MAIN = "\c-";
 const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
@@ -183,7 +188,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Testee[ i ] = new( 'ZCheckerField' );
-			Testee[ i ].inv = new( 'ZCheckerInvField' );
+			//Testee[ i ].inv = new( 'ZCheckerInvField' );
 		}
 
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
@@ -307,9 +312,9 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 
 			if ( ccmdName ~== curCCMD.GetCommand() ) {
-				//curCCMD.ccmd = zcCCMDInfo; // Let's uncomment!
+				curCCMD.ccmd = zcCCMDInfo; // Let's uncomment!
 
-				if ( curCCMD.HandleArguments( zcCCMDInfo ) )
+				if ( curCCMD.HandleArguments() )
 					curCCMD.DoCommand();
 				else
 					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage\c-:\n" .. curCCMD.GetHelpString() );

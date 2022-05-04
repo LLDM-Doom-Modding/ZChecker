@@ -18,8 +18,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 		return "Lists all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\" or \"list\".";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcStatNumType = ZCSTAT_ERROR;
 		if ( ccmd.args.Size() != 1 )
 			return false;
@@ -216,8 +215,7 @@ class ZCACSTrackingCommand: ZCConsoleCommand {
 		return "Tracks ACS calls (as much as possible). " .. TEXTCOLOR_RED .. "Turned out to be an unnecessary command because there's only one ACS Thinker for all scripts.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		return ( initCCMD.args.Size() == 1 ) && ( -1 != ( zcACSTrackingEnable = getBoolArg( 0 ) ) );
 	}
 

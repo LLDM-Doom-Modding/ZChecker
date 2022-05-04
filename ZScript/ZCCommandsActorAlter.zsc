@@ -64,8 +64,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 		return "set a state for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = -1;
 		bool outValue = false;
 
@@ -115,8 +114,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 		return "set/reset a flag for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = -1;
 		flagSetType = -1;
 		bool outValue = false;
@@ -178,8 +176,7 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 		return "operate on the BUDDHA flag at <pos> or linetarget, if omitted. If <set> is omitted, toggles it, or sets/resets ('0'/'1') otherwise.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = -1;
 		flagSetType = -1;
 		int ccmdArgsSize = ccmd.args.Size();
@@ -231,8 +228,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 		return "give <amount> <item>s to the testee <pos> (or linetarget if omitted)";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = -1;
 		itemAmount = 1;
 		itemName = "";
@@ -356,8 +352,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		return "Do something with actor on <pos> (or linetarget if omitted). Possible values: \"revive\"|\"resurrect\"|\"rev\", \"kill\", \"destroy\"|\"remove\"";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = -1;
 		bool outValue = false;
 
@@ -457,8 +452,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 		return "summon <amount> of <class>es on position by rules of build-in eponymous command.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		summoneeAmount = 1;
 		summonee = "";
 		bool outValue = false;

@@ -34,7 +34,7 @@ class ZCheckerCCMDInfo play {
 
 		return zcCommandName;
 	}
-} // of class ZCheckerCCMDInfo {
+} // of class ZCheckerCCMDInfo {}
 
 // Not really done yet...
 class ZCheckerInvField {
@@ -46,8 +46,10 @@ class ZCheckerInvField {
 
 class ZCheckerField {
 	Actor mo;				// Testee actor.
-	uint fflags, ftype;
-	ZCheckerInvField inv;
+	EZCheckerInfoActorType actorType;
+
+	//uint fflags, ftype;
+	//ZCheckerInvField inv;
 }
 
 
@@ -57,7 +59,7 @@ class ZCheckerField {
 //class, actually.
 class ZCConsoleClass abstract play {
 	enum ConsoleClassFlags {
-		CCF_None			= 0x0000,
+		CCF_None			= 0,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
 		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in gray.
 		CCF_NoCacheHelp		= 0x0004	// No precache help string.
@@ -93,7 +95,7 @@ class ZCConsoleClass abstract play {
 	virtual String GetHelpString( void ) {
 		return TEXTCOLOR_RED .. "Wrong inheriting (\"ZCConsoleClass::GetHelpString()\" isn't overrided).";
 	}
-} // of class ZCConsoleHelpClass: Thinker abstract {
+} // of class ZCConsoleHelpClass: Thinker abstract {}
 
 class ZCConsoleSeparator: ZCConsoleClass {
 	virtual String GetHelpSeparatorName( void ) {
@@ -202,7 +204,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		}
 
 		return outActor;
-	} // of protected play Actor LinetraceActor( void ) {
+	} // of protected play Actor LinetraceActor( void ) {}
 
 	// Returns help aliases/description string for a class:
 	protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {
@@ -213,7 +215,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		temp.Destroy();
 
 		return outHelpString;
-	} // of protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {
+	} // of protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {}
 
 
 	// Returns linked netevent command name (see KEYCONF):
@@ -258,8 +260,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 	}
 
 	// Returns "true" if all args provieded right, "false" otherwise:
-	virtual bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	virtual bool HandleArguments() {
 		return false;
 	}
 

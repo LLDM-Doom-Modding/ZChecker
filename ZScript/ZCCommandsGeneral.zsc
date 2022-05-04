@@ -13,8 +13,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 		return "this help. If argument is provided, displays complete help.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		verboseHelp = false;
 		bool outValue = ( ccmd.args.Size() == 0 );
 
@@ -70,8 +69,7 @@ class ZCAddCommand: ZCConsoleCommand {
 		return "add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcSpecialAddType = SAT_Normal;
 
 		// For 0 args: zcPos == "-1" (to check it later).
@@ -210,8 +208,7 @@ class ZCRemCommand: ZCConsoleCommand {
 		return "remove testee(s) from <pos> or from whole list if omitted.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = -1;
 		bool outValue = ( ccmd.args.Size() == 0 );
 
@@ -292,8 +289,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 		return "Perform extra operations with the information panels.";
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcPos = zcNewPos = -1;
 		zcAliasName = "";
 		zcPanelControlType = PCT_Error;

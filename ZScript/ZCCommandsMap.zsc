@@ -76,8 +76,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		return outStr;
 	}
 
-	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
-		ccmd = initCCMD;
+	override bool HandleArguments() {
 		zcHelpFromUsage = true;
 		zcCCMDType = CCMDT_All;
 		bool outValue = false;
@@ -114,7 +113,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		} // of if ( argsSize > 0 ) {
 
 		return outValue;
-	} // of override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+	} // of override bool HandleArguments() {}
 
 	private void gotoCCMDPlayerTeleport( vector3 newpos, double newangle ) {
 		PlayerPawn player = players[ ccmd.e.Player ].mo;
