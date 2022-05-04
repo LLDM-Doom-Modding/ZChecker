@@ -115,7 +115,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 	override String GetInfo( Actor thing, int testeepos ) {
 		String outStr = "";
-		State st = thing.CurState;
+		State curState = thing.CurState;
+		State st = curState;
 
 		bool isWeapon = isItemPickedupWeapon( thing );
 		PlayerPawn weapOwner = NULL;
@@ -129,7 +130,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			weapOwner = getItemPlayerOwner( Inventory( thing ) );
 
 			if ( weapOwner.player.psprites )
-				st = weapOwner.player.psprites.CurState;
+				curState = st = weapOwner.player.psprites.CurState;
 		}
 
 		switch ( statesAmountMode ) {
@@ -146,7 +147,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		prevstates.Clear();
 		prevstatesstr.Clear();
-		outStr = outStr .. "States:\n";
+		outStr = outStr .. ( isWeapon? "PSprite states:" : "States:" ) .. "\n";
 
 		bool loopFound = false;
 		int statesCnt = 0;
@@ -184,15 +185,17 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 
-		st = thing.CurState;
+		st = curState;
 
 		if ( st.Tics <= 0 ) {
 			outStr = outStr .. DARKGREEN .. "===== static =====";
 		} else {
 			int ticsbarLeft = 1;
 
-			if ( thing.tics > 1 )
-				ticsbarLeft = int( 20 * ( thing.tics - 1 ) / ( st.Tics? st.Tics : 1 ) );
+			int curtics = ( isWeapon? weapOwner.player.psprites.Tics : thing.tics );
+
+			if ( curtics > 1 )
+				ticsbarLeft = int( 20 * ( curtics - 1 ) / ( st.Tics? st.Tics : 1 ) );
 
 			if ( ticsbarLeft > 20 ) {
 				outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
