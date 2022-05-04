@@ -45,6 +45,7 @@ class ZCheckerInvField {
 }
 
 class ZCheckerField {
+	uint fieldPos;
 	Actor mo;				// Testee actor.
 	EZCheckerInfoActorType actorType;
 
@@ -228,7 +229,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		return TEXTCOLOR_RED .. "GetHelpNameString() usage example: \"zcAlias #1;zcAlias2;zc-alias [pos] [3]\"\c-";
 	}
 
-	// Returns usage quick help (comman description):
+	// Returns usage quick help (command description):
 	virtual String GetHelpDescString( void ) const {
 		return GetCommand() .. " help!";
 	}
@@ -314,7 +315,7 @@ class ZCBaseInfoPanelPart abstract {
 		return "mcm_zchecker_info_...";
 	}
 
-	ui virtual String GetInfo( Actor thing, int testeepos ) {
+	ui virtual String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		return "Nothing.";
 	}
 

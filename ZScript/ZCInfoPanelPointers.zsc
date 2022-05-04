@@ -42,7 +42,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 		return str;
 	} // of protected String decoratePointerString( Actor ptr, String desc, String ptrcolor ) {}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 
 		return
@@ -57,7 +57,7 @@ class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
 		return "mcm_zchecker_info_levelpointers";
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 
 		return

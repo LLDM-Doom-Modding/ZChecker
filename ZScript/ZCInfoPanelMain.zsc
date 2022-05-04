@@ -3,10 +3,10 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 		return "mcm_zchecker_info_main";
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
-		String info = ( testeepos + 1 ) .. ". ";
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		String info = ( thingfield.fieldPos + 1 ) .. ". ";
 
-		if ( !isItemPickedupWeapon( thing ) ) {
+		if ( thingfield.actorType == IAT_Normal ) {
 			info = info .. GREEN .. thing.GetClassName();
 
 			if ( thing.GetTag() != thing.GetClassName() )
@@ -23,7 +23,7 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 				info = info .. " invul";
 
 			info = info .. ")" .. DARKGRAY .. ".\n";
-		} else {
+		} else if ( thingfield.actorType == IAT_StateProvider ) {
 			info = DARKGREEN .. "Inv\c-: " .. GREEN .. thing.GetClassName() .. "\c-;\n" .. ORANGE ..
 					"Tag" .. ORANGE .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
 		}
@@ -37,7 +37,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		return "mcm_zchecker_info_worldpos";
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 
 		outStr = "Tilt: (\cUa\c-" .. int( thing.angle ) .. ", \cUp\c-" ..
@@ -56,7 +56,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		return "mcm_zchecker_info_inventory";
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = DARKGRAY .. "Inventory\c-: " .. GRAY;
 		Inventory item = thing.Inv;
 
@@ -113,12 +113,12 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		return "mcm_zchecker_info_states";
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 		State curState = thing.CurState;
 		State st = curState;
 
-		bool isWeapon = isItemPickedupWeapon( thing );
+		bool isWeapon = ( thingfield.actorType == IAT_StateProvider );
 		PlayerPawn weapOwner = NULL;
 
 		Array<State> prevstates;

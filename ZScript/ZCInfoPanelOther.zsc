@@ -3,7 +3,7 @@ class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 		return "mcm_zchecker_info_args";
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "Special: " .. thing.special .. OLIVE .. "\n\\_ args [" .. N;
 
 		for ( int arg = 0; arg < 4; arg++ )
@@ -34,7 +34,7 @@ class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
 		return str;
 	}
 
-	override String GetInfo( Actor thing, int testeepos ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 		int friendPlayer = thing.FriendPlayer;
 		int team = thing.DesignatedTeam;
@@ -56,7 +56,7 @@ class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
 
 			foundTeammates = false;
 			for ( int i = 0; i < MaxTestee; i++ )
-				if ( testeepos != i && handler.Testee[ i ].mo && handler.Testee[ i ].mo.DesignatedTeam ) {
+				if ( thingfield.fieldPos != i && handler.Testee[ i ].mo && handler.Testee[ i ].mo.DesignatedTeam ) {
 					outStr = i .. " ";
 					foundTeammates = true;
 				}

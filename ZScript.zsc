@@ -14,7 +14,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.65";
+const ZCheckerVersion = "0.66";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -165,7 +165,7 @@ class ZCheckerHandler: StaticEventHandler {
 		}
 
 		return ccmd;
-	} // of ZCConsoleClass GetZCConsoleClass( int index ) {
+	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
 
 
 	private void addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
@@ -188,6 +188,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Testee[ i ] = new( 'ZCheckerField' );
+			Testee[ i ].fieldPos = i;
 			//Testee[ i ].inv = new( 'ZCheckerInvField' );
 		}
 
@@ -245,32 +246,54 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	override void RenderOverlay( RenderEvent e ) {
+		// User CVars locating uses a relatively long algorithm. After a 
+		//while I'll optimize them and move them somewhere.
+		Array<ZCBaseInfoPanelPart> infoPanelParts;
+		PlayerInfo pl = players[ consoleplayer ];
+
+		for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
+			ZCBaseInfoPanelPart panelpart = zcInfoPanelClasses[ iCurInfoPanel ];
+			CVar curInfoPanelCVar = CVar.GetCVar( panelpart.GetCVarName(), pl );
+
+			if ( !curInfoPanelCVar ) {
+				ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panelpart.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown user CVar \"" .. TEXTCOLOR_RED .. panelpart.GetCVarName() .. LLCOLOR_EMERGENCY .."\"." );
+			} else if ( curInfoPanelCVar.GetBool() ) {
+				infoPanelParts.Push( panelpart );
+			}
+		}
+
+		double infopanelStartX = CVar.FindCVar( "mcm_zchecker_infopanel_startx" ).GetFloat();
+		double infopanelStartY = CVar.FindCVar( "mcm_zchecker_infopanel_starty" ).GetFloat();
+		double infopanelScale = CVar.FindCVar( "mcm_zchecker_infopanel_scale" ).GetFloat();
+		double infopanelOffsetX = CVar.FindCVar( "mcm_zchecker_infopanel_offsetx" ).GetFloat();
+
+
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			if ( !Testee[ i ] || !Testee[ i ].mo )
 				continue;
 
 			Actor curTestee = Testee[ i ].mo;
+
+			// Updating info actors type. Usually it's better not to cross the 
+			//ui, data and play opportunities in the one method...
+			if ( curTestee is "StateProvider" && PlayerPawn( Inventory( curTestee ).owner ) )
+				Testee[ i ].actorType = IAT_StateProvider;
+			else
+				Testee[ i ].actorType = IAT_Normal;
+
+
+			// Forming a full information panel:
 			String outStr = "";
 
-			PlayerInfo pl = players[ consoleplayer ];
+			for ( int j = 0; j < infoPanelParts.Size(); j++ )
+				outStr = outStr .. "\c-" .. infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] ) .. "\n";
 
-			for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
-				ZCBaseInfoPanelPart panel = zcInfoPanelClasses[ iCurInfoPanel ];
-				CVar curInfoPanelCVar = CVar.GetCVar( panel.GetCVarName(), pl );
 
-				if ( !curInfoPanelCVar ) {
-					ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" has no user CVar \"" .. TEXTCOLOR_RED .. panel.GetCVarName() .. LLCOLOR_EMERGENCY .."\"." );
-				} else if ( curInfoPanelCVar.GetBool() ) {
-					outStr = outStr .. "\c-" .. panel.GetInfo( curTestee, i ) .. "\n";
-				}
-			}
-
-			// Thanks to m8f for the "drawTextCenter()" function code from "Hellscape Navigator".
-
+			// Thanks to m8f for the "drawTextCenter()" function code from its "Hellscape Navigator".
 			double bordersXMargin = 4.0;
-			double scale = 1.0 / CVar.FindCVar( "mcm_zchecker_infopanel_scale" ).GetFloat();
-			double x = CVar.FindCVar( "mcm_zchecker_infopanel_startx" ).GetFloat() * 0.01 + i * CVar.FindCVar( "mcm_zchecker_infopanel_offsetx" ).GetFloat() * 0.01;
-			double y = CVar.FindCVar( "mcm_zchecker_infopanel_starty" ).GetFloat() * 0.01;
+			double scale = 1.0 / infopanelScale;
+			double x = infopanelStartX * 0.01 + i * infopanelOffsetX * 0.01;
+			double y = infopanelStartY * 0.01;
 
 			int width = int( scale * Screen.GetWidth() );
 			int height = int( scale * Screen.GetHeight() );
