@@ -129,20 +129,22 @@ class ZCAddCommand: ZCConsoleCommand {
 
 	                if ( linetracedActor ) {
 						ccmd.handler.Testee[ zcPos ].mo = linetracedActor;
-						ZCGlobal.Log( LL_Detailed, "added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+						ZCGlobal.Log( LL_Detailed, "Added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
 					}
 					break;
 				case SAT_Self:
 					ccmd.handler.Testee[ zcPos ].mo = player.mo;
-					ZCGlobal.Log( LL_Detailed, "added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					ZCGlobal.Log( LL_Detailed, "Added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
 					break;
 				case SAT_Weapon:
 					if ( player.ReadyWeapon ) {
 						ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
-						ZCGlobal.Log( LL_Detailed, "added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+						ZCGlobal.Log( LL_Detailed, "Added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
 					}
 					break;
 				case SAT_Force:
+					ZCGlobal.Log( LL_Main, "[Work-in-progress command, may behave strangely]." );
+
 					ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 					Actor locatedActor = NULL, cur = NULL;
 
@@ -177,7 +179,9 @@ class ZCAddCommand: ZCConsoleCommand {
 
 	                if ( locatedActor ) {
 						ccmd.handler.Testee[ zcPos ].mo = locatedActor;
-						ZCGlobal.Log( LL_Detailed, "added an arbitrary actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+						ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					} else {
+						ZCGlobal.Log( LL_Detailed, "Cannot find any suitable actors." );
 					}
 					break;
 				default:
@@ -236,4 +240,202 @@ class ZCRemCommand: ZCConsoleCommand {
 		}
 	}
 } // of class ZCRemCommand: ZCConsoleCommand {
+
+class ZCInfoPanelControlAliasNode {
+	String aliasname;
+	Actor thing;
+}
+
+class ZCInfoPanelControlCommand: ZCConsoleCommand {
+	const GRAY = TEXTCOLOR_GRAY;
+	const DARKGRAY = TEXTCOLOR_DARKGRAY;
+
+	enum EPanelControlTypes {
+		PCT_Error = 0,
+		PCT_Save,
+		PCT_Load,
+		PCT_Move,
+		PCT_Copy,
+		PCT_Info
+	};
+
+	EPanelControlTypes zcPanelControlType;
+	int zcPos, zcNewPos;
+	String zcAliasName;
+
+	Array<ZCInfoPanelControlAliasNode> aliases;
+
+	private int FindAliasIndex( String aliasname ) {
+		int outValue = -1;
+
+		if ( aliasname != "" ) {
+			for ( int i = 0; i < aliases.Size(); i++ ) {
+				if ( aliases[ i ].aliasname == aliasname ) {
+					outValue = i;
+					break;
+				}
+			}
+		}
+
+		return outValue;
+	} // of private int FindAliasIndex( String aliasname ) {}
+
+	override String GetCommand() {
+		return "zc_infopanelcontrol";
+	}
+
+	override String GetHelpNameString() {
+		return "zcpanelclt <pos> move|copy <newpos>;zcpanelclt <pos> save|store <aliasname>;zcpanelctl <pos> load <aliasname>;zcpanelctl general|list|<pos> info";
+	}
+
+	override String GetHelpDescString() {
+		return "Perform extra operations with the information panels.";
+	}
+
+	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
+		ccmd = initCCMD;
+		zcPos = zcNewPos = -1;
+		zcAliasName = "";
+		zcPanelControlType = PCT_Error;
+
+		int ccmdArgsSize = ccmd.args.Size();
+		bool outValue = false;
+
+		if ( ccmdArgsSize == 2 && ccmd.args[ 1 ] ~== "info" ) {
+			zcPanelControlType = PCT_Info;
+			String arg0 = ccmd.args[ 0 ];
+
+			outValue = ( arg0 ~== "general" || arg0 ~== "list" );
+
+			if ( !outValue && str2int_Ptr( arg0, +zcPos ) )
+				outValue = checkTesteePlace( --zcPos );
+
+		} else if ( ccmdArgsSize == 3 ) {
+			String argOperation = ccmd.args[ 1 ];
+			bool parsingError = false;
+			bool parsePosArg = true;
+			bool parsePosNewArg = false;
+
+			if ( argOperation ~== "save" || argOperation ~== "store" || argOperation ~== "load" ) {
+				zcAliasName = ccmd.args[ 2 ];
+				zcPanelControlType = ( argOperation ~== "load"? PCT_Load : PCT_Save );
+
+			} else if ( argOperation ~== "move" || argOperation ~== "copy" ) {
+				parsePosNewArg = true;
+				zcPanelControlType = ( argOperation ~== "copy"? PCT_Copy : PCT_Move );
+
+			} else {
+				parsePosArg = false;
+			}
+
+			if ( parsePosArg ) {
+				if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+					outValue = checkTesteePlace( --zcPos );
+
+				if ( parsePosNewArg && outValue && str2int_Ptr( ccmd.args[ 2 ], +zcNewPos ) )
+					outValue = checkTesteePlace( --zcNewPos );
+			}
+		}
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		if ( zcPos != -1 ) {
+			ZCheckerHandler handler = ccmd.handler;
+
+			switch ( zcPanelControlType ) {
+			case PCT_Save:
+				if ( handler.Testee[ zcPos ].mo ) {
+					int index = FindAliasIndex( zcAliasName );
+					bool continueFlag = true;
+
+					if ( index != -1 ) {
+						if ( aliases[ index ].thing ) {
+							ZCGlobal.Log( LL_Main, "Alias \"" .. zcAliasName .. "\" already exists and linked to the actor." );
+							continueFlag = false;
+						} else {
+							ZCGlobal.Log( LL_Detailed, "Relinking the \"" .. zcAliasName .. "\" alias (its original actor destroyed)." );
+						}
+					} 
+
+					if ( continueFlag ) {
+						ZCInfoPanelControlAliasNode aliasnode = ZCInfoPanelControlAliasNode( new( 'ZCInfoPanelControlAliasNode' ) );
+
+						aliasnode.aliasname = zcAliasName;
+						aliasnode.thing = handler.Testee[ zcPos ].mo;
+						aliases.Push( aliasnode );
+
+						ZCGlobal.Log( LL_Detailed, "Saved actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> as \"" .. zcAliasName .. "\"." );
+					}
+				} else {
+					ZCGlobal.Log( LL_Main, "No actor linked to the panel " .. ( zcPos + 1 ) );
+				}
+				break;
+			case PCT_Load:
+				int index = FindAliasIndex( zcAliasName );
+
+				if ( index != -1 ) {
+					if ( aliases[ index ].thing ) {
+						handler.Testee[ zcPos ].mo = aliases[ index ].thing;
+						ZCGlobal.Log( LL_Detailed, "Loaded actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> with alias \"" .. zcAliasName .. "\"." );
+					} else {
+						ZCGlobal.Log( LL_Detailed, "Cannot load, actor with alias \"" .. zcAliasName .. "\" destroyed." );
+					}
+				} else {
+					ZCGlobal.Log( LL_Main, "Alias name \"" .. zcAliasName .. "\" does not exist." );
+				}
+				break;
+			case PCT_Move:
+			case PCT_Copy:
+				if ( handler.Testee[ zcPos ].mo ) {
+					if ( zcNewPos != -1 )
+						handler.Testee[ zcNewPos ].mo = handler.Testee[ zcPos ].mo;
+
+					if ( zcPanelControlType == PCT_Move )
+						handler.Testee[ zcPos ].mo = NULL;
+				} else {
+					ZCGlobal.Log( LL_Main, "No actor in position " .. ( zcPos + 1 ) );
+				}
+				break;
+			case PCT_Info:
+				Actor mo = handler.Testee[ zcPos ].mo;
+
+				if ( mo ) {
+					ZCGlobal.Log( LL_Debug, "ccmd.handler.Testee[ " .. zcPos .. " ]: " .. handler.Testee[ zcPos ] .. "." );
+
+					ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "Actor in position " .. GRAY .. ( zcPos + 1 ) .. DARKGRAY .. " is " .. GRAY .. mo.GetClassName() .. DARKGRAY .. " <" .. mo .. ">" );
+
+					class parentClass = mo.GetParentClass();
+
+					while ( parentClass != NULL ) {
+						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  Inherited from " .. GRAY .. parentClass.GetClassName() .. DARKGRAY .. " <" .. parentClass .. ">" );
+						parentClass = parentClass.GetParentClass();
+					}
+				} else {
+					ZCGlobal.ClearscopeLog( LL_Main, "There's no actor in position " .. ( zcPos + 1 ) );
+				}
+				break;
+			default:
+				ZCGlobal.Log( LL_Emergency, "Unknown panel control type " .. zcPanelControlType .. " (with position " .. zcPos .. ")" );
+				break;
+			}
+		} else if ( zcPanelControlType == PCT_Info ) {
+			if ( aliases.Size() == 0 ) {
+				ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "No actors aliases created now" );
+			} else {
+				ZCGlobal.ClearscopeLog( LL_Main, "Actors aliases (total " .. aliases.Size() .. ": " );
+
+				for ( int i = 0; i < aliases.Size(); i++ ) {
+					if ( aliases[ i ].thing )
+						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" linked to the " .. GRAY .. aliases[ i ].thing.GetClassName() .. DARKGRAY .. " <" .. aliases[ i ].thing .. "> at pos " .. ZCGlobal.squeezeVector3( aliases[ i ].thing.pos ) );
+					else
+						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" is unlinked" );
+				}
+			}
+		} else {
+			ZCGlobal.Log( LL_Emergency, "Unknown panel control type " .. zcPanelControlType .. " (with no defined position)." );
+		}
+	}
+} // of class ZCInfoPanelControlCommand: ZCConsoleCommand {
 

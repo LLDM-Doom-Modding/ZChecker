@@ -14,7 +14,6 @@ alias zcrem "netevent zc_rem:%1"
 
 alias zcsetstate "netevent zc_setState:%1:%2"
 alias zcstate "zcsetstate %1 %2"
-alias zcsetst "zcsetstate %1 %2"
 alias zcsets "zcsetstate %1 %2"
 alias zcst "zcsetstate %1 %2"
 
@@ -36,6 +35,7 @@ alias zcact "netevent zc_actoraction:%1:%2"
 
 
 // ZChecker information:
+alias zcpanelctl "netevent zc_infopanelcontrol:%1:%2:%3"
 alias zclistthinkers "netevent zc_listthinkers:%1"
 //alias zcacstrack "netevent zc_acstracking:%1"
 
