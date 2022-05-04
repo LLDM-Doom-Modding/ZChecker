@@ -7,6 +7,8 @@ alias zcadd "netevent zc_add:%1:%2"
 alias zcaddself "zcadd self %1"
 alias zcaddweap "zcadd weapon %1"
 alias zcaddweapon "zcadd weapon %1"
+alias zcaddf "zcadd force %1"
+alias zcaddforce "zcadd force %1"
 
 alias zcrem "netevent zc_rem:%1"
 

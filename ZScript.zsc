@@ -14,7 +14,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.63";
+const ZCheckerVersion = "0.65";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -124,6 +124,17 @@ class ZCGlobal: Thinker {
         return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ", " .. int( vec.z ) .. ")";
     }
 
+
+	static double, double vector3ToAnglePitch( vector3 vec ) {
+		return atan2( vec.y, vec.x ), -90.0 * sin( vec.z );
+	}
+
+	static vector3 anglePitchToVector3( double angle, double pitch ) {
+		double cosangle = cos( angle );
+		double cospitch = cos( pitch );
+
+		return ( cosangle * cospitch, sin( angle ) * cospitch, sin( pitch ) );
+	}
 } // of class ZCGlobal: Thinker {
 
 

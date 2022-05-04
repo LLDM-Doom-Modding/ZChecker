@@ -47,7 +47,15 @@ class ZCHelpCommand: ZCConsoleCommand {
 
 
 class ZCAddCommand: ZCConsoleCommand {
-	String zcSpecialType;
+	enum ESpecialAddTypes {
+		SAT_Error = 0,
+		SAT_Normal,
+		SAT_Self,
+		SAT_Weapon,
+		SAT_Force
+	};
+
+	ESpecialAddTypes zcSpecialAddType;
 	int zcPos;
 
 	override String GetCommand() {
@@ -55,15 +63,16 @@ class ZCAddCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcadd [self|weap|weapon] [<pos>];zcaddself [<pos>];zcaddweap [<pos>]";
+		return "zcadd [self|weap[on]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddf [<pos>]";
 	}
 
 	override String GetHelpDescString() {
-		return "add a linetarget OR player OR current weapon into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
+		return "add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
 	}
 
 	override bool HandleArguments( ZCheckerCCMDInfo initCCMD ) {
 		ccmd = initCCMD;
+		zcSpecialAddType = SAT_Normal;
 
 		// For 0 args: zcPos == "-1" (to check it later).
 		bool outValue = ( ccmd.args.Size() == 0 );
@@ -71,9 +80,19 @@ class ZCAddCommand: ZCConsoleCommand {
 
 		// Next lines ("if {}" block) are hard to understand, but they're right.
 		if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
+			String arg0 = ccmd.args[ 0 ];
 
-			// "zcadd self|weap|weapon [pos]"
-			if ( ( ccmd.args[ 0 ] ~== "self" || ccmd.args[ 0 ] ~== "weap" || ccmd.args[ 0 ] ~== "weapon" ) ) {
+			zcSpecialAddType = SAT_Error;
+
+			if ( arg0 ~== "self" )
+				zcSpecialAddType = SAT_Self;
+			else if ( arg0 ~== "weap" || arg0 ~== "weapon" )
+				zcSpecialAddType = SAT_Weapon;
+			else if ( arg0 ~== "force" )
+				zcSpecialAddType = SAT_Force;
+
+			if ( zcSpecialAddType != SAT_Error ) {
+				// "zcadd self|weap[on]|force [pos]":
 
 				if ( ccmd.args.Size() == 2 ) {
 					if ( str2int_Ptr( ccmd.args[ 1 ], +zcPos ) )
@@ -81,10 +100,11 @@ class ZCAddCommand: ZCConsoleCommand {
 				} else {
 					outValue = true;
 				}
-
-			// "zcadd [pos]"
 			} else {
-				if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+				// "zcadd [pos]":
+
+				zcSpecialAddType = SAT_Normal;
+				if ( str2int_Ptr( arg0, +zcPos ) )
 					outValue = checkTesteePlace( --zcPos );
 			}
 		} // of if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
@@ -103,20 +123,67 @@ class ZCAddCommand: ZCConsoleCommand {
 		if ( zcPos != -1 ) {
 			PlayerInfo player = players[ ccmd.e.Player ];
 
-			if ( ccmd.args.Size() && ccmd.args[ 0 ].Left( 4 ) ~== "weap" && player.ReadyWeapon ) {
-				ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
-				ZCGlobal.Log( LL_Detailed, "added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
-			} else if ( ccmd.args.Size() && ccmd.args[ 0 ] ~== "self" ) {
-				ccmd.handler.Testee[ zcPos ].mo = player.mo;
-				ZCGlobal.Log( LL_Detailed, "added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
-			} else {
-				Actor linetracedActor = LinetraceActor( player.mo );
+			switch ( zcSpecialAddType ) {
+				case SAT_Normal:
+					Actor linetracedActor = LinetraceActor( player.mo );
 
-                if ( linetracedActor ) {
-					ccmd.handler.Testee[ zcPos ].mo = linetracedActor;
-					ZCGlobal.Log( LL_Detailed, "added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
-				}
-			} 
+	                if ( linetracedActor ) {
+						ccmd.handler.Testee[ zcPos ].mo = linetracedActor;
+						ZCGlobal.Log( LL_Detailed, "added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					}
+					break;
+				case SAT_Self:
+					ccmd.handler.Testee[ zcPos ].mo = player.mo;
+					ZCGlobal.Log( LL_Detailed, "added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					break;
+				case SAT_Weapon:
+					if ( player.ReadyWeapon ) {
+						ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
+						ZCGlobal.Log( LL_Detailed, "added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					}
+					break;
+				case SAT_Force:
+					ThinkerIterator it = ThinkerIterator.Create( "Actor" );
+					Actor locatedActor = NULL, cur = NULL;
+
+					while ( ( cur = Actor( it.Next() ) ) ) {
+						// Skip next actor if it:
+						//1) A caller (player) himself;
+						//2) Is not in the player field of view; and
+						//3) Is an item in someone's inventory.
+						if ( cur == player.mo || ( abs( player.mo.AngleTo( cur ) - player.mo.angle ) >= 45.0 ) || ( Inventory( cur ) && Inventory( cur ).owner ) )
+							continue;
+
+						// Grab the potential testee actor if the line of 
+						//sight intersects or touches its radius (circle).
+						// Funny, but right now I haven't written the 
+						//Z-exclusion despite of the realisation easiness.
+						vector2 plpos = player.mo.pos.xy;
+						vector2 curpos = cur.pos.xy;
+						double k = tan( player.mo.angle );
+						double r = cur.radius;
+
+						double kk = k * k;
+						double rr = r * r;
+						vector2 plpos2 = ( plpos.x * plpos.x, plpos.y * plpos.y );
+						vector2 curpos2 = ( curpos.x * curpos.x, curpos.y * curpos.y );
+
+						//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
+						double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
+
+						if ( underSqrt >= 0 && ( !locatedActor || cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) )
+							locatedActor = cur;
+					}
+
+	                if ( locatedActor ) {
+						ccmd.handler.Testee[ zcPos ].mo = locatedActor;
+						ZCGlobal.Log( LL_Detailed, "added an arbitrary actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					}
+					break;
+				default:
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\"." );
+					break;
+			}
 
 		} else {
 			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insuffienty place. Try set target to list directly with \"zcadd [1.." .. MaxTestee .. "]\"." );
