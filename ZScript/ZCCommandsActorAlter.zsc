@@ -425,6 +425,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				break;
 			case AC_Destroy:
 				ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. testee.GetClassName() );
+				testee.ClearCounters();
 				testee.Destroy();
 				break;
 			default:

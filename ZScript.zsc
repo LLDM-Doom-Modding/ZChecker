@@ -14,7 +14,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.66";
+const ZCheckerVersion = "0.67";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -216,8 +216,8 @@ class ZCheckerHandler: StaticEventHandler {
 		//addConsoleClass( 'ZCACSTrackingCommand' );
 
 		addConsoleSeparator( true );
-		addConsoleClass( 'ZCEvmapCommand', true );
-		addConsoleClass( 'ZCEvmapCommand_goto' );
+		addConsoleClass( 'ZCEvmapCommand' );
+		addConsoleClass( 'ZCEvmapCommand_goto', true );
 		addConsoleClass( 'ZCEvmapCommand_pause' );
 		addConsoleClass( 'ZCEvmapCommand_recreate', true );
 
