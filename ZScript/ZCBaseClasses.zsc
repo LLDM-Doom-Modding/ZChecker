@@ -244,12 +244,22 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 			bool unreleased = !!( zcFlags & CCF_Unreleased );
 
+			String ccmdColor = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
+
+			for ( int i = 0; i < aliases.Size(); i++ ) {
+				aliases[ i ].Replace( "|", TEXTCOLOR_GRAY .. "|" .. ccmdColor );
+				aliases[ i ].Replace( "[", TEXTCOLOR_BLUE .. "[" .. ccmdColor );
+				aliases[ i ].Replace( "]", TEXTCOLOR_BLUE .. "]" .. ccmdColor );
+				aliases[ i ].Replace( "<", TEXTCOLOR_ORANGE .. "<" .. ccmdColor );
+				aliases[ i ].Replace( ">", TEXTCOLOR_ORANGE .. ">" .. ccmdColor );
+			}
+
 			// Extra aliases:
 			for ( int i = 0; i < aliases.Size() - 1; i++ )
-				helpCacheString = helpCacheString .. ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE ) .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
+				helpCacheString = helpCacheString .. ccmdColor .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
 
 			// Last alias and a description:
-			helpCacheString = helpCacheString .. ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE ) .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. GetHelpDescString();
+			helpCacheString = helpCacheString .. ccmdColor .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. GetHelpDescString();
 
 			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
 
