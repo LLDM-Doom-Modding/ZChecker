@@ -490,7 +490,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE );
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
-				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor(s) of class \"" .. summoneeClass .. "\"" );
+				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor(s) of class \"" .. summoneeClass.GetClassName() .. "\"" );
 			} // of if ( player ) {}
 
 		} else {
