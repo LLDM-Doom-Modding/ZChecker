@@ -12,7 +12,7 @@ user bool mcm_zchecker_info_main			= true;
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
 user bool mcm_zchecker_info_inventory		= true;
 user bool mcm_zchecker_info_states			= false; // States and frames.
-user int mcm_zchecker_infoset_statesmode	= 1;	 // Amount of states: "1, 5, 7, 10, 15, unlimited".
+user int mcm_zchecker_infoset_statesamount	= 7;	 // Amount of states (unlimited, 1, 2, ..., 15).
 
 user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
 user bool mcm_zchecker_info_levelpointers 	= false; // BlockingMobj, LastHeard, LastEnemy, LastLookActor, Poisoner.

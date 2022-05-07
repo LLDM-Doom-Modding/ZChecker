@@ -11,7 +11,7 @@ OptionMenu "mcm_ZChecker_Control" {
 	Option "World positioning", "mcm_zchecker_info_worldpos", "OnOff"
 	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
 	Option "States", "mcm_zchecker_info_states", "OnOff"
-	Option "States amount", "mcm_zchecker_infoset_statesmode", "mcm_zchecker_StatesAmount"
+	ScaleSlider "States amount", "mcm_zchecker_infoset_statesamount", 0, 20, 1, "Unlimited"
 
     StaticText "Pointers", "Darkgray"
 	Option "Common pointers", "mcm_zchecker_info_mainpointers", "OnOff"
