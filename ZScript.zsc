@@ -234,6 +234,7 @@ class ZCheckerHandler: StaticEventHandler {
 		addInfoPanelClass( 'ZCPlayersInfoPanel' );
 		addInfoPanelClass( 'ZCCommonPointersInfoPanel' );
 		addInfoPanelClass( 'ZCInteractionPointersInfoPanel' );
+		addInfoPanelClass( 'ZCOtherPointersInfoPanel' );
 
 		//addInfoPanelClass( 'ZCVisualInfoPanel' );
 		//addInfoPanelClass( 'ZCSectorsInfoPanel' );
@@ -299,7 +300,7 @@ class ZCheckerHandler: StaticEventHandler {
 			int height = int( scale * Screen.GetHeight() );
 			double stringWidth = zcInfoPanelFont.StringWidth( outStr );
 
-			x = ( width * x ) - stringWidth / 2;
+			x = ( width * x ); //- stringWidth / 2;
 			y *= height;
 
 			// Push the text out from the borders:

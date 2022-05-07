@@ -69,3 +69,18 @@ class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
 	}
 }
 
+class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_otherpointers";
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		testeething = thing;
+
+		return
+			decoratePointerString( thing.snext, "SecNext&", BROWN ) .. "\n" ..
+			decoratePointerString( thing.Alternative, "Alternative", BRICK ) .. "\n" ..
+			decoratePointerString( thing.Goal, "Goal", RED ) .. "\n" ..
+			decoratePointerString( thing.Inv, "Inv&", GRAY );
+	}
+}
