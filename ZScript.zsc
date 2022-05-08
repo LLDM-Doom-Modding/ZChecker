@@ -231,6 +231,7 @@ class ZCheckerHandler: StaticEventHandler {
 		addInfoPanelClass( 'ZCSpecialsArgsInfoPanel' );
 		addInfoPanelClass( 'ZCInventoryInfoPanel' );
 		addInfoPanelClass( 'ZCStatesInfoPanel' );
+		addInfoPanelClass( 'ZCStatesLoggingInfoPanel' );
 		addInfoPanelClass( 'ZCPlayersInfoPanel' );
 		addInfoPanelClass( 'ZCCommonPointersInfoPanel' );
 		addInfoPanelClass( 'ZCInteractionPointersInfoPanel' );
@@ -245,6 +246,26 @@ class ZCheckerHandler: StaticEventHandler {
 
 		Super.OnRegister();
 	}
+
+	// Method to update all of the field meta-information:
+	private clearscope Actor UpdateTesteeField( int fieldindex ) {
+		Actor curTestee = NULL;
+
+		if ( Testee[ fieldindex ] && Testee[ fieldindex ].mo )
+			curTestee = Testee[ fieldindex ].mo;
+
+		// Updating info actors type. Usually it's better not to cross the 
+		//ui, data and play scopes in the one method...
+		if ( curTestee is "StateProvider" && PlayerPawn( Inventory( curTestee ).owner ) ) {
+			Testee[ fieldindex ].mo = curTestee = PlayerPawn( Inventory( curTestee ).owner ).player.ReadyWeapon;
+			Testee[ fieldindex ].actorType = IAT_StateProvider;
+		} else {
+			Testee[ fieldindex ].actorType = IAT_Normal;
+		}
+
+		return curTestee;
+	}
+
 
 	override void RenderOverlay( RenderEvent e ) {
 		// User CVars locating uses a relatively long algorithm. After a 
@@ -270,17 +291,10 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
-			if ( !Testee[ i ] || !Testee[ i ].mo )
+			Actor curTestee = UpdateTesteeField( i );
+
+			if ( !curTestee )
 				continue;
-
-			Actor curTestee = Testee[ i ].mo;
-
-			// Updating info actors type. Usually it's better not to cross the 
-			//ui, data and play opportunities in the one method...
-			if ( curTestee is "StateProvider" && PlayerPawn( Inventory( curTestee ).owner ) )
-				Testee[ i ].actorType = IAT_StateProvider;
-			else
-				Testee[ i ].actorType = IAT_Normal;
 
 
 			// Forming a full information panel:

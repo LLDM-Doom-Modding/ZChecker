@@ -99,9 +99,18 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	}
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
 
+
 class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	override String GetCVarName( void ) {
 		return "mcm_zchecker_info_states";
+	}
+
+	protected String DecoratedState( State st ) {
+		SpriteID sprite = st.Sprite;
+
+		return
+			String.Format( SAPPHIRE .. sprite .. LIGHTBLUE .. " %c " .. SAPPHIRE .. "%i\c-",
+						st.Frame + 65, st.Tics );
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -135,11 +144,10 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		do {
 			prevstates.Push( st );
-			prevstatesstr.Push( String.Format( "\c-" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-",
-								( isWeapon? "" .. weapOwner.player.psprites.sprite : "" .. thing.Sprite ),
-								st.Frame + 65, st.Tics ) );
+			prevstatesstr.Push( DecoratedState( st ) );
 
 			st = st.NextState;
+
 			int backloopStateIndex = prevstates.Find( st );
 
 			if ( loopFound = ( backloopStateIndex != prevstates.Size() ) ) {
@@ -153,7 +161,10 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			}
 
 			statesCnt++;
-		} while ( st && st != thing.CurState && statesCnt < statesAmount && !loopFound );
+		} while ( st && st != curState && statesCnt < statesAmount && !loopFound );
+
+
+		st = curState;
 
 		for ( int i = 0; i < prevstatesstr.Size(); i++ )
 			outStr = outStr .. prevstatesstr[ i ] .. "\n";
@@ -165,8 +176,6 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			}
 		}
 
-
-		st = curState;
 
 		if ( st.Tics <= 0 ) {
 			outStr = outStr .. DARKGREEN .. "===== static =====";
@@ -229,3 +238,46 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		return outStr;
 	}
 } // of class ZCStatesInfoPanel: ZCBaseInfoPanelPart {}
+
+
+class ZCStatesInfoData {
+	State st;
+}
+
+class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
+	Array<ZCStatesInfoData> prevLogStates;
+
+	override String GetCVarName( void ) {
+		return "mcm_zchecker_info_stateslogging";
+	}
+
+	override void OnCreate() {
+		for ( int i = 0; i < MaxTestee; i++ )
+			prevLogStates.Push( new( 'ZCStatesInfoData' ) );
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		State curState = thing.CurState;
+		State st = curState;
+
+		State prevlogst = prevLogStates[ thingfield.fieldPos ].st;
+
+		if ( prevlogst && prevlogst != st ) {
+			String logstr = ( thingfield.fieldPos + 1 ) .. ". " .. DecoratedState( st );
+
+			/*String logstr = String.Format( "%i. \c-" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-",
+							( thingfield.fieldPos + 1 ),
+							( isWeapon? "" .. weapOwner.player.psprites.sprite : "" .. thing.Sprite ),
+							st.Frame + 65, st.Tics );*/
+
+			if ( prevlogst.NextState != st )
+				logstr = logstr .. String.Format( DARKGRAY .. " (forced, should have been \"" .. DecoratedState( prevlogst ) .. DARKGRAY .. "\")." );
+
+			ZCGlobal.ClearscopeLog( LL_Main, logstr );
+		}
+
+		prevLogStates[ thingfield.fieldPos ].st = st;
+
+		return DARKGRAY .. "(" .. LIGHTBLUE .. "States logging enabled" .. DARKGRAY .. ")";
+	}
+} // of class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {}

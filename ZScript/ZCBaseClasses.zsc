@@ -313,13 +313,18 @@ class ZCBaseInfoPanelPart abstract {
 
 	ZCheckerHandler handler;
 
+
+	virtual void OnCreate( void ) { }
+
 	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
 		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
 
 		panel.handler = globalHandler;
+		panel.OnCreate();
 
 		return panel;
 	}
+
 
 	virtual String GetCVarName( void ) {
 		return "mcm_zchecker_info_...";
