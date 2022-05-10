@@ -1,5 +1,5 @@
 // Common console variables.
-user int mcm_zchecker_loglevel = 1;
+server int mcm_zchecker_loglevel = 1;
 
 
 // Information panel console variables.
