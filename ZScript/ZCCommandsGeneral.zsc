@@ -138,6 +138,8 @@ class ZCAddCommand: ZCConsoleCommand {
 					if ( player.ReadyWeapon ) {
 						ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
 						ZCGlobal.Log( LL_Detailed, "Added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					} else {
+						ZCGlobal.Log( LL_Main, "No weapon, cannot add." );
 					}
 					break;
 				case SAT_Force:
