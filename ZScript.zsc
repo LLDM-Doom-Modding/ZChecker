@@ -161,7 +161,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		if ( index >= 0 && index < zcConsoleHandleClasses.Size() ) {
 			ccmd = zcConsoleHandleClasses[ index ];
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleCommand(). CCMD #" .. index .. " is \"" .. zcConsoleHandleClasses[ index ] .. "\"." );
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleCommand(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
 		}
 
 		return ccmd;
@@ -169,6 +169,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	private void addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Creating classname \"" .. classname .. "\"." );
 		zcConsoleHandleClasses.push( ZCConsoleClass.Create( classname, importantFlag ) );
 	}
 	private void addConsoleSeparator( bool importantFlag = false ) {
@@ -176,9 +177,12 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	private void addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Creating panel part \"" .. classname .. "\"." );
+
 		ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
 		zcInfoPanelClasses.push( newPanelPart );
 	}
+
 
 	override void OnRegister() {
 		SetOrder( ZCheckerHandlerOrder );
@@ -242,7 +246,7 @@ class ZCheckerHandler: StaticEventHandler {
 		//addInfoPanelClass( 'ZCOtherActorsInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherInfoPanel' );
 
-		ZCGlobal.Log( LL_Detailed, GetClassName() .. "::OnRegister(). ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console classes, " .. zcInfoPanelClasses.Size() .. " info panel classes." );
+		ZCGlobal.Log( LL_Detailed, "ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console commands, " .. zcInfoPanelClasses.Size() .. " info panels." );
 
 		Super.OnRegister();
 	}
@@ -335,7 +339,7 @@ class ZCheckerHandler: StaticEventHandler {
 		// ZChecker CCMDs parsing:
 		String ccmdName = zcCCMDInfo.InitFromEvent( e );
 
-		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD name: " .. ccmdName .. ". Has " .. zcConsoleHandleClasses.Size() .. " available commands." );
 
 			for ( int i = 0; i < zcCCMDInfo.args.Size(); i++ )
@@ -350,12 +354,14 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 
 			if ( ccmdName ~== curCCMD.GetCommand() ) {
-				curCCMD.ccmd = zcCCMDInfo; // Let's uncomment!
+				curCCMD.ccmd = zcCCMDInfo;
 
-				if ( curCCMD.HandleArguments() )
+				if ( curCCMD.HandleArguments() ) {
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. curCCMD.ccmd.args.Size() .. " argument(s) for CCMD " .. curCCMD.GetClassName() .. " handled successfully." );
 					curCCMD.DoCommand();
-				else
+				} else {
 					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage\c-:\n" .. curCCMD.GetHelpString() );
+				}
 
 				break;
 			}

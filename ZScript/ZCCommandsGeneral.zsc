@@ -144,6 +144,7 @@ class ZCAddCommand: ZCConsoleCommand {
 					break;
 				case SAT_Force:
 					ZCGlobal.Log( LL_Main, "[Work-in-progress command, may behave strangely]." );
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Forced mode." );
 
 					ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 					Actor locatedActor = NULL, cur = NULL;
@@ -173,8 +174,17 @@ class ZCAddCommand: ZCConsoleCommand {
 						//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
 						double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
 
-						if ( underSqrt >= 0 && ( !locatedActor || cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) )
+						if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
+							ZCGlobal.Log( LL_Debug, "Cur " .. TEXTCOLOR_OLIVE .. cur.GetClassName() .. LLCOLOR_DEBUG .. ": " ..
+									String.Format( "plr.pos %s, cur.pos %s, plr.angle %.3f, k %.3f, cur.radius %.3f;  = sqrt( " .. TEXTCOLOR_GRAY .. "%+.3f" .. LLCOLOR_DEBUG .. " ), prev& " .. locatedActor,
+									ZCGlobal.squeezeVector2( plpos ), ZCGlobal.squeezeVector2( curpos ), player.mo.angle, k, r, underSqrt )
+								);
+						}
+
+						if ( underSqrt >= 0 && ( !locatedActor || ( cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) ) ) {
 							locatedActor = cur;
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
+						}
 					}
 
 	                if ( locatedActor ) {

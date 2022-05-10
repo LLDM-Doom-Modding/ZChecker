@@ -196,6 +196,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		Actor outActor = NULL;
         FLineTraceData RemoteRay;
 
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::LinertraceActor(). Address of source actor: " .. from );
+
 		from.LineTrace( from.Angle, 0xFFFF, from.Pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: RemoteRay );
 
         if ( RemoteRay.HitType == TRACE_HitActor ) {
