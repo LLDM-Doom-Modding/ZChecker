@@ -258,8 +258,17 @@ class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		bool isWeapon = ( thingfield.actorType == IAT_StateProvider );
+
 		State curState = thing.CurState;
 		State st = curState;
+
+		if ( isWeapon ) {
+			Actor weapOwner = getItemPlayerOwner( Inventory( thing ) );
+
+			if ( weapOwner.player.psprites )
+				curState = st = weapOwner.player.psprites.CurState;
+		}
 
 		State prevlogst = prevLogStates[ thingfield.fieldPos ].st;
 
