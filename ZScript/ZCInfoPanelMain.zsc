@@ -217,7 +217,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					( st.bDehacked? "\c[Red]Deh\c- " : "" ) .. "\n" ..
 				"  UseFlags: " .. st.UseFlags .. ", TicRange: " .. st.TicRange .. "; \n" ..
 				"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n";
-		} else {
+
+		} else if ( weapOwner.player.psprites ) { // Thanks to Il Str for crash reporting.
 			PSprite pst = weapOwner.player.psprites;
 
 			//"State \c[Sapphire]" .. st.Sprite .. String.format( " \c[LightBlue]%c(%c) \c[Sapphire]%i\c-", st.Frame + 65, st.CurState.Frame + 65, st.CurState.Tics ) .. "\c-\n" .. "  Current tic: " .. st.Tics .. "\n"
