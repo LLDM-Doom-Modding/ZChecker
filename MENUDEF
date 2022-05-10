@@ -66,12 +66,3 @@ OptionValue "mcm_zchecker_LogLevels" {
 	2, "2. Detailed"
 	3, "3. Debug mode"
 }
-
-OptionValue "mcm_zchecker_StatesAmount" {
-	0, "Current state only"
-	1, "5 states (default)"
-	2, "7 states"
-	3, "10 states"
-	4, "15 states"
-	5, "Unlimited"
-}
