@@ -169,7 +169,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	private void addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Creating classname \"" .. classname .. "\"." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Added \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
 		zcConsoleHandleClasses.push( ZCConsoleClass.Create( classname, importantFlag ) );
 	}
 	private void addConsoleSeparator( bool importantFlag = false ) {
@@ -177,7 +177,7 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	private void addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Creating panel part \"" .. classname .. "\"." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Added \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
 
 		ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
 		zcInfoPanelClasses.push( newPanelPart );
