@@ -280,8 +280,25 @@ class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
 							( isWeapon? "" .. weapOwner.player.psprites.sprite : "" .. thing.Sprite ),
 							st.Frame + 65, st.Tics );*/
 
-			if ( prevlogst.NextState != st )
-				logstr = logstr .. String.Format( DARKGRAY .. " (forced, should have been \"" .. DecoratedState( prevlogst ) .. DARKGRAY .. "\")." );
+			State nextlogst = prevlogst.NextState;
+			bool zeroSkipped = ( nextlogst && nextlogst.tics == 0 );
+
+			while ( nextlogst && nextlogst.tics == 0 )
+				nextlogst = nextlogst.NextState;
+
+			bool stateForced = ( nextlogst != st );
+
+			if ( zeroSkipped || stateForced ) {
+				logstr = logstr .. DARKGRAY .. " (";
+	
+				if ( zeroSkipped )
+					logstr = logstr .. GRAY .. "zero frames" .. DARKGRAY .. " skipped" .. ( stateForced? "; " : "" );
+
+				if ( stateForced )
+					logstr = logstr .. "forced, should have been \"" .. DecoratedState( prevlogst ) .. DARKGRAY .. "\"";
+
+				logstr = logstr .. ")";
+			}
 
 			ZCGlobal.ClearscopeLog( LL_Main, logstr );
 		}
