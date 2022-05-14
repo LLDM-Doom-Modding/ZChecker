@@ -11,7 +11,7 @@ OptionMenu "mcm_ZChecker_Control" {
 	Option "World positioning", "mcm_zchecker_info_worldpos", "OnOff"
 	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
 	Option "States", "mcm_zchecker_info_states", "OnOff"
-	ScaleSlider "States: amount", "mcm_zchecker_infoset_statesamount", 0, 20, 1, "Unlimited"
+	ScaleSlider "States: amount", "mcm_zchecker_infoset_statesamount", 0, 25, 1, "Unlimited"
 	Option "States logging", "mcm_zchecker_info_stateslogging", "OnOff"
 
     StaticText "Pointers", "Darkgray"
@@ -51,7 +51,7 @@ OptionMenu "mcm_ZChecker_InfoPanelControl" {
 	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
 	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
-	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 2.0, 0.1, 1
+	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
 }
 
 
