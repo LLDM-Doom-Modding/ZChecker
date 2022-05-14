@@ -331,7 +331,7 @@ class ZCTakeCommand: ZCGiveCommand {
 
 class ZCActorActionCommand: ZCConsoleCommand {
 	enum EActorActions {
-		AC_Wrong = 0,
+		AC_Error = 0,
 		AC_Revive,
 		AC_Kill,
 		AC_Destroy
@@ -349,7 +349,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Do something with actor on <pos> (or linetarget if omitted). Possible values: \"revive\"|\"resurrect\"|\"rev\", \"kill\", \"destroy\"|\"remove\"";
+		return "Do special action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"revive\"|\"resurrect\"|\"rev\", \"kill\", \"destroy\"|\"remove\"|\"rm\"|\"del\"";
 	}
 
 	override bool HandleArguments() {
@@ -359,12 +359,13 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		if ( ccmd.args.Size() == 1 || ccmd.args.Size() == 2 ) {
 			outValue = true;
 			String what = ccmd.args[ ccmd.args.Size() - 1 ];
+			what.ToLower();
 
 			if ( what == "resurrect" || what == "revive" || what == "rev" )
 				actoraction = AC_Revive;
 			else if ( what == "kill" )
 				actoraction = AC_Kill;
-			else if ( what == "destroy" || what == "remove" )
+			else if ( what == "destroy" || what == "remove" || what == "rm" || what == "del" )
 				actoraction = AC_Destroy;
 			else
 				outValue = false;
@@ -432,7 +433,9 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				ZCGlobal.Log( LL_Emergency, "Unknown action id \"" .. actoraction .. "\" for testee " .. testee.GetClassName() );
 				break;
 			}
-		} // of if ( testee ) {
+		} else if ( zcPos != -1 ) {
+			ZCGlobal.Log( LL_Main, "No actor at position " .. ( zcPos + 1 ) );
+		}
 
 	}
 } // of class ZCActorActionCommand: ZCConsoleCommand {}
