@@ -46,7 +46,8 @@ enum EZCheckerLogLevels {
 	LL_Main = LL_General,
 	LL_Extended = LL_Detailed,
 
-	LL_NoPrefix = 0x8000
+	LL_NoDot		= 0x4000,
+	LL_NoPrefix		= 0x8000
 };
 
 enum EZCheckerInfoActorType {
@@ -101,7 +102,7 @@ class ZCGlobal: Thinker {
 			} // of switch ( loglevel & ~LL_NoPrefix ) {
 		} // of if ( !( loglevel & LL_NoPrefix ) ) {
 
-		console.printf( logPrefix .. text .. ( text.Mid( text.Length() - 1 ) == "."? "" : "." ) );
+		console.printf( logPrefix .. text .. ( ( loglevel & LL_NoDot ) || ( text.Mid( text.Length() - 1 ) == "." )? "" : "." ) );
 	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
 
 	// A play-scope wrapper around a data-scope method (mostly used):

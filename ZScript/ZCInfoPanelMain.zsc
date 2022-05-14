@@ -44,7 +44,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 							int( thing.pitch ) .. ", \cUr\c-" ..
 							int( thing.roll ) .. ");\n" .. TEAL ..
 				"Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
-				"Vel: " .. ZCGlobal.squeezeVector3( thing.vel ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
+				String.Format( "Vel: (%.2f, %.2f, %.2f)", thing.vel.x, thing.vel.y, thing.vel.z ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".\n", thing.radius, thing.height );
 
 		return outStr;
@@ -300,7 +300,7 @@ class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
 				logstr = logstr .. ")";
 			}
 
-			ZCGlobal.ClearscopeLog( LL_Main, logstr );
+			ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, logstr );
 		}
 
 		prevLogStates[ thingfield.fieldPos ].st = st;
