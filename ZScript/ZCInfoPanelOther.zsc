@@ -1,6 +1,7 @@
 class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_args";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_args";
+		optionLabel = "Args, special & TIDs";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -18,8 +19,9 @@ class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_players";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_players";
+		optionLabel = "Players & teams";
 	}
 
 	protected String getPlayerString( int playernum ) {

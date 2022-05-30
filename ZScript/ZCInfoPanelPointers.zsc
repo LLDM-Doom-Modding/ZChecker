@@ -1,8 +1,9 @@
 class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 	Actor testeething;
 
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_mainpointers";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_mainpointers";
+		optionLabel = "Common pointers";
 	}
 
 	protected String decoratePointerString( Actor ptr, String desc, String ptrcolor = WHITE ) {
@@ -53,8 +54,9 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_levelpointers";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_levelpointers";
+		optionLabel = "Interaction pointers";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -70,8 +72,9 @@ class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
 }
 
 class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_otherpointers";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_otherpointers";
+		optionLabel = "Other pointers";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {

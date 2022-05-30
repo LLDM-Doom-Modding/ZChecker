@@ -2,7 +2,7 @@ version "2.4.0"
 
 #include "ZScript/ZCMapScripts.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
-//#include "ZScript/ZCMenus.zsc"
+#include "ZScript/ZCMenus.zsc"
 
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
@@ -175,8 +175,8 @@ class ZCGlobal: Thinker {
 
 
 class ZCheckerHandler: StaticEventHandler {
-	private Array<ZCConsoleClass> zcConsoleHandleClasses;
-	private Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
+	Array<ZCConsoleClass> zcConsoleHandleClasses;
+	Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
 
 	// It's impossible to avoid unloading actors (and pointers to them) from 
 	//memory on level reloading. Or I don't know something.
@@ -187,7 +187,6 @@ class ZCheckerHandler: StaticEventHandler {
 
 	String zcConfigFile;
 
-	// Especially for ZCHelp:
 	ZCConsoleClass GetZCConsoleClass( int index ) {
 		ZCConsoleClass ccmd = NULL;
 
@@ -198,7 +197,6 @@ class ZCheckerHandler: StaticEventHandler {
 
 		return ccmd;
 	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
-
 
 	private bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
@@ -353,57 +351,16 @@ class ZCheckerHandler: StaticEventHandler {
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Testee[ i ] = new( 'ZCheckerField' );
 			Testee[ i ].fieldPos = i;
+			Testee[ i ].actorType = IAT_Normal;
 			//Testee[ i ].inv = new( 'ZCheckerInvField' );
 		}
 
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
-
 		zcInfoPanelFont = Font.FindFont( "smallfont" );
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating CCMD handlers and info panel classes..." );
-
 		IncludeConsoleClasses();
-		/*addConsoleClass( 'ZCHelpCommand', true );
-		addConsoleClass( 'ZCAddCommand', true );
-		addConsoleClass( 'ZCRemCommand', true );
-		addConsoleClass( 'ZCSetStateCommand' );
-		addConsoleClass( 'ZCSetFlagCommand' );
-		addConsoleClass( 'ZCBuddhaCommand' );
-		addConsoleClass( 'ZCGiveCommand' );
-		addConsoleClass( 'ZCTakeCommand' );
-		addConsoleClass( 'ZCSummonCommand' );
-		addConsoleClass( 'ZCActorActionCommand' );
-
-		addConsoleSeparator();
-		addConsoleClass( 'ZCInfoPanelControlCommand' );
-		addConsoleClass( 'ZCListThinkersCommand' );
-		//addConsoleClass( 'ZCACSTrackingCommand' );
-
-		addConsoleSeparator( true );
-		addConsoleClass( 'ZCEvmapCommand' );
-		addConsoleClass( 'ZCEvmapCommand_goto', true );
-		addConsoleClass( 'ZCEvmapCommand_pause' );
-		addConsoleClass( 'ZCEvmapCommand_recreate', true );
-
-		//
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating information panels..." );
-		addInfoPanelClass( 'ZCMainInfoPanel' );
-		addInfoPanelClass( 'ZCWorldPositionInfoPanel' );
-		addInfoPanelClass( 'ZCSpecialsArgsInfoPanel' );
-		addInfoPanelClass( 'ZCInventoryInfoPanel' );
-		addInfoPanelClass( 'ZCStatesInfoPanel' );
-		addInfoPanelClass( 'ZCStatesLoggingInfoPanel' );
-		addInfoPanelClass( 'ZCPlayersInfoPanel' );
-		addInfoPanelClass( 'ZCCommonPointersInfoPanel' );
-		addInfoPanelClass( 'ZCInteractionPointersInfoPanel' );
-		addInfoPanelClass( 'ZCOtherPointersInfoPanel' );
-
-		//addInfoPanelClass( 'ZCVisualInfoPanel' );
-		//addInfoPanelClass( 'ZCSectorsInfoPanel' );
-		//addInfoPanelClass( 'ZCOtherActorsInfoPanel' );
-		//addInfoPanelClass( 'ZCOtherInfoPanel' );
-		*/
 
 		ZCGlobal.Log( LL_Detailed, "ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console commands, " .. zcInfoPanelClasses.Size() .. " info panels." );
 
@@ -438,10 +395,10 @@ class ZCheckerHandler: StaticEventHandler {
 
 		for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
 			ZCBaseInfoPanelPart panelpart = zcInfoPanelClasses[ iCurInfoPanel ];
-			CVar curInfoPanelCVar = CVar.GetCVar( panelpart.GetCVarName(), pl );
+			CVar curInfoPanelCVar = CVar.GetCVar( panelpart.optionCVarName, pl );
 
 			if ( !curInfoPanelCVar ) {
-				ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panelpart.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown user CVar \"" .. TEXTCOLOR_RED .. panelpart.GetCVarName() .. LLCOLOR_EMERGENCY .."\"." );
+				ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panelpart.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown user CVar \"" .. TEXTCOLOR_RED .. panelpart.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
 			} else if ( curInfoPanelCVar.GetBool() ) {
 				infoPanelParts.Push( panelpart );
 			}

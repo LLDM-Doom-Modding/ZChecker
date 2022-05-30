@@ -96,7 +96,7 @@ class ZCConsoleClass abstract play {
 	virtual String GetHelpString( void ) {
 		return TEXTCOLOR_RED .. "Wrong inheriting (\"ZCConsoleClass::GetHelpString()\" isn't overrided).";
 	}
-} // of class ZCConsoleHelpClass: Thinker abstract {}
+} // of class ZCConsoleClass abstract play {}
 
 class ZCConsoleSeparator: ZCConsoleClass {
 	virtual String GetHelpSeparatorName( void ) {
@@ -315,8 +315,10 @@ class ZCBaseInfoPanelPart abstract {
 
 	ZCheckerHandler handler;
 
+	String optionCVarName;
+	String optionLabel;
+	String optionSubmenuName;
 
-	virtual void OnCreate( void ) { }
 
 	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
 		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
@@ -327,14 +329,19 @@ class ZCBaseInfoPanelPart abstract {
 		return panel;
 	}
 
-
-	virtual String GetCVarName( void ) {
-		return "mcm_zchecker_info_...";
+	virtual void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_...";
+		optionLabel = "<" .. GetClassName() .. ">";
+		optionSubmenuName = "";
 	}
 
 	ui virtual String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		return "Nothing.";
 	}
+
+	/*ui virtual String GetOptionLabel( void ) {
+		return "<" .. GetClassName() .. ">";
+	}*/
 
 
 	protected PlayerPawn getItemPlayerOwner( Inventory item ) {

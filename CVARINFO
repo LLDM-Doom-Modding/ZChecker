@@ -1,6 +1,8 @@
 // Common console variables.
 server int mcm_zchecker_loglevel = 1;
 
+user string mcm_zchecker_infopanelsorder	= "";
+
 
 // Information panel console variables.
 user float mcm_zchecker_infopanel_startx	= 2.0;

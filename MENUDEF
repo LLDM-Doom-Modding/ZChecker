@@ -1,6 +1,30 @@
 //
 
-OptionMenu "mcm_ZChecker_Control" {
+OptionMenu "mcm_ZChecker_Control" protected {
+    // See "ZScript/ZCMenus.zsc" for the full menu code.
+    Class "ZCOptionMenuPanels"
+
+    StaticText " "
+	StaticText "What kind of information must be shown:", "Gold"
+
+    Title "ZChecker control"
+
+    StaticText " "
+	StaticText "General settings:", "Gold"
+	Submenu "Information panel settings", "mcm_ZChecker_InfoPanelControl"
+	Option "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels"
+
+
+    StaticText " "
+	StaticText "\"Everything\" map settings:", "Gold"
+	Option "Force use \"Everything\" map scripts", "mcm_zchecker_ev_forcemap", "OnOff"
+	Option "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo"
+	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
+	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
+	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+}
+
+/*OptionMenu "mcm_ZChecker_Control" {
     Title "ZChecker control"
 
 
@@ -11,7 +35,6 @@ OptionMenu "mcm_ZChecker_Control" {
 	Option "World positioning", "mcm_zchecker_info_worldpos", "OnOff"
 	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
 	Option "States", "mcm_zchecker_info_states", "OnOff"
-	ScaleSlider "States: amount", "mcm_zchecker_infoset_statesamount", 0, 25, 1, "Unlimited"
 	Option "States logging", "mcm_zchecker_info_stateslogging", "OnOff"
 
     StaticText "Pointers", "Darkgray"
@@ -42,7 +65,7 @@ OptionMenu "mcm_ZChecker_Control" {
 	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
 	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
 	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-}
+}*/
 
 OptionMenu "mcm_ZChecker_InfoPanelControl" {
     Title "Information panel control"
@@ -52,6 +75,12 @@ OptionMenu "mcm_ZChecker_InfoPanelControl" {
 	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
+}
+
+OptionMenu "mcm_ZCheckerSubmenu_states" {
+	Title "ZChecker: States extra options"
+
+	ScaleSlider "States: amount", "mcm_zchecker_infoset_statesamount", 0, 25, 1, "Unlimited"
 }
 
 

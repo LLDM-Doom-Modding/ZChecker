@@ -1,6 +1,7 @@
 class ZCMainInfoPanel: ZCBaseInfoPanelPart {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_main";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_main";
+		optionLabel = "Index, classname & health";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -33,8 +34,9 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCMainInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_worldpos";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_worldpos";
+		optionLabel = "World positioning";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -52,8 +54,9 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_inventory";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_inventory";
+		optionLabel = "Inventory";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -101,8 +104,10 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 
 
 class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_states";
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_states";
+		optionLabel = "States";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_states";
 	}
 
 	protected String DecoratedState( State st ) {
@@ -248,11 +253,10 @@ class ZCStatesInfoData {
 class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
 	Array<ZCStatesInfoData> prevLogStates;
 
-	override String GetCVarName( void ) {
-		return "mcm_zchecker_info_stateslogging";
-	}
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_stateslogging";
+		optionLabel = "States logging";
 
-	override void OnCreate() {
 		for ( int i = 0; i < MaxTestee; i++ )
 			prevLogStates.Push( new( 'ZCStatesInfoData' ) );
 	}

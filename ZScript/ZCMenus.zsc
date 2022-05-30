@@ -1,0 +1,52 @@
+// 
+
+class ZCOptionMenuPanels: OptionMenu {
+	override void Init( Menu parent, OptionMenuDescriptor desc ) {
+		ZCheckerHandler handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
+
+		if ( !handler ) {
+			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
+			Super.Init( parent, desc );
+			return;
+		}
+
+		if ( desc.mItems.Size() < 15 ) {
+			for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
+				ZCBaseInfoPanelPart panel = handler.zcInfoPanelClasses[ i ];
+
+				ZCOptionMenuItemInfopanel item = new( "ZCOptionMenuItemInfopanel" );
+				item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName );
+
+				desc.mItems.Insert( i + 2, item );
+			}
+		}
+
+		Super.Init( parent, desc );
+	}
+} // of class ZCOptionMenuPanels: OptionMenu {}
+
+class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
+	Name mSubmenu;
+
+	ZCOptionMenuItemInfopanel Init( String label, Name command, Name submenu ) {
+		Super.Init( label, command, 'OnOff' );
+
+		mSubmenu = submenu;
+
+		return self;
+	}
+
+	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
+		int superindent = Super.Draw( desc, y, indent, selected );
+		//int x = drawLabel( indent, y, selected? OptionMenuSettings.mFontColorSelection : OptionMenuSettings.mFontColorMore );
+
+		if ( selected && mSubmenu ) {
+			int x = indent + smallfont.StringWidth( "OnOff#" ) * CleanXfac_1;
+
+			screen.DrawText( smallfont, OptionMenuSettings.mFontColorSelection, x, y, "Submenu...", DTA_CleanNoMove_1, true, DTA_ColorOverlay, 0 );
+		}
+
+		return superindent;
+	}
+
+}
