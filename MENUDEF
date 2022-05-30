@@ -4,10 +4,12 @@ OptionMenu "mcm_ZChecker_Control" protected {
     // See "ZScript/ZCMenus.zsc" for the full menu code.
     Class "ZCOptionMenuPanels"
 
-    StaticText " "
-	StaticText "What kind of information must be shown:", "Gold"
-
     Title "ZChecker control"
+
+    StaticText " "
+	StaticText "Information panels settings:", "Gold"
+	StaticText "Enter sumbenu with <F4>, <space>, 'E' or <tab>", "DarkGray"
+    StaticText " "
 
     StaticText " "
 	StaticText "General settings:", "Gold"

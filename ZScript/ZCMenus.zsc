@@ -4,49 +4,94 @@ class ZCOptionMenuPanels: OptionMenu {
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		ZCheckerHandler handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
-		if ( !handler ) {
-			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
-			Super.Init( parent, desc );
-			return;
-		}
+		if ( desc.mItems.Size() < 20 ) {
+			// Size limit is a random constant satisfying the requirements, in fact...
 
-		if ( desc.mItems.Size() < 15 ) {
+			if ( !handler ) {
+				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
+				Super.Init( parent, desc );
+				return;
+			}
+
+			uint itemsOffset = 4;
+
 			for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
 				ZCBaseInfoPanelPart panel = handler.zcInfoPanelClasses[ i ];
 
 				ZCOptionMenuItemInfopanel item = new( "ZCOptionMenuItemInfopanel" );
-				item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName );
+				ZCOptionMenuItemInfopanelSubmenu submenuItem = NULL;
 
-				desc.mItems.Insert( i + 2, item );
+				if ( panel.optionSubmenuName ) {
+					submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
+					submenuItem.Init( item, panel );
+				}
+
+				item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName );
+				desc.mItems.Insert( i + itemsOffset, item );
+
+				if ( panel.optionSubmenuName ) {
+					itemsOffset++;
+					desc.mItems.Insert( i + itemsOffset, submenuItem );
+				}
 			}
 		}
 
 		Super.Init( parent, desc );
+	} // of override void Init( Menu parent, OptionMenuDescriptor desc ) {}
+
+	override bool OnUIEvent( UIEvent e ) {
+		ZCOptionMenuItemInfopanel curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ mDesc.mSelectedItem ] );
+
+		if ( curitem && curitem.mSubmenu && e.type == e.Type_KeyDown ) {
+			// Tab, F4, 'e', 'E' and space opens a submenu.
+			if ( e.KeyChar == e.Key_F4 || e.KeyChar == 0x09 || e.KeyChar == 0x45 || e.KeyChar == 0x65 || e.KeyChar == 0x20 ) {
+				Menu.MenuSound( "menu/choose" );
+				Menu.SetMenu( curitem.mSubmenu );
+				return true;
+			}
+		}
+
+		return Super.OnUIEvent( e );
 	}
 } // of class ZCOptionMenuPanels: OptionMenu {}
 
 class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 	Name mSubmenu;
 
-	ZCOptionMenuItemInfopanel Init( String label, Name command, Name submenu ) {
+	ZCOptionMenuItemInfopanel Init( String label, Name command, Name submenuName ) {
 		Super.Init( label, command, 'OnOff' );
+		mSubmenu = submenuName;
 
-		mSubmenu = submenu;
+		return self;
+	}
+}
+
+class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
+	ZCOptionMenuItemInfopanel masterMenuItem;
+	ZCBaseInfoPanelPart masterInfoPanel;
+
+	OptionMenuDescriptor desc;
+
+	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
+		masterMenuItem = masteritem;
+		masterInfoPanel = infopanel;
+		mLabel = "";
+
+		desc = OptionMenuDescriptor( MenuDescriptor.GetDescriptor( infopanel.optionSubmenuName ) );
 
 		return self;
 	}
 
 	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
-		int superindent = Super.Draw( desc, y, indent, selected );
-		//int x = drawLabel( indent, y, selected? OptionMenuSettings.mFontColorSelection : OptionMenuSettings.mFontColorMore );
+		bool masterItemSelected = false;
 
-		if ( selected && mSubmenu ) {
-			int x = indent + smallfont.StringWidth( "OnOff#" ) * CleanXfac_1;
-
-			screen.DrawText( smallfont, OptionMenuSettings.mFontColorSelection, x, y, "Submenu...", DTA_CleanNoMove_1, true, DTA_ColorOverlay, 0 );
+		if ( desc ) {
+			mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, desc );
+			masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
 		}
 
-		return superindent;
-	}
+		drawLabel( indent, y, masterItemSelected? OptionMenuSettings.mFontColorSelection : Font.CR_DARKGRAY );
 
+		return indent;
+	}
 }

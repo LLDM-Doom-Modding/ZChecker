@@ -339,9 +339,21 @@ class ZCBaseInfoPanelPart abstract {
 		return "Nothing.";
 	}
 
-	/*ui virtual String GetOptionLabel( void ) {
-		return "<" .. GetClassName() .. ">";
-	}*/
+	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
+		/*String label = "(";
+
+		for ( int i = 0; i < submenuDesc.mItems.Size(); i++ ) {
+			OptionMenuItemOption cur = OptionMenuItemOption( submenuDesc.mItems[ i ] );
+
+			if ( cur ) {
+				label = label .. cur.mCVar .. ":" .. cur.GetSelection() .. " ";
+			}
+		}
+
+		return label .. ")";*/
+
+		return "Submenu for " .. masterMenuItem.mLabel .. "";
+	}
 
 
 	protected PlayerPawn getItemPlayerOwner( Inventory item ) {
