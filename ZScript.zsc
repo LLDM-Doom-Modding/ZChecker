@@ -2,6 +2,7 @@ version "2.4.0"
 
 #include "ZScript/ZCMapScripts.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
+//#include "ZScript/ZCMenus.zsc"
 
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
@@ -53,6 +54,14 @@ enum EZCheckerLogLevels {
 enum EZCheckerInfoActorType {
 	IAT_Normal = 0,
 	IAT_StateProvider
+};
+
+enum ENewlineTypes {
+	ZCNL_Unknown = 0,
+	ZCNL_DOS,			// 0x0D, 0x0A
+	ZCNL_Unix,			// 0x0A
+	ZCNL_Mac,			// 0x0D
+	ZCNL_DOSReversed	// 0x0A, 0x0D
 };
 
 const LLCOLOR_MAIN = "\c-";
@@ -141,7 +150,27 @@ class ZCGlobal: Thinker {
 
 		return ( cosangle * cospitch, sin( angle ) * cospitch, sin( pitch ) );
 	}
-} // of class ZCGlobal: Thinker {
+
+	// Remove all first and all last spaces and tabs in the string.
+	static String TruncateStringBySpaces( String str ) {
+
+		uint code = str.CharCodeAt( 0 );
+		while ( ( code == 9 || code == 11 || code == 32 ) && str.Length() ) {
+			str = str.Mid( 1 );
+			code = str.CharCodeAt( 0 );
+		}
+
+		uint len = str.Length() - 1;
+		code = str.CharCodeAt( len );
+		while ( ( code == 9 || code == 11 || code == 32 ) && ( len + 1 ) ) {
+			str = str.Left( len );
+			len = str.Length() - 1;
+			code = str.CharCodeAt( len );
+		}
+
+		return str;
+	}
+} // of class ZCGlobal: Thinker {}
 
 
 
@@ -156,39 +185,169 @@ class ZCheckerHandler: StaticEventHandler {
 	ZCheckerCCMDInfo zcCCMDInfo;
 	transient Font zcInfoPanelFont;
 
+	String zcConfigFile;
+
 	// Especially for ZCHelp:
 	ZCConsoleClass GetZCConsoleClass( int index ) {
 		ZCConsoleClass ccmd = NULL;
 
 		if ( index >= 0 && index < zcConsoleHandleClasses.Size() ) {
 			ccmd = zcConsoleHandleClasses[ index ];
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleCommand(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleClass(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
 		}
 
 		return ccmd;
 	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
 
 
-	private void addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Added \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
-		zcConsoleHandleClasses.push( ZCConsoleClass.Create( classname, importantFlag ) );
+	private bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
+
+		if ( classname ) {
+			ZCConsoleClass newCCMD = ZCConsoleClass.Create( classname, importantFlag );
+			zcConsoleHandleClasses.push( newCCMD );
+			newCCMD.PostBeginPlay();
+		}
+
+		return !!classname;
 	}
 	private void addConsoleSeparator( bool importantFlag = false ) {
 		zcConsoleHandleClasses.push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
 	}
 
-	private void addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Added \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
+	private bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
 
-		ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
-		zcInfoPanelClasses.push( newPanelPart );
+		if ( classname ) {
+			ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
+			zcInfoPanelClasses.push( newPanelPart );
+		}
+
+		return !!classname;
 	}
 
+
+	static ENewlineTypes GetTextNewlinesType( String text ) {
+		ENewlineTypes nltype = ZCNL_Unknown;
+
+		if ( text != "" ) {
+			int curPos = 0;
+			int textLength = text.Length();
+
+			while ( nltype == ZCNL_Unknown && curPos < textLength ) {
+				if ( text.CharCodeAt( curPos ) == 0x0D )
+					nltype = ( ++curPos < textLength && text.CharCodeAt( curPos ) == 0x0A )? ZCNL_DOS : ZCNL_Mac;
+				else if ( text.CharCodeAt( curPos ) == 0x0A )
+					nltype = ( ++curPos < textLength && text.CharCodeAt( curPos ) == 0x0D )? ZCNL_DOSReversed : ZCNL_Unix;
+
+				curPos++;
+			}
+
+		} // of if ( text != "" ) {}
+
+		return nltype;
+	}
+
+	private void handleConfigFileNewlines( String newlineTypeComment, String replaceeNewlineSeq ) {
+		ZCGlobal.Log( LL_Debug, "New lines type for file \"ZChecker.cfg\" recognized as " .. newlineTypeComment );
+
+		if ( replaceeNewlineSeq != "\n" )
+			zcConfigFile.Replace( replaceeNewlineSeq, "\n" );
+	}
+
+	private bool checkKeywordArgsAmount( uint argsAmount, String keyword, uint rightAmount, String argsDescription ) {
+		if ( argsAmount != rightAmount ) {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::checkKeywordArgsAmount(). Wrong amount of arguments for keyword \"" .. keyword .. "\": has " .. argsAmount .. ", must be " .. rightAmount .. " (" .. argsDescription .. ")." );
+			return false;
+		}
+
+		return true;
+	}
+
+	void IncludeConsoleClasses( void ) {
+        int zcConfigFileHandler = Wads.FindLump( "zchecker.cfg" );
+
+        if ( zcConfigFileHandler != -1 ) {
+            zcConfigFile = Wads.ReadLump( zcConfigFileHandler );
+            Array<String> zcConfigLines;
+
+            zcConfigFile.ToLower();
+			ENewlineTypes newlinesType = GetTextNewlinesType( zcConfigFile );
+
+			switch ( newlinesType ) {
+				case ZCNL_Unix: handleConfigFileNewlines( "*nix (LF)", "\n" ); break;
+				case ZCNL_DOS: handleConfigFileNewlines( "DOS/Windows (CR/LF)", "\r\n" ); break;
+				case ZCNL_Mac: handleConfigFileNewlines( "MacOS (CR)", "\r" ); break;
+				case ZCNL_DOSReversed: handleConfigFileNewlines( "DOS reversed (LF/CR)", "\n\r" ); break;
+				default:
+					ZCGlobal.Log( LL_Debug, TEXTCOLOR_YELLOW .. "Cannot recognize new lines type, using *nix" .. LLCOLOR_DEBUG .. "." );
+					newlinesType = ZCNL_Unix;
+					break;
+			}
+
+            zcConfigFile.Replace( "\r\n", "\n" );
+            zcConfigFile.Split( zcConfigLines, "\n" );
+
+			uint curLineIndex = 1;
+
+            for ( int i = 0; i < zcConfigLines.Size(); i++, curLineIndex++ ) {
+                String curLine = zcConfigLines[ i ];
+
+                // Comments and extra spaces delete:
+                int IndexOfCommentStart = curLine.IndexOf( "#" );
+                if ( IndexOfCommentStart != -1 )
+                    curLine.Truncate( IndexOfCommentStart );
+
+				curLine = ZCGlobal.TruncateStringBySpaces( curLine );
+
+                // Try to unparse current line if it isn't empty or remove it elsewere:
+                if ( curLine != "" ) {
+	                Array<String> curLineWords;
+
+					curLineWords.Clear();
+		            curLine.Replace( "\t", " " );
+		            curLine.Split( curLineWords, " ", TOK_SKIPEMPTY );
+
+					int argsamount = ( curLineWords.Size() - 1 );
+
+                    if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" ) {
+						if ( argsamount == 1 ) {
+							if ( !addConsoleClass( curLineWords[ 1 ], false ) )
+								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ConsoleCommand class \"" .. curLineWords[ 1 ] .. "\"." );
+						} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
+							if ( !addConsoleClass( curLineWords[ 1 ], true ) )
+								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ConsoleCommand class \"" .. curLineWords[ 1 ] .. "\"." );
+						} else {
+							checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
+						}
+
+					} else if ( curLineWords[ 0 ] == "ccmdsep" || curLineWords[ 0 ] == "addccmdsep" || curLineWords[ 0 ] == "ccmdseparator" || curLineWords[ 0 ] == "addccmdseparator" ) {
+						addConsoleSeparator( argsamount == 1 && curLineWords[ 1 ] == "important" );
+
+                    } else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
+						if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
+							if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
+								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"." );
+
+                    } else {
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Unknown keyword \"" .. curLineWords[ 0 ] .. "\"." );
+					}
+
+                } else {
+                    zcConfigLines.Delete( i, 1 );
+                    i--;
+                }
+
+            }
+        } else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Cannot find file \"ZChecker.cfg\"." );
+		} // of else of if ( zcConfigFileHandler != -1 ) {}
+
+	} // of void IncludeConsoleClasses( void ) {}
 
 	override void OnRegister() {
 		SetOrder( ZCheckerHandlerOrder );
 
-		//console.printf( "ZCGlobal.Get(): " .. ZCGlobal.Get() .. ", zcCurLogLevel: " .. ZCGlobal.Get().zcCurLogLevel );
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
@@ -202,9 +361,10 @@ class ZCheckerHandler: StaticEventHandler {
 
 		zcInfoPanelFont = Font.FindFont( "smallfont" );
 
-		//
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating console classes handlers..." );
-		addConsoleClass( 'ZCHelpCommand', true );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating CCMD handlers and info panel classes..." );
+
+		IncludeConsoleClasses();
+		/*addConsoleClass( 'ZCHelpCommand', true );
 		addConsoleClass( 'ZCAddCommand', true );
 		addConsoleClass( 'ZCRemCommand', true );
 		addConsoleClass( 'ZCSetStateCommand' );
@@ -226,9 +386,6 @@ class ZCheckerHandler: StaticEventHandler {
 		addConsoleClass( 'ZCEvmapCommand_pause' );
 		addConsoleClass( 'ZCEvmapCommand_recreate', true );
 
-		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ )
-			zcConsoleHandleClasses[ i ].PostBeginPlay();
-
 		//
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating information panels..." );
 		addInfoPanelClass( 'ZCMainInfoPanel' );
@@ -246,6 +403,7 @@ class ZCheckerHandler: StaticEventHandler {
 		//addInfoPanelClass( 'ZCSectorsInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherActorsInfoPanel' );
 		//addInfoPanelClass( 'ZCOtherInfoPanel' );
+		*/
 
 		ZCGlobal.Log( LL_Detailed, "ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console commands, " .. zcInfoPanelClasses.Size() .. " info panels." );
 
