@@ -2,8 +2,8 @@
 server int mcm_zchecker_loglevel = 1;
 
 user string mcm_zchecker_infopanelsorder	= "";
-user int mcm_zcheckerinternal_ui_firstinfopanelpos = 0;
-user int mcm_zcheckerinternal_ui_lastinfopanelpos = 0;
+user noarchive int mcm_zcheckerinternal_ui_firstinfopanelpos = 0;
+user noarchive int mcm_zcheckerinternal_ui_lastinfopanelpos = 0;
 
 
 // Information panel console variables.
