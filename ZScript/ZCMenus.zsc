@@ -1,11 +1,21 @@
 // 
 
 class ZCOptionMenuPanels: OptionMenu {
+	transient CVar panelsorder;
+	transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
+	int firstPanelItemPos, lastPanelItemPos;
+
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		ZCheckerHandler handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
+		firstPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_firstinfopanelpos", players[ consoleplayer ] );
+		lastPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_lastinfopanelpos", players[ consoleplayer ] );
+
 		if ( desc.mItems.Size() < 20 ) {
 			// Size limit is a random constant satisfying the requirements, in fact...
+
+			firstPanelItemPos = 4;
+			lastPanelItemPos = 4;
 
 			if ( !handler ) {
 				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
@@ -13,7 +23,7 @@ class ZCOptionMenuPanels: OptionMenu {
 				return;
 			}
 
-			uint itemsOffset = 4;
+			uint itemsOffset = firstPanelItemPos;
 
 			for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
 				ZCBaseInfoPanelPart panel = handler.zcInfoPanelClasses[ i ];
@@ -28,23 +38,72 @@ class ZCOptionMenuPanels: OptionMenu {
 
 				item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName );
 				desc.mItems.Insert( i + itemsOffset, item );
+				lastPanelItemPos++;
 
 				if ( panel.optionSubmenuName ) {
 					itemsOffset++;
+					lastPanelItemPos++;
 					desc.mItems.Insert( i + itemsOffset, submenuItem );
 				}
-			}
+			} // of for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {}
+
+			firstPanelItemPosCVar.SetInt( firstPanelItemPos );
+			lastPanelItemPosCVar.SetInt( lastPanelItemPos );
+		} else {
+			firstPanelItemPos = firstPanelItemPosCVar.GetInt();
+			lastPanelItemPos = lastPanelItemPosCVar.GetInt();
 		}
 
 		Super.Init( parent, desc );
 	} // of override void Init( Menu parent, OptionMenuDescriptor desc ) {}
 
 	override bool OnUIEvent( UIEvent e ) {
-		ZCOptionMenuItemInfopanel curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ mDesc.mSelectedItem ] );
+		int curpos = mDesc.mSelectedItem;
+		ZCOptionMenuItemInfopanel curitem = NULL;
+		if ( curpos > 0 )
+			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
 
-		if ( curitem && curitem.mSubmenu && e.type == e.Type_KeyDown ) {
-			// Tab, F4, 'e', 'E' and space opens a submenu.
-			if ( e.KeyChar == e.Key_F4 || e.KeyChar == 0x09 || e.KeyChar == 0x45 || e.KeyChar == 0x65 || e.KeyChar == 0x20 ) {
+		if ( curitem && e.type == e.Type_KeyDown && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {
+			int moveOffset = ( curitem.mSubmenu? 2 : 1 );
+
+			if ( e.KeyChar == 0x2B || e.KeyChar == 0x2D /*|| ( e.IsCtrl && e.KeyChar == e.Type_WheelDown )*/ ) {
+				// '+' and Ctrl+Down moves item below.
+
+				bool movePrepared = false;
+
+				if ( e.KeyChar == 0x2D ) {
+					int newpos = curpos - ( 1 + !!( mDesc.mItems[ curpos - 1 ] is "ZCOptionMenuItemInfopanelSubmenu" ) );
+
+					curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ newpos ] );
+					moveOffset = ( curitem && curitem.mSubmenu? 2 : 1 );
+
+					movePrepared = ( curpos - moveOffset >= firstPanelItemPos );
+
+					curpos = newpos;
+				} else {
+					movePrepared = ( curpos + moveOffset < lastPanelItemPos );
+				}
+
+				if ( movePrepared ) {
+					OptionMenuItem movingitem = NULL;
+
+					int curMoveOffset = moveOffset;
+
+					if ( ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos + moveOffset ] ).mSubmenu )
+						moveOffset++;
+
+					while ( curMoveOffset --> 0 ) {
+						movingitem = mDesc.mItems[ curpos ];
+						mDesc.mItems.Delete( curpos, 1 );
+						mDesc.mItems.Insert( curpos + moveOffset, movingitem );
+					}
+
+					Menu.GetCurrentMenu().MenuEvent( ( e.KeyChar == 0x2D? MKEY_Up : MKEY_Down ), false );
+					Menu.MenuSound( "menu/change" );
+				}
+
+			} else if ( curitem.mSubmenu && ( e.KeyChar == e.Key_F4 || e.KeyChar == 0x09 || e.KeyChar == 0x45 || e.KeyChar == 0x65 || e.KeyChar == 0x20 ) ) {
+				// Tab, F4, 'e', 'E' and space opens a submenu (if any).
 				Menu.MenuSound( "menu/choose" );
 				Menu.SetMenu( curitem.mSubmenu );
 				return true;
@@ -52,8 +111,9 @@ class ZCOptionMenuPanels: OptionMenu {
 		}
 
 		return Super.OnUIEvent( e );
-	}
+	} // of override bool OnUIEvent( UIEvent e ) {}
 } // of class ZCOptionMenuPanels: OptionMenu {}
+
 
 class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 	Name mSubmenu;
@@ -69,6 +129,7 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	ZCOptionMenuItemInfopanel masterMenuItem;
 	ZCBaseInfoPanelPart masterInfoPanel;
+	ZCOptionMenuPanels masterMenu;
 
 	OptionMenuDescriptor desc;
 
@@ -77,6 +138,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 		masterInfoPanel = infopanel;
 		mLabel = "";
 
+		masterMenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
 		desc = OptionMenuDescriptor( MenuDescriptor.GetDescriptor( infopanel.optionSubmenuName ) );
 
 		return self;
@@ -85,7 +147,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
 		bool masterItemSelected = false;
 
-		if ( desc ) {
+		if ( desc && desc.mSelectedItem > 0 ) {
 			mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, desc );
 			masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
 		}
@@ -94,4 +156,19 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 		return indent;
 	}
+
+	/*override bool MouseEvent( int type, int x, int y ) {
+		if ( type == Menu.MOUSE_Click && masterMenu ) {
+			for ( int i = masterMenu.firstInfoPanelPos; i < masterMenu.lastInfoPanelPos; i++ ) {
+				if ( desc.mItems[ i ] == masterMenuItem ) {
+					desc.mSelectedItem = i;
+					break;
+				}
+			}
+
+			return Menu.GetCurrentMenu().MenuEvent( Menu.MKEY_Enter, true );
+		}
+
+		return true;
+	}*/
 }
