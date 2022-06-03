@@ -1,6 +1,15 @@
-// 
+//
 
 class ZCOptionMenuPanels: OptionMenu {
+	enum EPanelMenuActionTypes {
+		PMAT_None			= -1,
+		PMAT_EnterSubmenu	= 0,
+		PMAT_MoveItemUp,
+		PMAT_MoveItemDown,
+
+		PMAT_Quantity
+	};
+
 	transient CVar panelsorder;
 	transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
 	int firstPanelItemPos, lastPanelItemPos;
@@ -63,15 +72,35 @@ class ZCOptionMenuPanels: OptionMenu {
 		if ( curpos > 0 )
 			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
 
-		if ( curitem && e.type == e.Type_KeyDown && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {
+		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
+
+		EPanelMenuActionTypes actiontype = PMAT_None;
+		int key = e.KeyChar;
+
+		if ( e.Type == e.Type_KeyDown ) {
+			if ( key == e.Key_F3 || key == e.Key_F4 || key == e.Key_Tab )
+				actiontype = PMAT_EnterSubmenu;
+
+		} else if ( e.Type == e.Type_Char ) {
+			if ( key == 0x45 || key == 0x65 || key == 0x20 )
+				actiontype = PMAT_EnterSubmenu;
+			else if ( key == 0x2D )
+				actiontype = PMAT_MoveItemUp;
+			else if ( key == 0x2B )
+				actiontype = PMAT_MoveItemDown;
+		} else if ( e.Type == e.Type_WheelUp ) {
+			actiontype = PMAT_MoveItemUp;
+		} else if ( e.Type == e.Type_WheelDown ) {
+			actiontype = PMAT_MoveItemDown;
+		}
+
+		if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {
 			int moveOffset = ( curitem.mSubmenu? 2 : 1 );
 
-			if ( e.KeyChar == 0x2B || e.KeyChar == 0x2D /*|| ( e.IsCtrl && e.KeyChar == e.Type_WheelDown )*/ ) {
-				// '+' and Ctrl+Down moves item below.
-
+			if ( actiontype == PMAT_MoveItemUp || actiontype == PMAT_MoveItemDown ) {
 				bool movePrepared = false;
 
-				if ( e.KeyChar == 0x2D ) {
+				if ( actiontype == PMAT_MoveItemUp ) {
 					int newpos = curpos - ( 1 + !!( mDesc.mItems[ curpos - 1 ] is "ZCOptionMenuItemInfopanelSubmenu" ) );
 
 					curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ newpos ] );
@@ -98,20 +127,21 @@ class ZCOptionMenuPanels: OptionMenu {
 						mDesc.mItems.Insert( curpos + moveOffset, movingitem );
 					}
 
-					Menu.GetCurrentMenu().MenuEvent( ( e.KeyChar == 0x2D? MKEY_Up : MKEY_Down ), false );
+					Menu.GetCurrentMenu().MenuEvent( ( actiontype == PMAT_MoveItemUp? MKEY_Up : MKEY_Down ), false );
 					Menu.MenuSound( "menu/change" );
 				}
 
-			} else if ( curitem.mSubmenu && ( e.KeyChar == e.Key_F4 || e.KeyChar == 0x09 || e.KeyChar == 0x45 || e.KeyChar == 0x65 || e.KeyChar == 0x20 ) ) {
+			} else if ( curitem.mSubmenu && ( actiontype == PMAT_EnterSubmenu ) ) {
 				// Tab, F4, 'e', 'E' and space opens a submenu (if any).
 				Menu.MenuSound( "menu/choose" );
 				Menu.SetMenu( curitem.mSubmenu );
 				return true;
 			}
-		}
+		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
 
 		return Super.OnUIEvent( e );
 	} // of override bool OnUIEvent( UIEvent e ) {}
+
 } // of class ZCOptionMenuPanels: OptionMenu {}
 
 
