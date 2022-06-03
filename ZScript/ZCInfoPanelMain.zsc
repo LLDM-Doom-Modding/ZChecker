@@ -53,6 +53,14 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	}
 } // of class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {}
 
+// Not really done yet...
+class ZCInvFieldInfo {
+	class<Inventory> type;	// Item class name.
+	int amount;
+	int visualTicks;		// Positive: green (inv. added); negative: red (inv. taken).
+	ZCInvFieldInfo Next;
+}
+
 class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_inventory";

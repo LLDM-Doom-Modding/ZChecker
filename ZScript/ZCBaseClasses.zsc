@@ -1,6 +1,6 @@
 class ZCheckerCCMDInfo play {
-	Array<String> args;			// Arguments exclude ZC-CCMD name;
-	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on "FindEventHandler()" calls);
+	Array<String> args;			// Arguments excluding ZC-CCMD name;
+	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on the "FindEventHandler()" calls);
 	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
 
 	// Init or reinit:
@@ -36,21 +36,11 @@ class ZCheckerCCMDInfo play {
 	}
 } // of class ZCheckerCCMDInfo {}
 
-// Not really done yet...
-class ZCheckerInvField {
-	name type;				// Item class name.
-	int amount;
-	int visualTicks;		// Positive: green (inv. added); negative: red (inv. taken).
-	ZCheckerInvField Next;
-}
 
 class ZCheckerField {
 	uint fieldPos;
-	Actor mo;				// Testee actor.
+	Actor mo;				// Testee actor itself.
 	EZCheckerInfoActorType actorType;
-
-	//uint fflags, ftype;
-	//ZCheckerInvField inv;
 }
 
 
@@ -59,14 +49,14 @@ class ZCheckerField {
 //scoping changes in the heirs properly. So this one must be a data-scoped
 //class, actually.
 class ZCConsoleClass abstract play {
-	enum ConsoleClassFlags {
+	enum EConsoleClassFlags {
 		CCF_None			= 0,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
 		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in gray.
 		CCF_NoCacheHelp		= 0x0004	// No precache help string.
 	};
 
-	ConsoleClassFlags zcFlags;
+	EConsoleClassFlags zcFlags;
 
 	protected String helpCacheString;
 
@@ -336,7 +326,7 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 	ui virtual String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		return "Nothing.";
+		return "Nothing (not overrided).";
 	}
 
 	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
@@ -365,4 +355,4 @@ class ZCBaseInfoPanelPart abstract {
 	protected bool isItemPickedupWeapon( Actor item ) {
 		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
 	}
-} // of class ZCBaseInfoPanelPart ui abstract {}
+} // of class ZCBaseInfoPanelPart abstract {}

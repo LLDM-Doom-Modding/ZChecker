@@ -22,19 +22,6 @@ const ZCheckerHandlerOrder = 0x7FAA0005;
 const ZCheckerMapHandlerOrder = 0x7FAA0006;
 
 
-/*enum EZCheckerFieldFlags {
-	ZCF_Main		= 0x0001,
-	ZCF_Extended	= 0x0002, // Position, velocity, args, special, TIDs...
-	ZCF_Inventory	= 0x0004,
-	ZCF_States		= 0x0008, // States and frames.
-	ZCF_Friends		= 0x0010, // "FriendPlayer", "HitFriend()", "DesignatedTeam", ...
-	ZCF_Visual		= 0x0020,
-	ZCF_Sectors		= 0x0040, // "floorsector", "ceilingsector", ...
-	ZCF_Interaction	= 0x0080, // "BlockingMobj", "BlockingLine", "Master", "Target", "LastHeard", "LastLookPlayerNumber", ...
-	ZCF_OtherActors	= 0x0100, // "snext", "Alternative", "goal", "Poisoner", "TelefogSourceType", ...
-	ZCF_Other		= 0x0200, // "PainThreshold", "WoundHealth", ...
-	ZCF_Code		= 0x0400
-}*/
 
 enum EZCheckerLogLevels {
 	LL_Emergency = 0,
@@ -91,7 +78,7 @@ class ZCGlobal: Thinker {
 		}
 
 		return it;
-	} // of static play ZCGlobal Get( void ) {
+	} // of static play ZCGlobal Get( void ) {}
 
 	// Prints well-decorated information string:
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
@@ -112,7 +99,7 @@ class ZCGlobal: Thinker {
 		} // of if ( !( loglevel & LL_NoPrefix ) ) {
 
 		console.printf( logPrefix .. text .. ( ( loglevel & LL_NoDot ) || ( text.Mid( text.Length() - 1 ) == "." )? "" : "." ) );
-	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
+	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {}
 
 	// A play-scope wrapper around a data-scope method (mostly used):
 	static play void Log( EZCheckerLogLevels loglevel, String text ) {
@@ -125,7 +112,6 @@ class ZCGlobal: Thinker {
 		// Got from "mapchecksum everything" CCMD:
 		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
 
-		//console.printf( "level.mapname: \"" .. level.mapname .. "\", level.levelname: \"" .. level.levelname .. "\"" );
 		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLED" )
 			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
 	}
@@ -179,7 +165,7 @@ class ZCheckerHandler: StaticEventHandler {
 	Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
 
 	// It's impossible to avoid unloading actors (and pointers to them) from 
-	//memory on level reloading. Or I don't know something.
+	//memory on level reloading. Or I just don't know something.
 	ZCheckerField Testee[ MaxTestee ];
 
 	ZCheckerCCMDInfo zcCCMDInfo;
@@ -244,7 +230,7 @@ class ZCheckerHandler: StaticEventHandler {
 		} // of if ( text != "" ) {}
 
 		return nltype;
-	}
+	} // of static ENewlineTypes GetTextNewlinesType( String text ) {}
 
 	private void handleConfigFileNewlines( String newlineTypeComment, String replaceeNewlineSeq ) {
 		ZCGlobal.Log( LL_Debug, "New lines type for file \"ZChecker.cfg\" recognized as " .. newlineTypeComment );
@@ -334,9 +320,9 @@ class ZCheckerHandler: StaticEventHandler {
                 } else {
                     zcConfigLines.Delete( i, 1 );
                     i--;
-                }
+                } // of else of if ( curLine != "" ) {}
 
-            }
+            } // of for ( int i = 0; i < zcConfigLines.Size(); i++, curLineIndex++ ) {}
         } else {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Cannot find file \"ZChecker.cfg\"." );
 		} // of else of if ( zcConfigFileHandler != -1 ) {}
@@ -352,7 +338,6 @@ class ZCheckerHandler: StaticEventHandler {
 			Testee[ i ] = new( 'ZCheckerField' );
 			Testee[ i ].fieldPos = i;
 			Testee[ i ].actorType = IAT_Normal;
-			//Testee[ i ].inv = new( 'ZCheckerInvField' );
 		}
 
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
@@ -375,7 +360,7 @@ class ZCheckerHandler: StaticEventHandler {
 			curTestee = Testee[ fieldindex ].mo;
 
 		// Updating info actors type. Usually it's better not to cross the 
-		//ui, data and play scopes in the one method...
+		//ui, data and play scopes in one method...
 		if ( curTestee is "StateProvider" && PlayerPawn( Inventory( curTestee ).owner ) ) {
 			Testee[ fieldindex ].mo = curTestee = PlayerPawn( Inventory( curTestee ).owner ).player.ReadyWeapon;
 			Testee[ fieldindex ].actorType = IAT_StateProvider;
@@ -389,7 +374,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 	override void RenderOverlay( RenderEvent e ) {
 		// User CVars locating uses a relatively long algorithm. After a 
-		//while I'll optimize them and move them somewhere.
+		//while I'll optimize them and move somewhere.
 		Array<ZCBaseInfoPanelPart> infoPanelParts;
 		PlayerInfo pl = players[ consoleplayer ];
 
@@ -445,10 +430,10 @@ class ZCheckerHandler: StaticEventHandler {
 
 			Screen.DrawText( zcInfoPanelFont, Font.CR_GRAY, x, y, outStr,
 							DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
-		} // of for ( int i = 0; i < MaxTestee; i++ ) {
+		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
 
 		Super.RenderOverlay( e );
-	} // of override void RenderOverlay( RenderEvent e ) {
+	} // of override void RenderOverlay( RenderEvent e ) {}
 
 
 	override void NetworkProcess( ConsoleEvent e ) {
@@ -481,10 +466,10 @@ class ZCheckerHandler: StaticEventHandler {
 
 				break;
 			}
-		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
+		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {}
 
 		Super.NetworkProcess( e );
-	} // of override void NetworkProcess( ConsoleEvent e ) {
+	} // of override void NetworkProcess( ConsoleEvent e ) {}
 
 
 	override void WorldTick() {
@@ -492,6 +477,6 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCGlobal.UpdateLogLevel();
 
 		Super.WorldTick();
-	} // of override void WorldTick() {
+	} // of override void WorldTick() {}
 
-} // of class ZCheckerHandler: EventHandler {
+} // of class ZCheckerHandler: EventHandler {}
