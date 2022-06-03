@@ -349,7 +349,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Do special action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"revive\"|\"resurrect\"|\"rev\", \"kill\", \"destroy\"|\"remove\"|\"rm\"|\"del\"";
+		return "Do special action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
 	}
 
 	override bool HandleArguments() {
@@ -361,11 +361,11 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			String what = ccmd.args[ ccmd.args.Size() - 1 ];
 			what.ToLower();
 
-			if ( what == "resurrect" || what == "revive" || what == "rev" )
+			if ( what == "resurrect" || what == "res" || what == "revive" || what == "rev" )
 				actoraction = AC_Revive;
-			else if ( what == "kill" )
+			else if ( what == "kill" || what == "k" )
 				actoraction = AC_Kill;
-			else if ( what == "destroy" || what == "remove" || what == "rm" || what == "del" )
+			else if ( what == "destroy" || what == "remove" || what == "rm" || what == "rem" || what == "del" || what == "delete" )
 				actoraction = AC_Destroy;
 			else
 				outValue = false;
@@ -421,8 +421,12 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				TryRevive( testee );
 				break;
 			case AC_Kill:
-				ZCGlobal.Log( LL_Detailed, "Killed actor " .. testee.GetClassName() );
 				testee.A_Die();
+
+				if ( testee.health > 0 )
+					ZCGlobal.Log( LL_Detailed, "Cannot kill actor " .. testee.GetClassName() );
+				else
+					ZCGlobal.Log( LL_Detailed, "Killed actor " .. testee.GetClassName() );
 				break;
 			case AC_Destroy:
 				ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. testee.GetClassName() );
