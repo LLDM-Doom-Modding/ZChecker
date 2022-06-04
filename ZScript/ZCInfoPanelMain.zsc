@@ -53,23 +53,70 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	}
 } // of class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {}
 
+
 // Not really done yet...
-class ZCInvFieldInfo {
-	class<Inventory> type;	// Item class name.
-	int amount;
+
+class ZCInvFieldNode {
+	ZCInvFieldNode next, prev;
+
+	Inventory inv;
 	int visualTicks;		// Positive: green (inv. added); negative: red (inv. taken).
-	ZCInvFieldInfo Next;
 }
 
+class ZCInvFieldData {
+	ZCInvFieldNode head, tail;
+	ZCInvFieldNode firstvisible;
+
+	ZCInvFieldNode AddNode( Inventory inv ) {
+		ZCInvFieldNode newnode = new( 'ZCInvFieldNode' );
+
+		if ( !head ) {
+			head = tail = newnode;
+		} else {
+			tail.next = newnode;
+			newnode.prev = tail;
+			tail = newnode;
+		}
+
+		newnode.inv = inv;
+		newnode.visualTicks = 5;
+
+		return newnode;
+	}
+
+	void UpdateByActorInventory( Actor owner ) {
+		Inventory aitem = owner.inv;
+		Inventory sitem = head.inv;
+
+		while ( aitem ) {
+			if ( aitem != sitem ) {
+				// <...>
+			}
+
+			aitem = aitem.inv;
+		}
+	}
+} // of class ZCInvFieldData {}
+
 class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
+	Array<ZCInvFieldData> prevInvs;
+
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_inventory";
 		optionLabel = "Inventory";
+
+		for ( int i = 0; i < MaxTestee; i++ )
+			prevInvs.Push( new( 'ZCInvFieldData' ) );
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = DARKGRAY .. "Inventory\c-: " .. GRAY;
+
+		if ( thingfield.actorType == IAT_StateProvider )
+			return outStr .. "[Is a weapon].\n";
+
 		Inventory item = thing.Inv;
+		//ZCInvFieldData previnv = prevInvs[ thingfield.fieldPos ];
 
 		if ( item ) {
 			//ZCheckerInvField cmpItem = Testee[ i ].inv;
@@ -234,8 +281,6 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		} else if ( weapOwner.player.psprites ) { // Thanks to Il Str for crash reporting.
 			PSprite pst = weapOwner.player.psprites;
 
-			//"State \c[Sapphire]" .. st.Sprite .. String.format( " \c[LightBlue]%c(%c) \c[Sapphire]%i\c-", st.Frame + 65, st.CurState.Frame + 65, st.CurState.Tics ) .. "\c-\n" .. "  Current tic: " .. st.Tics .. "\n"
-
 			outStr = outStr .. " (" .. pst.tics .. ")\c-\n" ..
 				"  Pos: " .. pst.x .. "/" .. pst.y .. "\n" ..
 				"  Flags: " .. 
@@ -302,7 +347,7 @@ class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
 
 			if ( zeroSkipped || stateForced ) {
 				logstr = logstr .. DARKGRAY .. " (";
-	
+
 				if ( zeroSkipped )
 					logstr = logstr .. GRAY .. "zero frames" .. DARKGRAY .. " skipped" .. ( stateForced? "; " : "" );
 
