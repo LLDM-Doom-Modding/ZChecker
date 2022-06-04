@@ -61,7 +61,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "set a state for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+		return "Set a state for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments() {
@@ -111,7 +111,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "set/reset a flag for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+		return "Set/reset a flag for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments() {
@@ -173,7 +173,7 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "operate on the BUDDHA flag at <pos> or linetarget, if omitted. If <set> is omitted, toggles it, or sets/resets ('0'/'1') otherwise.";
+		return "Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If <set> is omitted, toggles it, or sets/resets ('0'/'1') otherwise.";
 	}
 
 	override bool HandleArguments() {
@@ -225,7 +225,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "give <amount> <item>s to the testee <pos> (or linetarget if omitted)";
+		return "Give <amount> <item>s to the testee <pos> (or linetarget if omitted)";
 	}
 
 	override bool HandleArguments() {
@@ -288,7 +288,7 @@ class ZCTakeCommand: ZCGiveCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "take <amount> <item>s from the testee <pos> (or linetarget if omitted)";
+		return "Take <amount> <item>s from the testee <pos> (or linetarget if omitted)";
 	}
 
 	override void DoCommand( void ) {
@@ -457,7 +457,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "summon <amount> of <class>es on position by rules of build-in eponymous command.";
+		return "Summon <amount> of <class>es on position by rules of build-in eponymous command.";
 	}
 
 	override bool HandleArguments() {

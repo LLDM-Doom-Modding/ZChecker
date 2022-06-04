@@ -15,7 +15,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.67";
+const ZCheckerVersion = "0.68";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -33,7 +33,9 @@ enum EZCheckerLogLevels {
 	LL_Normal = LL_General,
 	LL_Main = LL_General,
 	LL_Extended = LL_Detailed,
+	LL_Critical = LL_Emergency,
 
+	LL_FlagsMask	= 0xFFF0,
 	LL_NoDot		= 0x4000,
 	LL_NoPrefix		= 0x8000
 };
@@ -85,7 +87,7 @@ class ZCGlobal: Thinker {
 		String logPrefix = "";
 
 		if ( !( loglevel & LL_NoPrefix ) ) {
-			switch ( loglevel & ~LL_NoPrefix ) {
+			switch ( loglevel & ~LL_FlagsMask ) {
 				case LL_Debug:
 					logPrefix = LLCOLOR_DEBUG .. "[ZC Debug] ";
 					break;
@@ -98,12 +100,19 @@ class ZCGlobal: Thinker {
 			} // of switch ( loglevel & ~LL_NoPrefix ) {
 		} // of if ( !( loglevel & LL_NoPrefix ) ) {
 
-		console.printf( logPrefix .. text .. ( ( loglevel & LL_NoDot ) || ( text.Mid( text.Length() - 1 ) == "." )? "" : "." ) );
+		if ( !( loglevel & LL_NoDot ) ) {
+			String lastch = text.Mid( text.Length() - 1 );
+
+			if ( !( lastch == "." || lastch == "!" || lastch == "?" || lastch == ":" || lastch == ";" ) )
+				text = text .. ".";
+		}
+
+		console.printf( logPrefix .. text );
 	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {}
 
 	// A play-scope wrapper around a data-scope method (mostly used):
 	static play void Log( EZCheckerLogLevels loglevel, String text ) {
-		if ( ZCGlobal.Get().zcCurLogLevel >= ( loglevel & ~LL_NoPrefix ) )
+		if ( ZCGlobal.Get().zcCurLogLevel >= ( loglevel & ~LL_FlagsMask ) )
 			ClearscopeLog( loglevel, text );
 	}
 
@@ -178,7 +187,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		if ( index >= 0 && index < zcConsoleHandleClasses.Size() ) {
 			ccmd = zcConsoleHandleClasses[ index ];
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleClass(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
+			//ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleClass(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
 		}
 
 		return ccmd;

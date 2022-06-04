@@ -15,7 +15,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Lists all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\" or \"list\".";
+		return "List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\" or \"list\".";
 	}
 
 	override bool HandleArguments() {

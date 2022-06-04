@@ -1,27 +1,69 @@
 class ZCHelpCommand: ZCConsoleCommand {
 	bool verboseHelp;
+	ZCConsoleCommand infoclass;
 
 	override String GetCommand() {
 		return "zc_help";
 	}
 
 	override String GetHelpNameString() {
-		return "zchelp [all|a|full|-a|-v]";
+		return "zchelp [<command> | a[ll]|-a|-v]";
 	}
 
 	override String GetHelpDescString() {
-		return "this help. If argument is provided, displays complete help.";
+		return "This help. If argument is provided, displays complete help.";
 	}
 
 	override bool HandleArguments() {
 		verboseHelp = false;
+		infoclass = NULL;
 		bool outValue = ( ccmd.args.Size() == 0 );
 
 		if ( ccmd.args.Size() == 1 ) {
 			String arg = ccmd.args[ 0 ];
+			arg.ToLower();
 
-			if ( arg ~== "a" || arg ~== "all" || arg ~== "full" || arg ~== "-a" || arg ~== "-v" )
+			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" ) {
 				verboseHelp = outValue = true;
+			} else {
+
+				if ( arg.Left( 2 ) == "zc" )
+					arg = arg.Mid( 2, arg.Length() - 1 );
+
+				for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {
+					ZCConsoleCommand curccmd = ZCConsoleCommand( ccmd.handler.zcConsoleHandleClasses[ i ] );
+
+					if ( curccmd ) {
+						Array<String> aliases;
+						curccmd.GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
+
+						for ( int j = 0; j < aliases.Size(); j++ ) {
+							String curalias = aliases[ j ];
+							int firstSpaceIndex = curalias.IndexOf( " " );
+
+							if ( firstSpaceIndex >= 0 )
+								curalias.Truncate( firstSpaceIndex );
+							if ( curalias.Length() > 2 )
+								curalias = curalias.Mid( 2, curalias.Length() - 1 );
+
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::HandleArguments(). Arg \"" .. arg .. "\" compare alias \"" .. curalias .. "\"." );
+
+							if ( arg ~== curalias ) {
+								ZCGlobal.Log( LL_Debug, GetClassName() .. "::HandleArguments(). Usage search for \"" .. arg .. "\": found CCMD " .. curccmd.GetClassName() .. "." );
+								infoclass = curccmd;
+								outValue = true;
+								break;
+							}
+						} // of for ( int j = 0; j < aliases.Size(); j++ ) {}
+
+					} // of if ( curccmd ) {}
+				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size(); i++ ) {}
+
+				ZCGlobal.Log( LL_Main | LL_NoDot, ( outValue
+						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ==="
+						: TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
+					) );
+			}
 		}
 
 		return outValue;
@@ -34,13 +76,17 @@ class ZCHelpCommand: ZCConsoleCommand {
 					.. "\c- by " .. TEXTCOLOR_WHITE .. "JSO_x\c- a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare\c-.\n\n" );
 		}
 
-		console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
+		if ( infoclass ) {
+			console.printf( infoclass.GetHelpString() );
+		} else {
+			console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
 
-		ZCConsoleClass curCC = NULL;
+			ZCConsoleClass curCC = NULL; // Also separators.
 
-		for ( int i = 0; curCC = ccmd.handler.GetZCConsoleClass( i ); i++ )
-			if ( verboseHelp || ( curCC.zcFlags & CCF_Important ) )
-				console.printf( curCC.GetHelpString() .. "\n\n" );
+			for ( int i = 0; curCC = ccmd.handler.GetZCConsoleClass( i ); i++ )
+				if ( verboseHelp || ( curCC.zcFlags & CCF_Important ) )
+					console.printf( curCC.GetHelpString() .. "\n\n" );
+		}
 	}
 } // of class ZCHelpCommand: ZCConsoleCommand {}
 
@@ -66,7 +112,7 @@ class ZCAddCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
+		return "Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
 	}
 
 	override bool HandleArguments() {
@@ -144,7 +190,6 @@ class ZCAddCommand: ZCConsoleCommand {
 					break;
 				case SAT_Force:
 					ZCGlobal.Log( LL_Main, "[Work-in-progress command, may behave strangely]." );
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Forced mode." );
 
 					ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 					Actor locatedActor = NULL, cur = NULL;
@@ -217,7 +262,7 @@ class ZCRemCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "remove testee(s) from <pos> or from whole list if omitted.";
+		return "Remove testee(s) from <pos> or from whole list if omitted.";
 	}
 
 	override bool HandleArguments() {
@@ -294,7 +339,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcpanelclt <pos> move|copy <newpos>;zcpanelclt <pos> save|store <aliasname>;zcpanelctl <pos> load <aliasname>;zcpanelctl general|list|<pos> info";
+		return "zcpanelctl <pos> move|copy <newpos>;zcpanelctl <pos> save|store <aliasname>;zcpanelctl <pos> load <aliasname>;zcpanelctl general|list|<pos> info";
 	}
 
 	override String GetHelpDescString() {
