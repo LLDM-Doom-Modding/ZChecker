@@ -11,11 +11,11 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zclistthinkers <type>|help|list";
+		return "zclistthinkers <type>|help|l[ist]";
 	}
 
 	override String GetHelpDescString() {
-		return "List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\" or \"list\".";
+		return "List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\", \"list\" or just \"l\".";
 	}
 
 	override bool HandleArguments() {
@@ -62,7 +62,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 			zcStatNumType = Thinker.STAT_INVENTORY;
 		else if ( arg ~== "sectorlight" || arg ~== "seclight" )
 			zcStatNumType = Thinker.STAT_LIGHT;
-		else if ( arg ~== "sectorlighttransfer" || arg ~== "seclighttransfer" )
+		else if ( arg ~== "sectorlighttransfer" || arg ~== "seclighttr" )
 			zcStatNumType = Thinker.STAT_LIGHTTRANSFER;
 		else if ( arg ~== "earthquake" )
 			zcStatNumType = Thinker.STAT_EARTHQUAKE;
@@ -78,14 +78,16 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 			zcStatNumType = Thinker.STAT_SCRIPTS;
 		else if ( arg ~== "bot" )
 			zcStatNumType = Thinker.STAT_BOT;
-		else {
-			if ( str2int_Ptr( ccmd.args[ 0 ], +zcStatNumType ) )
-				return ( zcStatNumType >= 0 && zcStatNumType <= Thinker.MAX_STATNUM );
+		else if ( str2int_Ptr( ccmd.args[ 0 ], +zcStatNumType ) ) {
+			bool inlimits = ( zcStatNumType >= 0 && zcStatNumType <= Thinker.MAX_STATNUM );
 
-			return false;
+			if ( !inlimits )
+				ZCGlobal.Log( LL_Main, "StatNum is out of limits. Must be in range [0; " .. Thinker.MAX_STATNUM .. "]." );
+
+			return inlimits;
 		}
 
-		return true;
+		return ( zcStatNumType != ZCSTAT_ERROR );
 	}
 
 	protected void AddListSection( String sectionname, String nodescolor ) {
@@ -136,7 +138,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 
 			uint thinkersAmount = 0;
 
-			while ( curThinker = it.Next( true ) ) {
+			while ( curThinker = it.Next( false ) ) {
 				thinkersAmount++;
 				console.printf( " \c-\"" .. curThinker.GetClassName() .. "\" " .. TEXTCOLOR_DARKGRAY .. "(parent class \"\c-" .. ( curThinker.GetParentClass()? curThinker.GetParentClass().GetClassName() .. "\"" : "NULL" ) .. TEXTCOLOR_DARKGRAY .. ")" );
 			}
