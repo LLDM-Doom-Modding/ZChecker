@@ -45,11 +45,17 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
+		String outstr = "";
 
-		return
+		outstr = 
 			decoratePointerString( thing.target, "Target", RED ) .. "\n" ..
 			decoratePointerString( thing.master, "Master", TEAL ) .. "\n" ..
 			decoratePointerString( thing.tracer, "Tracer", ORANGE );
+
+		if ( Inventory( thing ) )
+			outstr = outstr .. "\n" .. decoratePointerString( Inventory( thing ).owner, BLACK .. "Inv." .. DARKGRAY .. "Owner", DARKGREEN ) .. "\n";
+
+		return outstr;
 	}
 } // of class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {}
 
@@ -67,7 +73,7 @@ class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
 			decoratePointerString( thing.LastHeard, "LastHeard", OLIVE ) .. "\n" ..
 			decoratePointerString( thing.LastEnemy, "LastEnemy", RED ) .. "\n" ..
 			decoratePointerString( thing.LastLookActor, "LastLook", OLIVE ) .. "\n" ..
-			decoratePointerString( thing.Poisoner, "Poisoner", DARKGREEN );
+			decoratePointerString( thing.Poisoner, "Poisoner", GREEN );
 	}
 }
 
@@ -79,11 +85,19 @@ class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
+		String outstr = "";
 
-		return
-			decoratePointerString( thing.snext, "SecNext&", BROWN ) .. "\n" ..
+		if ( Weapon( thing ) ) {
+			outstr =
+				decoratePointerString( Weapon( thing ).Ammo1, BLACK .. "Weap." .. DARKGRAY .. "Ammo1", GRAY ) .. "\n" ..
+				decoratePointerString( Weapon( thing ).Ammo2, BLACK .. "Weap." .. DARKGRAY .. "Ammo2", GRAY ) .. "\n" ..
+				decoratePointerString( Weapon( thing ).SisterWeapon, BLACK .. "Weap." .. DARKGRAY .. "SisterWeap", BRICK ) .. "\n";
+		}
+
+		return outstr ..
 			decoratePointerString( thing.Alternative, "Alternative", BRICK ) .. "\n" ..
-			decoratePointerString( thing.Goal, "Goal", RED ) .. "\n" ..
-			decoratePointerString( thing.Inv, "Inv&", GRAY );
+			decoratePointerString( thing.Goal, "Goal", FIRE ) .. "\n" ..
+			decoratePointerString( thing.Inv, "Inv&", GRAY ) .. "\n" ..
+			decoratePointerString( thing.snext, "SecNext&", BROWN );
 	}
 }

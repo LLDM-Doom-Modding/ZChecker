@@ -14,6 +14,32 @@ class ZCOptionMenuPanels: OptionMenu {
 	transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
 	int firstPanelItemPos, lastPanelItemPos;
 
+
+	void SetPanelOptionsOrder( OptionMenuDescriptor desc ) {
+		String curorder = "";
+
+		for ( int i = firstPanelItemPos; i < lastPanelItemPos; i++ )
+			curorder = curorder .. desc.mItems[ i ].GetClassName() .. ",";
+
+		panelsorder.SetString( curorder );
+	}
+
+	void GetPanelOptionsOrder( OptionMenuDescriptor desc ) {
+		Array<String> neworder;
+
+		panelsorder.GetString().Split( neworder, ",", TOK_SKIPEMPTY );
+
+		for ( int i = 0; i < neworder.Size(); i++ ) {
+			class<ZCBaseInfoPanelPart> curclass = neworder[ i ];
+
+			if ( curclass is "ZCBaseInfoPanelPart" ) {
+				ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
+			} else {
+				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). Cannot find Panel class \"" .. neworder[ i ] .. "\"." );
+			}
+		}
+	}
+
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		ZCheckerHandler handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 

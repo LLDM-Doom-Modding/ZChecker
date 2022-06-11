@@ -112,8 +112,8 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = DARKGRAY .. "Inventory\c-: " .. GRAY;
 
-		if ( thingfield.actorType == IAT_StateProvider )
-			return outStr .. "[Is a weapon].\n";
+		if ( thing is "Inventory" )
+			return outStr .. "(Inventory itself).\n";
 
 		Inventory item = thing.Inv;
 		//ZCInvFieldData previnv = prevInvs[ thingfield.fieldPos ];

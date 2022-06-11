@@ -116,6 +116,13 @@ class ZCGlobal: Thinker {
 			ClearscopeLog( loglevel, text );
 	}
 
+	static ui void UILog( EZCheckerLogLevels loglevel, String text ) {
+		ZCGlobal it = ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
+
+		if ( it && ( it.zcCurLogLevel >= ( loglevel & ~LL_FlagsMask ) ) )
+			ClearscopeLog( loglevel, text );
+	}
+
 	// Test for the special ZChecker level:
 	static clearscope bool IsEverythingLevel( void ) {
 		// Got from "mapchecksum everything" CCMD:
