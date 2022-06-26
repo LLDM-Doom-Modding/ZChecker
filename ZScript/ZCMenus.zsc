@@ -11,86 +11,164 @@ class ZCOptionMenuPanels: OptionMenu {
 	};
 
 	transient CVar panelsorder;
-	transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
+	//transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
 	int firstPanelItemPos, lastPanelItemPos;
 
+	const DARKGRAY = TEXTCOLOR_DARKGRAY;
+	const GRAY = TEXTCOLOR_GRAY;
+	const GOLD = TEXTCOLOR_GOLD;
 
+
+	private OptionMenuItemStaticText AddStaticText( String label = " " ) {
+		return new( "OptionMenuItemStaticText" ).Init( label );
+	}
+
+	private OptionMenuItemOption AddOption( String label, Name command, Name values ) {
+		return new( "OptionMenuItemOption" ).Init( label, command, values );
+	}
+
+	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
+        desc.mItems.Clear();
+
+		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( AddStaticText( GOLD .. "Information panels settings:" ) );
+		desc.mItems.Push( AddStaticText( DARKGRAY .. "Enter sumbenu with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ":" ) );
+		desc.mItems.Push( AddStaticText() );
+	}
+
+	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
+		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( AddStaticText( GOLD .. "General settings:" ) );
+		desc.mItems.Push( new( "OptionMenuItemSubmenu" ).Init( "Information panel settings", "mcm_ZChecker_InfoPanelControl" ) );
+		desc.mItems.Push( AddOption( "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels" ) );
+
+		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( AddStaticText( GOLD .. "\"Everything\" map settings:" ) );
+		desc.mItems.Push( AddOption( "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo" ) );
+		desc.mItems.Push( AddOption( "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo" ) );
+		desc.mItems.Push( AddOption( "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo" ) );
+		desc.mItems.Push( AddOption( "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo" ) );
+	}
+	
 	void SetPanelOptionsOrder( OptionMenuDescriptor desc ) {
 		String curorder = "";
 
-		for ( int i = firstPanelItemPos; i < lastPanelItemPos; i++ )
-			curorder = curorder .. desc.mItems[ i ].GetClassName() .. ",";
+		if ( !panelsorder )
+			panelsorder = CVar.GetCVar( "mcm_zchecker_infopanelsorder", players[ consoleplayer ] );
+
+		for ( int i = firstPanelItemPos; i < lastPanelItemPos; i++ ) {
+			ZCOptionMenuItemInfopanel paneloption = ZCOptionMenuItemInfopanel( desc.mItems[ i ] );
+
+			if ( paneloption ) {
+				curorder = curorder .. paneloption.panelclass.GetClassName() .. ",";
+				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::SetPanelOptionsOrder(). Saved \"" .. TEXTCOLOR_GREEN .. paneloption.panelclass.GetClassName() .. "\c-\"." );
+			}
+		}
 
 		panelsorder.SetString( curorder );
 	}
 
-	void GetPanelOptionsOrder( OptionMenuDescriptor desc ) {
+	private int InsertMenuPanelPart( ZCBaseInfoPanelPart panel, OptionMenuDescriptor desc ) {
+		ZCOptionMenuItemInfopanel item = new( "ZCOptionMenuItemInfopanel" );
+		ZCOptionMenuItemInfopanelSubmenu submenuItem = NULL;
+
+		if ( panel.optionSubmenuName ) {
+			submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
+			submenuItem.Init( item, panel );
+		}
+
+		// [McM]: I think it's much easier to pass only a "ZCBaseInfoPanelPart *panel".
+		item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName, panel.GetClass() );
+		desc.mItems.Push( item );
+
+		if ( panel.optionSubmenuName ) {
+			desc.mItems.Push( submenuItem );
+			return 2; // Items offset (+2, option and its submenu);
+		}
+
+		return 1; // Items offset (+1, option only).
+	}
+
+	void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
 		Array<String> neworder;
+		uint warningsAmount = 0;
+		uint addedItemsAmount = 0;
+
+		if ( !panelsorder )
+			panelsorder = CVar.GetCVar( "mcm_zchecker_infopanelsorder", players[ consoleplayer ] );
 
 		panelsorder.GetString().Split( neworder, ",", TOK_SKIPEMPTY );
 
+		// [McM]: It mustn't be here, it must take panels order from something correlating with real visual panels (!!!).
 		for ( int i = 0; i < neworder.Size(); i++ ) {
-			class<ZCBaseInfoPanelPart> curclass = neworder[ i ];
+			class<Object> curclass = neworder[ i ];
 
 			if ( curclass is "ZCBaseInfoPanelPart" ) {
-				ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
+				if ( !warningsAmount ) {
+					bool found = false;
+
+					for ( int j = 0; j < handler.zcInfoPanelClasses.Size(); j++ ) {
+						if ( handler.zcInfoPanelClasses[ j ].GetClass() == curclass ) {
+							addedItemsAmount += InsertMenuPanelPart( handler.zcInfoPanelClasses[ j ], desc );
+							found = true;
+							ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
+							break;
+						}
+					}
+
+					if ( !found )
+						ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. DARKGRAY .. "Class \"" .. GRAY .. neworder[ i ] .. DARKGRAY .. "\" vanished." );
+				}
+			} else if ( curclass ) {
+				warningsAmount++;
+				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. DARKGRAY .. "Class \"" .. GRAY .. neworder[ i ] .. DARKGRAY .. "\" isn't a Panel." );
 			} else {
-				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). Cannot find Panel class \"" .. neworder[ i ] .. "\"." );
+				warningsAmount++;
+				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. DARKGRAY .. "Cannot find Panel class \"" .. GRAY .. neworder[ i ] .. DARKGRAY .. "\"." );
 			}
+		}
+
+		if ( warningsAmount )
+			ZCGlobal.UILog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
+
+		// Reinitialization (if neccesary):
+		if ( addedItemsAmount == 0 || warningsAmount > 0 ) {
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). Reinitialization." );
+
+			desc.mItems.Delete( desc.mItems.Size() - addedItemsAmount, addedItemsAmount );
+
+    		for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
+				lastPanelItemPos += InsertMenuPanelPart( handler.zcInfoPanelClasses[ i ], desc );
+			}
+
+			//firstPanelItemPosCVar.SetInt( firstPanelItemPos );
+			//lastPanelItemPosCVar.SetInt( lastPanelItemPos );
 		}
 	}
 
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		ZCheckerHandler handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
-		firstPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_firstinfopanelpos", players[ consoleplayer ] );
-		lastPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_lastinfopanelpos", players[ consoleplayer ] );
+		//firstPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_firstinfopanelpos", players[ consoleplayer ] );
+		//lastPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_lastinfopanelpos", players[ consoleplayer ] );
 
-		if ( desc.mItems.Size() < 20 ) {
-			// Size limit is a random constant satisfying the requirements, in fact...
+		ReinitMenuHeaderPart( desc );
 
-			firstPanelItemPos = 4;
-			lastPanelItemPos = 4;
+		firstPanelItemPos = 4;
+		lastPanelItemPos = 4;
 
-			if ( !handler ) {
-				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
-				Super.Init( parent, desc );
-				return;
-			}
-
-			uint itemsOffset = firstPanelItemPos;
-
-			for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
-				ZCBaseInfoPanelPart panel = handler.zcInfoPanelClasses[ i ];
-
-				ZCOptionMenuItemInfopanel item = new( "ZCOptionMenuItemInfopanel" );
-				ZCOptionMenuItemInfopanelSubmenu submenuItem = NULL;
-
-				if ( panel.optionSubmenuName ) {
-					submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
-					submenuItem.Init( item, panel );
-				}
-
-				item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName );
-				desc.mItems.Insert( i + itemsOffset, item );
-				lastPanelItemPos++;
-
-				if ( panel.optionSubmenuName ) {
-					itemsOffset++;
-					lastPanelItemPos++;
-					desc.mItems.Insert( i + itemsOffset, submenuItem );
-				}
-			} // of for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {}
-
-			firstPanelItemPosCVar.SetInt( firstPanelItemPos );
-			lastPanelItemPosCVar.SetInt( lastPanelItemPos );
+		if ( !handler ) {
+			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
+			desc.mItems.Push( AddStaticText( TEXTCOLOR_FIRE .. "Cannot locate ZChecker static event handler." ) );
 		} else {
-			firstPanelItemPos = firstPanelItemPosCVar.GetInt();
-			lastPanelItemPos = lastPanelItemPosCVar.GetInt();
+			ReinitMenuPanels( desc, handler );
 		}
+
+		ReinitMenuLastPart( desc );
 
 		Super.Init( parent, desc );
 	} // of override void Init( Menu parent, OptionMenuDescriptor desc ) {}
+
 
 	override bool OnUIEvent( UIEvent e ) {
 		int curpos = mDesc.mSelectedItem;
@@ -168,15 +246,21 @@ class ZCOptionMenuPanels: OptionMenu {
 		return Super.OnUIEvent( e );
 	} // of override bool OnUIEvent( UIEvent e ) {}
 
+	override void OnDestroy() {
+		SetPanelOptionsOrder( mDesc );
+	}
+
 } // of class ZCOptionMenuPanels: OptionMenu {}
 
 
 class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 	Name mSubmenu;
+	class<ZCBaseInfoPanelPart> panelclass;
 
-	ZCOptionMenuItemInfopanel Init( String label, Name command, Name submenuName ) {
+	ZCOptionMenuItemInfopanel Init( String label, Name command, Name submenuName, class<ZCBaseInfoPanelPart> initPanelClass ) {
 		Super.Init( label, command, 'OnOff' );
 		mSubmenu = submenuName;
+		panelclass = initPanelClass;
 
 		return self;
 	}

@@ -6,7 +6,7 @@ OptionMenu "mcm_ZChecker_Control" protected {
 
     Title "ZChecker control"
 
-    StaticText " "
+    /*StaticText " "
 	StaticText "Information panels settings:", "Gold"
 	StaticText "Enter sumbenu with <F4>, <space>, 'E' or <tab>", "DarkGray"
     StaticText " "
@@ -23,7 +23,7 @@ OptionMenu "mcm_ZChecker_Control" protected {
 	Option "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
 	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
-	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"*/
 }
 
 /*OptionMenu "mcm_ZChecker_Control" {
