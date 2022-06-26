@@ -144,7 +144,8 @@ class ZCEvmapCommand: ZCConsoleCommand {
 					}
 
 					if ( curActor ) {
-						gotoCCMDPlayerTeleport( curActor.pos, curActor.AngleTo( curActor.master, true ) );
+						double newPlayerAngle = ( curActor.master? curActor.AngleTo( curActor.master, true ) : curActor.angle );
+						gotoCCMDPlayerTeleport( curActor.pos, newPlayerAngle );
 						ZCGlobal.Log( LL_Detailed, "found actor " .. curActor.masterClass.GetClassName() .. " at " .. curActor.pos .. "." );
 					} else {
 						ZCGlobal.Log( LL_Normal, "cannot find actor named \"" .. ccmd.args[ 1 ] .. "\"." );
