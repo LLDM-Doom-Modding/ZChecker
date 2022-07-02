@@ -271,7 +271,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	ZCBaseInfoPanelPart masterInfoPanel;
 	ZCOptionMenuPanels masterMenu;
 
-	OptionMenuDescriptor desc;
+	OptionMenuDescriptor subdesc;
 
 	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
 		masterMenuItem = masteritem;
@@ -279,7 +279,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 		mLabel = "";
 
 		masterMenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
-		desc = OptionMenuDescriptor( MenuDescriptor.GetDescriptor( infopanel.optionSubmenuName ) );
+		subdesc = OptionMenuDescriptor( MenuDescriptor.GetDescriptor( infopanel.optionSubmenuName ) );	
 
 		return self;
 	}
@@ -288,7 +288,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 		bool masterItemSelected = false;
 
 		if ( desc && desc.mSelectedItem > 0 ) {
-			mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, desc );
+			mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, subdesc );
 			masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
 		}
 

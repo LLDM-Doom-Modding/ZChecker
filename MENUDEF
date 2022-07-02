@@ -82,7 +82,9 @@ OptionMenu "mcm_ZChecker_InfoPanelControl" {
 OptionMenu "mcm_ZCheckerSubmenu_states" {
 	Title "ZChecker: States extra options"
 
-	ScaleSlider "States: amount", "mcm_zchecker_infoset_statesamount", 0, 25, 1, "Unlimited"
+	ScaleSlider "Amount", "mcm_zchecker_infoset_statesamount", 0, 25, 1, "Unlimited"
+	Option "Spawn +STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
+	Option "Spawn +INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
 }
 
 

@@ -330,19 +330,36 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
-		/*String label = "(";
+		String label = "Submenu. ";
 
-		for ( int i = 0; i < submenuDesc.mItems.Size(); i++ ) {
-			OptionMenuItemOption cur = OptionMenuItemOption( submenuDesc.mItems[ i ] );
+		int i = 0;
 
-			if ( cur ) {
-				label = label .. cur.mCVar .. ":" .. cur.GetSelection() .. " ";
+		for ( ; i < submenuDesc.mItems.Size() && label.Length() < 30; i++ ) {
+			OptionMenuItem cur = OptionMenuItem( submenuDesc.mItems[ i ] );
+
+			String addlabel = "";
+
+			if ( cur is 'OptionMenuItemOption' ) {
+				OptionMenuItemOption curoption = OptionMenuItemOption( cur );
+				addlabel = StringTable.Localize( OptionValues.GetText( curoption.mValues, curoption.GetSelection() ) );
+
+				if ( addlabel.Length() == 0 )
+					addlabel = "Unknown";
+			} else if ( cur is 'OptionMenuItemSlider' ) {
+				OptionMenuItemSlider curslider = OptionMenuItemSlider( cur );
+				addlabel = String.Format( String.Format( "%%.%df", curslider.mShowValue ), curslider.GetSliderValue() );
 			}
+
+			if ( addlabel != "" )
+				label = label .. "\"" .. cur.mLabel .. ":" .. addlabel .. "\" ";
 		}
 
-		return label .. ")";*/
+		if ( i < submenuDesc.mItems.Size() )
+			label = label .. " [...more]";
 
-		return "Submenu for " .. masterMenuItem.mLabel .. "";
+		return label;
+
+		//return "Submenu for " .. masterMenuItem.mLabel .. "";
 	}
 
 
