@@ -72,16 +72,12 @@ class ZCOptionMenuPanels: OptionMenu {
 		ZCOptionMenuItemInfopanel item = new( "ZCOptionMenuItemInfopanel" );
 		ZCOptionMenuItemInfopanelSubmenu submenuItem = NULL;
 
+		desc.mItems.Push( item.Init( panel ) );
+
 		if ( panel.optionSubmenuName ) {
 			submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
 			submenuItem.Init( item, panel );
-		}
 
-		// [McM]: I think it's much easier to pass only a "ZCBaseInfoPanelPart *panel".
-		item.Init( panel.optionLabel, panel.optionCVarName, panel.optionSubmenuName, panel.GetClass() );
-		desc.mItems.Push( item );
-
-		if ( panel.optionSubmenuName ) {
 			desc.mItems.Push( submenuItem );
 			return 2; // Items offset (+2, option and its submenu);
 		}
@@ -231,12 +227,15 @@ class ZCOptionMenuPanels: OptionMenu {
 						mDesc.mItems.Insert( curpos + moveOffset, movingitem );
 					}
 
-					Menu.GetCurrentMenu().MenuEvent( ( actiontype == PMAT_MoveItemUp? MKEY_Up : MKEY_Down ), false );
+					for ( curMoveOffset = moveOffset; curMoveOffset --> 0; ) {
+						Menu.GetCurrentMenu().MenuEvent( ( actiontype == PMAT_MoveItemUp? MKEY_Up : MKEY_Down ), false );
+					}
+
 					Menu.MenuSound( "menu/change" );
 				}
 
 			} else if ( curitem.mSubmenu && ( actiontype == PMAT_EnterSubmenu ) ) {
-				// Tab, F4, 'e', 'E' and space opens a submenu (if any).
+				// Tab, F4, 'e', 'E' and Space opens a submenu (if any).
 				Menu.MenuSound( "menu/choose" );
 				Menu.SetMenu( curitem.mSubmenu );
 				return true;
@@ -248,6 +247,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	override void OnDestroy() {
 		SetPanelOptionsOrder( mDesc );
+		Super.OnDestroy();
 	}
 
 } // of class ZCOptionMenuPanels: OptionMenu {}
@@ -257,10 +257,10 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 	Name mSubmenu;
 	class<ZCBaseInfoPanelPart> panelclass;
 
-	ZCOptionMenuItemInfopanel Init( String label, Name command, Name submenuName, class<ZCBaseInfoPanelPart> initPanelClass ) {
-		Super.Init( label, command, 'OnOff' );
-		mSubmenu = submenuName;
-		panelclass = initPanelClass;
+	ZCOptionMenuItemInfopanel Init( ZCBaseInfoPanelPart panel ) {
+		Super.Init( panel.optionLabel, panel.optionCVarName, 'OnOff' );
+		mSubmenu = panel.optionSubmenuName;
+		panelclass = panel.GetClass();
 
 		return self;
 	}
@@ -292,7 +292,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 			masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
 		}
 
-		drawLabel( indent, y, masterItemSelected? OptionMenuSettings.mFontColorSelection : Font.CR_DARKGRAY );
+		drawLabel( indent, y, ( masterItemSelected? OptionMenuSettings.mFontColorSelection : Font.CR_DARKGRAY ) );
 
 		return indent;
 	}
