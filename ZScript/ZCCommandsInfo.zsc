@@ -36,7 +36,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 		if ( origarg.Mid( origarg.Length() - 1, 1 ) == "s" )
 			arg = origarg.Left( origarg.Length() - 1 );
 
-		if ( arg ~== "default" || arg ~== "def" || arg ~== "actor" )
+		if ( arg ~== "default" || arg ~== "def" || arg ~== "actor" || arg ~== "a" )
 			zcStatNumType = Thinker.STAT_DEFAULT;
 		else if ( arg ~== "decal" )
 			zcStatNumType = Thinker.STAT_DECAL;
@@ -105,7 +105,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 			helpListStr = helpListValuesColor = "";
 
 			AddListSection( "Actors", TEXTCOLOR_SAPPHIRE );
-			AddListValue( "default|def|actors" );
+			AddListValue( "default|def|actors|a" );
 			AddListValue( "dynlights|dl" );
 			AddListValue( "inventory|inv" );
 			AddListValue( "mapmarkers|markers|automapmarkers" );
@@ -131,7 +131,8 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 			AddListValue( "scrollers" );
 			AddListValue( "decalthinkers" );
 
-			console.printf( "Possible types (plural is optional): \n" .. helpListStr .. "or a digit for the non-standard StatNums." );
+			console.printf( "Possible types (plural is optional): \n" .. helpListStr .. "\nOr a digit for the non-standard StatNums " ..
+							"(for user-defined: " .. TEXTCOLOR_SAPPHIRE .. Thinker.STAT_USER .. CCMDCOLOR_DESC .. ".." .. TEXTCOLOR_SAPPHIRE .. Thinker.STAT_USER_MAX .. CCMDCOLOR_DESC .. ")." );
 		} else if ( zcStatNumType >= 0 && zcStatNumType <= Thinker.MAX_STATNUM ) {
 			ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
 			Thinker curThinker;
@@ -140,6 +141,10 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 
 			while ( curThinker = it.Next( false ) ) {
 				thinkersAmount++;
+				// It seems like there's no way to check if a Thinker class
+				//is accesible via ZScript (like 'ImpactDecal'). So this
+				//interesting functional will potentially never be released.
+
 				console.printf( " \c-\"" .. curThinker.GetClassName() .. "\" " .. TEXTCOLOR_DARKGRAY .. "(parent class \"\c-" .. ( curThinker.GetParentClass()? curThinker.GetParentClass().GetClassName() .. "\"" : "NULL" ) .. TEXTCOLOR_DARKGRAY .. ")" );
 			}
 
