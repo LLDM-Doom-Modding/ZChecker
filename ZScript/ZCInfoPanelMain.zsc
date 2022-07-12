@@ -118,11 +118,14 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		Inventory item = thing.Inv;
 		//ZCInvFieldData previnv = prevInvs[ thingfield.fieldPos ];
 
+		uint cellsAmount = CVar.GetCVar( "mcm_zchecker_infoset_invamount", players[ consoleplayer ] ).GetInt();
+		uint curAmount = 0;
+
 		if ( item ) {
 			//ZCheckerInvField cmpItem = Testee[ i ].inv;
 			//ZCheckerInvField nextItem = cmpItem.Next;
 
-			while ( item ) {
+			while ( item && curAmount < cellsAmount ) {
 				//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
 				/*	ZCheckerInvField cmpNextItem = nextItem;
 					bool found = false;
@@ -147,7 +150,12 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 				item = item.Inv;
 				cmpItem = nextItem;
 				nextItem = nextItem.Next;*/
-			} // of while ( item ) {}
+
+				curAmount++;
+			} // of while ( item && curAmount < cellsAmount ) {}
+
+			if ( item && curAmount >= cellsAmount )
+				outStr = outStr .. TEXTCOLOR_DARKGRAY .. " (...more)";
 
 		} else {
 			outStr = outStr .. "none";
