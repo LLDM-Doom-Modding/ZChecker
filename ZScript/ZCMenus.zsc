@@ -213,13 +213,18 @@ class ZCOptionMenuPanels: OptionMenu {
 					movePrepared = ( curpos + moveOffset < lastPanelItemPos );
 				}
 
+				Menu.MenuSound( "menu/change" );
+
 				if ( movePrepared ) {
 					OptionMenuItem movingitem = NULL;
 
 					int curMoveOffset = moveOffset;
+					int newCursorOffset = moveOffset;
 
 					if ( ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos + moveOffset ] ).mSubmenu )
 						moveOffset++;
+					else if ( ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] ).mSubmenu && actiontype == PMAT_MoveItemDown )
+						newCursorOffset--;
 
 					while ( curMoveOffset --> 0 ) {
 						movingitem = mDesc.mItems[ curpos ];
@@ -227,17 +232,20 @@ class ZCOptionMenuPanels: OptionMenu {
 						mDesc.mItems.Insert( curpos + moveOffset, movingitem );
 					}
 
-					for ( curMoveOffset = moveOffset; curMoveOffset --> 0; ) {
+					while ( newCursorOffset --> 0 )
 						Menu.GetCurrentMenu().MenuEvent( ( actiontype == PMAT_MoveItemUp? MKEY_Up : MKEY_Down ), false );
-					}
-
-					Menu.MenuSound( "menu/change" );
+				} else {
+					Menu.MenuSound( "menu/invalid" );
 				}
 
-			} else if ( curitem.mSubmenu && ( actiontype == PMAT_EnterSubmenu ) ) {
+			} else if ( actiontype == PMAT_EnterSubmenu ) {
 				// Tab, F4, 'e', 'E' and Space opens a submenu (if any).
-				Menu.MenuSound( "menu/choose" );
-				Menu.SetMenu( curitem.mSubmenu );
+				if ( curitem.mSubmenu ) {
+					Menu.MenuSound( "menu/choose" );
+					Menu.SetMenu( curitem.mSubmenu );
+				} else {
+					Menu.MenuSound( "menu/invalid" );
+				}
 				return true;
 			}
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
