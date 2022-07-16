@@ -39,6 +39,43 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		optionLabel = "World positioning";
 	}
 
+	enum EAlternativeButtonNames {
+		FIRE = BT_ATTACK,
+		ALTF = BT_ALTATTACK,
+		RELD = BT_RELOAD,
+		ZOOM = BT_ZOOM,
+		USR1 = BT_USER1,
+		USR2 = BT_USER2,
+		USR3 = BT_USER3,
+		USR4 = BT_USER4,
+
+		USE  = BT_USE,
+        JUMP = BT_JUMP,
+        CRCH = BT_CROUCH,
+		SPD  = BT_SPEED,
+		STRF = BT_STRAFE,
+
+		MOVR = BT_MOVERIGHT,
+		MOVL = BT_MOVELEFT,
+		MOVB = BT_BACK,
+		MOVF = BT_FORWARD,
+		MOVU = BT_MOVEUP,
+		MOVD = BT_MOVEDOWN,
+		TRNR = BT_RIGHT,
+		TRNL = BT_LEFT,
+		TRNU = BT_LOOKUP,
+		TRND = BT_LOOKDOWN,
+
+		T180 = BT_TURN180,
+		SCOR = BT_SHOWSCORES,
+	};
+
+	int curPlayerButtons;
+
+	private ui String Col( int testbutton ) {
+		return ( curPlayerButtons & testbutton )? GREEN : BLACK;
+	}
+
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 
@@ -48,6 +85,29 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 				"Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
 				String.Format( "Vel: (%.2f, %.2f, %.2f)", thing.vel.x, thing.vel.y, thing.vel.z ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".\n", thing.radius, thing.height );
+
+		if ( thing is "PlayerPawn" && thing.player ) {
+			outStr = outStr .. DARKGRAY .. "Kbd:" .. GRAY .. "\n";
+			curPlayerButtons = thing.player.cmd.buttons;
+
+/*
+use.t..^...u..fr.af
+jmp.b.<v>.ldr.rl.zm
+crh...........u1234
+spd.strf..t180.scor
+*/
+
+			outStr = outStr .. String.Format(
+				"%suse %st   %s^    %su   %sfr %saf\n" ..
+				"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
+				"%scrh                  " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
+				"%sspd %sstrf  %st180 %sscor",
+				Col( USE ) , Col( MOVU ), Col( MOVF ), Col( TRNU ), Col( FIRE ), Col( ALTF ),
+				Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
+				Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
+				Col( SPD ) , Col( STRF ), Col( T180 ), Col( SCOR )
+			);
+		}
 
 		return outStr;
 	}
