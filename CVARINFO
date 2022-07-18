@@ -13,11 +13,13 @@ user float mcm_zchecker_infopanel_offsetx	= 50.0;
 user float mcm_zchecker_infopanel_scale		= 1.0;
 
 user bool mcm_zchecker_info_main			= true;
+user int  mcm_zchecker_infovar_maintags		= 2;	 //  \_ "Never", "If different from classname", "Always"
+user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
 user bool mcm_zchecker_info_inventory		= true;
-user int  mcm_zchecker_infoset_invamount	= 40;
+user int  mcm_zchecker_infovar_invamount	= 40;
 user bool mcm_zchecker_info_states			= false; // States and frames.
-user int  mcm_zchecker_infoset_statesamount	= 7;	 //  \_ Amount of states (unlimited, 1, 2, ..., 15).
+user int  mcm_zchecker_infovar_statesamount	= 7;	 //  \_ Amount of states (unlimited, 1, 2, ..., 15).
 user bool mcm_zchecker_info_stateslogging	= false; // States logging.
 
 user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.

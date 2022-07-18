@@ -40,7 +40,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		desc.mItems.Push( AddStaticText() );
 		desc.mItems.Push( AddStaticText( GOLD .. "General settings:" ) );
 		desc.mItems.Push( new( "OptionMenuItemSubmenu" ).Init( "Information panel settings", "mcm_ZChecker_InfoPanelControl" ) );
-		desc.mItems.Push( AddOption( "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels" ) );
+		desc.mItems.Push( AddOption( "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels" ) );
 
 		desc.mItems.Push( AddStaticText() );
 		desc.mItems.Push( AddStaticText( GOLD .. "\"Everything\" map settings:" ) );

@@ -1,73 +1,18 @@
-//
+// 
 
 OptionMenu "mcm_ZChecker_Control" protected {
     // See "ZScript/ZCMenus.zsc" for the full menu code.
     Class "ZCOptionMenuPanels"
 
     Title "ZChecker control"
-
-    /*StaticText " "
-	StaticText "Information panels settings:", "Gold"
-	StaticText "Enter sumbenu with <F4>, <space>, 'E' or <tab>", "DarkGray"
-    StaticText " "
-
-    StaticText " "
-	StaticText "General settings:", "Gold"
-	Submenu "Information panel settings", "mcm_ZChecker_InfoPanelControl"
-	Option "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels"
-
-
-    StaticText " "
-	StaticText "\"Everything\" map settings:", "Gold"
-	Option "Force use \"Everything\" map scripts", "mcm_zchecker_ev_forcemap", "OnOff"
-	Option "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo"
-	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
-	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
-	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"*/
 }
 
-/*OptionMenu "mcm_ZChecker_Control" {
-    Title "ZChecker control"
+AddOptionMenu "OptionsMenu" {
+	StaticText " "
+	Submenu "ZChecker Control", "mcm_ZChecker_Control"
+}
 
 
-    StaticText " "
-	StaticText "What kind of information must be shown:", "Gold"
-
-	Option "Index, classname & health", "mcm_zchecker_info_main", "OnOff"
-	Option "World positioning", "mcm_zchecker_info_worldpos", "OnOff"
-	Option "Inventory", "mcm_zchecker_info_inventory", "OnOff"
-	Option "States", "mcm_zchecker_info_states", "OnOff"
-	Option "States logging", "mcm_zchecker_info_stateslogging", "OnOff"
-
-    StaticText "Pointers", "Darkgray"
-	Option "Common pointers", "mcm_zchecker_info_mainpointers", "OnOff"
-	Option "Interaction pointers", "mcm_zchecker_info_levelpointers", "OnOff"
-	Option "Other pointers", "mcm_zchecker_info_otherpointers", "OnOff"
-
-    StaticText "Other", "Darkgray"
-	Option "Arguments & TIDs", "mcm_zchecker_info_args", "OnOff"
-	Option "Players & teams", "mcm_zchecker_info_players", "OnOff"
-
-    StaticText "WIP", "Darkgray"
-	Option "[Visual (WIP)]", "mcm_zchecker_info_visual", "OnOff"
-	Option "[Sectors (WIP)]", "mcm_zchecker_info_sectors", "OnOff"
-	Option "[Other (WIP)]", "mcm_zchecker_info_other", "OnOff"
-
-
-    StaticText " "
-	StaticText "General settings:", "Gold"
-	Submenu "Information panel settings", "mcm_ZChecker_InfoPanelControl"
-	Option "Log level", "mcm_zchecker_loglevel", "mcm_zchecker_LogLevels"
-
-
-    StaticText " "
-	StaticText "\"Everything\" map settings:", "Gold"
-	Option "Force use \"Everything\" map scripts", "mcm_zchecker_ev_forcemap", "OnOff"
-	Option "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo"
-	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
-	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
-	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-}*/
 
 OptionMenu "mcm_ZChecker_InfoPanelControl" {
     Title "Information panel control"
@@ -80,22 +25,34 @@ OptionMenu "mcm_ZChecker_InfoPanelControl" {
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_states" {
-	Title "ZChecker: States extra options"
+	Title "ZChecker: States"
 
-	ScaleSlider "Amount", "mcm_zchecker_infoset_statesamount", 0, 25, 1, "Unlimited"
+	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
 	Option "Spawn +STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "Spawn +INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
 }
 
+OptionMenu "mcm_ZCheckerSubmenu_main" {
+	Title "ZChecker: General info"
 
-AddOptionMenu "OptionsMenu" {
-	StaticText " "
-	Submenu "ZChecker Control", "mcm_ZChecker_Control"
+	Option "Display actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
+	Option "Display self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
 }
 
-OptionValue "mcm_zchecker_LogLevels" {
+OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
+	Title "ZChecker: World positioning"
+}
+
+
+OptionValue "mcm_ZCheckerOption_LogLevels" {
 	0, "0. Emergency only"
 	1, "1. Main/default"
 	2, "2. Detailed"
 	3, "3. Debug mode"
+}
+
+OptionValue "mcm_ZCheckerOption_panelmain_tags" {
+	0, "Never"
+	1, "If different from classname"
+	2, "Always"
 }

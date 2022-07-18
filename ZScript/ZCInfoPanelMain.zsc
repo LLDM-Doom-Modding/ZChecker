@@ -1,19 +1,28 @@
 class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_main";
-		optionLabel = "Index, classname & health";
+		optionLabel = "General info (name, health, ...)";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_main";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String info = ( thingfield.fieldPos + 1 ) .. ". ";
 
-		if ( thingfield.actorType == IAT_Normal ) {
+		if ( thingfield.actorType == IAT_Normal )
 			info = info .. GREEN .. thing.GetClassName();
+		else if ( thingfield.actorType == IAT_StateProvider )
+			info = info .. DARKGREEN .. "Inv\c-: " .. GREEN .. thing.GetClassName();
 
-			if ( thing.GetTag() != thing.GetClassName() )
-				info = info .. "\c-;\n" .. ORANGE .. "Tag" .. ORANGE .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
+		int displayTagsMode = CVar.GetCVar( "mcm_zchecker_infovar_maintags", players[ consoleplayer ] ).GetInt();
+		bool displaySelfPointerMode = CVar.GetCVar( "mcm_zchecker_infovar_mainselfptr", players[ consoleplayer ] ).GetBool();
 
-			info = info .. String.Format( DARKGRAY .. ";\n " .. DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(%.2f%%",
+		if ( displayTagsMode == 2 || ( displayTagsMode == 1 && thing.GetTag() != thing.GetClassName() ) )
+			info = info .. "\n" .. ORANGE .. "Tag" .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
+		if ( displaySelfPointerMode )
+			info = info .. "\n" .. BLACK .. "&self: " .. DARKGRAY .. thing;
+
+		if ( thingfield.actorType == IAT_Normal ) {
+			info = info .. String.Format( DARKRED .. "\nHealth " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(%.2f%%",
 					thing.health, thing.GetSpawnHealth(), ( thing.GetSpawnHealth()? 100.0 * thing.health / double( thing.GetSpawnHealth() ) : 0.0 ) );
 
 			if ( thing.bNODAMAGE )
@@ -24,10 +33,10 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 				info = info .. " invul";
 
 			info = info .. ")" .. DARKGRAY .. ".\n";
-		} else if ( thingfield.actorType == IAT_StateProvider ) {
-			info = DARKGREEN .. "Inv\c-: " .. GREEN .. thing.GetClassName() .. "\c-;\n" .. ORANGE ..
-					"Tag" .. ORANGE .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
 		}
+
+		if ( thingfield.actorType == IAT_StateProvider )
+			info = info .. "\n";
 
 		return info;
 	}
@@ -37,6 +46,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_worldpos";
 		optionLabel = "World positioning";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_worldpos";
 	}
 
 	enum EAlternativeButtonNames {
@@ -87,7 +97,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".\n", thing.radius, thing.height );
 
 		if ( thing is "PlayerPawn" && thing.player ) {
-			outStr = outStr .. DARKGRAY .. "Kbd:" .. GRAY .. "\n";
+			outStr.AppendFormat( DARKGRAY .. "Keys 0x" .. GRAY .. "%08x\n", thing.player.cmd.buttons );
 			curPlayerButtons = thing.player.cmd.buttons;
 
 /*
@@ -178,7 +188,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		Inventory item = thing.Inv;
 		//ZCInvFieldData previnv = prevInvs[ thingfield.fieldPos ];
 
-		uint cellsAmount = CVar.GetCVar( "mcm_zchecker_infoset_invamount", players[ consoleplayer ] ).GetInt();
+		uint cellsAmount = CVar.GetCVar( "mcm_zchecker_infovar_invamount", players[ consoleplayer ] ).GetInt();
 		uint curAmount = 0;
 
 		if ( item ) {
@@ -251,7 +261,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		Array<State> prevstates;
 		Array<String> prevstatesstr;
-		uint statesAmount = CVar.GetCVar( "mcm_zchecker_infoset_statesamount", players[ consoleplayer ] ).GetInt();
+		uint statesAmount = CVar.GetCVar( "mcm_zchecker_infovar_statesamount", players[ consoleplayer ] ).GetInt();
 
 		if ( isWeapon ) {
 			weapOwner = getItemPlayerOwner( Inventory( thing ) );
