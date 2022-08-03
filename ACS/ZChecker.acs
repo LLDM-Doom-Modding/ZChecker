@@ -36,3 +36,11 @@ script "ZChecker_CCMD_SetFlag" ( int setType ) {
 		ScriptCall( "ZCGlobal", "Log", LL_Common, StrParam( s:"Cannot set flag \"", s:flagName, s:"\"" ) );
 	}
 }
+
+//  Ancient ZScript bug fixing.
+// https://forum.zdoom.org/viewtopic.php?f=2&t=62501
+//  [McM]: suddenly CVar string cannot store more than 254 symbols.
+script "ZChecker_SetUserPanelsOrder" ( int playernum ) {
+	str data = GetUserCVarString( playernum, "mcm_zchecker_infopanelsorder" );
+    SetUserCVarString( playernum, "mcm_zchecker_infopanelsorder", data );
+}

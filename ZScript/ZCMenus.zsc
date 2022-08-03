@@ -10,13 +10,16 @@ class ZCOptionMenuPanels: OptionMenu {
 		PMAT_Quantity
 	};
 
-	transient CVar panelsorder;
 	//transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
 	int firstPanelItemPos, lastPanelItemPos;
 
 	const DARKGRAY = TEXTCOLOR_DARKGRAY;
 	const GRAY = TEXTCOLOR_GRAY;
 	const GOLD = TEXTCOLOR_GOLD;
+
+	ZCheckerHandler handler;
+
+	transient CVar panelsorder;
 
 
 	private OptionMenuItemStaticText AddStaticText( String label = " " ) {
@@ -49,23 +52,22 @@ class ZCOptionMenuPanels: OptionMenu {
 		desc.mItems.Push( AddOption( "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo" ) );
 		desc.mItems.Push( AddOption( "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo" ) );
 	}
-	
+
 	void SetPanelOptionsOrder( OptionMenuDescriptor desc ) {
 		String curorder = "";
 
-		if ( !panelsorder )
-			panelsorder = CVar.GetCVar( "mcm_zchecker_infopanelsorder", players[ consoleplayer ] );
+		panelsorder = handler.panelsorder;
 
 		for ( int i = firstPanelItemPos; i < lastPanelItemPos; i++ ) {
 			ZCOptionMenuItemInfopanel paneloption = ZCOptionMenuItemInfopanel( desc.mItems[ i ] );
 
 			if ( paneloption ) {
 				curorder = curorder .. paneloption.panelclass.GetClassName() .. ",";
-				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::SetPanelOptionsOrder(). Saved \"" .. TEXTCOLOR_GREEN .. paneloption.panelclass.GetClassName() .. "\c-\"." );
+				ZCGlobal.UILog( LL_Debug, GetClassName() .. "::SetPanelOptionsOrder(). Saved \"" .. TEXTCOLOR_GREEN .. paneloption.panelclass.GetClassName() .. "\c-\"." );
 			}
 		}
 
-		panelsorder.SetString( curorder );
+		EventHandler.SendNetworkEvent( "zc_update_panels_order:" .. curorder );
 	}
 
 	private int InsertMenuPanelPart( ZCBaseInfoPanelPart panel, OptionMenuDescriptor desc ) {
@@ -86,64 +88,18 @@ class ZCOptionMenuPanels: OptionMenu {
 	}
 
 	void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
-		Array<String> neworder;
-		uint warningsAmount = 0;
-		uint addedItemsAmount = 0;
+		int addedItemsAmount = 0;
 
-		if ( !panelsorder )
-			panelsorder = CVar.GetCVar( "mcm_zchecker_infopanelsorder", players[ consoleplayer ] );
-
-		panelsorder.GetString().Split( neworder, ",", TOK_SKIPEMPTY );
-
-		// [McM]: It mustn't be here, it must take panels order from something correlating with real visual panels (!!!).
-		for ( int i = 0; i < neworder.Size(); i++ ) {
-			class<Object> curclass = neworder[ i ];
-
-			if ( curclass is "ZCBaseInfoPanelPart" ) {
-				if ( !warningsAmount ) {
-					bool found = false;
-
-					for ( int j = 0; j < handler.zcInfoPanelClasses.Size(); j++ ) {
-						if ( handler.zcInfoPanelClasses[ j ].GetClass() == curclass ) {
-							addedItemsAmount += InsertMenuPanelPart( handler.zcInfoPanelClasses[ j ], desc );
-							found = true;
-							ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
-							break;
-						}
-					}
-
-					if ( !found )
-						ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. DARKGRAY .. "Class \"" .. GRAY .. neworder[ i ] .. DARKGRAY .. "\" vanished." );
-				}
-			} else if ( curclass ) {
-				warningsAmount++;
-				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. DARKGRAY .. "Class \"" .. GRAY .. neworder[ i ] .. DARKGRAY .. "\" isn't a Panel." );
-			} else {
-				warningsAmount++;
-				ZCGlobal.UILog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. DARKGRAY .. "Cannot find Panel class \"" .. GRAY .. neworder[ i ] .. DARKGRAY .. "\"." );
-			}
+		for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
+			addedItemsAmount += InsertMenuPanelPart( handler.zcInfoPanelClasses[ i ], desc );
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. handler.zcInfoPanelClasses[ i ].GetClassName() .. "\"." );
 		}
 
-		if ( warningsAmount )
-			ZCGlobal.UILog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
-
-		// Reinitialization (if neccesary):
-		if ( addedItemsAmount == 0 || warningsAmount > 0 ) {
-			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). Reinitialization." );
-
-			desc.mItems.Delete( desc.mItems.Size() - addedItemsAmount, addedItemsAmount );
-
-    		for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
-				lastPanelItemPos += InsertMenuPanelPart( handler.zcInfoPanelClasses[ i ], desc );
-			}
-
-			//firstPanelItemPosCVar.SetInt( firstPanelItemPos );
-			//lastPanelItemPosCVar.SetInt( lastPanelItemPos );
-		}
+		lastPanelItemPos += addedItemsAmount;
 	}
 
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
-		ZCheckerHandler handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
+		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
 		//firstPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_firstinfopanelpos", players[ consoleplayer ] );
 		//lastPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_lastinfopanelpos", players[ consoleplayer ] );
@@ -169,10 +125,12 @@ class ZCOptionMenuPanels: OptionMenu {
 	override bool OnUIEvent( UIEvent e ) {
 		int curpos = mDesc.mSelectedItem;
 		ZCOptionMenuItemInfopanel curitem = NULL;
+
 		if ( curpos > 0 )
 			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
 
 		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
+		//console.printf( "curitem " .. curitem .. ", actiontype " .. actiontype .. "; pos " .. firstPanelItemPos .. " <= " .. curpos .. " < " .. lastPanelItemPos );
 
 		EPanelMenuActionTypes actiontype = PMAT_None;
 		int key = e.KeyChar;
@@ -246,6 +204,7 @@ class ZCOptionMenuPanels: OptionMenu {
 				} else {
 					Menu.MenuSound( "menu/invalid" );
 				}
+
 				return true;
 			}
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
@@ -254,7 +213,9 @@ class ZCOptionMenuPanels: OptionMenu {
 	} // of override bool OnUIEvent( UIEvent e ) {}
 
 	override void OnDestroy() {
+		// Causes crash when user exits game while this menu.
 		SetPanelOptionsOrder( mDesc );
+
 		Super.OnDestroy();
 	}
 

@@ -176,9 +176,11 @@ class ZCGlobal: Thinker {
 
 
 
+
 class ZCheckerHandler: StaticEventHandler {
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
 	Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
+	Array<ZCBaseInfoPanelPart> zcDefaultInfoPanelClasses;
 
 	// It's impossible to avoid unloading actors (and pointers to them) from 
 	//memory on level reloading. Or I just don't know something.
@@ -188,6 +190,10 @@ class ZCheckerHandler: StaticEventHandler {
 	transient Font zcInfoPanelFont;
 
 	String zcConfigFile;
+
+	transient CVar panelsorder;
+	bool panelsorderChanged;
+
 
 	ZCConsoleClass GetZCConsoleClass( int index ) {
 		ZCConsoleClass ccmd = NULL;
@@ -220,7 +226,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		if ( classname ) {
 			ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
-			zcInfoPanelClasses.push( newPanelPart );
+			zcDefaultInfoPanelClasses.push( newPanelPart );
 		}
 
 		return !!classname;
@@ -350,6 +356,8 @@ class ZCheckerHandler: StaticEventHandler {
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
 
+		panelsorderChanged = true;
+
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Testee[ i ] = new( 'ZCheckerField' );
 			Testee[ i ].fieldPos = i;
@@ -388,11 +396,21 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 
+
+	private void SetPanelsorderCVar( String newvalue ) {
+		panelsorderChanged = true;
+		panelsorder.SetString( newvalue );
+
+		//ACS_Execute( -int( 'ZChecker_SetUserPanelsOrder' ), 0, consoleplayer );
+	}
+
+
 	override void RenderOverlay( RenderEvent e ) {
 		// User CVars locating uses a relatively long algorithm. After a 
 		//while I'll optimize them and move somewhere.
 		Array<ZCBaseInfoPanelPart> infoPanelParts;
 		PlayerInfo pl = players[ consoleplayer ];
+
 
 		for ( int iCurInfoPanel = 0; iCurInfoPanel < zcInfoPanelClasses.Size(); iCurInfoPanel++ ) {
 			ZCBaseInfoPanelPart panelpart = zcInfoPanelClasses[ iCurInfoPanel ];
@@ -456,6 +474,18 @@ class ZCheckerHandler: StaticEventHandler {
 		// ZChecker CCMDs parsing:
 		String ccmdName = zcCCMDInfo.InitFromEvent( e );
 
+		if ( ccmdName ~== "zc_update_panels_order" ) {
+			if ( zcCCMDInfo.args.Size() == 1 ) {
+				SetPanelsorderCVar( zcCCMDInfo.args[ 0 ] );
+			} else {
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Network event \"zc_update_panels_order\" has wrong amount of the colon-separated arguments (must be one)." );
+				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
+			}
+
+			Super.NetworkProcess( e );
+			return;
+		}
+
 		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD name: " .. ccmdName .. ". Has " .. zcConsoleHandleClasses.Size() .. " available commands." );
 
@@ -488,9 +518,71 @@ class ZCheckerHandler: StaticEventHandler {
 	} // of override void NetworkProcess( ConsoleEvent e ) {}
 
 
+	void UpdatePanels( void ) {
+		uint warningsAmount = 0;
+		panelsorderChanged = false;
+
+		zcInfoPanelClasses.Clear();
+
+		String panelsOrderStr = panelsorder.GetString();
+
+		if ( panelsOrderStr != "" ) {
+			Array<String> neworder;
+
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldTick(). panelsorder: \"" .. TEXTCOLOR_TAN .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
+
+			panelsOrderStr.Split( neworder, ",", TOK_SKIPEMPTY );
+
+			for ( int i = 0; i < neworder.Size(); i++ ) {
+    			class<Object> curclass = neworder[ i ];
+
+				if ( curclass is "ZCBaseInfoPanelPart" ) {
+					bool found = false;
+
+					for ( int j = 0; j < zcDefaultInfoPanelClasses.Size(); j++ ) {
+						if ( zcDefaultInfoPanelClasses[ j ].GetClass() == curclass ) {
+							found = true;
+							zcInfoPanelClasses.Push( zcDefaultInfoPanelClasses[ j ] );
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
+							break;
+						}
+    				}
+
+					if ( !found )
+						ZCGlobal.Log( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" vanished." );
+    			} else if ( curclass ) {
+					warningsAmount++;
+					ZCGlobal.Log( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
+				} else {
+					warningsAmount++;
+					ZCGlobal.Log( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
+				}
+			}
+		} // of if ( panelsorder.GetString() != "" ) {}
+
+		// Reinitialization (if neccesary):
+		if ( zcInfoPanelClasses.Size() == 0 || warningsAmount > 0 ) {
+			if ( warningsAmount > 0 )
+				ZCGlobal.Log( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
+			else
+				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). No panel classes defined. Initialization." );
+
+			for ( int i = 0; i < zcDefaultInfoPanelClasses.Size(); i++ )
+				zcInfoPanelClasses.Push( zcDefaultInfoPanelClasses[ i ] );
+		}
+	} // of void UpdatePanels( void ) {}
+
 	override void WorldTick() {
 		if ( ( gamestate == GS_LEVEL || gamestate == GS_DEMOSCREEN ) && !( level.maptime % 5 ) )
 			ZCGlobal.UpdateLogLevel();
+
+		if ( !( level.maptime % 3 ) ) {
+			if ( !panelsorder )
+				panelsorder = CVar.GetCVar( "mcm_zchecker_infopanelsorder", players[ consoleplayer ] );
+
+			if ( panelsorderChanged )
+				UpdatePanels();
+		}
 
 		Super.WorldTick();
 	} // of override void WorldTick() {}
