@@ -10,7 +10,6 @@ class ZCOptionMenuPanels: OptionMenu {
 		PMAT_Quantity
 	};
 
-	//transient CVar firstPanelItemPosCVar, lastPanelItemPosCVar;
 	int firstPanelItemPos, lastPanelItemPos;
 
 	const DARKGRAY = TEXTCOLOR_DARKGRAY;
@@ -35,7 +34,8 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		desc.mItems.Push( AddStaticText() );
 		desc.mItems.Push( AddStaticText( GOLD .. "Information panels settings:" ) );
-		desc.mItems.Push( AddStaticText( DARKGRAY .. "Enter sumbenu with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ":" ) );
+		desc.mItems.Push( AddStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ";" ) );
+		desc.mItems.Push( AddStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "', '" .. GRAY .. "-" .. DARKGRAY .. "', " .. GRAY .. "<KP+>" .. DARKGRAY .. " or " .. GRAY .. "<KP->" .. DARKGRAY .. "." ) );
 		desc.mItems.Push( AddStaticText() );
 	}
 
@@ -101,13 +101,9 @@ class ZCOptionMenuPanels: OptionMenu {
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
-		//firstPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_firstinfopanelpos", players[ consoleplayer ] );
-		//lastPanelItemPosCVar = CVar.GetCVar( "mcm_zcheckerinternal_ui_lastinfopanelpos", players[ consoleplayer ] );
-
 		ReinitMenuHeaderPart( desc );
 
-		firstPanelItemPos = 4;
-		lastPanelItemPos = 4;
+		firstPanelItemPos = lastPanelItemPos = desc.mItems.Size();
 
 		if ( !handler ) {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
@@ -129,11 +125,11 @@ class ZCOptionMenuPanels: OptionMenu {
 		if ( curpos > 0 )
 			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
 
-		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
-		//console.printf( "curitem " .. curitem .. ", actiontype " .. actiontype .. "; pos " .. firstPanelItemPos .. " <= " .. curpos .. " < " .. lastPanelItemPos );
-
 		EPanelMenuActionTypes actiontype = PMAT_None;
 		int key = e.KeyChar;
+
+		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
+		//console.printf( "curitem " .. curitem .. ", actiontype " .. actiontype .. "; pos " .. firstPanelItemPos .. " <= " .. curpos .. " < " .. lastPanelItemPos );
 
 		if ( e.Type == e.Type_KeyDown ) {
 			if ( key == e.Key_F3 || key == e.Key_F4 || key == e.Key_Tab )
@@ -177,12 +173,24 @@ class ZCOptionMenuPanels: OptionMenu {
 					OptionMenuItem movingitem = NULL;
 
 					int curMoveOffset = moveOffset;
-					int newCursorOffset = moveOffset;
+					int newCursorOffset = 1;
 
-					if ( ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos + moveOffset ] ).mSubmenu )
+					Name mSubmenuSrc = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] ).mSubmenu;
+					Name mSubmenuDest = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos + moveOffset ] ).mSubmenu;
+
+					/*	Direction	Dn	Dn	Dn	Dn	Up	Up	Up	Up
+						SubmenuSrc	-	+	-	+	-	+	-	+
+						SubmenuDest	-	-	+	+	-	-	+	+
+						Rezult		+1	+1	+1	+1	-1	-1	-2	-1
+					*/
+
+					if ( mSubmenuDest )
 						moveOffset++;
-					else if ( ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] ).mSubmenu && actiontype == PMAT_MoveItemDown )
-						newCursorOffset--;
+					else if ( mSubmenuSrc && actiontype == PMAT_MoveItemUp )
+						newCursorOffset++;
+
+					//console.printf( "curMoveOffset " .. curMoveOffset .. ", newCursorOffset " .. newCursorOffset );
+
 
 					while ( curMoveOffset --> 0 ) {
 						movingitem = mDesc.mItems[ curpos ];
