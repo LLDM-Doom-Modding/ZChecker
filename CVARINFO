@@ -21,6 +21,7 @@ user int  mcm_zchecker_infovar_invamount	= 40;
 user bool mcm_zchecker_info_states			= false; // States and frames.
 user int  mcm_zchecker_infovar_statesamount	= 7;	 //  \_ Amount of states (unlimited, 1, 2, ..., 15).
 user bool mcm_zchecker_info_stateslogging	= false; // States logging.
+user bool mcm_zchecker_info_visual			= false; // Sprite, alpha, RenderStyle, etc.
 
 user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
 user bool mcm_zchecker_info_levelpointers 	= false; // BlockingMobj, LastHeard, LastEnemy, LastLookActor, Poisoner.

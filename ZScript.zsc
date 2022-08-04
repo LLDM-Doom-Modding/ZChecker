@@ -137,6 +137,10 @@ class ZCGlobal: Thinker {
         return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ")";
     }
 
+	static clearscope String squeezeVector2dec2( vector2 vec ) {
+		return String.Format( "(%.2f, %.2f)", vec.x, vec.y );
+	}
+
     static clearscope String squeezeVector3( vector3 vec ) {
         return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ", " .. int( vec.z ) .. ")";
     }

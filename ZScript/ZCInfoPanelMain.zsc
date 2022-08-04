@@ -443,3 +443,60 @@ class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {
 		return DARKGRAY .. "(" .. LIGHTBLUE .. "States logging enabled" .. DARKGRAY .. ")";
 	}
 } // of class ZCStatesLoggingInfoPanel: ZCStatesInfoPanel {}
+
+class ZCSpritesInfoPanel: ZCStatesInfoPanel {
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_visual";
+		optionLabel = "Visual";
+	}
+
+	protected String GetRenderStyleStr( ERenderStyle style ) {
+		String str = "";
+
+		switch ( style ) {
+			case STYLE_None: str = "None"; break;
+			case STYLE_Normal: str = "Normal"; break;
+			case STYLE_Fuzzy: str = "Fuzzy"; break;
+			case STYLE_SoulTrans: str = "SoulTrans"; break;
+			case STYLE_OptFuzzy: str = "OptFuzzy"; break;
+			case STYLE_Stencil: str = "Stencil"; break;
+			case STYLE_Translucent: str = "Translucent"; break;
+			case STYLE_Add: str = "Add"; break;
+			case STYLE_Shaded: str = "Shaded"; break;
+			case STYLE_TranslucentStencil: str = "TranslucentStencil"; break;
+			case STYLE_Shadow: str = "Shadow"; break;
+			case STYLE_Subtract: str = "Subtract"; break;
+			case STYLE_AddStencil: str = "AddStencil"; break;
+			case STYLE_AddShaded: str = "AddShaded"; break;
+			default: str = BLACK .. "(Unknown)"; break;
+		}
+
+		return str;
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		String outStr = "";
+
+		TextureID texture;
+		bool textureBool;
+		vector2 textureVec2;
+
+		[ texture, textureBool, textureVec2 ] = thing.curstate.GetSpriteTexture( 1 );
+
+		String textureName = TexMan.GetName( texture );
+
+		int textureRealSizeX, textureRealSizeY;
+		[ textureRealSizeX, textureRealSizeY ] = TexMan.GetSize( texture );
+
+		vector2 textureSize = TexMan.GetScaledSize( texture );
+		vector2 textureOffset = TexMan.GetScaledOffset( texture );
+
+		outStr.AppendFormat( DARKGRAY .. "Alpha " .. LIGHTBLUE .. "%.3f" .. DARKGRAY .. ", render " .. GRAY .. "%s" .. DARKGRAY .. ".\n", thing.alpha, GetRenderStyleStr( thing.GetRenderStyle() ) );
+		outStr.AppendFormat( DARKGRAY .. "Scale " .. DARKGREEN .. "(%+2.3f, %+2.3f)\n" .. DARKGRAY, thing.scale.x, thing.scale.y );
+		outStr.AppendFormat( DARKGRAY .. "Size (" .. GRAY .. "%2.3f" .. BLUE .. "x" .. GRAY .. "%2.3f" .. DARKGRAY .. "); \nReal " .. textureRealSizeX .. BLUE .. "x" .. DARKGRAY .. textureRealSizeY .. " pixels.\n", textureSize.x, textureSize.y );
+		outStr.AppendFormat( GRAY .. ( textureName.Mid( 5, 1 ) == "0"? "Faced" : "Rotor" ) .. DARKGRAY .. ", index %i;\n", int( thing.sprite ) );
+		outStr.AppendFormat( DARKGRAY .. "Txtr ofs " .. ZCGlobal.squeezeVector2dec2( textureOffset ) .. ";\nbool %i vec2 " .. ZCGlobal.squeezeVector2dec2( textureVec2 ) .. ".", textureBool );
+
+		return outStr .. "\n";
+	}
+} // of class ZCSpritesInfoPanel: ZCStatesInfoPanel {}
