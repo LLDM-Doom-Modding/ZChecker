@@ -2,6 +2,7 @@
 server int mcm_zchecker_loglevel = 1;
 
 user string mcm_zchecker_infopanelsorder;
+user noarchive string mcm_zchecker_internal_metastring;
 
 
 // Information panel console variables.
