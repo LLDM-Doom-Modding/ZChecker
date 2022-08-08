@@ -46,7 +46,7 @@ script "ZChecker_SetUserPanelsOrder" ( int playernum ) {
 }
 
 script "ZChecker_SetUserCVar" ( int playernum ) {
-	str cvarname = GetUserCVarString( playernum, "mcm_zchecker_internal_metastring" )
+	str cvarname = GetUserCVarString( playernum, "mcm_zchecker_internal_metastring" );
 	str data = GetUserCVarString( playernum, cvarname );
 
     SetUserCVarString( playernum, cvarname, data );
