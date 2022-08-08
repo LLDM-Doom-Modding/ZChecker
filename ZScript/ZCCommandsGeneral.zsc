@@ -448,6 +448,8 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 				if ( index != -1 ) {
 					if ( aliases[ index ].thing ) {
 						handler.Testee[ zcPos ].mo = aliases[ index ].thing;
+						ccmd.handler.UpdateInternalClassnameByField( zcPos );
+
 						ZCGlobal.Log( LL_Detailed, "Loaded actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> with alias \"" .. zcAliasName .. "\"." );
 					} else {
 						ZCGlobal.Log( LL_Detailed, "Cannot load, actor with alias \"" .. zcAliasName .. "\" destroyed." );
@@ -464,6 +466,9 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 					if ( zcPanelControlType == PCT_Move )
 						handler.Testee[ zcPos ].mo = NULL;
+
+					ccmd.handler.UpdateInternalClassnameByField( zcPos );
+					ccmd.handler.UpdateInternalClassnameByField( zcNewPos );
 				} else {
 					ZCGlobal.Log( LL_Main, "No actor in position " .. ( zcPos + 1 ) );
 				}
