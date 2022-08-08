@@ -47,7 +47,6 @@ OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
-	0, "0. Emergency only"
 	1, "1. Main/default"
 	2, "2. Detailed"
 	3, "3. Debug mode"

@@ -34,7 +34,6 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				break;
 			case CCMDT_Goto:
 				outStr = getHelpByClass( 'ZCEvmapCommand_goto' );
-				zcFlags &= ~CCF_Unreleased;
 				break;
 			case CCMDT_Pause:
 				outStr = getHelpByClass( 'ZCEvmapCommand_pause' );
@@ -102,7 +101,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				zcCCMDType = CCMDT_Goto;
 
 				if ( argsSize == 2 ) {
-					zcSpecifiedClass = ccmd.args[ 1 ];
+					zcSpecifiedClass = ParseSpecialClassName( ccmd.args[ 1 ] );
 					outValue = true;
 				}
 			} else if ( ccmd.args[ 0 ] == "recreate" || ccmd.args[ 0 ] == "reload" ) {
@@ -140,7 +139,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 					ThinkerIterator it = ThinkerIterator.Create( "ZCheckerActorInfo" );
 					ZCheckerActorInfo curActor;
 
-					while ( ( curActor = ZCheckerActorInfo( it.Next( true ) ) ) && ( curActor.masterClass != ccmd.args[ 1 ] ) ) {
+					while ( ( curActor = ZCheckerActorInfo( it.Next( true ) ) ) && ( curActor.masterClass != zcSpecifiedClass ) ) {
 					}
 
 					if ( curActor ) {
@@ -172,7 +171,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 // Dummy everything map classes:
 class ZCEvmapCommand_goto: ZCConsoleCommand {
 	override String GetHelpNameString() {
-		return "zcev goto <class>|start";
+		return "zcev goto <class>|start;zcevg <class>|start";
 	}
 	override String GetHelpDescString() {
 		return "On the Everything map, go to the specific actor definition/to start";

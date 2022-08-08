@@ -322,7 +322,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		outStr = outStr .. ( isWeapon? "PSprite states" : "States" );
 
 		if ( statesLogging ) {
-			outStr = outStr .. DARKGRAY .. "[" .. LIGHTBLUE .. "logging" .. DARKGRAY .. "]";
+			outStr = outStr .. DARKGRAY .. " [" .. LIGHTBLUE .. "logging" .. DARKGRAY .. "]";
 			DoStatesLogging( thing, thingfield );
 		}
 

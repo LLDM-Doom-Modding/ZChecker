@@ -255,6 +255,9 @@ class ZCGiveCommand: ZCConsoleCommand {
 			outValue = checkTesteePlace( --zcPos );
 		}
 
+		if ( outValue )
+			itemName = ParseSpecialClassName( itemName );
+
 		return outValue && ( itemAmount != -1 );
 	}
 
@@ -473,8 +476,12 @@ class ZCSummonCommand: ZCConsoleCommand {
 			outValue = true;
 		}
 
-		if ( outValue )
-			summonee = ccmd.args[ 0 ];
+		if ( outValue ) {
+			summonee = ParseSpecialClassName( ccmd.args[ 0 ] );
+
+			if ( summonee == "" )
+				outValue = false;
+		}
 
 		return outValue;
 	}

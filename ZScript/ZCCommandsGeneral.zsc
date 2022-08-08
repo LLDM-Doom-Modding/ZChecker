@@ -353,7 +353,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Perform extra operations with the information panels.";
+		return "Perform keen control with internal variables and information panels.\n  Possible placeholders for the <string value> (first symbol must be \"%%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
 	}
 
 	override bool HandleArguments() {
