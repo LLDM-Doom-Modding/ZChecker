@@ -79,7 +79,10 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 				String.Format( "Vel: (%.2f, %.2f, %.2f)", thing.vel.x, thing.vel.y, thing.vel.z ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".\n", thing.radius, thing.height );
 
-		if ( thing is "PlayerPawn" && thing.player ) {
+
+		bool showPlayerButtons = CVar.GetCVar( "mcm_zchecker_infovar_wposplayerbuttons", players[ consoleplayer ] ).GetBool();
+
+		if ( thing is "PlayerPawn" && thing.player && showPlayerButtons ) {
 			outStr.AppendFormat( DARKGRAY .. "Keys 0x" .. GRAY .. "%08x\n", thing.player.cmd.buttons );
 			curPlayerButtons = thing.player.cmd.buttons;
 
@@ -99,7 +102,7 @@ spd.strf..t180.scor
 				Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
 				Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
 				Col( SPD ) , Col( STRF ), Col( T180 ), Col( SCOR )
-			);
+			) .. "\n";
 		}
 
 		return outStr;

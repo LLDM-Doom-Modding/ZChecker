@@ -28,19 +28,19 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 	Title "ZChecker: States"
 
 	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
-	Option "Spawn +STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
-	Option "Spawn +INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_main" {
 	Title "ZChecker: General info"
 
-	Option "Display actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
-	Option "Display self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
+	Option "Actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
+	Option "Self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 	Title "ZChecker: World positioning"
+
+	Option "Player buttons", "mcm_zchecker_infovar_wposplayerbuttons", "YesNo"
 }
 
 

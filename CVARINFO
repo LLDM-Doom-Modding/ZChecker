@@ -2,8 +2,6 @@
 server int mcm_zchecker_loglevel = 1;
 
 user string mcm_zchecker_infopanelsorder;
-user noarchive int mcm_zcheckerinternal_ui_firstinfopanelpos = 0;
-user noarchive int mcm_zcheckerinternal_ui_lastinfopanelpos = 0;
 
 
 // Information panel console variables.
@@ -17,6 +15,7 @@ user int  mcm_zchecker_infovar_maintags		= 2;	 //  \_ "Never", "If different fro
 user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
 
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
+user bool mcm_zchecker_infovar_wposplayerbuttons = false;
 user bool mcm_zchecker_info_maininteract	= true;	 // Health, mass, etc.
 
 user bool mcm_zchecker_info_inventory		= true;
@@ -34,9 +33,7 @@ user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
 
-//user bool mcm_zchecker_info_interaction	= false; // BlockingLine, ...
-//user bool mcm_zchecker_info_visual		= false;
-//user bool mcm_zchecker_info_sectors		= false; // "floorsector", "ceilingsector", ...
+//user bool mcm_zchecker_info_geometry		= false; // "floorsector", "ceilingsector", BlockingLine, ...
 //user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
 
 
