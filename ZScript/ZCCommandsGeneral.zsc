@@ -167,23 +167,25 @@ class ZCAddCommand: ZCConsoleCommand {
 		if ( zcPos != -1 ) {
 			PlayerInfo player = players[ ccmd.e.Player ];
 
+			ZCheckerField field = ccmd.handler.Testee[ zcPos ];
+
 			switch ( zcSpecialAddType ) {
 				case SAT_Normal:
 					Actor linetracedActor = LinetraceActor( player.mo );
 
 	                if ( linetracedActor ) {
-						ccmd.handler.Testee[ zcPos ].mo = linetracedActor;
-						ZCGlobal.Log( LL_Detailed, "Added actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+						field.mo = linetracedActor;
+						ZCGlobal.Log( LL_Detailed, "Added actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
 					}
 					break;
 				case SAT_Self:
-					ccmd.handler.Testee[ zcPos ].mo = player.mo;
-					ZCGlobal.Log( LL_Detailed, "Added PlayerPawn actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+					field.mo = player.mo;
+					ZCGlobal.Log( LL_Detailed, "Added PlayerPawn actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
 					break;
 				case SAT_Weapon:
 					if ( player.ReadyWeapon ) {
-						ccmd.handler.Testee[ zcPos ].mo = player.ReadyWeapon;
-						ZCGlobal.Log( LL_Detailed, "Added StateProvider actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+						field.mo = player.ReadyWeapon;
+						ZCGlobal.Log( LL_Detailed, "Added StateProvider actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
 					} else {
 						ZCGlobal.Log( LL_Main, "No weapon, cannot add." );
 					}
@@ -233,8 +235,8 @@ class ZCAddCommand: ZCConsoleCommand {
 					}
 
 	                if ( locatedActor ) {
-						ccmd.handler.Testee[ zcPos ].mo = locatedActor;
-						ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. ">." );
+						field.mo = locatedActor;
+						ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
 					} else {
 						ZCGlobal.Log( LL_Detailed, "Cannot find any suitable actors." );
 					}
@@ -242,6 +244,11 @@ class ZCAddCommand: ZCConsoleCommand {
 				default:
 					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\"." );
 					break;
+			}
+
+			if ( field.mo ) {
+				SetInternalZCheckerString( "$last", field.mo.GetClassName() );
+				ccmd.handler.UpdateInternalClassnameByField( zcPos );
 			}
 
 		} else {
@@ -283,6 +290,8 @@ class ZCRemCommand: ZCConsoleCommand {
 			if ( testee ) {
 				ZCGlobal.Log( LL_Detailed, "Removed actor \"" .. testee.GetClassName() .. "\" <" .. testee .. "> from position " .. zcPos + 1 .. "." );
 				ccmd.handler.Testee[ zcPos ].mo = NULL;
+
+				ccmd.handler.UpdateInternalClassnameByField( zcPos );
 			} else {
 				ZCGlobal.Log( LL_Detailed, "Cannot remove, there's no actor in position " .. zcPos + 1 .. "." );
 			}
@@ -310,7 +319,8 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 		PCT_Load,
 		PCT_Move,
 		PCT_Copy,
-		PCT_Info
+		PCT_Info,
+		PCT_SetInternal
 	};
 
 	EPanelControlTypes zcPanelControlType;
@@ -339,7 +349,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcpanelctl <pos> move|copy <newpos>;zcpanelctl <pos> save|store <aliasname>;zcpanelctl <pos> load <aliasname>;zcpanelctl general|list|<pos> info";
+		return "zcpanelctl <pos> move|copy <newpos>;zcpanelctl <pos> save|store <aliasname>;zcpanelctl <pos> load <aliasname>;zcpanelctl set[var]|var[set] <internal variable name> <string value>;zcpanelctl g[eneral]|l[ist]|f[ull]|<pos> info";
 	}
 
 	override String GetHelpDescString() {
@@ -357,36 +367,43 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 		if ( ccmdArgsSize == 2 && ccmd.args[ 1 ] ~== "info" ) {
 			zcPanelControlType = PCT_Info;
 			String arg0 = ccmd.args[ 0 ];
+			arg0.ToLower();
 
-			outValue = ( arg0 ~== "general" || arg0 ~== "list" );
+			outValue = ( arg0 == "general" || arg0 == "g" || arg0 == "list" || arg0 ~== "l" || arg0 == "full" || arg0 == "f" );
 
 			if ( !outValue && str2int_Ptr( arg0, +zcPos ) )
 				outValue = checkTesteePlace( --zcPos );
 
 		} else if ( ccmdArgsSize == 3 ) {
-			String argOperation = ccmd.args[ 1 ];
-			bool parsingError = false;
-			bool parsePosArg = true;
-			bool parsePosNewArg = false;
+			String arg0 = ccmd.args[ 0 ];
+			arg0.ToLower();
 
-			if ( argOperation ~== "save" || argOperation ~== "store" || argOperation ~== "load" ) {
-				zcAliasName = ccmd.args[ 2 ];
-				zcPanelControlType = ( argOperation ~== "load"? PCT_Load : PCT_Save );
-
-			} else if ( argOperation ~== "move" || argOperation ~== "copy" ) {
-				parsePosNewArg = true;
-				zcPanelControlType = ( argOperation ~== "copy"? PCT_Copy : PCT_Move );
-
+			if ( arg0 == "setvar" || arg0 == "set" || arg0 == "var" || arg0 == "varset" ) {
+				zcPanelControlType = PCT_SetInternal;
+				outValue = true;
 			} else {
-				parsePosArg = false;
-			}
+				String argOperation = ccmd.args[ 1 ];
+				bool parsingError = false;
+				bool parsePosArg = true;
+				bool parsePosNewArg = false;
 
-			if ( parsePosArg ) {
-				if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
-					outValue = checkTesteePlace( --zcPos );
+				if ( argOperation ~== "save" || argOperation ~== "store" || argOperation ~== "load" ) {
+					zcAliasName = ccmd.args[ 2 ];
+					zcPanelControlType = ( argOperation ~== "load"? PCT_Load : PCT_Save );
+				} else if ( argOperation ~== "move" || argOperation ~== "copy" ) {
+					parsePosNewArg = true;
+					zcPanelControlType = ( argOperation ~== "copy"? PCT_Copy : PCT_Move );
+				} else {
+					parsePosArg = false;
+				}
 
-				if ( parsePosNewArg && outValue && str2int_Ptr( ccmd.args[ 2 ], +zcNewPos ) )
-					outValue = checkTesteePlace( --zcNewPos );
+				if ( parsePosArg ) {
+					if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+						outValue = checkTesteePlace( --zcPos );
+
+					if ( parsePosNewArg && outValue && str2int_Ptr( ccmd.args[ 2 ], +zcNewPos ) )
+						outValue = checkTesteePlace( --zcNewPos );
+				}
 			}
 		}
 
@@ -477,7 +494,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 			if ( aliases.Size() == 0 ) {
 				ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "No actors aliases created now" );
 			} else {
-				ZCGlobal.ClearscopeLog( LL_Main, "Actors aliases (total " .. aliases.Size() .. ": " );
+				ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, TEXTCOLOR_SAPPHIRE .. "Actors aliases " .. GRAY .. "(total " .. aliases.Size() .. "): " );
 
 				for ( int i = 0; i < aliases.Size(); i++ ) {
 					if ( aliases[ i ].thing )
@@ -486,6 +503,22 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" is unlinked" );
 				}
 			}
+
+			ZCGlobal global = ZCGlobal.Get();
+
+			ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, TEXTCOLOR_SAPPHIRE .. "Internal variables " .. GRAY .. "(total " .. global.internalStrings.Size() .. "): " );
+
+			for ( int i = 0; i < global.internalStrings.Size(); i++ ) {
+				ZCInternalStringDictionaryCell curcell = global.internalStrings[ i ];
+				ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. curcell.cell .. DARKGRAY .. "\" == \"" .. GRAY .. curcell.value .. DARKGRAY .. "\"." );
+			}
+
+		} else if ( zcPanelControlType == PCT_SetInternal ) {
+			String internalVarName = ccmd.args[ 1 ];
+			String newVarValue = ccmd.args[ 2 ];
+
+			if ( SetInternalZCheckerString( internalVarName, newVarValue ) )
+				ZCGlobal.Log( LL_Main, "Internal variable \"" .. TEXTCOLOR_LIGHTBLUE .. internalVarName .. LLCOLOR_MAIN .. "\" is " .. TEXTCOLOR_GREEN .. "set" .. LLCOLOR_MAIN .. " to \"" .. GetInternalZCheckerString( internalVarName ) .. "\"." );
 		} else {
 			ZCGlobal.Log( LL_Emergency, "Unknown panel control type " .. zcPanelControlType .. " (with no defined position)." );
 		}

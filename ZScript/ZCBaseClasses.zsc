@@ -193,11 +193,83 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
         if ( RemoteRay.HitType == TRACE_HitActor ) {
 			outActor = RemoteRay.HitActor;
 		} else {
-			ZCGlobal.Log( LL_Normal, "No actors found in nearest 65535 mappixels." );
+			ZCGlobal.Log( LL_Normal, "No available actors found in nearest 65535 mappixels." );
 		}
 
 		return outActor;
 	} // of protected play Actor LinetraceActor( void ) {}
+
+	protected String GetInternalZCheckerString( String zcname ) {
+		return ZCGlobal.Get().GetZCheckerString( zcname );
+	}
+
+	protected String, bool ParseSpecialClassName( String classname ) {
+		if ( classname.CharAt( 0 ) == "%" || classname.CharAt( 0 ) == "%%" )
+			classname = "$" .. classname.Mid( 1, classname.Length() - 1 );
+
+		String origValue = classname;
+		String testSpecialValue = classname.Mid( 1, classname.Length() - 1 );
+		testSpecialValue.ToLower();
+
+		bool isSpecial = false;
+		Actor caller = ( ccmd? players[ ccmd.e.Player ].mo : NULL );
+
+		if ( caller ) {
+			if ( testSpecialValue == "linetarget" || testSpecialValue == "lt" ) {
+				isSpecial = true;
+				classname = ZCGlobal.ObjectName( LinetraceActor( caller ) );
+			} else if ( testSpecialValue == "self" ) {
+				isSpecial = true;
+				classname = caller.GetClassName();
+			} else if ( testSpecialValue == "target" ) {
+				isSpecial = true;
+				classname = ZCGlobal.ObjectName( caller.target );
+			} else if ( testSpecialValue == "master" ) {
+				isSpecial = true;
+				classname = ZCGlobal.ObjectName( caller.master );
+			} else if ( testSpecialValue == "tracer" ) {
+				isSpecial = true;
+				classname = ZCGlobal.ObjectName( caller.tracer );
+			}
+		}
+
+		if ( testSpecialValue == "null" || testSpecialValue == "none" )
+			classname = "";
+
+
+		if ( isSpecial ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialClassName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
+
+			if ( classname == "" )
+				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "empty placeholder \"" .. origValue .. "\". You may use \"%%null\" or \"%%none\" to override this." );
+		} else if ( classname.CharAt( 0 ) == "$" ) {
+			classname = GetInternalZCheckerString( classname );
+
+			if ( classname == "" )
+				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "unset internal variable \"" .. origValue .. "\"." );
+
+			isSpecial = true;
+		/*} else if ( classname.IndexOf( "*" ) != -1 ) {*/
+		}
+
+
+		return classname, isSpecial;
+	}
+
+	protected bool SetInternalZCheckerString( String zcname, String value ) {
+		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
+			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );
+
+		String newValue;
+		bool isValueSpecial;
+
+		[ newValue, isValueSpecial ] = ParseSpecialClassName( value );
+
+		if ( !isValueSpecial || ( newValue != "" ) )
+			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
+
+		return false;
+	}
 
 	// Returns help aliases/description string for a class:
 	protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {

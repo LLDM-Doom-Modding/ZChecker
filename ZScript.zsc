@@ -1,4 +1,4 @@
-version "2.4.0"
+version "3.3.0"
 
 #include "ZScript/ZCMapScripts.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
@@ -15,7 +15,7 @@ version "2.4.0"
 
 
 const MaxTestee = 3;
-const ZCheckerVersion = "0.68";
+const ZCheckerVersion = "0.69";
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
@@ -62,11 +62,25 @@ const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
 const CCMDCOLOR_DESC = "\c-";
 
 
+class ZCInternalStringDictionaryCell {
+	String cell;
+	String value;
+}
+
 class ZCGlobal: Thinker {
+	ZCheckerHandler zcHandler;
 	int zcCurLogLevel;
 
-	static void UpdateLogLevel( void ) {
-		ZCGlobal.Get().zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+	Array<ZCInternalStringDictionaryCell> internalStrings;
+
+	/* === ZChecker utils === */
+
+	void UpdateLogLevel( void ) {
+		zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+	}
+
+	void InitZCheckerHandler( ZCheckerHandler inithandler ) {
+		zcHandler = inithandler;
 	}
 
 	static play ZCGlobal Get( void ) {
@@ -76,11 +90,16 @@ class ZCGlobal: Thinker {
 			// Creating and initializating a singleton global object:
 			it = new( "ZCGlobal" );
 			it.ChangeStatNum( STAT_STATIC );
-			UpdateLogLevel(); // This one calls "Get()" again, yeah...
+			it.UpdateLogLevel();
+			it.internalStrings.Clear();
 		}
 
 		return it;
 	} // of static play ZCGlobal Get( void ) {}
+
+	/*static play ZCheckerHandler GetZCHandler( void ) {
+		return ZCGlobal.Get().zcHandler;
+	}*/
 
 	// Prints well-decorated information string:
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
@@ -133,6 +152,69 @@ class ZCGlobal: Thinker {
 	}
 
 
+
+	/* === ZChecker operating on the saves-through variables === */
+
+	// Fixing an ancient ZScript bug...
+	static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
+		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
+
+		if ( usercvar ) {
+			CVar metastring = CVar.FindCVar( "mcm_zchecker_internal_metastring" );
+			metastring.SetString( cvarName );
+			usercvar.SetString( cvarValue );
+
+			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
+		}
+	}
+
+	clearscope String GetZCheckerString( String zcname ) {
+		String outStr = "";
+
+		for ( int i = 0; i < internalStrings.Size(); i++ ) {
+			//console.printf( "#" .. i .. ": dict[ '" .. internalStrings[ i ].cell .. "' ] == '" .. internalStrings[ i ].value .. "'. Arg is " .. zcname );
+			if ( internalStrings[ i ].cell == zcname ) {
+				outStr = internalStrings[ i ].value;
+				break;
+			}
+		}
+
+		return outStr;
+	}
+
+	play bool SetZCheckerString( String zcname, String zcvalue ) {
+		if ( zcname.CharAt( 0 ) != "$" ) {
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::SetZCheckerString(). " .. TEXTCOLOR_YELLOW .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
+			return false;
+		}
+
+		ZCInternalStringDictionaryCell dictcell = NULL;
+
+		for ( int i = 0; i < internalStrings.Size(); i++ ) {
+			if ( internalStrings[ i ].cell == zcname ) {
+				dictcell = internalStrings[ i ];
+				break;
+			}
+		}
+
+		if ( !dictcell ) {
+			dictcell = new( 'ZCInternalStringDictionaryCell' );
+			dictcell.cell = zcname;
+
+			internalStrings.Push( dictcell );
+		}
+
+		dictcell.value = zcvalue;
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::SetZCheckerString(). Dict[ \"" .. zcname .. "\" ] == \"" .. GetZCheckerString( zcname ) .. "\"." );
+
+		return true;
+	}
+
+
+
+	/* === General (other) utils === */
+
     static clearscope String squeezeVector2( vector2 vec ) {
         return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ")";
     }
@@ -145,7 +227,6 @@ class ZCGlobal: Thinker {
         return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ", " .. int( vec.z ) .. ")";
     }
 
-
 	static double, double vector3ToAnglePitch( vector3 vec ) {
 		return atan2( vec.y, vec.x ), -90.0 * sin( vec.z );
 	}
@@ -155,6 +236,14 @@ class ZCGlobal: Thinker {
 		double cospitch = cos( pitch );
 
 		return ( cosangle * cospitch, sin( angle ) * cospitch, sin( pitch ) );
+	}
+
+	static String ObjectName( Object obj ) {
+		return ( obj? obj.GetClassName() .. "" : "" );
+	}
+
+	static String ClassName( class cls ) {
+		return ( cls? cls.GetClassName() .. "" : "" );
 	}
 
 	// Remove all first and all last spaces and tabs in the string.
@@ -168,7 +257,7 @@ class ZCGlobal: Thinker {
 
 		uint len = str.Length() - 1;
 		code = str.CharCodeAt( len );
-		while ( ( code == 9 || code == 11 || code == 32 ) && ( len + 1 ) ) {
+		while ( ( code == 9 || code == 11 || code == 32 ) /* && ( len + 1 ) */ ) {
 			str = str.Left( len );
 			len = str.Length() - 1;
 			code = str.CharCodeAt( len );
@@ -182,6 +271,8 @@ class ZCGlobal: Thinker {
 
 
 class ZCheckerHandler: StaticEventHandler {
+	ZCGlobal globalclass;
+
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
 	Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
 	Array<ZCBaseInfoPanelPart> zcDefaultInfoPanelClasses;
@@ -209,6 +300,17 @@ class ZCheckerHandler: StaticEventHandler {
 
 		return ccmd;
 	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
+
+	void UpdateInternalClassnameByField( uint fieldnum ) {
+		if ( fieldnum < MaxTestee ) {
+			String newClassname = "";
+
+			if ( Testee[ fieldnum ].mo )
+				newClassname = Testee[ fieldnum ].mo.GetClassName();
+
+			globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
+		}
+	}
 
 	private bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
@@ -491,10 +593,16 @@ class ZCheckerHandler: StaticEventHandler {
 		}
 
 		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD name: " .. ccmdName .. ". Has " .. zcConsoleHandleClasses.Size() .. " available commands." );
+			String debugstr = GetClassName() .. "::NetworkProcess(). CCMD: \"" .. ccmdName .. "\"";
 
-			for ( int i = 0; i < zcCCMDInfo.args.Size(); i++ )
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). CCMD arg " .. i + 1 .. ": " .. zcCCMDInfo.args[ i ] );
+			if ( zcCCMDInfo.args.Size() != 0 ) {
+				for ( int i = 0; i < zcCCMDInfo.args.Size(); i++ )
+					debugstr.AppendFormat( " [" .. TEXTCOLOR_DARKGREEN .. "#%i: \"%s\"" .. LLCOLOR_DEBUG .. "]", i + 1, zcCCMDInfo.args[ i ] );
+			} else {
+				debugstr = debugstr .. ", no arguments.";
+			}
+
+			ZCGlobal.ClearscopeLog( LL_Debug, debugstr );
 		}
 
 		// Polling ZChecker CCMD handlers by stored netevent name:
@@ -508,7 +616,6 @@ class ZCheckerHandler: StaticEventHandler {
 				curCCMD.ccmd = zcCCMDInfo;
 
 				if ( curCCMD.HandleArguments() ) {
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. curCCMD.ccmd.args.Size() .. " argument(s) for CCMD " .. curCCMD.GetClassName() .. " handled successfully." );
 					curCCMD.DoCommand();
 				} else {
 					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage\c-:\n" .. curCCMD.GetHelpString() );
@@ -567,9 +674,9 @@ class ZCheckerHandler: StaticEventHandler {
 		// Reinitialization (if neccesary):
 		if ( zcInfoPanelClasses.Size() == 0 || warningsAmount > 0 ) {
 			if ( warningsAmount > 0 )
-				ZCGlobal.Log( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
+				ZCGlobal.Log( LL_Main, GetClassName() .. "::UpdatePanels(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
 			else
-				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). No panel classes defined. Initialization." );
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::UpdatePanels(). No panel classes defined. Initialization." );
 
 			for ( int i = 0; i < zcDefaultInfoPanelClasses.Size(); i++ )
 				zcInfoPanelClasses.Push( zcDefaultInfoPanelClasses[ i ] );
@@ -578,7 +685,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 	override void WorldTick() {
 		if ( ( gamestate == GS_LEVEL || gamestate == GS_DEMOSCREEN ) && !( level.maptime % 5 ) )
-			ZCGlobal.UpdateLogLevel();
+			globalclass.UpdateLogLevel();
 
 		if ( !( level.maptime % 3 ) ) {
 			if ( !panelsorder )
@@ -590,5 +697,17 @@ class ZCheckerHandler: StaticEventHandler {
 
 		Super.WorldTick();
 	} // of override void WorldTick() {}
+
+	override void WorldLoaded( WorldEvent e ) {
+		globalclass = ZCGlobal.Get();
+		globalclass.InitZCheckerHandler( self );
+
+		globalclass.SetZCheckerString( "$1", "" );
+		globalclass.SetZCheckerString( "$2", "" );
+		globalclass.SetZCheckerString( "$3", "" );
+		globalclass.SetZCheckerString( "$last", "" );
+
+		Super.WorldLoaded( e );
+	}
 
 } // of class ZCheckerHandler: EventHandler {}
