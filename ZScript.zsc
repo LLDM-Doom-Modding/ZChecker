@@ -40,6 +40,11 @@ enum EZCheckerLogLevels {
 	LL_NoPrefix		= 0x8000
 };
 
+const LLCOLOR_MAIN = "\c-";
+const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
+const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
+
+
 enum EZCheckerInfoActorType {
 	IAT_Normal = 0,
 	IAT_StateProvider
@@ -53,19 +58,54 @@ enum ENewlineTypes {
 	ZCNL_DOSReversed	// 0x0A, 0x0D
 };
 
-const LLCOLOR_MAIN = "\c-";
-const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
-const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
-
 const CCMDCOLOR_TITLE = TEXTCOLOR_GREEN;
 const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
 const CCMDCOLOR_DESC = "\c-";
+
+const LETTER_A_UPPER = 65;
+const LETTER_Z_UPPER = 90;
+const LETTER_A_LOWER = 97;
+const LETTER_Z_LOWER = 122;
 
 
 class ZCInternalStringDictionaryCell {
 	String cell;
 	String value;
 }
+
+class ZCInternalActorNameCell {
+	const ARRAY_Quantity = 28;
+
+	int firstchar; // "0" is '_', "1" is 'a', "26" is 'z', "27" is other char (if any...).
+	Array<String> names;
+
+	static ZCInternalActorNameCell Create( int initFirstchar ) {
+		ZCInternalActorNameCell newcell = new( 'ZCInternalActorNameCell' );
+		newcell.firstchar = initFirstchar;
+
+		return newcell;
+	}
+
+	// First character. "0" is '_', "1" is 'a', "26" is 'z' and "27" is other char (if any).
+	static clearscope int GetClassnameCellIndex( String clsname ) {
+		int outIndex = 27;
+
+		if ( clsname != "" ) {
+			int firstchar = clsname.CharCodeAt( 0 );
+
+			// Converting to uppercase:
+			if ( firstchar >= LETTER_A_LOWER && firstchar <= LETTER_Z_LOWER )
+				firstchar &= ~0x20; //LETTER_A_LOWER + LETTER_A_UPPER;
+
+			if ( firstchar == 0x5F )
+				outIndex = 0; // '_'.
+			else if ( firstchar >= LETTER_A_UPPER && firstchar <= LETTER_Z_UPPER )
+				outIndex = firstchar - LETTER_A_UPPER + 1; // 'A'..'Z'.
+		}
+
+		return outIndex;
+	}
+} // of class ZCInternalActorNameCell {}
 
 class ZCGlobal: Thinker {
 	ZCheckerHandler zcHandler;
@@ -77,10 +117,6 @@ class ZCGlobal: Thinker {
 
 	void UpdateLogLevel( void ) {
 		zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
-	}
-
-	void InitZCheckerHandler( ZCheckerHandler inithandler ) {
-		zcHandler = inithandler;
 	}
 
 	static play ZCGlobal Get( void ) {
@@ -97,9 +133,14 @@ class ZCGlobal: Thinker {
 		return it;
 	} // of static play ZCGlobal Get( void ) {}
 
+	void InitZCheckerHandler( ZCheckerHandler inithandler ) {
+		zcHandler = inithandler;
+	} // of void InitZCheckerHandler( ZCheckerHandler inithandler ) {}
+
 	/*static play ZCheckerHandler GetZCHandler( void ) {
 		return ZCGlobal.Get().zcHandler;
 	}*/
+
 
 	// Prints well-decorated information string:
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
@@ -153,7 +194,7 @@ class ZCGlobal: Thinker {
 
 
 
-	/* === ZChecker operating on the saves-through variables === */
+	/* === ZChecker operating on the internal and saves-through variables === */
 
 	// Fixing an ancient ZScript bug...
 	static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
@@ -210,7 +251,6 @@ class ZCGlobal: Thinker {
 
 		return true;
 	}
-
 
 
 	/* === General (other) utils === */
@@ -276,6 +316,9 @@ class ZCheckerHandler: StaticEventHandler {
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
 	Array<ZCBaseInfoPanelPart> zcInfoPanelClasses;
 	Array<ZCBaseInfoPanelPart> zcDefaultInfoPanelClasses;
+
+	Array<ZCInternalActorNameCell> allActorNames;
+	Array<String> lastUsedActorNames; // Cache.
 
 	// It's impossible to avoid unloading actors (and pointers to them) from 
 	//memory on level reloading. Or I just don't know something.
@@ -476,6 +519,28 @@ class ZCheckerHandler: StaticEventHandler {
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating CCMD handlers and info panel classes..." );
 		IncludeConsoleClasses();
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Creating storage cells for actor names..." );
+		for ( int i = 0; i < ZCInternalActorNameCell.ARRAY_Quantity; i++ )
+			allActorNames.Push( ZCInternalActorNameCell.Create( i ) );
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). Saving actor names by first char..." );
+		for ( int i = 0; i < AllActorClasses.Size(); i++ ) {
+			String curclass = AllActorClasses[ i ].GetClassName();
+			int index = ZCInternalActorNameCell.GetClassnameCellIndex( curclass );
+
+			allActorNames[ index ].names.Push( curclass );
+		}
+
+		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
+			for ( int i = 0; i< ZCInternalActorNameCell.ARRAY_Quantity; i++ ) {
+				ZCInternalActorNameCell nameCell = allActorNames[ i ];
+				int nameCellSize = nameCell.names.Size();
+
+				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::OnRegister(). " .. String.Format(
+										"allActorNames[ %2i ] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), i, nameCellSize ) );
+			}
+		}
 
 		ZCGlobal.Log( LL_Detailed, "ZChecker initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console commands, " .. zcInfoPanelClasses.Size() .. " info panels." );
 
