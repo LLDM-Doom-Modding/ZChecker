@@ -523,7 +523,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 			String newVarValue = ccmd.args[ 2 ];
 
 			if ( SetInternalZCheckerString( internalVarName, newVarValue ) )
-				ZCGlobal.Log( LL_Main, "Internal variable \"" .. TEXTCOLOR_LIGHTBLUE .. internalVarName .. LLCOLOR_MAIN .. "\" is " .. TEXTCOLOR_GREEN .. "set" .. LLCOLOR_MAIN .. " to \"" .. GetInternalZCheckerString( internalVarName ) .. "\"." );
+				ZCGlobal.Log( LL_Main, "Internal variable \"" .. TEXTCOLOR_LIGHTBLUE .. internalVarName.Left( 63 ) .. LLCOLOR_MAIN .. "\" is " .. TEXTCOLOR_GREEN .. "set" .. LLCOLOR_MAIN .. " to \"" .. GetInternalZCheckerString( internalVarName ) .. "\"." );
 		} else {
 			ZCGlobal.Log( LL_Emergency, "Unknown panel control type " .. zcPanelControlType .. " (with no defined position)." );
 		}

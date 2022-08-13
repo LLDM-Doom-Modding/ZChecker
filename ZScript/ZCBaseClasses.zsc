@@ -210,6 +210,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		if ( classname.CharAt( 0 ) == "%" || classname.CharAt( 0 ) == "%%" )
 			classname = "$" .. classname.Mid( 1, classname.Length() - 1 );
 
+		if ( classname.Length() > 63 ) {
+			classname.Truncate( 63 );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Value truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
+		}
+
 		String origValue = classname;
 		String testSpecialValue = classname.Mid( 1, classname.Length() - 1 );
 		testSpecialValue.ToLower();
@@ -252,16 +257,148 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "unset internal variable \"" .. origValue .. "\"." );
 
 			isSpecial = true;
-		/*} else if ( classname.IndexOf( "*" ) != -1 ) {*/
+		} else if ( ccmd && ccmd.handler && ( classname.IndexOf( "*" ) != -1 || classname.IndexOf( "-" ) != -1 ) ) {
+			String curpart = "";
+			int lastpart = 0;
+			int lastpartStartIndex = 0;
+			bool specialchar = false;
+			int skipchars = 0;
+			bool onlySpecialChars = true;
+
+			classname.ToLower();
+
+			Array<String> parts;
+			Array<int> partindices;
+			parts.Clear();
+			partindices.Clear();
+
+			for ( int i = 0; i < classname.Length(); i++ ) {
+				String curchar = classname.CharAt( i );
+
+				if ( curchar == "*" ) {
+					specialchar = true;
+					skipchars--;
+				} else if ( curchar == "-" ) {
+					specialchar = true;
+				} else {
+					if ( specialchar ) {
+						parts.Push( curpart );
+						partindices.Push( lastpartStartIndex );
+
+						lastpart++;
+						curpart = "";
+						lastpartStartIndex = i + skipchars;
+						specialchar = false;
+					}
+
+					curpart = curpart .. curchar;
+					onlySpecialChars = false;
+				}
+			} // of for ( int i = 0; i < classname.Length(); i++ ) {}
+
+			if ( onlySpecialChars ) {
+				ZCGlobal.Log( LL_Main, "Not provided any class identifier character." );
+			} else {
+				if ( lastpart != parts.Size() + 1 ) {
+					parts.Push( curpart );
+					partindices.Push( lastpartStartIndex );
+				}
+
+				if ( specialchar ) {
+					parts.Push( "" );
+					partindices.Push( classname.Length() + skipchars );
+				}
+			} // of else, of if ( onlySpecialChars ) {}
+
+
+			//console.printf( TEXTCOLOR_PURPLE .. "parts.Size() " .. parts.Size() .. ", partindices.Size() " .. partindices.Size() .. ". " .. TEXTCOLOR_TEAL .. "curpart " .. curpart .. ", lastpart " .. lastpart .. " at " .. lastpartStartIndex .. ", skipchars " .. skipchars );
+
+			if ( parts.Size() != partindices.Size() ) {
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseSpecialClassName(). Corrupter sizes: " .. TEXTCOLOR_WHITE .. "parts == " .. parts.Size() .. LLCOLOR_EMERGENCY .. ", " .. TEXTCOLOR_WHITE .. "part indices == " .. partindices.Size() .. LLCOLOR_EMERGENCY );
+
+				for ( int i = 0; i < parts.Size(); i++ )
+					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Part #" .. i .. ": \c-\"" .. parts[ i ] .. "\"" .. TEXTCOLOR_DARKGRAY .. ", starts from \c-" .. partindices[ i ] .. TEXTCOLOR_DARKGRAY );
+
+			} else if ( parts.Size() > 1 ) {
+				int firstSearchNameCellIndex = ( parts[ 0 ] != ""? ZCInternalActorNameCell.GetClassnameCellIndex( classname ) : -1 );
+				int lastSearchNameCellIndex = ( firstSearchNameCellIndex == -1? ZCInternalActorNameCell.ARRAY_Quantity : firstSearchNameCellIndex + 1 );
+
+				if ( firstSearchNameCellIndex == -1 )
+					firstSearchNameCellIndex = 0;
+
+				Array<String> nameCandidates;
+				nameCandidates.Clear();
+
+				ZCheckerHandler handler = ccmd.handler;
+
+				for ( int i = firstSearchNameCellIndex; i < lastSearchNameCellIndex; i++ ) {
+					ZCInternalActorNameCell cell = handler.allActorNames[ i ];
+
+					for ( int j = 0; j < cell.names.Size(); j++ ) {
+						String curname = cell.names[ j ];
+
+						int curpartindex = partindices[ 0 ];
+						bool candidateFound = true;
+
+						for ( int k = 0; k < parts.Size(); k++ ) {
+							//console.printf( "\"%20s\". Part " .. k .. ": from %2i \"" .. parts[ k ] .. "\", found at " .. curname.IndexOf( parts[ k ], curpartindex ), curname, partindices[ k ] );
+
+							if ( k == parts.Size() - 1 ) {
+								if ( parts[ k ] != "" ) {
+									curpartindex = curname.Length() - parts[ k ].Length();
+								} else {
+									break;
+								}
+							}
+
+							int partFoundIndex = curname.IndexOf( parts[ k ], curpartindex );
+
+							if ( partFoundIndex == -1 || partFoundIndex < partindices[ k ] ) {
+								candidateFound = false;
+								//console.printf( "\"%20s\": " .. TEXTCOLOR_BRICK .. "break.", curname );
+								break;
+							}
+
+							if ( k < parts.Size() - 1 )
+								curpartindex = partindices[ k + 1 ];
+						} // of for ( int k = 0; k < parts.Size(); k++ ) {}
+
+						if ( candidateFound ) {
+							nameCandidates.Push( curname );
+						}
+					}
+				}
+
+				if ( nameCandidates.Size() == 1 ) {
+					classname = nameCandidates[ 0 ];
+				} else {
+					classname = "";
+
+					if ( nameCandidates.Size() == 0 ) {
+						ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates." );
+					} else {
+						ZCGlobal.Log( LL_Main, "Found more than one suitable actor name candidate:" );
+
+						for ( int i = 0; i < nameCandidates.Size(); i++ )
+							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. i .. ". \"" .. TEXTCOLOR_WHITE .. nameCandidates[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
+					}
+				}
+			} // of if ( parts.Size() > 1 ) {}
+
 		}
 
 
 		return classname, isSpecial;
-	}
+	} // of protected String, bool ParseSpecialClassName( String classname ) {}
 
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
 			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );
+
+		if ( zcname.Length() > 63 ) {
+			zcname.Truncate( 63 );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Variable name truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. zcname .. "\")." );
+		}
 
 		String newValue;
 		bool isValueSpecial;
