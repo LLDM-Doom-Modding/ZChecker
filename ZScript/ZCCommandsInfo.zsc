@@ -11,11 +11,11 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zclistthinkers <type>|help|l[ist]";
+		return "zclistthinkers <type>|h[elp]|l[ist]";
 	}
 
 	override String GetHelpDescString() {
-		return "List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\", \"list\" or just \"l\".";
+		return "List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\", \"list\" or just \"h\" or \"l\".";
 	}
 
 	override bool HandleArguments() {
@@ -25,7 +25,7 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 
 		String origarg = ccmd.args[ 0 ];
 
-		if ( origarg ~== "help" || origarg ~== "list" || origarg ~== "l" ) {
+		if ( origarg ~== "help" || origarg ~== "h" || origarg ~== "list" || origarg ~== "l" ) {
 			zcStatNumType = ZCSTAT_LIST;
 			return true;
 		}
@@ -48,6 +48,8 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 			zcStatNumType = Thinker.STAT_TRAVELLING;
 		else if ( arg ~== "static" || origarg ~== "s" )
 			zcStatNumType = Thinker.STAT_STATIC;
+		else if ( arg ~== "info" || origarg ~== "information" )
+			zcStatNumType = Thinker.STAT_INFO;
 		else if ( arg ~== "scroller" )
 			zcStatNumType = Thinker.STAT_SCROLLER;
 		else if ( arg ~== "player" )

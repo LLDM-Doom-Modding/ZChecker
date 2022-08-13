@@ -113,7 +113,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		}
 
 		return outValue;
-	} // of virtual ESectorStarts getSectorStartForClass( class<Actor> cls ) {
+	} // of virtual ESectorStarts getSectorStartForClass( class<Actor> cls ) {}
 
 
 	// 2D vector to 3D vector with zero last coordinate:
@@ -220,7 +220,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(): class \"" .. cls.GetClassName() .. "\" is restricted." );
 			}
 		}
-	} // of void RecreateEverythingMapLevel( void ) {
+	} // of void RecreateEverythingMapLevel( void ) {}
 
 
 	override void OnRegister() {
@@ -298,8 +298,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					}
 
 					continueFlag = true;
-				} // of if ( evSectorType ~== ESectorStartAliases[ j ] ) {
-			} // of for ( int j = 0; j < S__Quantity; j++ ) {
+				} // of if ( evSectorType ~== ESectorStartAliases[ j ] ) {}
+			} // of for ( int j = 0; j < S__Quantity; j++ ) {}
 
 			//console.printf( level.Sectors[ i ].Index() .. ". st: " .. evSectorType .. "/" .. isSectorTyped .. ", sdef: " .. level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) );
 
@@ -319,7 +319,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					configuration.mainlocEnd = level.Sectors[ i ].centerspot;
 				}
 			}
-		} // of for ( int i = 0; i < level.sectors.Size(); i++ ) {
+		} // of for ( int i = 0; i < level.sectors.Size(); i++ ) {}
 
 
 		// Check for existing of each sector:
@@ -337,7 +337,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		RecreateEverything();
 
 		Super.WorldLoaded( e );
-	} // of override void WorldLoaded( WorldEvent e ) {
+	} // of override void WorldLoaded( WorldEvent e ) {}
 
 	override void NetworkProcess( ConsoleEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() ) {
@@ -390,14 +390,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						//else
 						//	curActor.LinkToWorld();
 					}
-				} // of while ( curActor = Actor( it.Next() ) ) {
+				} // of while ( curActor = Actor( it.Next() ) ) {}
 
-			} // of } else if ( e.Name ~== "zchecker_pause_level_part" ) {
+			} // of } else if ( e.Name ~== "zchecker_pause_level_part" ) {}
 
-		} // of if ( ZCGlobal.IsEverythingLevel() ) {
+		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 
 		Super.NetworkProcess( e );
-	} // of override void NetworkProcess( ConsoleEvent e ) {
+	} // of override void NetworkProcess( ConsoleEvent e ) {}
 
 	override void WorldTick() {
 		if ( playeringame[ 0 ] && players[ 0 ].mo ) {
@@ -413,7 +413,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		}
 
 		Super.WorldTick();
-	} // of override void WorldTick() {
+	} // of override void WorldTick() {}
 
 	override void RenderOverlay( RenderEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() && PlayerPawn( e.Camera ) ) {
@@ -430,9 +430,9 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		}
 
 		Super.RenderOverlay( e );
-	} // of override void RenderOverlay( RenderEvent e ) {
+	} // of override void RenderOverlay( RenderEvent e ) {}
 
-} // of class ZCheckerEverythingMapHandler: EventHandler {
+} // of class ZCheckerEverythingMapHandler: EventHandler {}
 
 
 class ZCheckerSectorSetter: Actor {
@@ -469,7 +469,7 @@ class ZCheckerSectorSetter: Actor {
 			jumpMaxAmount = s.GetUDMFInt( ZCheckerEverythingMapHandler.ZCUDMF_JumpAmount );
 			curJumpAmount = 0;
 		}
-	} // of void InitFromPos( void ) {
+	} // of void InitFromPos( void ) {}
 
 	/*void Init( vector2 initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {
 		jumpLen = initJumpLen;
@@ -478,7 +478,7 @@ class ZCheckerSectorSetter: Actor {
 
 		curJumpAmount = 0;
 		angle = 270.0; // South (bottom).
-	} // of void Init( int initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {*/
+	} // of void Init( int initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {}*/
 
 	protected bool jumpToNextTypeSegment( void ) {
 		bool success = true;
@@ -520,9 +520,9 @@ class ZCheckerSectorSetter: Actor {
 			ZCGlobal.Log( LL_Main, GetClassName() .. "::DoJump(). Warning: maximal amount of jumps (" .. jumpMaxAmount .. ") was reached, actor \"" .. cls.GetClassName() .. "\" not spawned." );
 		}
 
-	} // of void DoJump( class<Actor> cls ) {
+	} // of void DoJump( class<Actor> cls ) {}
 
-} // of class ZCheckerSectorSetter: Actor {
+} // of class ZCheckerSectorSetter: Actor {}
 
 
 class ZCheckerPlayerLastPos: Actor {
@@ -623,7 +623,7 @@ class ZCheckerActorInfo: Actor {
 		BAL1 B -1 Bright;
 		stop;
 	}
-} // of class ZCheckerActorInfo: Actor {
+} // of class ZCheckerActorInfo: Actor {}
 
 class ZCheckerInfoInventory: Inventory {
 	String info;
@@ -645,4 +645,4 @@ class ZCheckerInfoInventory: Inventory {
 		if ( ticks++ > 2 )
 			Destroy();
 	}
-} // of class ZCheckerInfoInventory: Inventory {
+} // of class ZCheckerInfoInventory: Inventory {}

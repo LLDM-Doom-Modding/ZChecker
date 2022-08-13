@@ -190,8 +190,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 		from.LineTrace( from.Angle, 0xFFFF, from.Pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: RemoteRay );
 
-        if ( RemoteRay.HitType == TRACE_HitActor ) {
+		if ( RemoteRay.HitType == TRACE_HitActor ) {
 			outActor = RemoteRay.HitActor;
+
+			if ( outActor is "ZCheckerActorInfo" && outActor.master )
+				outActor = outActor.master;
 		} else {
 			ZCGlobal.Log( LL_Normal, "No available actors found in nearest 65535 mappixels." );
 		}
