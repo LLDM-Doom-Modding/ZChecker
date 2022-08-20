@@ -94,7 +94,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	static String ACS_GetStateName( Actor activator ) {
 		return ZCSetStateCommandThinker.Get().PopString();
 	}
-} // of class ZCSetStateCommand: ZCConsoleCommand {
+} // of class ZCSetStateCommand: ZCConsoleCommand {}
 
 
 class ZCSetFlagCommand: ZCConsoleCommand {
@@ -158,7 +158,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	static String ACS_GetFlagName( Actor activator ) {
 		return ZCSetFlagCommandThinker.Get().PopString();
 	}
-} // of class ZCSetStateCommand: ZCConsoleCommand {
+} // of class ZCSetStateCommand: ZCConsoleCommand {}
 
 class ZCBuddhaCommand: ZCConsoleCommand {
 	int zcPos;
@@ -208,7 +208,7 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 				testee.bBuddha = flagSetType;
 		}
 	}
-} // of class ZCBudCommand: ZCConsoleCommand {
+} // of class ZCBudCommand: ZCConsoleCommand {}
 
 
 class ZCGiveCommand: ZCConsoleCommand {
@@ -279,7 +279,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 		} // of if ( testee ) {
 
 	}
-} // of class ZCGiveCommand: ZCConsoleCommand {
+} // of class ZCGiveCommand: ZCConsoleCommand {}
 
 class ZCTakeCommand: ZCGiveCommand {
 	override String GetCommand() {
@@ -330,7 +330,7 @@ class ZCTakeCommand: ZCGiveCommand {
 		} // of if ( testee ) {
 
 	}
-} // of class ZCTakeCommand: ZCGiveCommand {
+} // of class ZCTakeCommand: ZCGiveCommand {}
 
 class ZCActorActionCommand: ZCConsoleCommand {
 	enum EActorActions {
@@ -352,7 +352,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Do special action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
+		return "Do special complex action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
 	}
 
 	override bool HandleArguments() {
@@ -512,4 +512,4 @@ class ZCSummonCommand: ZCConsoleCommand {
 			ZCGlobal.Log( LL_Main, "\"" .. summonee .. "\" isn't an actor class." );
 		}
 	}
-} // of class ZCGiveCommand: ZCConsoleCommand {
+} // of class ZCGiveCommand: ZCConsoleCommand {}

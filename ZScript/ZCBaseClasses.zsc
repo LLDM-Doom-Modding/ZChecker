@@ -4,11 +4,11 @@ class ZCheckerCCMDInfo play {
 	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
 
 	// Init or reinit:
-	String InitFromEvent( ConsoleEvent initEvent, String argsSplitDelim = ":" ) {
+	String InitFromEvent( ConsoleEvent initEvent ) {
 		args.Clear();
 
 		e = initEvent;
-		e.Name.Split( args, argsSplitDelim, TOK_SKIPEMPTY );
+		e.Name.Split( args, ZCHECKER_AGRS_SEPARATOR, TOK_SKIPEMPTY );
 
 		// If debug, display maximal amount of arguments (sometimes it saves
 		//about ten minutes of the bug-hunt...):
@@ -16,7 +16,7 @@ class ZCheckerCCMDInfo play {
 			int delimetersAmount = 0;
 
 			for ( int i = 0; i < e.Name.Length(); i++ )
-				if ( e.Name.CharAt( i ) == argsSplitDelim )
+				if ( e.Name.CharAt( i ) == ZCHECKER_AGRS_SEPARATOR )
 					delimetersAmount++;
 
 			ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::InitFromEvent(). Maximal amount of arguments (excluding name): " .. delimetersAmount );
@@ -316,8 +316,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 			if ( parts.Size() != partindices.Size() ) {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseSpecialClassName(). Corrupter sizes: " .. TEXTCOLOR_WHITE .. "parts == " .. parts.Size() .. LLCOLOR_EMERGENCY .. ", " .. TEXTCOLOR_WHITE .. "part indices == " .. partindices.Size() .. LLCOLOR_EMERGENCY );
 
-				for ( int i = 0; i < parts.Size(); i++ )
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Part #" .. i .. ": \c-\"" .. parts[ i ] .. "\"" .. TEXTCOLOR_DARKGRAY .. ", starts from \c-" .. partindices[ i ] .. TEXTCOLOR_DARKGRAY );
+				for ( int i = 0; i < max( parts.Size(), partindices.Size() ); i++ )
+					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Part #" .. i .. ": \c-\"" .. ( i < parts.Size()? parts[ i ] : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. "\"" .. TEXTCOLOR_DARKGRAY .. ", starts from \c-" .. ( i < partindices.Size()? partindices[ i ] .. "" : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. TEXTCOLOR_DARKGRAY );
 
 			} else if ( parts.Size() > 1 ) {
 				int firstSearchNameCellIndex = ( parts[ 0 ] != ""? ZCInternalActorNameCell.GetClassnameCellIndex( classname ) : -1 );

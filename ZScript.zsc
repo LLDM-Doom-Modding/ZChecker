@@ -21,6 +21,7 @@ const ZCheckerVersion = "0.69";
 const ZCheckerHandlerOrder = 0x7FAA0005;
 const ZCheckerMapHandlerOrder = 0x7FAA0006;
 
+const ZCHECKER_AGRS_SEPARATOR = "@@";
 
 
 enum EZCheckerLogLevels {

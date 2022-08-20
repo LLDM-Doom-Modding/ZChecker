@@ -1,54 +1,54 @@
 // ZChecker general control:
-alias zchelp "netevent zc_help:%1"
+alias zchelp "netevent zc_help@@%1"
 
 
 // ZChecker actors control:
-alias zcadd "netevent zc_add:%1:%2"
+alias zcadd "netevent zc_add@@%1@@%2"
 alias zcaddself "zcadd self %1"
 alias zcaddweap "zcadd weapon %1"
 alias zcaddweapon "zcadd weapon %1"
 alias zcaddf "zcadd force %1"
 alias zcaddforce "zcadd force %1"
 
-alias zcrem "netevent zc_rem:%1"
+alias zcrem "netevent zc_rem@@%1"
 
-alias zcsetstate "netevent zc_setState:%1:%2"
+alias zcsetstate "netevent zc_setState@@%1@@%2"
 alias zcstate "zcsetstate %1 %2"
 alias zcsets "zcsetstate %1 %2"
 alias zcst "zcsetstate %1 %2"
 
-alias zcsetflag "netevent zc_setFlag:%1:%2:%3"
+alias zcsetflag "netevent zc_setFlag@@%1@@%2@@%3"
 alias zcsetf "zcsetflag %1 %2 %3"
 alias zcsf "zcsetflag %1 %2 %3"
 alias zctoggleflag "zcsetflag %1 %2"
 alias zctf "zctoggleflag %1 %2"
 
-alias zcbuddha "netevent zc_buddha:%1:%2"
+alias zcbuddha "netevent zc_buddha@@%1@@%2"
 alias zcbud "zcbuddha %1 %2"
 
-alias zcgive "netevent zc_give:%1:%2:%3"
-alias zctake "netevent zc_take:%1:%2:%3"
+alias zcgive "netevent zc_give@@%1@@%2@@%3"
+alias zctake "netevent zc_take@@%1@@%2@@%3"
 
-alias zcsummon "netevent zc_summon:%1:%2"
+alias zcsummon "netevent zc_summon@@%1@@%2"
 alias zcsummonsaved "zcsummon $savedclass %1"
 alias zccopyclass "zcpanelctl setvar $savedclass $linetarget"
 
-alias zcact "netevent zc_actoraction:%1:%2"
+alias zcact "netevent zc_actoraction@@%1@@%2"
 
 
 // ZChecker information:
-alias zcpanelctl "netevent zc_infopanelcontrol:%1:%2:%3"
-alias zclistthinkers "netevent zc_listthinkers:%1"
-//alias zcacstrack "netevent zc_acstracking:%1"
+alias zcpanelctl "netevent zc_infopanelcontrol@@%1@@%2@@%3"
+alias zclistthinkers "netevent zc_listthinkers@@%1"
+//alias zcacstrack "netevent zc_acstracking@@%1"
 
 
 // The Everything map aliases:
-alias zcev "netevent zc_ev:%1:%2:%3:%4" // add|new, optimize|pause, goto
+alias zcev "netevent zc_ev@@%1@@%2@@%3@@%4" // add|new, optimize|pause, goto
 alias zcmap "zcev %1 %2 %3 %4"
 
 alias zcevre "zcev recreate"
 alias zcevg "zcev goto %1"
 
-alias zcarena "netevent zc_arena:%1:%2:%3:%4"
+alias zcarena "netevent zc_arena@@%1@@%2@@%3@@%4"
 alias zcar "zcarena %1 %2 %3 %4"
 
