@@ -341,17 +341,19 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 						bool candidateFound = true;
 
 						for ( int k = 0; k < parts.Size(); k++ ) {
-							//console.printf( "\"%20s\". Part " .. k .. ": from %2i \"" .. parts[ k ] .. "\", found at " .. curname.IndexOf( parts[ k ], curpartindex ), curname, partindices[ k ] );
+							//console.printf( "\"%20s\". Part " .. k .. ": from %2i \"" .. parts[ k ] .. "\", found at " .. curname.IndexOf( parts[ k ], curpartindex ), curname, curpartindex );
 
 							if ( k == parts.Size() - 1 ) {
 								if ( parts[ k ] != "" ) {
-									curpartindex = curname.Length() - parts[ k ].Length();
+									curpartindex = max( curpartindex, curname.Length() - parts[ k ].Length() );
 								} else {
 									break;
 								}
 							}
 
 							int partFoundIndex = curname.IndexOf( parts[ k ], curpartindex );
+
+							//console.printf( "\"%20s\": " .. TEXTCOLOR_DARKGRAY .. "partFoundIndex %i (<) partindices[ k ] %i.", curname, partFoundIndex, partindices[ k ] );
 
 							if ( partFoundIndex == -1 || partFoundIndex < partindices[ k ] ) {
 								candidateFound = false;
@@ -360,7 +362,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 							}
 
 							if ( k < parts.Size() - 1 )
-								curpartindex = partindices[ k + 1 ];
+								curpartindex = partFoundIndex + 1; //partindices[ k + 1 ];
 						} // of for ( int k = 0; k < parts.Size(); k++ ) {}
 
 						if ( candidateFound ) {
