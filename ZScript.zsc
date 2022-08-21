@@ -70,7 +70,7 @@ const LETTER_Z_LOWER = 122;
 
 
 class ZCInternalStringDictionaryCell {
-	String cell;
+	String key;
 	String value;
 }
 
@@ -215,14 +215,44 @@ class ZCGlobal: Thinker {
 		String outStr = "";
 
 		for ( int i = 0; i < internalStrings.Size(); i++ ) {
-			//console.printf( "#" .. i .. ": dict[ '" .. internalStrings[ i ].cell .. "' ] == '" .. internalStrings[ i ].value .. "'. Arg is " .. zcname );
-			if ( internalStrings[ i ].cell == zcname ) {
+			//console.printf( "#" .. i .. ": dict[ '" .. internalStrings[ i ].key .. "' ] == '" .. internalStrings[ i ].value .. "'. Arg is " .. zcname );
+			if ( internalStrings[ i ].key == zcname ) {
 				outStr = internalStrings[ i ].value;
 				break;
 			}
 		}
 
 		return outStr;
+	}
+
+	play bool DeleteZCheckerString( String zcname ) {
+		if ( zcname.CharAt( 0 ) != "$" ) {
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). " .. TEXTCOLOR_YELLOW .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
+			return false;
+		}
+
+		bool found = false;
+
+		for ( int i = 0; i < internalStrings.Size(); i++ ) {
+			if ( internalStrings[ i ].key == zcname ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::DeleteZCheckerString(). Found dict[ \"" .. zcname .. "\" ] (index " .. i .. "/" .. internalStrings.Size() .. ")." );
+
+				internalStrings.Delete( i, 1 );
+				found = true;
+				break;
+			}
+		}
+
+		if ( !found ) {
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). Internal variable \"" .. zcname .. "\"" .. TEXTCOLOR_YELLOW  .. " not found." );
+			return false;
+		}
+
+		return found;
+	}
+
+	play void ClearAllZCheckerStrings( void ) {
+		internalStrings.Clear();
 	}
 
 	play bool SetZCheckerString( String zcname, String zcvalue ) {
@@ -234,7 +264,7 @@ class ZCGlobal: Thinker {
 		ZCInternalStringDictionaryCell dictcell = NULL;
 
 		for ( int i = 0; i < internalStrings.Size(); i++ ) {
-			if ( internalStrings[ i ].cell == zcname ) {
+			if ( internalStrings[ i ].key == zcname ) {
 				dictcell = internalStrings[ i ];
 				break;
 			}
@@ -242,7 +272,7 @@ class ZCGlobal: Thinker {
 
 		if ( !dictcell ) {
 			dictcell = new( 'ZCInternalStringDictionaryCell' );
-			dictcell.cell = zcname;
+			dictcell.key = zcname;
 
 			internalStrings.Push( dictcell );
 		}
