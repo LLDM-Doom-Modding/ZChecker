@@ -228,6 +228,7 @@ class ZCStatesInfoData {
 
 class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	Array<ZCStatesInfoData> prevLogStates;
+	int prevLogStateTics;
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_states";
@@ -239,10 +240,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	protected String DecoratedState( State st ) {
-		SpriteID sprite = st.Sprite;
-
 		return
-			String.Format( SAPPHIRE .. sprite .. LIGHTBLUE .. " %c " .. SAPPHIRE .. "%i\c-",
+			String.Format( SAPPHIRE .. SpriteID( st.sprite ) .. LIGHTBLUE .. " %c " .. SAPPHIRE .. "%i\c-",
 						st.Frame + 65, st.Tics );
 	}
 
@@ -281,8 +280,14 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				if ( zeroSkipped )
 					logstr = logstr .. GRAY .. "zero frames" .. DARKGRAY .. " skipped" .. ( stateForced? "; " : "" );
 
-				if ( stateForced )
-					logstr = logstr .. "forced, should have been \"" .. DecoratedState( prevlogst ) .. DARKGRAY .. "\"";
+				if ( stateForced ) {
+					State prevnextst = prevlogst;
+
+					if ( prevlogst.Tics == prevLogStateTics && prevlogst.NextState )
+						prevnextst = prevlogst.NextState;
+
+					logstr = logstr .. "forced from " .. prevLogStateTics .. "/" .. prevlogst.tics .. " tics, should have been \"" .. DecoratedState( prevnextst ) .. DARKGRAY .. "\"";
+				}
 
 				logstr = logstr .. ")";
 			}
@@ -291,6 +296,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 		prevLogStates[ thingfield.fieldPos ].st = st;
+		prevLogStateTics = thing.Tics;
 	} // of protected void DoStatesLogging( Actor thing, ZCheckerField thingfield ) {}
 
 

@@ -572,8 +572,6 @@ class ZCBaseInfoPanelPart abstract {
 			label = label .. " [...more]";
 
 		return label;
-
-		//return "Submenu for " .. masterMenuItem.mLabel .. "";
 	}
 
 
@@ -587,3 +585,4 @@ class ZCBaseInfoPanelPart abstract {
 		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
 	}
 } // of class ZCBaseInfoPanelPart abstract {}
+

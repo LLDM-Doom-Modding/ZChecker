@@ -820,3 +820,4 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 } // of class ZCheckerHandler: EventHandler {}
+
