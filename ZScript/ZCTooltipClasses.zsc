@@ -5,7 +5,7 @@ class ZCTooltipSummon: ZCTooltipClass {
 		return HighlightText(
 			"For the almost all commands which takes actor name argument (\"##zcsummon##\", \"##zcgive##\", \"##zctake##\", \"##zcev goto##\", ...) you may use a simple regex search:\n" ..
 			"  '@@*@@' for any amount of any characters, including zero; ~~and~~\n" ..
-			"  '@@-@@' for greater than 0 amount ~~of any characters~~.\n" ..
+			"  '@@-@@' for greater than 0 amount of any characters.\n" ..
 			"If there's more than one actor class candidate found, a numbered list just will be printed. Also, a class inheriting filter is applied for some commands.\n\n"
 		);
 	}
