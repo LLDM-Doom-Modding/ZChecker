@@ -57,11 +57,11 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsetstate [<pos>] <state label>;zcstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>";
+		return "zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>";
 	}
 
 	override String GetHelpDescString() {
-		return "Set a state for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+		return "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments() {
@@ -107,11 +107,11 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsetflag [<pos>] <flag name> [<value: 0/false/reset or 1/true/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>];zctoggleflag [<pos>] <flag name>;zctf [<pos>] <flag name>";
+		return "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Set/reset a flag for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+		return "Set/reset a <flag> for the testee in <pos> (or actor on line of sight if omitted). If <value> is omitted, toggles a <flag>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments() {
@@ -161,6 +161,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 } // of class ZCSetStateCommand: ZCConsoleCommand {}
 
 class ZCBuddhaCommand: ZCConsoleCommand {
+	// Actually a legacy shortcut, but it turned out to be very convenient.
 	int zcPos;
 	int flagSetType;
 
@@ -169,11 +170,11 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcbuddha <pos> [<set>];zcbud <pos> [<set>]";
+		return "zcbuddha <pos> [<value>];zcbud <pos> [<value>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If <set> is omitted, toggles it, or sets/resets ('0'/'1') otherwise.";
+		return "Shortcut for the \"zcsetflag <pos> buddha <value>\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it.";
 	}
 
 	override bool HandleArguments() {
@@ -256,7 +257,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 		}
 
 		if ( outValue )
-			itemName = ParseSpecialClassName( itemName );
+			itemName = ParseSpecialActorName( itemName, "Inventory" );
 
 		return outValue && ( itemAmount != -1 );
 	}
@@ -477,7 +478,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 		}
 
 		if ( outValue ) {
-			summonee = ParseSpecialClassName( ccmd.args[ 0 ] );
+			summonee = ParseSpecialActorName( ccmd.args[ 0 ] );
 
 			if ( summonee == "" )
 				outValue = false;

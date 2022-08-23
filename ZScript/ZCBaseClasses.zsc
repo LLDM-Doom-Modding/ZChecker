@@ -48,12 +48,12 @@ class ZCheckerField {
 // Hmmm... It's regrettable, but some older versions cannot understand
 //scoping changes in the heirs properly. So this one must be a data-scoped
 //class, actually.
-class ZCConsoleClass abstract play {
+class ZCConsoleClass abstract {
 	enum EConsoleClassFlags {
 		CCF_None			= 0,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
 		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in gray.
-		CCF_NoCacheHelp		= 0x0004	// No precache help string.
+		CCF_NoCacheHelp		= 0x0004	// Help string will not be cached.
 	};
 
 	EConsoleClassFlags zcFlags;
@@ -61,7 +61,7 @@ class ZCConsoleClass abstract play {
 	protected String helpCacheString;
 
 	// Returns a new console class with determined importantment flag:
-	static ZCConsoleClass Create( class<ZCConsoleClass> classname, bool important = false ) {
+	static play ZCConsoleClass Create( class<ZCConsoleClass> classname, bool important = false ) {
 		ZCConsoleClass created = ZCConsoleClass( new( classname ) );
 		created.zcFlags = important? CCF_Important : CCF_None;
 
@@ -93,7 +93,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 		return "";
 	}
 
-	override String GetHelpString( void ) {
+	override final String GetHelpString( void ) {
 		// Attempt to speed up help strings processing:
 		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
 			helpCacheString = "";
@@ -121,7 +121,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 }
 
 
-class ZCConsoleCommand: ZCConsoleClass abstract {
+class ZCConsoleCommand: ZCConsoleClass abstract play {
 	const NOT_INT = 0x7FFFFFFF;
 	const NOT_INT_REPLACER = 0x7FFFFFFE;
 
@@ -206,7 +206,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		return ZCGlobal.Get().GetZCheckerString( zcname );
 	}
 
-	protected String, bool ParseSpecialClassName( String classname ) {
+	protected String, bool ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {
 		if ( classname.CharAt( 0 ) == "%" || classname.CharAt( 0 ) == "%%" )
 			classname = "$" .. classname.Mid( 1, classname.Length() - 1 );
 
@@ -246,7 +246,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 
 		if ( isSpecial ) {
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialClassName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialActorName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
 
 			if ( classname == "" )
 				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "empty placeholder \"" .. origValue .. "\". You may use \"%%null\" or \"%%none\" to override this." );
@@ -314,7 +314,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 			//console.printf( TEXTCOLOR_PURPLE .. "parts.Size() " .. parts.Size() .. ", partindices.Size() " .. partindices.Size() .. ". " .. TEXTCOLOR_TEAL .. "curpart " .. curpart .. ", lastpart " .. lastpart .. " at " .. lastpartStartIndex .. ", skipchars " .. skipchars );
 
 			if ( parts.Size() != partindices.Size() ) {
-				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseSpecialClassName(). Corrupter sizes: " .. TEXTCOLOR_WHITE .. "parts == " .. parts.Size() .. LLCOLOR_EMERGENCY .. ", " .. TEXTCOLOR_WHITE .. "part indices == " .. partindices.Size() .. LLCOLOR_EMERGENCY );
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseSpecialActorName(). Corrupter sizes: " .. TEXTCOLOR_WHITE .. "parts == " .. parts.Size() .. LLCOLOR_EMERGENCY .. ", " .. TEXTCOLOR_WHITE .. "part indices == " .. partindices.Size() .. LLCOLOR_EMERGENCY );
 
 				for ( int i = 0; i < max( parts.Size(), partindices.Size() ); i++ )
 					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Part #" .. i .. ": \c-\"" .. ( i < parts.Size()? parts[ i ] : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. "\"" .. TEXTCOLOR_DARKGRAY .. ", starts from \c-" .. ( i < partindices.Size()? partindices[ i ] .. "" : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. TEXTCOLOR_DARKGRAY );
@@ -366,20 +366,29 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 						} // of for ( int k = 0; k < parts.Size(); k++ ) {}
 
 						if ( candidateFound ) {
-							nameCandidates.Push( curname );
+							class<Actor> curnameclass = Name( curname );
+
+							if ( curnameclass is parentfilter )
+								nameCandidates.Push( curname );
 						}
 					}
 				}
 
 				if ( nameCandidates.Size() == 1 ) {
 					classname = nameCandidates[ 0 ];
+					ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
 				} else {
 					classname = "";
 
+					String filtertip = "";
+
+					if ( parentfilter != "Actor" )
+						filtertip = TEXTCOLOR_DARKGRAY .. " with filter " .. TEXTCOLOR_WHITE .. parentfilter.GetClassName() .. TEXTCOLOR_DARKGRAY .. "" .. LLCOLOR_MAIN;
+
 					if ( nameCandidates.Size() == 0 ) {
-						ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates." );
+						ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
 					} else {
-						ZCGlobal.Log( LL_Main, "Found more than one suitable actor name candidate:" );
+						ZCGlobal.Log( LL_Main, "Found more than one suitable actor name candidate" .. filtertip .. ":" );
 
 						for ( int i = 0; i < nameCandidates.Size(); i++ )
 							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. i .. ". \"" .. TEXTCOLOR_WHITE .. nameCandidates[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
@@ -391,7 +400,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 
 
 		return classname, isSpecial;
-	} // of protected String, bool ParseSpecialClassName( String classname ) {}
+	} // of protected String, bool ParseSpecialActorName( String classname ) {}
 
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
@@ -405,7 +414,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		String newValue;
 		bool isValueSpecial;
 
-		[ newValue, isValueSpecial ] = ParseSpecialClassName( value );
+		[ newValue, isValueSpecial ] = ParseSpecialActorName( value );
 
 		if ( !isValueSpecial || ( newValue != "" ) )
 			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
@@ -445,6 +454,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		// Attempt to speed up help strings processing:
 		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
 			helpCacheString = "";
+
 			Array<String> aliases;
 			GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
 
@@ -476,7 +486,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract {
 		return helpCacheString;
 	}
 
-	// Returns "true" if all args provieded right, "false" otherwise:
+	// Returns "true" if all args provided right, "false" otherwise:
 	virtual bool HandleArguments() {
 		return false;
 	}

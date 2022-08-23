@@ -101,7 +101,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				zcCCMDType = CCMDT_Goto;
 
 				if ( argsSize == 2 ) {
-					zcSpecifiedClass = ParseSpecialClassName( ccmd.args[ 1 ] );
+					zcSpecifiedClass = ParseSpecialActorName( ccmd.args[ 1 ] );
 					outValue = true;
 				}
 			} else if ( ccmd.args[ 0 ] == "recreate" || ccmd.args[ 0 ] == "reload" ) {

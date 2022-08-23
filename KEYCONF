@@ -13,15 +13,12 @@ alias zcaddforce "zcadd force %1"
 alias zcrem "netevent zc_rem@@%1"
 
 alias zcsetstate "netevent zc_setstate@@%1@@%2"
-alias zcstate "zcsetstate %1 %2"
 alias zcsets "zcsetstate %1 %2"
 alias zcst "zcsetstate %1 %2"
 
 alias zcsetflag "netevent zc_setflag@@%1@@%2@@%3"
 alias zcsetf "zcsetflag %1 %2 %3"
 alias zcsf "zcsetflag %1 %2 %3"
-alias zctoggleflag "zcsetflag %1 %2"
-alias zctf "zctoggleflag %1 %2"
 
 alias zcbuddha "netevent zc_buddha@@%1@@%2"
 alias zcbud "zcbuddha %1 %2"
