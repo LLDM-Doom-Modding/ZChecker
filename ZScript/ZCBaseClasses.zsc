@@ -45,9 +45,6 @@ class ZCheckerField {
 
 
 // Base ZChecker CCMD class.
-// Hmmm... It's regrettable, but some older versions cannot understand
-//scoping changes in the heirs properly. So this one must be a data-scoped
-//class, actually.
 class ZCConsoleClass abstract {
 	enum EConsoleClassFlags {
 		CCF_None			= 0,
@@ -75,7 +72,6 @@ class ZCConsoleClass abstract {
 
 	virtual void PostBeginPlay() {
 		helpCacheString = "";
-		//ChangeStatNum( STAT_STATIC );
 
 		bool important = zcFlags & CCF_Important;
 		OnLoad();
@@ -84,7 +80,7 @@ class ZCConsoleClass abstract {
 
 	// A wrapper which unites aliases and description to one nice string:
 	virtual String GetHelpString( void ) {
-		return TEXTCOLOR_RED .. "Wrong inheriting (\"ZCConsoleClass::GetHelpString()\" isn't overrided).";
+		return TEXTCOLOR_RED .. "Wrong inheriting (\"" .. GetClassName() .. "::GetHelpString()\" isn't overrided).";
 	}
 } // of class ZCConsoleClass abstract play {}
 
@@ -460,22 +456,27 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 			bool unreleased = !!( zcFlags & CCF_Unreleased );
 
-			String ccmdColor = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
+			String ccmdColorHeader = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
+			String ccmdColorArgs   = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLEARGS );
 
 			for ( int i = 0; i < aliases.Size(); i++ ) {
-				aliases[ i ].Replace( "|", TEXTCOLOR_GRAY .. "|" .. ccmdColor );
-				aliases[ i ].Replace( "[", TEXTCOLOR_BLUE .. "[" .. ccmdColor );
-				aliases[ i ].Replace( "]", TEXTCOLOR_BLUE .. "]" .. ccmdColor );
-				aliases[ i ].Replace( "<", TEXTCOLOR_ORANGE .. "<" .. ccmdColor );
-				aliases[ i ].Replace( ">", TEXTCOLOR_ORANGE .. ">" .. ccmdColor );
+				int spaceIndex = aliases[ i ].IndexOf( " " );
+				if ( spaceIndex != -1 )
+					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
+
+				aliases[ i ].Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorArgs );
+				aliases[ i ].Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. ccmdColorArgs );
+				aliases[ i ].Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. ccmdColorArgs );
+				aliases[ i ].Replace( "<", TEXTCOLOR_LIGHTBLUE .. "<" .. ccmdColorArgs );
+				aliases[ i ].Replace( ">", TEXTCOLOR_LIGHTBLUE .. ">" .. ccmdColorArgs );
 			}
 
 			// Extra aliases:
 			for ( int i = 0; i < aliases.Size() - 1; i++ )
-				helpCacheString = helpCacheString .. ccmdColor .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
+				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
 
 			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColor .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? CCMDCOLOR_TITLEWIP .. "[WIP] " : CCMDCOLOR_DESC ) .. GetHelpDescString();
+			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? CCMDCOLOR_TITLEWIP .. "[WIP] " : CCMDCOLOR_DESC ) .. GetHelpDescString();
 
 			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
 
@@ -495,6 +496,65 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	virtual void DoCommand( void ) { }
 
 } // of class ZCConsoleCommand abstract {}
+
+class ZCTooltipClass: ZCConsoleClass {
+	const HEADER	= TEXTCOLOR_SAPPHIRE;
+	const NORMAL	= TEXTCOLOR_WHITE;
+	const DARKGRAY	= TEXTCOLOR_DARKGRAY;
+	const HIGHLIGHT1= TEXTCOLOR_GOLD;
+	const HIGHLIGHT2= TEXTCOLOR_DARKGREEN;
+
+	protected String HighlightTextPart( String origstr, String boundPattern, String highlightColor ) {
+		String outstr = "";
+		int prevCharIndexStart = 0;
+		int curCharIndex;
+		bool highlight = false;
+
+		while ( ( curCharIndex = origstr.IndexOf( boundPattern, prevCharIndexStart ) ) != -1 ) {
+			highlight = !highlight;
+			outstr = outstr .. origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart ) .. ( highlight? highlightColor : NORMAL );
+
+			prevCharIndexStart = curCharIndex + 2;
+		}
+
+		if ( !highlight )
+			outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
+
+		return ( outstr == "" )? origstr : outstr;
+	}
+
+	String HighlightText( String str ) {
+		str = HighlightTextPart( str, "@@", HIGHLIGHT1 );
+		str = HighlightTextPart( str, "##", HIGHLIGHT2 );
+		str = HighlightTextPart( str, "~~", DARKGRAY );
+
+		return str;
+	}
+
+	virtual String GetPlaintext( void ) {
+		return "";
+	}
+	virtual String GetExamples( void ) {
+		return "";
+	}
+
+	override String GetHelpString( void ) {
+		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+			helpCacheString = "";
+			String addtext = GetPlaintext();
+
+			if ( addtext != "" )
+				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n| Tips: " .. NORMAL .. addtext;
+
+			addtext = GetExamples();
+
+			if ( addtext != "" )
+				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n| Examples:\n" .. NORMAL .. addtext;
+		}
+
+		return helpCacheString;
+	}
+} // of class ZCTooltipClass: ZCConsoleClass {}
 
 
 class ZCBaseInfoPanelPart abstract {

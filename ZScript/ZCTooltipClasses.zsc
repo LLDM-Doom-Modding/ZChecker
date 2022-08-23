@@ -1,0 +1,23 @@
+// All classes included in the ZChecker configuration file via "plaintext" or "addtext".
+
+class ZCTooltipSummon: ZCTooltipClass {
+	override String GetPlaintext() {
+		return HighlightText(
+			"For the almost all commands which takes actor name argument (\"##zcsummon##\", \"##zcgive##\", \"##zctake##\", \"##zcev goto##\", ...) you may use a simple regex search:\n" ..
+			"  '@@*@@' for any amount ~~of any characters~~, including zero; ~~and~~\n" ..
+			"  '@@-@@' for greater than 0 amount ~~of any characters~~.\n" ..
+			"If there's more than one actor class candidate found, a numbered list just will be printed. Also, a class inheriting filter is applied for some commands.\n\n"
+		);
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"  \"##zcsummon z##@@-@@##man 4##\" will create four zombiemans;\n" ..
+			"  \"##zcsummon sta##@@*@@##ff##\" will print a list with elements \"Staff\" and \"Staff~~Pu~~ff\";\n" ..
+			"  \"##zcsummon sta##@@-@@##ff##\" will summon a \"StaffPuff\";\n" ..
+			"  \"##zctake 1 ##@@*@@##card##\" will show a list of all Inventory classes ending with a \"card\" ~~(while trying to give item to the actor in the first panel)~~;\n" ..
+			"  \"##zctake 1 z##@@-@@##man##\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
+		);
+	}
+}
+

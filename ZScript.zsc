@@ -8,6 +8,7 @@ version "3.3.0"
 #include "ZScript/ZCCommandsActorAlter.zsc"
 #include "ZScript/ZCCommandsInfo.zsc"
 #include "ZScript/ZCCommandsMap.zsc"
+#include "ZScript/ZCTooltipClasses.zsc"
 
 #include "ZScript/ZCInfoPanelMain.zsc"
 #include "ZScript/ZCInfoPanelPointers.zsc"
@@ -59,7 +60,8 @@ enum ENewlineTypes {
 	ZCNL_DOSReversed	// 0x0A, 0x0D
 };
 
-const CCMDCOLOR_TITLE = TEXTCOLOR_GREEN;
+const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
+const CCMDCOLOR_TITLEARGS = TEXTCOLOR_GREEN;
 const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
 const CCMDCOLOR_DESC = "\c-";
 
@@ -499,13 +501,13 @@ class ZCheckerHandler: StaticEventHandler {
 
 					int argsamount = ( curLineWords.Size() - 1 );
 
-                    if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" ) {
+                    if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
 						if ( argsamount == 1 ) {
 							if ( !addConsoleClass( curLineWords[ 1 ], false ) )
-								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ConsoleCommand class \"" .. curLineWords[ 1 ] .. "\"." );
+								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"." );
 						} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
 							if ( !addConsoleClass( curLineWords[ 1 ], true ) )
-								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ConsoleCommand class \"" .. curLineWords[ 1 ] .. "\"." );
+								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"." );
 						} else {
 							checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
 						}

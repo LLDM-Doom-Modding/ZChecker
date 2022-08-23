@@ -352,7 +352,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Perform keen control with information panels.\n  Possible placeholders for the <string value> (first symbol must be \"%%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
+		return "Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>.";
 	}
 
 	override bool HandleArguments() {
