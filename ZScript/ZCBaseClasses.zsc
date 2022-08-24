@@ -524,9 +524,9 @@ class ZCTooltipClass: ZCConsoleClass {
 	}
 
 	String HighlightText( String str ) {
+		str = HighlightTextPart( str, "~~", DARKGRAY );
 		str = HighlightTextPart( str, "@@", HIGHLIGHT1 );
 		str = HighlightTextPart( str, "##", HIGHLIGHT2 );
-		str = HighlightTextPart( str, "~~", DARKGRAY );
 
 		return str;
 	}
@@ -544,12 +544,12 @@ class ZCTooltipClass: ZCConsoleClass {
 			String addtext = GetPlaintext();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n| Tips: " .. NORMAL .. addtext;
+				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n| Tips: " .. NORMAL .. addtext .. "\n";
 
 			addtext = GetExamples();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n| Examples:\n" .. NORMAL .. addtext;
+				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n| Examples:\n" .. NORMAL .. addtext .. "\n";
 		}
 
 		return helpCacheString;
