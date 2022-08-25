@@ -263,6 +263,9 @@ class ZCGiveCommand: ZCConsoleCommand {
 	}
 
 	override void DoCommand( void ) {
+		if ( classnameParseStatus == CPS_RegexFailed )
+			return;
+
 		// Linetarget if position is omitted or testee[pos] otherwise:
 		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
 
@@ -477,17 +480,16 @@ class ZCSummonCommand: ZCConsoleCommand {
 			outValue = true;
 		}
 
-		if ( outValue ) {
+		if ( outValue )
 			summonee = ParseSpecialActorName( ccmd.args[ 0 ] );
-
-			if ( summonee == "" )
-				outValue = false;
-		}
 
 		return outValue;
 	}
 
 	override void DoCommand( void ) {
+		if ( classnameParseStatus == CPS_RegexFailed )
+			return;
+
 		class<Actor> summoneeClass = summonee;
 
 		if ( summoneeClass is 'Actor' ) {
@@ -506,7 +508,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE );
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
-				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor(s) of class \"" .. summoneeClass.GetClassName() .. "\"" );
+				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. " of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
 			} // of if ( player ) {}
 
 		} else {

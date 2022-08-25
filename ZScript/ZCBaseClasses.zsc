@@ -121,6 +121,15 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	const NOT_INT = 0x7FFFFFFF;
 	const NOT_INT_REPLACER = 0x7FFFFFFE;
 
+	enum EClassnameParseStatus {
+		CPS_Default = 0,
+		CPS_Variable,
+		CPS_RegexFound,
+		CPS_RegexFailed
+	};
+
+	EClassnameParseStatus classnameParseStatus;
+
 	ZCheckerCCMDInfo ccmd;
 
 	protected clearscope bool checkTesteePlace( uint place ) {
@@ -202,13 +211,15 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return ZCGlobal.Get().GetZCheckerString( zcname );
 	}
 
-	protected String, bool ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {
+	protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {
+		classnameParseStatus = CPS_Default;
+
 		if ( classname.CharAt( 0 ) == "%" || classname.CharAt( 0 ) == "%%" )
 			classname = "$" .. classname.Mid( 1, classname.Length() - 1 );
 
 		if ( classname.Length() > 63 ) {
 			classname.Truncate( 63 );
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Value truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::ParseSpecialActorName(). " .. TEXTCOLOR_YELLOW .. "Value truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
 		}
 
 		String origValue = classname;
@@ -237,16 +248,20 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			}
 		}
 
-		if ( testSpecialValue == "null" || testSpecialValue == "none" )
+		if ( testSpecialValue == "null" || testSpecialValue == "none" ) {
+			classnameParseStatus = CPS_Variable;
 			classname = "";
+		}
 
 
 		if ( isSpecial ) {
+			classnameParseStatus = CPS_Variable;
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialActorName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
 
 			if ( classname == "" )
 				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "empty placeholder \"" .. origValue .. "\". You may use \"%%null\" or \"%%none\" to override this." );
 		} else if ( classname.CharAt( 0 ) == "$" ) {
+			classnameParseStatus = CPS_Variable;
 			classname = GetInternalZCheckerString( classname );
 
 			if ( classname == "" )
@@ -379,10 +394,12 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				} // of for ( int i = firstSearchNameCellIndex; i < lastSearchNameCellIndex; i++ ) {}
 
 				if ( nameCandidates.Size() == 1 ) {
+					classnameParseStatus = CPS_RegexFound;
 					classname = nameCandidates[ 0 ];
 					ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
 				} else {
 					classname = "";
+					classnameParseStatus = CPS_RegexFailed;
 
 					String filtertip = "";
 
@@ -402,9 +419,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		}
 
-
-		return classname, isSpecial;
-	} // of protected String, bool ParseSpecialActorName( String classname ) {}
+		return classname;
+	} // of protected String ParseSpecialActorName( String classname ) {}
 
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
@@ -416,11 +432,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 
 		String newValue;
-		bool isValueSpecial;
 
-		[ newValue, isValueSpecial ] = ParseSpecialActorName( value );
+		newValue = ParseSpecialActorName( value );
 
-		if ( !isValueSpecial || ( newValue != "" ) )
+		if ( ( classnameParseStatus == CPS_Variable ) || ( newValue != "" ) )
 			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
 
 		return false;

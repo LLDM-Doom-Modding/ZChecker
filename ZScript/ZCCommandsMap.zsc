@@ -123,6 +123,9 @@ class ZCEvmapCommand: ZCConsoleCommand {
 	}
 
 	override void DoCommand( void ) {
+		if ( classnameParseStatus == CPS_RegexFailed )
+			return;
+
 		switch ( zcCCMDType ) {
 			case CCMDT_Add:
 				break;
