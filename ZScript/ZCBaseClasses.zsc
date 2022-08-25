@@ -333,20 +333,16 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					for ( int j = 0; j < cell.names.Size(); j++ ) {
 						String curname = cell.names[ j ];
 
-						int curpartindex = partindices[ 0 ];
+						int curpartindex = partindices[ 1 ];
 						bool candidateFound = true;
 
-						for ( int k = 0; k < parts.Size(); k++ ) {
+						if ( parts[ 0 ] != "" ) {
+							if ( curname.Left( parts[ 0 ].Length() ) != parts[ 0 ] )
+								candidateFound = false;
+						}
+
+						for ( int k = ( parts.Size() * !candidateFound ) + 1; k < parts.Size() - 1; k++ ) {
 							//console.printf( "\"%20s\". Part " .. k .. ": from %2i \"" .. parts[ k ] .. "\", found at " .. curname.IndexOf( parts[ k ], curpartindex ), curname, curpartindex );
-
-							if ( k == parts.Size() - 1 ) {
-								if ( parts[ k ] != "" ) {
-									curpartindex = max( curpartindex, curname.Length() - parts[ k ].Length() );
-								} else {
-									break;
-								}
-							}
-
 							int partFoundIndex = curname.IndexOf( parts[ k ], curpartindex );
 
 							//console.printf( "\"%20s\": " .. TEXTCOLOR_DARKGRAY .. "partFoundIndex %i (<) partindices[ k ] %i.", curname, partFoundIndex, partindices[ k ] );
@@ -361,14 +357,26 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 								curpartindex = partFoundIndex + 1; //partindices[ k + 1 ];
 						} // of for ( int k = 0; k < parts.Size(); k++ ) {}
 
+						// Special last symbol handling (like "word*"):
+						int partsPreSize = parts.Size() - 1;
+
+						if ( candidateFound && parts[ partsPreSize ] != "" ) {
+							curpartindex = max( curpartindex, curname.Length() - parts[ partsPreSize ].Length() );
+							int partFoundIndex = curname.IndexOf( parts[ partsPreSize ], curpartindex );
+
+							if ( partFoundIndex == -1 || partFoundIndex < partindices[ partsPreSize ] )
+								candidateFound = false;
+						}
+
 						if ( candidateFound ) {
 							class<Actor> curnameclass = Name( curname );
 
 							if ( curnameclass is parentfilter )
 								nameCandidates.Push( curname );
 						}
-					}
-				}
+					} // of for ( int j = 0; j < cell.names.Size(); j++ ) {}
+
+				} // of for ( int i = firstSearchNameCellIndex; i < lastSearchNameCellIndex; i++ ) {}
 
 				if ( nameCandidates.Size() == 1 ) {
 					classname = nameCandidates[ 0 ];
