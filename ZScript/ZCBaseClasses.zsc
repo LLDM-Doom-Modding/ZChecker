@@ -317,7 +317,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 				if ( specialchar ) {
 					parts.Push( "" );
-					partindices.Push( classname.Length() + skipchars );
+					partindices.Push( classname.Length() - lastpartStartIndex + skipchars );
 				}
 			} // of else, of if ( onlySpecialChars ) {}
 
@@ -372,15 +372,24 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 								curpartindex = partFoundIndex + 1; //partindices[ k + 1 ];
 						} // of for ( int k = 0; k < parts.Size(); k++ ) {}
 
-						// Special last symbol handling (like "word*"):
+						// Special last characters/symbols sequence handling:
 						int partsPreSize = parts.Size() - 1;
 
-						if ( candidateFound && parts[ partsPreSize ] != "" ) {
-							curpartindex = max( curpartindex, curname.Length() - parts[ partsPreSize ].Length() );
-							int partFoundIndex = curname.IndexOf( parts[ partsPreSize ], curpartindex );
+						if ( candidateFound ) {
+							//console.printf( "\"%20s\": " .. TEXTCOLOR_PURPLE .. "len %i (<) %i as ( curpartindex %i + ( partindex[-1] %i - namelen %i ).", curname, curname.Length(), curpartindex + partindices[ partsPreSize ], curpartindex, partindices[ partsPreSize ], classname.Length() );
 
-							if ( partFoundIndex == -1 || partFoundIndex < partindices[ partsPreSize ] )
+							if ( parts[ partsPreSize ] != "" ) {
+								curpartindex = max( curpartindex, curname.Length() - parts[ partsPreSize ].Length() );
+								int partFoundIndex = curname.IndexOf( parts[ partsPreSize ], curpartindex );
+
+								if ( partFoundIndex == -1 || partFoundIndex < partindices[ partsPreSize ] )
+									candidateFound = false;
+
+							// Handling a "word-" case:
+							} else if ( curname.Length() < curpartindex + partindices[ partsPreSize ] - 1 ) {
+								//console.printf( "\"%20s\": " .. TEXTCOLOR_BRICK .. "not found, len %i (<) partindex %i.", curname, curname.Length(), partindices[ partsPreSize ] );
 								candidateFound = false;
+							}
 						}
 
 						if ( candidateFound ) {
