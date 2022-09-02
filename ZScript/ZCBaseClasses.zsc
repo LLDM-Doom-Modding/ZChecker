@@ -469,7 +469,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	// Returns aliases separated by a semicolon:
 	virtual String GetHelpNameString( void ) const {
-		return TEXTCOLOR_RED .. "GetHelpNameString() usage example: \"zcAlias #1;zcAlias2;zc-alias [pos] [3]\"\c-";
+		return TEXTCOLOR_RED .. "GetHelpNameString() usage example: \"zcAlias <arg>;zcAlias2;zc-alias [<arg1>] [<arg2>]\"\c-";
 	}
 
 	// Returns usage quick help (command description):
