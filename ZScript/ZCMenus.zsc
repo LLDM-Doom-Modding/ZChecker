@@ -67,7 +67,10 @@ class ZCOptionMenuPanels: OptionMenu {
 			}
 		}
 
-		EventHandler.SendNetworkEvent( "zc_update_panels_order:" .. curorder );
+		handler.panels.panelsstr = curorder;
+		handler.panels.panelsorderChanged = true;
+
+		//EventHandler.SendNetworkEvent( "zc_update_panels_order:" .. curorder );
 	}
 
 	private int InsertMenuPanelPart( ZCBaseInfoPanelPart panel, OptionMenuDescriptor desc ) {
@@ -90,9 +93,12 @@ class ZCOptionMenuPanels: OptionMenu {
 	void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
 		int addedItemsAmount = 0;
 
-		for ( int i = 0; i < handler.zcInfoPanelClasses.Size(); i++ ) {
-			addedItemsAmount += InsertMenuPanelPart( handler.zcInfoPanelClasses[ i ], desc );
-			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. handler.zcInfoPanelClasses[ i ].GetClassName() .. "\"." );
+		if ( handler.panels.panelsorderChanged )
+			handler.panels.UpdatePanels();
+
+		for ( int i = 0; i < handler.panels.zcInfoPanelClasses.Size(); i++ ) {
+			addedItemsAmount += InsertMenuPanelPart( handler.panels.zcInfoPanelClasses[ i ], desc );
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. handler.panels.zcInfoPanelClasses[ i ].GetClassName() .. "\"." );
 		}
 
 		lastPanelItemPos += addedItemsAmount;
@@ -200,6 +206,9 @@ class ZCOptionMenuPanels: OptionMenu {
 
 					while ( newCursorOffset --> 0 )
 						Menu.GetCurrentMenu().MenuEvent( ( actiontype == PMAT_MoveItemUp? MKEY_Up : MKEY_Down ), false );
+
+
+					SetPanelOptionsOrder( mDesc );
 				} else {
 					Menu.MenuSound( "menu/invalid" );
 				}
