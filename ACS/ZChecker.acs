@@ -39,15 +39,12 @@ script "ZChecker_CCMD_SetFlag" ( int setType ) {
 
 //  Ancient ZScript bug fixing.
 // https://forum.zdoom.org/viewtopic.php?f=2&t=62501
-//  [McM]: suddenly CVar string cannot store more than 254 symbols.
-script "ZChecker_SetUserPanelsOrder" ( int playernum ) {
-	str data = GetUserCVarString( playernum, "mcm_zchecker_infopanelsorder" );
-    SetUserCVarString( playernum, "mcm_zchecker_infopanelsorder", data );
-}
-
+//  [McM]: suddenly CVar name + CVar value cannot store more than 254 symbols.
 script "ZChecker_SetUserCVar" ( int playernum ) {
 	str cvarname = GetUserCVarString( playernum, "mcm_zchecker_internal_metastring" );
 	str data = GetUserCVarString( playernum, cvarname );
+
+	//Log( s:"ACS. Set '", s:cvarname, s:"' to \"", s:data, s:"\"." );
 
     SetUserCVarString( playernum, cvarname, data );
 }

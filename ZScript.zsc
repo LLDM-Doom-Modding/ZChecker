@@ -1,8 +1,8 @@
 version "3.3.0"
 
-#include "ZScript/ZCMapScripts.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
 #include "ZScript/ZCMenus.zsc"
+#include "ZScript/ZCMapScripts.zsc"
 
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
@@ -206,7 +206,8 @@ class ZCGlobal: Thinker {
 	/* === ZChecker operating on the internal and saves-through variables === */
 
 	// Fixing an ancient ZScript bug...
-	static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
+	// WARNING: user CVars updates after one tic!!!
+	/*static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
 		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
 
 		if ( usercvar ) {
@@ -215,6 +216,15 @@ class ZCGlobal: Thinker {
 			usercvar.SetString( cvarValue );
 
 			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
+		}
+	}*/
+	static clearscope void PrepareSetUserCVarString( String cvarName, String cvarValue ) {
+		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
+
+		if ( usercvar ) {
+			CVar metastring = CVar.FindCVar( "mcm_zchecker_internal_metastring" );
+			metastring.SetString( cvarName );
+			usercvar.SetString( cvarValue );
 		}
 	}
 
@@ -376,15 +386,25 @@ class ZCPanelsStorage {
 	transient CVar panelsOrderCVar;
 	bool panelsorderChanged;
 
-	String panelsstr;
+	String panelsstr; // General read/write variable.
 
-	void UpdatePanels( void ) {
+	// For the "[Init|Tick]SetPanelsorderCVar()":
+	String newOrderStr;
+	int newOrderSaveTic;
+	int newOrderCurPart;
+	bool newOrderFirstTic;
+
+	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
+	const availablePartLen = ( 254 - 36 );
+
+
+	void UpdatePanels( bool fromCVar = false ) {
 		uint warningsAmount = 0;
 		panelsorderChanged = false;
 
 		curPanels.Clear();
 
-		String panelsOrderStr = panelsstr; //panelsOrderCVar.GetString();
+		String panelsOrderStr = ( fromCVar? GetPanelsorderFromCVar(): panelsstr );
 		int curloglevel = LL_Debug;
 
 		if ( CVar.FindCVar( "mcm_zchecker_loglevel" ) )
@@ -394,7 +414,7 @@ class ZCPanelsStorage {
 			Array<String> neworder;
 
 			if ( curloglevel >= LL_Debug )
-				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::WorldTick(). panelsOrderCVar: \"" .. TEXTCOLOR_TAN .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
+				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). panelsOrderCVar: \"" .. TEXTCOLOR_TAN .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
 
 			panelsOrderStr.Split( neworder, ",", TOK_SKIPEMPTY );
 
@@ -410,20 +430,20 @@ class ZCPanelsStorage {
 							curPanels.Push( defaultPanels[ j ] );
 
 							if ( curloglevel >= LL_Debug )
-								ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
+								ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
 
 							break;
 						}
     				}
 
 					if ( !found && curloglevel >= LL_Detailed )
-						ZCGlobal.ClearscopeLog( LL_Detailed, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" vanished." );
+						ZCGlobal.ClearscopeLog( LL_Detailed, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" vanished." );
     			} else if ( curclass ) {
 					warningsAmount++;
-					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
+					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
 				} else {
 					warningsAmount++;
-					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
+					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
 				}
 			}
 		} // of if ( panelsOrderCVar.GetString() != "" ) {}
@@ -441,11 +461,58 @@ class ZCPanelsStorage {
 				curPanels.Push( defaultPanels[ i ] );
 		}
 
-		//SetPanelsorderCVar();
+		InitSetPanelsorderCVar();
 	} // of void UpdatePanels( void ) {}
 
-	void SetPanelsorderCVar( String neworder = "" ) {
-		ZCGlobal.SetUserCVarString( "mcm_zchecker_infopanelsorder", ( neworder == ""? panelsstr : neworder ) );
+	void InitSetPanelsorderCVar( String argorder = "" ) {
+		newOrderStr = ( argorder == ""? panelsstr : argorder );
+
+		newOrderSaveTic = int( ceil( newOrderStr.Length() / double( availablePartLen ) ) ) + 1;
+		newOrderCurPart = 0;
+		newOrderFirstTic = true;
+
+		ZCGlobal.DataLog( LL_Debug, String.Format( GetClassName() .. "::InitSetPanelsorderCVar(). strlen %i / %i, ceil == %i", newOrderStr.Length(), availablePartLen, newOrderSaveTic ) );
+	}
+
+	// ZScript-ACS API cannot obtain more than one string with maximum of 255 characters.
+	void TickSetPanelsorderCVar( void ) {
+		if ( newOrderSaveTic <= 0 || newOrderCurPart > 9 )
+			return;
+
+		if ( !newOrderFirstTic )
+			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
+		else
+			newOrderFirstTic = false;
+
+		int indexfrom = newOrderCurPart * availablePartLen;
+		int indexto = min( indexfrom + availablePartLen, newOrderStr.Length() );
+
+		String curpart = newOrderStr.Mid( indexfrom, ( indexto - indexfrom ) );
+		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVar(). Tic " .. newOrderSaveTic .. " part " .. newOrderCurPart .. ": \"" .. curpart .. "\"" );
+
+		//ZCGlobal.SetUserCVarString( "mcm_zchecker_infopanelsorder_part" .. newOrderCurPart, curpart );
+		ZCGlobal.PrepareSetUserCVarString( "mcm_zchecker_infopanelsorder_part" .. newOrderCurPart, curpart );
+
+		newOrderCurPart++;
+		newOrderSaveTic--;
+
+		//if ( indexto >= newOrderStr.Length() )
+		//	newOrderSaveTic = 0;
+	}
+
+	String GetPanelsorderFromCVar( void ) {
+		String outstr = "";
+
+		for ( int i = 0; i < 10; i++ ) {
+			String curpart = CVar.GetCVar( "mcm_zchecker_infopanelsorder_part" .. i, players[ consoleplayer ] ).GetString();
+
+			if ( curpart.Length() == 0 )
+				break;
+
+			outstr = outstr .. curpart;
+		}
+
+		return outstr;
 	}
 
 } // of class ZCPanelsStorage {}
@@ -697,6 +764,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 
+
 	override void RenderOverlay( RenderEvent e ) {
 		// User CVars locating uses a relatively long algorithm. After a 
 		//while I'll optimize them and move somewhere.
@@ -769,7 +837,7 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( zcCCMDInfo.args.Size() == 1 ) {
 				panels.panelsstr = zcCCMDInfo.args[ 0 ];
 				panels.UpdatePanels();
-				panels.SetPanelsorderCVar( zcCCMDInfo.args[ 0 ] );
+				panels.InitSetPanelsorderCVar( zcCCMDInfo.args[ 0 ] );
 			} else {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Updating panels order network event has wrong amount of arguments (must be 1, got " .. zcCCMDInfo.args.Size() .. ")." );
 				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
@@ -820,6 +888,9 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( ( gamestate == GS_LEVEL || gamestate == GS_DEMOSCREEN ) && !( level.maptime % 5 ) )
 			globalclass.UpdateLogLevel();
 
+		// ACS works only in the play scope.
+		panels.TickSetPanelsorderCVar();
+
 		Super.WorldTick();
 	} // of override void WorldTick() {}
 
@@ -833,7 +904,9 @@ class ZCheckerHandler: StaticEventHandler {
 		globalclass.SetZCheckerString( "$last", "" );
 
 		if ( panels.panelsorderChanged )
-			panels.UpdatePanels();
+			panels.UpdatePanels( true );
+
+		//ACS_Execute( -int( 'ZChecker_Create_ACS_Thinker' ), 0 );
 
 		Super.WorldLoaded( e );
 	}
