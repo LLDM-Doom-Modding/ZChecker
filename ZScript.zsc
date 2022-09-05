@@ -490,7 +490,6 @@ class ZCPanelsStorage {
 		String curpart = newOrderStr.Mid( indexfrom, ( indexto - indexfrom ) );
 		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVar(). Tic " .. newOrderSaveTic .. " part " .. newOrderCurPart .. ": \"" .. curpart .. "\"" );
 
-		//ZCGlobal.SetUserCVarString( "mcm_zchecker_infopanelsorder_part" .. newOrderCurPart, curpart );
 		ZCGlobal.PrepareSetUserCVarString( "mcm_zchecker_infopanelsorder_part" .. newOrderCurPart, curpart );
 
 		newOrderCurPart++;
@@ -511,6 +510,8 @@ class ZCPanelsStorage {
 
 			outstr = outstr .. curpart;
 		}
+
+		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVar(). Concatenated: \"" .. outstr .. "\"" );
 
 		return outstr;
 	}
