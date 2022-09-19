@@ -537,7 +537,9 @@ class ZCheckerHandler: StaticEventHandler {
 	ZCheckerCCMDInfo zcCCMDInfo;
 	transient Font zcInfoPanelFont;
 
+	bool handlerInitSuccess;
 	String zcConfigFile;
+	int zcConfigCurLineIndex;
 
 
 	ZCConsoleClass GetZCConsoleClass( int index ) {
@@ -598,11 +600,17 @@ class ZCheckerHandler: StaticEventHandler {
 
 	private bool checkKeywordArgsAmount( uint argsAmount, String keyword, uint rightAmount, String argsDescription ) {
 		if ( argsAmount != rightAmount ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::checkKeywordArgsAmount(). Wrong amount of arguments for keyword \"" .. keyword .. "\": has " .. argsAmount .. ", must be " .. rightAmount .. " (" .. argsDescription .. ")." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::checkKeywordArgsAmount(). Wrong arguments for keyword \"" .. keyword .. "\" at line " .. zcConfigCurLineIndex .. ": has " .. argsAmount .. ", must be " .. rightAmount .. " (" .. TEXTCOLOR_RED .. "\"" .. argsDescription .. "\"" .. LLCOLOR_EMERGENCY .. ")." );
+			handlerInitSuccess = false;
 			return false;
 		}
 
 		return true;
+	}
+
+	private void printConfigWarning( String message ) {
+		ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). " .. message .. " at line " .. zcConfigCurLineIndex .. "." );
+		handlerInitSuccess = false;
 	}
 
 	void IncludeConsoleClasses( void ) {
@@ -631,9 +639,9 @@ class ZCheckerHandler: StaticEventHandler {
             zcConfigFile.Replace( "\r\n", "\n" ); // Neccesary???
             zcConfigFile.Split( zcConfigLines, "\n" );
 
-			uint curLineIndex = 1;
+			zcConfigCurLineIndex = 1;
 
-            for ( int i = 0; i < zcConfigLines.Size(); i++, curLineIndex++ ) {
+            for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {
                 String curLine = zcConfigLines[ i ];
 
                 // Comments and extra spaces delete:
@@ -656,10 +664,10 @@ class ZCheckerHandler: StaticEventHandler {
                     if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
 						if ( argsamount == 1 ) {
 							if ( !addConsoleClass( curLineWords[ 1 ], false ) )
-								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"." );
+								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
 						} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
 							if ( !addConsoleClass( curLineWords[ 1 ], true ) )
-								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"." );
+								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
 						} else {
 							checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
 						}
@@ -670,10 +678,10 @@ class ZCheckerHandler: StaticEventHandler {
                     } else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
 						if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
 							if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
-								ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"." );
+								printConfigWarning( "Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"" );
 
                     } else {
-						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Unknown keyword \"" .. curLineWords[ 0 ] .. "\"." );
+						printConfigWarning( "Unknown keyword \"" .. curLineWords[ 0 ] .. "\"" );
 					}
 
                 } else {
@@ -681,9 +689,10 @@ class ZCheckerHandler: StaticEventHandler {
                     i--;
                 } // of else of if ( curLine != "" ) {}
 
-            } // of for ( int i = 0; i < zcConfigLines.Size(); i++, curLineIndex++ ) {}
+            } // of for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {}
         } else {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Cannot find file \"ZChecker.cfg\"." );
+			handlerInitSuccess = false;
 		} // of else of if ( zcConfigFileHandler != -1 ) {}
 
 	} // of void IncludeConsoleClasses( void ) {}
@@ -719,6 +728,8 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	override void OnRegister() {
+		handlerInitSuccess = true;
+
 		SetOrder( ZCheckerHandlerOrder );
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
@@ -739,7 +750,9 @@ class ZCheckerHandler: StaticEventHandler {
 		IncludeConsoleClasses();
 		InitAllActorNames();
 
-		ZCGlobal.Log( LL_Detailed, "ZChecker v" .. ZCheckerVersion .. " initialized successfully. " .. zcConsoleHandleClasses.Size() .. " console commands, " .. panels.curPanels.Size() .. " info panels." );
+		ZCGlobal.Log( LL_Detailed, String.Format( "ZChecker v%s initialized %s. Total %i console commands, %i info panels.",
+									ZCheckerVersion, ( handlerInitSuccess? "successfully" : TEXTCOLOR_RED .. "with warnings" .. LLCOLOR_MAIN ),
+									zcConsoleHandleClasses.Size(), panels.defaultPanels.Size() ) );
 
 		Super.OnRegister();
 	}
