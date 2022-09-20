@@ -1,10 +1,19 @@
 // Common console variables.
 server int mcm_zchecker_loglevel = 1;
 
+// General information panel variables.
+user float mcm_zchecker_infopanel_startx	= 2.0;
+user float mcm_zchecker_infopanel_starty	= 1.0;
+user float mcm_zchecker_infopanel_offsetx	= 50.0;
+user float mcm_zchecker_infopanel_scale		= 1.0;
+
+user int mcm_zchecker_min_sectorslines_tag	= 1;
+user int mcm_zchecker_max_sectorslines_tag	= 700;
+
 // Internal string for the API between ZScript and ACS.
 user noarchive string mcm_zchecker_internal_metastring;
 
-// Awful decision, but string CVar cannot contain more than 255 characters.
+// Awful decision, but string CVar cannot contain more than 255 characters...
 user string mcm_zchecker_infopanelsorder_part0;
 user string mcm_zchecker_infopanelsorder_part1;
 user string mcm_zchecker_infopanelsorder_part2;
@@ -17,12 +26,8 @@ user string mcm_zchecker_infopanelsorder_part8;
 user string mcm_zchecker_infopanelsorder_part9;
 
 
-// Information panel console variables.
-user float mcm_zchecker_infopanel_startx	= 2.0;
-user float mcm_zchecker_infopanel_starty	= 1.0;
-user float mcm_zchecker_infopanel_offsetx	= 50.0;
-user float mcm_zchecker_infopanel_scale		= 1.0;
 
+// Information panel parts settings.
 user bool mcm_zchecker_info_main			= true;	 // Classname, pointer.
 user int  mcm_zchecker_infovar_maintags		= 2;	 //  \_ "Never", "If different from classname", "Always"
 user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
@@ -30,6 +35,23 @@ user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
 user bool mcm_zchecker_infovar_wposplayerbuttons = false;
 user bool mcm_zchecker_info_maininteract	= true;	 // Health, mass, etc.
+
+user bool mcm_zchecker_info_geomsectors		= false; // Sectors linked to the actor.
+user bool mcm_zchecker_infovar_geomsecdiffers = false;// \_ Show "floorsector"/"ceilingsector" only if they differs from the "cursector".
+user bool mcm_zchecker_infovar_geomseclight	= true;	 //  \_ Sector light level.
+user int  mcm_zchecker_infovar_geomsecflags	= 2;	 //  \_ Sector flags: "Disabled", "Short names", "Long names".
+user int  mcm_zchecker_infovar_geomsecheights = 1;	 //  \_ "Off", "Heights", "Heights & delta to player".
+user bool mcm_zchecker_infovar_geomsectex	= true;	 //  \_ Sector textures.
+user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (damage interval, water level, ...).
+user bool mcm_zchecker_infovar_geomsecportal= false; //  \_ Sector portal info.
+user bool mcm_zchecker_infovar_geomsecterrain= false;//  \_ Shows floorsector terrain, if any.
+
+user bool mcm_zchecker_info_geomlines		= false; // Lines linked to the actor.
+user int  mcm_zchecker_infovar_geomlinetype	= 1;	 //  \_ "On line of sight", "Blocking line", "Both".
+user int  mcm_zchecker_infovar_geomlnmain	= 2;	 //  \_ Length and flags: "Disabled", "Short names", "Long names".
+user bool mcm_zchecker_infovar_geomlntex	= true;	 //  \_ Line textures.
+user int  mcm_zchecker_infovar_geomlnaction	= 1;	 //  \_ Line action info: "Disabled", "Action & TID", "Action, args & TID", "Everything".
+user bool mcm_zchecker_infovar_geomlnportal	= false; //  \_ Line portal info.
 
 user bool mcm_zchecker_info_inventory		= true;
 user int  mcm_zchecker_infovar_invamount	= 40;
@@ -45,8 +67,6 @@ user bool mcm_zchecker_info_otherpointers	= false; // snext, alternative, goal.
 user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
-
-//user bool mcm_zchecker_info_geometry		= false; // "floorsector", "ceilingsector", BlockingLine, ...
 //user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
 
 

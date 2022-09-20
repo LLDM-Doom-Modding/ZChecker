@@ -12,8 +12,6 @@ AddOptionMenu "OptionsMenu" {
 	Submenu "ZChecker Control", "mcm_ZChecker_Control"
 }
 
-
-
 OptionMenu "mcm_ZChecker_InfoPanelControl" {
     Title "Information panel control"
     StaticText " "
@@ -24,36 +22,99 @@ OptionMenu "mcm_ZChecker_InfoPanelControl" {
 	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_states" {
-	Title "ZChecker: States"
-
-	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
-	StaticText " "
-	Option "Log to console", "mcm_zchecker_infovar_stateslogging", "YesNo"
-}
-
-OptionMenu "mcm_ZCheckerSubmenu_main" {
-	Title "ZChecker: General info"
-
-	Option "Actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
-	Option "Self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
-}
-
-OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
-	Title "ZChecker: World positioning"
-
-	Option "Player buttons", "mcm_zchecker_infovar_wposplayerbuttons", "YesNo"
-}
-
-
 OptionValue "mcm_ZCheckerOption_LogLevels" {
 	1, "1. Main/default"
 	2, "2. Detailed"
 	3, "3. Debug mode"
 }
 
+
+
+// Submenu options:
+
 OptionValue "mcm_ZCheckerOption_panelmain_tags" {
 	0, "Never"
 	1, "If different from classname"
 	2, "Always"
+}
+OptionValue "mcm_ZCheckerOption_flags_names" {
+	0, "Disabled"
+	1, "Short names"
+	2, "Long names"
+}
+OptionValue "mcm_ZCheckerOption_panelgeom_secheights" {
+	0, "Disabled"
+	1, "Z coordinates"
+	2, "Z coord + player delta"
+}
+OptionValue "mcm_ZCheckerOption_panelgeom_linetype" {
+	1, "On line of sight"
+	2, "Blocking line"
+	3, "Both (LOS & blocking)" // Bitmask.
+}
+OptionValue "mcm_ZCheckerOption_panelgeom_lineaction" {
+	0, "Disabled"
+	1, "Action and tag"
+	2, "Action, args and tag"
+	3, "Everything"
+}
+
+
+// Submenus:
+
+OptionMenu "mcm_ZCheckerSubmenu_states" {
+	Title "ZChecker: States"
+	StaticText " "
+
+	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
+	StaticText " "
+	Option "Log to console", "mcm_zchecker_infovar_stateslogging", "YesNo"
+}
+
+
+OptionMenu "mcm_ZCheckerSubmenu_main" {
+	Title "ZChecker: General info"
+	StaticText " "
+
+	Option "Actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
+	Option "Self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
+}
+
+
+OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
+	Title "ZChecker: World positioning"
+	StaticText " "
+
+	Option "Player buttons", "mcm_zchecker_infovar_wposplayerbuttons", "YesNo"
+}
+
+OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
+	Title "ZChecker: Sectors geometry"
+	StaticText " "
+
+	Option "Separated floor and ceiling", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
+	StaticText " "
+	Option "Light level", "mcm_zchecker_infovar_geomseclight", "YesNo"
+	Option "Flags", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
+	Option "Heights", "mcm_zchecker_infovar_geomsecheights", "mcm_ZCheckerOption_panelgeom_secheights"
+	Option "Textures", "mcm_zchecker_infovar_geomsectex", "YesNo"
+	StaticText " "
+	Option "Common: damage, waterlevel, ...", "mcm_zchecker_infovar_geomsecother", "YesNo"
+	Option "Portals", "mcm_zchecker_infovar_geomsecportal", "YesNo"
+	Option "Floor terrain", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
+}
+
+OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
+	Title "ZChecker: Lines geometry"
+	StaticText " "
+
+	Option "Line type", "mcm_zchecker_infovar_geomlinetype", "mcm_ZCheckerOption_panelgeom_linetype"
+	Option "Length and flags", "mcm_zchecker_infovar_geomlnmain", "mcm_ZCheckerOption_flags_names"
+	Option "Textures", "mcm_zchecker_infovar_geomlntex", "YesNo"
+	StaticText " "
+	StaticText "Tags depth depends on the minimal and", GOLD
+	StaticText "maximal sector/line tag search setting.", GOLD
+	Option "Line action", "mcm_zchecker_infovar_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
+	StaticText " "
+	Option "Portals", "mcm_zchecker_infovar_geomlnportal", "YesNo"
 }

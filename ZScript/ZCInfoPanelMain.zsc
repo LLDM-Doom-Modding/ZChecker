@@ -515,7 +515,7 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 		String info = "";
 
 		if ( thingfield.actorType == IAT_Normal ) {
-			info = info .. String.Format( DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(" .. RED .. "%.2f%%",
+			info.AppendFormat( DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(" .. RED .. "%.2f%%",
 					thing.health, thing.GetSpawnHealth(), ( thing.GetSpawnHealth()? 100.0 * thing.health / double( thing.GetSpawnHealth() ) : 0.0 ) );
 
 			if ( thing.bNODAMAGE )
@@ -530,4 +530,70 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 
 		return info .. "\n";
 	}
-} // of class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart
+} // of class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {}
+
+class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_geomsectors";
+		optionLabel = "Actor sectors";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
+	}
+
+/*
+	native Sector CurSector;
+	native Sector floorsector;
+	native Sector ceilingsector;
+
+	native double CeilingZ;
+	native double FloorZ;
+	native TextureID floorpic;
+	native TextureID ceilingpic;
+
+	native readonly int WaterLevel;
+	native double FloorClip;
+
+	native Line BlockingLine;
+
+	native int floorterrain;
+	native TerrainDef GetFloorTerrain();
+
+struct TerrainDef native {
+	native Name TerrainName;
+	native int Splash;
+	native int DamageAmount;
+	native Name DamageMOD;
+	native int DamageTimeMask;
+	native double FootClip;
+	native float StepVolume;
+	native int WalkStepTics;
+	native int RunStepTics;
+	native Sound LeftStepSound;
+	native Sound RightStepSound;
+	native bool IsLiquid;
+	native bool AllowProtection;
+	native double Friction;
+	native double MoveFactor;
+};*/
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		String info = "";
+
+		if ( thingfield.actorType == IAT_Normal ) {
+			info = info .. "";
+		}
+
+		return info .. "\n";
+	}
+} // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {}
+
+class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_geomsectors";
+		optionLabel = "Actor lines";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_geomlines";
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		return "";
+	}
+} // of class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {}
