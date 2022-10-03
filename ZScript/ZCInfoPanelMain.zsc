@@ -533,10 +533,21 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {
+	String outinfo;
+	Actor infothing;
+
+	bool printSecLights, printSecTextures, printSecOther, printSecPortal, printSecTerrain;
+	int printSecFlagsMode, printSecHeightsMode;
+
+	transient Font flagsfont;
+
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_geomsectors";
 		optionLabel = "Actor sectors";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
+
+		printSecLights = printSecTextures = printSecOther = printSecPortal = printSecTerrain = false;
+		flagsfont = Font.FindFont( "smallfont" );
 	}
 
 /*
@@ -575,14 +586,161 @@ struct TerrainDef native {
 	native double MoveFactor;
 };*/
 
-	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		String info = "";
+	Sector tempInfoSec;
+	String tempFlagsStr;
 
-		if ( thingfield.actorType == IAT_Normal ) {
-			info = info .. "";
+	protected void addSecFlag( uint flag, String flagname, String setcolor = GREEN ) {
+		tempFlagsStr = tempFlagsStr .. ( ( tempInfoSec.flags & flag )? setcolor : BLACK ) .. flagname .. " ";
+	}
+
+	protected void addSecFlag2( uint flag2, String flagname, String setcolor = GREEN ) {
+		tempFlagsStr = tempFlagsStr .. ( ( tempInfoSec.moreflags & flag2 )? setcolor : BLACK ) .. flagname .. " ";
+	}
+
+	protected void addSectorInfo( Sector sec, String sectorName = "" ) {
+		if ( !sec ) {
+			outinfo.AppendFormat( BLACK .. "(No%s%s sector)\n" .. GRAY, ( sectorName == ""? "" : " " ), sectorName .. BLACK );
+			return;
 		}
 
-		return info .. "\n";
+		String info = DARKGRAY .. "Sector " .. GRAY .. sec .. DARKGRAY .. ( sectorName == ""? ":" : " (" .. sectorName .. DARKGRAY .. "):\n" );
+
+		switch ( printSecHeightsMode ) {
+			case 1:
+				info.AppendFormat( "  Flr " .. DARKGREEN .. "%i" .. DARKGRAY .. "/Ceil " .. TAN .. "%i" .. DARKGRAY .. ".\n",
+									int( sec.floorplane.d * sec.floorplane.negiC ), int( sec.ceilingplane.d * sec.ceilingplane.negiC ) );
+				break;
+			case 2:
+				double floorz = sec.floorplane.d * sec.floorplane.negiC;
+				double ceilingz = sec.ceilingplane.d * sec.ceilingplane.negiC;
+
+				info.AppendFormat( "  Flr " .. DARKGREEN .. "%-4i" .. DARKGRAY .. " (feet delta " .. DARKGREEN.. "%i" .. DARKGRAY .. ");\n"
+								.. "  Ceil " .. TAN .. "%-4i" .. DARKGRAY .. " (head delta " .. TAN.. "%i" .. DARKGRAY .. ").\n",
+								int( floorz ), int( infothing.pos.z - floorz ), int( ceilingz ), int( ceilingz - infothing.pos.z - infothing.height ) );
+				break;
+			case 0:
+			default:
+				break;
+		}
+
+		if ( printSecLights )
+			info = info .. "  Light level " .. WHITE .. sec.lightlevel .. DARKGRAY .. ".\n";
+
+/*
+SECF_SILENT			= 1,	// actors in sector make no noise
+SECF_NOFALLINGDAMAGE= 2,	// No falling damage in this sector
+SECF_FLOORDROP		= 4,	// all actors standing on this floor will remain on it when it lowers very fast.
+SECF_NORESPAWN		= 8,	// players can not respawn in this sector
+SECF_FRICTION		= 16,	// sector has friction enabled
+SECF_PUSH			= 32,	// pushers enabled
+SECF_SILENTMOVE		= 64,	// Sector movement makes mo sound (Eternity got this so this may be useful for an extended cross-port standard.) 
+SECF_DMGTERRAINFX	= 128,	// spawns terrain splash when inflicting damage
+SECF_ENDGODMODE		= 256,	// getting damaged by this sector ends god mode
+SECF_ENDLEVEL		= 512,	// ends level when health goes below 10
+SECF_HAZARD			= 1024,	// Change to Strife's delayed damage handling.
+
+SECF_WASSECRET		= 1 << 30,	// a secret that was discovered
+SECF_SECRET			= 1 << 31,	// a secret sector
+
+SECMF_FAKEFLOORONLY	= 2,	// when used as heightsec in R_FakeFlat, only copies floor
+SECMF_CLIPFAKEPLANES = 4,	// as a heightsec, clip planes to target sector's planes
+SECMF_NOFAKELIGHT	= 8,	// heightsec does not change lighting
+SECMF_IGNOREHEIGHTSEC= 16,	// heightsec is only for triggering sector actions
+SECMF_UNDERWATER		= 32,	// sector is underwater
+SECMF_FORCEDUNDERWATER= 64,	// sector is forced to be underwater
+SECMF_UNDERWATERMASK	= 32+64,
+SECMF_DRAWN			= 128,	// sector has been drawn at least once
+SECMF_HIDDEN			= 256,	// Do not draw on textured automap
+*/
+
+		tempFlagsStr = "";
+
+		switch ( printSecFlagsMode ) {
+			case 1: // Short flag names.
+				tempinfosec = sec;
+				addSecFlag( Sector.SECF_SILENT, "quiet" );
+				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "xfaldmg" );
+				addSecFlag( Sector.SECF_FLOORDROP, "liftdrp" );
+				addSecFlag( Sector.SECF_NORESPAWN, "xrespw" );
+				addSecFlag( Sector.SECF_FRICTION, "frict" );
+				addSecFlag( Sector.SECF_PUSH, "push" );
+				addSecFlag( Sector.SECF_SILENTMOVE, "mvquiet" );
+				addSecFlag( Sector.SECF_DMGTERRAINFX, "terrafx" );
+				addSecFlag( Sector.SECF_ENDGODMODE, "xiddqd" );
+				addSecFlag( Sector.SECF_ENDLEVEL, "endlvl" );
+				addSecFlag( Sector.SECF_HAZARD, "StrfHzr" );
+				addSecFlag( Sector.SECF_WASSECRET, "wassecr" );
+				addSecFlag( Sector.SECF_SECRET, "newsecr" );
+				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fakeflr" );
+				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "clipfake" );
+				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "xfakelit" );
+				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "nofake" );
+				addSecFlag2( Sector.SECMF_UNDERWATER, "water", SAPPHIRE );
+				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "watrforc", CYAN );
+				addSecFlag2( Sector.SECMF_DRAWN, "drawn" );
+				addSecFlag2( Sector.SECMF_HIDDEN, "hidden" );
+				break;
+			case 2: // Long flag names.
+				tempinfosec = sec;
+				break;
+			case 0:
+			default:
+				break;
+		}
+
+		;
+
+		if ( tempFlagsStr != "" ) {
+			BrokenLines lines = flagsfont.BreakLines( tempFlagsStr, flagsfont.GetCharWidth( 0x61 ) * 30 );
+
+			for ( int i = 0; i < lines.Count(); i++ )
+				info = info .. "  " .. lines.StringAt( i ) .. "\n";
+		}
+
+		outinfo = outinfo .. info;
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		if ( thingfield.actorType != IAT_Normal )
+			return "";
+
+		outinfo = "";
+		infothing = thing;
+
+		bool differFloorCeilSectors = CVar.GetCVar( "mcm_zchecker_infovar_geomsecdiffers", players[ consoleplayer ] ).GetBool();
+
+		printSecHeightsMode = CVar.GetCVar( "mcm_zchecker_infovar_geomsecheights", players[ consoleplayer ] ).GetInt();
+		printSecLights = CVar.GetCVar( "mcm_zchecker_infovar_geomseclight", players[ consoleplayer ] ).GetBool();
+		printSecFlagsMode = CVar.GetCVar( "mcm_zchecker_infovar_geomsecflags", players[ consoleplayer ] ).GetInt();
+		printSecTextures = CVar.GetCVar( "mcm_zchecker_infovar_geomsectex", players[ consoleplayer ] ).GetBool();
+		printSecOther = CVar.GetCVar( "mcm_zchecker_infovar_geomsecother", players[ consoleplayer ] ).GetBool();
+		printSecPortal = CVar.GetCVar( "mcm_zchecker_infovar_geomsecportal", players[ consoleplayer ] ).GetBool();
+		printSecTerrain = CVar.GetCVar( "mcm_zchecker_infovar_geomsecterrain", players[ consoleplayer ] ).GetBool();
+
+		if ( differFloorCeilSectors ) {
+			addSectorInfo( thing.cursector, "actual" );
+			/*if ( thing.cursector == thing.floorsector ) {
+				addSectorInfo( thing.cursector );
+			} else {
+				addSectorInfo( thing.cursector, "actual" );
+				addSectorInfo( thing.floorsector, "floor" );
+				addSectorInfo( thing.ceilingsector, "ceiling" );
+			}*/
+		} else {
+			if ( thing.cursector == thing.floorsector ) {
+				addSectorInfo( thing.floorsector, "floor, " .. YELLOW .. "cur" );
+				addSectorInfo( thing.ceilingsector, "ceiling" );
+			} else if ( thing.cursector == thing.ceilingsector ) {
+				addSectorInfo( thing.floorsector, "floor" );
+				addSectorInfo( thing.ceilingsector, "ceil, " .. YELLOW .. "cur" );
+			} else {
+				addSectorInfo( thing.cursector, YELLOW .. "actual" );
+				addSectorInfo( thing.floorsector, "floor" );
+				addSectorInfo( thing.ceilingsector, "ceiling" );
+			}
+		}
+
+		return outinfo .. "\n";
 	}
 } // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {}
 
@@ -594,6 +752,6 @@ class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		return "";
+		return "(Linedefs geometry).";
 	}
 } // of class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {}

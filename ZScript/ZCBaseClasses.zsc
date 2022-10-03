@@ -642,8 +642,12 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 	ui virtual String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		return "Nothing (not overrided).";
+		return GetClassName() .. "::GetInfo(). Not overrided.";
 	}
+
+	/*play virtual String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+		return GetClassName() .. "::GetInfo_play(). Not overrided.";
+	}*/
 
 	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
 		String label = "Submenu. ";

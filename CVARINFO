@@ -45,6 +45,7 @@ user bool mcm_zchecker_infovar_geomsectex	= true;	 //  \_ Sector textures.
 user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (damage interval, water level, ...).
 user bool mcm_zchecker_infovar_geomsecportal= false; //  \_ Sector portal info.
 user bool mcm_zchecker_infovar_geomsecterrain= false;//  \_ Shows floorsector terrain, if any.
+// Something about sector normals?
 
 user bool mcm_zchecker_info_geomlines		= false; // Lines linked to the actor.
 user int  mcm_zchecker_infovar_geomlinetype	= 1;	 //  \_ "On line of sight", "Blocking line", "Both".
