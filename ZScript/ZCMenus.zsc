@@ -95,7 +95,7 @@ class ZCOptionMenuPanels: OptionMenu {
 			handler.panels.UpdatePanels();
 
 		for ( int i = 0; i < handler.panels.curPanels.Size(); i++ ) {
-			ZCBaseInfoPanelPart newpart = handler.panels.curPanels[ i ];
+			ZCBaseInfoPanelPart newpart = handler.panels.curPanels.nodes[ i ].panel;
 
 			addedItemsAmount += InsertMenuPanelPart( newpart, desc );
 			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. newpart.GetClassName() .. "\"." );

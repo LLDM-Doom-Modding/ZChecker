@@ -590,6 +590,8 @@ class ZCTooltipClass: ZCConsoleClass {
 
 
 class ZCBaseInfoPanelPart abstract {
+	protected bool playScoped;
+
 	const NORMAL	= TEXTCOLOR_NORMAL;
 	const N			= NORMAL;
 	const BRICK		= TEXTCOLOR_BRICK;
@@ -631,8 +633,13 @@ class ZCBaseInfoPanelPart abstract {
 
 		panel.handler = globalHandler;
 		panel.OnCreate();
+		panel.playScoped = false;
 
 		return panel;
+	}
+
+	bool IsPlayScope( void ) {
+		return playScoped;
 	}
 
 	virtual void OnCreate( void ) {
@@ -692,3 +699,35 @@ class ZCBaseInfoPanelPart abstract {
 	}
 } // of class ZCBaseInfoPanelPart abstract {}
 
+class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
+	Array<String> playscopedInfo;
+
+	play static ZCBaseInfoPanelPart_PlayScope CreatePlayScope( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
+		ZCBaseInfoPanelPart_PlayScope panel = ZCBaseInfoPanelPart_PlayScope( new( panelclass ) );
+
+		panel.handler = globalHandler;
+		panel.OnCreate_play();
+		panel.playScoped = true;
+
+		for ( int i = 0; i < MaxTestee; i++ )
+			panel.playscopedInfo.Push( "" );
+
+		return panel;
+	}
+
+	play virtual void OnCreate_play( void ) {
+		Super.OnCreate();
+	}
+
+	play virtual String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+		return GetClassName() .. "::GetInfo_play(). Not overrided.";
+	}
+
+	clearscope String InternalGetInfo_clearscope( int index ) {
+		return playscopedInfo[ index ];
+	}
+
+	final override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		return RED .. GetClassName() .. "GetInfo(). " .. FIRE .. "Override \"GetInfo_play()\" instead" .. RED .. ".";
+	}
+}

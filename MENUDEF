@@ -92,6 +92,9 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 	Title "ZChecker: Sectors geometry"
 	StaticText " "
 
+	StaticText "Play-scoped class. Will be updated in world tick.", Fire
+	StaticText " "
+
 	Option "Separated floor and ceiling", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
 	StaticText " "
 	Option "Light level", "mcm_zchecker_infovar_geomseclight", "YesNo"
@@ -106,6 +109,9 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 
 OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	Title "ZChecker: Lines geometry"
+	StaticText " "
+
+	StaticText "Play-scoped class. Will be updated in world tick.", Fire
 	StaticText " "
 
 	Option "Line type", "mcm_zchecker_infovar_geomlinetype", "mcm_ZCheckerOption_panelgeom_linetype"

@@ -378,10 +378,44 @@ class ZCGlobal: Thinker {
 
 } // of class ZCGlobal: Thinker {}
 
+
+class ZCInfoPanelNode {
+	ZCBaseInfoPanelPart panel;
+	CVar panelCVar;
+}
+
+class ZCInfoPanelNodeKeeper {
+	Array<ZCInfoPanelNode> nodes;
+	Array<ZCInfoPanelNode> playnodes;
+
+	void Push( ZCBaseInfoPanelPart saveepanel ) {
+		ZCInfoPanelNode newnode = new( 'ZCInfoPanelNode' );
+
+		newnode.panel = saveepanel;
+		newnode.panelCVar = CVar.GetCVar( saveepanel.optionCVarName, players[ consoleplayer ] );
+
+		nodes.Push( newnode );
+
+		if ( saveepanel.IsPlayScope() )
+			playnodes.Push( newnode );
+	}
+	int Size( void ) {
+		return nodes.Size();
+	}
+	int PlayscopedSize( void ) {
+		return playnodes.Size();
+	}
+
+	void Clear( void ) {
+		nodes.Clear();
+		playnodes.Clear();
+	}
+} // of class ZCInfoPanelNodeKeeper {}
+
 // Data-scoped panels storage:
 class ZCPanelsStorage {
-	Array<ZCBaseInfoPanelPart> defaultPanels;
-	Array<ZCBaseInfoPanelPart> curPanels;
+	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file.
+	ZCInfoPanelNodeKeeper curPanels;			// Loaded from the *.ini.
 
 	transient CVar panelsOrderCVar;
 	bool panelsorderChanged;
@@ -579,12 +613,21 @@ class ZCheckerHandler: StaticEventHandler {
 		zcConsoleHandleClasses.Push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
 	}
 
-	private bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
-
+	private play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
 		if ( classname ) {
-			ZCBaseInfoPanelPart newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
+			ZCBaseInfoPanelPart newPanelPart = NULL;
+
+			if ( classname is "ZCBaseInfoPanelPart_PlayScope" ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add a " .. TEXTCOLOR_DARKGREEN .. "play-scoped" .. LLCOLOR_DEBUG .. "\"" .. classname.GetClassName() .. "\"." );
+				newPanelPart = ZCBaseInfoPanelPart_PlayScope.CreatePlayScope( classname, self );
+			} else {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. classname.GetClassName() .. "\"." );
+				newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
+			}
+
 			panels.defaultPanels.Push( newPanelPart );
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::addInfoPanelClass(). No class<ZCBaseInfoPanelPart> defined." );
 		}
 
 		return !!classname;
@@ -736,6 +779,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		panels = new( 'ZCPanelsStorage' );
 		panels.panelsorderChanged = true;
+		panels.curpanels = new( 'ZCInfoPanelNodeKeeper' );
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Testee[ i ] = new( 'ZCheckerField' );
@@ -786,13 +830,12 @@ class ZCheckerHandler: StaticEventHandler {
 		PlayerInfo pl = players[ consoleplayer ];
 
 		for ( int iCurInfoPanel = 0; iCurInfoPanel < panels.curPanels.Size(); iCurInfoPanel++ ) {
-			ZCBaseInfoPanelPart panelpart = panels.curPanels[ iCurInfoPanel ];
-			CVar curInfoPanelCVar = CVar.GetCVar( panelpart.optionCVarName, pl );
+			ZCInfoPanelNode panelnode = panels.curPanels.nodes[ iCurInfoPanel ];
 
-			if ( !curInfoPanelCVar ) {
-				ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panelpart.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown user CVar \"" .. TEXTCOLOR_RED .. panelpart.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
-			} else if ( curInfoPanelCVar.GetBool() ) {
-				infoPanelParts.Push( panelpart );
+			if ( !panelnode.panelCVar ) {
+				ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown user CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
+			} else if ( panelnode.panelCVar.GetBool() ) {
+				infoPanelParts.Push( panelnode.panel );
 			}
 		}
 
@@ -812,8 +855,12 @@ class ZCheckerHandler: StaticEventHandler {
 			// Forming a full information panel:
 			String outStr = "";
 
-			for ( int j = 0; j < infoPanelParts.Size(); j++ )
-				outStr = outStr .. "\c-" .. infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] ) .. "\n";
+			for ( int j = 0; j < infoPanelParts.Size(); j++ ) {
+				if ( infoPanelParts[ j ].IsPlayScope() )
+					outStr = outStr .. "\c-" .. ZCBaseInfoPanelPart_PlayScope( infoPanelParts[ j ] ).InternalGetInfo_clearscope( i ) .. "\n";
+				else
+					outStr = outStr .. "\c-" .. infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] ) .. "\n";
+			}
 
 
 			// Thanks to m8f for the "drawTextCenter()" function code from its "Hellscape Navigator".
@@ -904,6 +951,17 @@ class ZCheckerHandler: StaticEventHandler {
 
 		// ACS works only in the play scope.
 		panels.TickSetPanelsorderCVar();
+
+		for ( int i = 0; i < panels.curPanels.PlayscopedSize(); i++ ) {
+			ZCBaseInfoPanelPart_PlayScope playpanel = ZCBaseInfoPanelPart_PlayScope( panels.curPanels.playnodes[ i ].panel );
+
+			for ( int j = 0; j < MaxTestee; j++ ) {
+				Actor curTestee = UpdateTesteeField( i );
+
+				if ( curTestee )
+					playpanel.playscopedInfo[ j ] = playpanel.GetInfo_play( curTestee, Testee[ j ] );
+			}
+		}
 
 		Super.WorldTick();
 	} // of override void WorldTick() {}

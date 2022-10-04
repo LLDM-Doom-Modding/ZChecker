@@ -532,7 +532,7 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 	}
 } // of class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {}
 
-class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {
+class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	String outinfo;
 	Actor infothing;
 
@@ -541,7 +541,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {
 
 	transient Font flagsfont;
 
-	override void OnCreate( void ) {
+	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_geomsectors";
 		optionLabel = "Actor sectors";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
@@ -603,7 +603,7 @@ struct TerrainDef native {
 			return;
 		}
 
-		String info = DARKGRAY .. "Sector " .. GRAY .. sec .. DARKGRAY .. ( sectorName == ""? ":" : " (" .. sectorName .. DARKGRAY .. "):\n" );
+		String info = DARKGRAY .. "Sector " .. GRAY .. sec.Index() .. DARKGRAY .. ( sectorName == ""? ":" : " (" .. sectorName .. DARKGRAY .. "):\n" );
 
 		switch ( printSecHeightsMode ) {
 			case 1:
@@ -700,7 +700,7 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 		outinfo = outinfo .. info;
 	}
 
-	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		if ( thingfield.actorType != IAT_Normal )
 			return "";
 
@@ -744,14 +744,14 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 	}
 } // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {}
 
-class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {
-	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_geomsectors";
+class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
+	override void OnCreate_play( void ) {
+		optionCVarName = "mcm_zchecker_info_geomlines";
 		optionLabel = "Actor lines";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomlines";
 	}
 
-	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		return "(Linedefs geometry).";
 	}
 } // of class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {}
