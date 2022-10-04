@@ -956,7 +956,7 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCBaseInfoPanelPart_PlayScope playpanel = ZCBaseInfoPanelPart_PlayScope( panels.curPanels.playnodes[ i ].panel );
 
 			for ( int j = 0; j < MaxTestee; j++ ) {
-				Actor curTestee = UpdateTesteeField( i );
+				Actor curTestee = UpdateTesteeField( j );
 
 				if ( curTestee )
 					playpanel.playscopedInfo[ j ] = playpanel.GetInfo_play( curTestee, Testee[ j ] );

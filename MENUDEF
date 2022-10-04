@@ -97,11 +97,12 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 
 	Option "Separated floor and ceiling", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
 	StaticText " "
-	Option "Light level", "mcm_zchecker_infovar_geomseclight", "YesNo"
-	Option "Flags", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
 	Option "Heights", "mcm_zchecker_infovar_geomsecheights", "mcm_ZCheckerOption_panelgeom_secheights"
+	Option "Light level", "mcm_zchecker_infovar_geomseclight", "YesNo"
 	Option "Textures", "mcm_zchecker_infovar_geomsectex", "YesNo"
+	Option "Flags", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
 	StaticText " "
+	StaticText "(Not released yet):", Darkgray
 	Option "Common: damage, waterlevel, ...", "mcm_zchecker_infovar_geomsecother", "YesNo"
 	Option "Portals", "mcm_zchecker_infovar_geomsecportal", "YesNo"
 	Option "Floor terrain", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
@@ -118,8 +119,8 @@ OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	Option "Length and flags", "mcm_zchecker_infovar_geomlnmain", "mcm_ZCheckerOption_flags_names"
 	Option "Textures", "mcm_zchecker_infovar_geomlntex", "YesNo"
 	StaticText " "
-	StaticText "Tags depth depends on the minimal and", GOLD
-	StaticText "maximal sector/line tag search setting.", GOLD
+	StaticText "Tags depth depends on the minimal and", Gold
+	StaticText "maximal sector/line tag search setting.", Gold
 	Option "Line action", "mcm_zchecker_infovar_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
 	StaticText " "
 	Option "Portals", "mcm_zchecker_infovar_geomlnportal", "YesNo"

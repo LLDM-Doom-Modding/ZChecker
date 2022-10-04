@@ -82,7 +82,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		int argsSize = ccmd.args.Size();
 
 		if ( !ZCGlobal.IsEverythingLevel() ) {
-			ZCGlobal.Log( LL_Main, "Cannot use command not at Everything map." );
+			ZCGlobal.Log( LL_Main, "Cannot use command not on Everything map." );
 
 		} else if ( argsSize > 0 ) {
 

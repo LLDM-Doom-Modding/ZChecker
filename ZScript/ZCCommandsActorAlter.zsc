@@ -170,7 +170,7 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcbuddha <pos> [<value>];zcbud <pos> [<value>]";
+		return "zcbud <pos> [<value>]";
 	}
 
 	override String GetHelpDescString() {
