@@ -62,8 +62,9 @@ user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
 user bool mcm_zchecker_info_visual			= false; // Sprite, alpha, RenderStyle, etc.
 
 user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
-user bool mcm_zchecker_info_levelpointers 	= false; // BlockingMobj, LastHeard, LastEnemy, LastLookActor, Poisoner.
-user bool mcm_zchecker_info_otherpointers	= false; // snext, alternative, goal.
+user bool mcm_zchecker_info_levelpointers 	= false; // Linetarget, BlockingMobj.
+user bool mcm_zchecker_info_dfrlinkpointers	= false; // LastHeard, LastEnemy, LastLookActor, Poisoner.
+user bool mcm_zchecker_info_otherpointers	= false; // alternative, &inv, goal, &snext.
 
 user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...

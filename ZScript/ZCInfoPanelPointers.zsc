@@ -1,7 +1,7 @@
-class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
+class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 	Actor testeething;
 
-	override void OnCreate( void ) {
+	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_mainpointers";
 		optionLabel = "Common pointers";
 	}
@@ -43,7 +43,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 		return str;
 	} // of protected String decoratePointerString( Actor ptr, String desc, String ptrcolor ) {}
 
-	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 		String outstr = "";
 
@@ -60,16 +60,31 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
-	override void OnCreate( void ) {
+	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_levelpointers";
 		optionLabel = "Interaction pointers";
 	}
 
-	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+		testeething = thing;
+		Actor linetargeted = thing.GetPointer( thing.player? AAPTR_PLAYER_GETTARGET : AAPTR_LINETARGET );
+
+		return
+			decoratePointerString( linetargeted, "Linetarget", ICE ) .. "\n" ..
+			decoratePointerString( thing.BlockingMobj, "Blocking" );
+	}
+}
+
+class ZCDeferredLinksPointersInfoPanel: ZCCommonPointersInfoPanel {
+	override void OnCreate_play( void ) {
+		optionCVarName = "mcm_zchecker_info_dfrlinkpointers";
+		optionLabel = "Deferred link pointers";
+	}
+
+	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 
 		return
-			decoratePointerString( thing.BlockingMobj, "Blocking" ) .. "\n" ..
 			decoratePointerString( thing.LastHeard, "LastHeard", OLIVE ) .. "\n" ..
 			decoratePointerString( thing.LastEnemy, "LastEnemy", RED ) .. "\n" ..
 			decoratePointerString( thing.LastLookActor, "LastLook", OLIVE ) .. "\n" ..
@@ -78,12 +93,12 @@ class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
 }
 
 class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
-	override void OnCreate( void ) {
+	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_otherpointers";
 		optionLabel = "Other pointers";
 	}
 
-	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 		String outstr = "";
 
