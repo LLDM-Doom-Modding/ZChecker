@@ -382,6 +382,10 @@ class ZCGlobal: Thinker {
 class ZCInfoPanelNode {
 	ZCBaseInfoPanelPart panel;
 	CVar panelCVar;
+
+	void InitCVar( void ) {
+		panelCVar = CVar.GetCVar( panel.optionCVarName, players[ consoleplayer ] );
+	}
 }
 
 class ZCInfoPanelNodeKeeper {
@@ -392,7 +396,6 @@ class ZCInfoPanelNodeKeeper {
 		ZCInfoPanelNode newnode = new( 'ZCInfoPanelNode' );
 
 		newnode.panel = saveepanel;
-		newnode.panelCVar = CVar.GetCVar( saveepanel.optionCVarName, players[ consoleplayer ] );
 
 		nodes.Push( newnode );
 
@@ -420,6 +423,10 @@ class ZCPanelsStorage {
 	transient CVar panelsOrderCVar;
 	bool panelsorderChanged;
 
+	transient CVar fonttypeCVar;
+	transient Font infopanelsFont;
+	int lastFontType;
+
 	String panelsstr; // General read/write variable.
 
 	// For the "[Init|Tick]SetPanelsorderCVar()":
@@ -431,6 +438,16 @@ class ZCPanelsStorage {
 	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
 	const availablePartLen = ( 254 - 36 );
 
+
+	static ZCPanelsStorage Create( void ) {
+		ZCPanelsStorage panel = new( 'ZCPanelsStorage' );
+
+		panel.panelsorderChanged = true;
+		panel.curpanels = new( 'ZCInfoPanelNodeKeeper' );
+		panel.lastFontType = -1;
+
+		return panel;
+	}
 
 	void UpdatePanels( bool fromCVar = false ) {
 		uint warningsAmount = 0;
@@ -495,6 +512,15 @@ class ZCPanelsStorage {
 				curPanels.Push( defaultPanels[ i ] );
 		}
 
+		for ( int i = 0; i < curPanels.Size(); i++ ) {
+			ZCInfoPanelNode panelnode = curPanels.nodes[ i ];
+
+			panelnode.InitCVar();
+
+			if ( !panelnode.panelCVar )
+				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::UpdatePanels(). Panel \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
+		}
+
 		InitSetPanelsorderCVar();
 	} // of void UpdatePanels( void ) {}
 
@@ -550,6 +576,33 @@ class ZCPanelsStorage {
 		return outstr;
 	}
 
+	void UpdateFont( void ) {
+		int fonttype = -1;
+
+		if ( !fonttypeCVar )
+			fonttypeCVar = CVar.GetCVar( "mcm_zchecker_fonttype", players[ consoleplayer ] );
+
+		fonttype = fonttypeCVar.GetInt();
+
+		if ( fonttype != lastFontType ) {
+			ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::UpdateFont(). Font type changed to " .. fonttype );
+			lastFontType = fonttype;
+
+			switch ( fonttype ) {
+				case 0:
+					infopanelsFont = smallfont;
+					break;
+				case 1:
+					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
+					break;
+				default:
+					ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::UpdateFont(). Unknown font type \"" .. fonttype .. "\"." );
+					break;
+			}
+		} // of if ( fonttype != lastFontType ) {}
+
+	} // of void UpdateFont( void ) {}
+
 } // of class ZCPanelsStorage {}
 
 
@@ -569,7 +622,6 @@ class ZCheckerHandler: StaticEventHandler {
 	ZCheckerField Testee[ MaxTestee ];
 
 	ZCheckerCCMDInfo zcCCMDInfo;
-	transient Font zcInfoPanelFont;
 
 	bool handlerInitSuccess;
 	String zcConfigFile;
@@ -618,7 +670,7 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCBaseInfoPanelPart newPanelPart = NULL;
 
 			if ( classname is "ZCBaseInfoPanelPart_PlayScope" ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add a " .. TEXTCOLOR_DARKGREEN .. "play-scoped" .. LLCOLOR_DEBUG .. "\"" .. classname.GetClassName() .. "\"." );
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add a " .. TEXTCOLOR_DARKGREEN .. "play-scoped " .. LLCOLOR_DEBUG .. "\"" .. classname.GetClassName() .. "\"." );
 				newPanelPart = ZCBaseInfoPanelPart_PlayScope.CreatePlayScope( classname, self );
 			} else {
 				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. classname.GetClassName() .. "\"." );
@@ -777,9 +829,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
 
-		panels = new( 'ZCPanelsStorage' );
-		panels.panelsorderChanged = true;
-		panels.curpanels = new( 'ZCInfoPanelNodeKeeper' );
+		panels = ZCPanelsStorage.Create();
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Testee[ i ] = new( 'ZCheckerField' );
@@ -789,7 +839,6 @@ class ZCheckerHandler: StaticEventHandler {
 
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
-		zcInfoPanelFont = Font.FindFont( "smallfont" ); // May use just a "= smallfont;" (defined in the base ZScript file).
 
 		IncludeConsoleClasses();
 		InitAllActorNames();
@@ -829,14 +878,13 @@ class ZCheckerHandler: StaticEventHandler {
 		Array<ZCBaseInfoPanelPart> infoPanelParts;
 		PlayerInfo pl = players[ consoleplayer ];
 
+		panels.UpdateFont();
+
 		for ( int iCurInfoPanel = 0; iCurInfoPanel < panels.curPanels.Size(); iCurInfoPanel++ ) {
 			ZCInfoPanelNode panelnode = panels.curPanels.nodes[ iCurInfoPanel ];
 
-			if ( !panelnode.panelCVar ) {
-				ZCGlobal.ClearscopeLog( LL_Emergency, "Info panel class \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown user CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
-			} else if ( panelnode.panelCVar.GetBool() ) {
+			if ( panelnode.panelCVar && panelnode.panelCVar.GetBool() )
 				infoPanelParts.Push( panelnode.panel );
-			}
 		}
 
 		double infopanelStartX = CVar.FindCVar( "mcm_zchecker_infopanel_startx" ).GetFloat();
@@ -871,7 +919,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 			int width = int( scale * Screen.GetWidth() );
 			int height = int( scale * Screen.GetHeight() );
-			double stringWidth = zcInfoPanelFont.StringWidth( outStr );
+			double stringWidth = panels.infopanelsFont.StringWidth( outStr );
 
 			x = ( width * x ); //- stringWidth / 2;
 			y *= height;
@@ -882,7 +930,7 @@ class ZCheckerHandler: StaticEventHandler {
 			else if ( x > width - stringWidth - bordersXMargin )
 				x = width - stringWidth - bordersXMargin;
 
-			Screen.DrawText( zcInfoPanelFont, Font.CR_GRAY, x, y, outStr,
+			Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, outStr,
 							DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
 

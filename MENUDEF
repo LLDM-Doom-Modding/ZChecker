@@ -13,13 +13,14 @@ AddOptionMenu "OptionsMenu" {
 }
 
 OptionMenu "mcm_ZChecker_InfoPanelControl" {
-    Title "Information panel control"
+    Title "Information panels control"
     StaticText " "
 
 	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
 	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
+	Option "Font", "mcm_zchecker_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
 }
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
@@ -28,6 +29,10 @@ OptionValue "mcm_ZCheckerOption_LogLevels" {
 	3, "3. Debug mode"
 }
 
+OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {
+	0, "Default smallfont"
+	1, "Mono"
+}
 
 
 // Submenu options:
