@@ -789,7 +789,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
-		zcInfoPanelFont = Font.FindFont( "smallfont" );
+		zcInfoPanelFont = Font.FindFont( "smallfont" ); // May use just a "= smallfont;" (defined in the base ZScript file).
 
 		IncludeConsoleClasses();
 		InitAllActorNames();

@@ -588,13 +588,24 @@ struct TerrainDef native {
 
 	Sector tempInfoSec;
 	String tempFlagsStr;
+	uint secFlagsAmount;
 
-	protected void addSecFlag( uint flag, String flagname, String setcolor = GREEN ) {
-		tempFlagsStr = tempFlagsStr .. ( ( tempInfoSec.flags & flag )? setcolor : BLACK ) .. flagname .. " ";
+	protected void addSecFlag( uint flag, String flagname ) {
+		String flagcolor = ( ( ( secFlagsAmount / 5 ) & 1 )
+						? ( ( tempInfoSec.flags & flag )? DARKGREEN : BLACK )
+						: ( ( tempInfoSec.flags & flag )? GREEN : DARKGRAY ) );
+
+		tempFlagsStr = tempFlagsStr .. flagcolor .. flagname .. " ";
+		secFlagsAmount++;
 	}
 
-	protected void addSecFlag2( uint flag2, String flagname, String setcolor = GREEN ) {
-		tempFlagsStr = tempFlagsStr .. ( ( tempInfoSec.moreflags & flag2 )? setcolor : BLACK ) .. flagname .. " ";
+	protected void addSecFlag2( uint flag2, String flagname ) {
+		String flagcolor = ( ( ( secFlagsAmount / 5 ) & 1 )
+						? ( ( tempInfoSec.moreflags & flag2 )? DARKGREEN : BLACK )
+						: ( ( tempInfoSec.moreflags & flag2 )? GREEN : DARKGRAY ) );
+
+		tempFlagsStr = tempFlagsStr .. flagcolor .. flagname .. " ";
+		secFlagsAmount++;
 	}
 
 	protected String getTextureInfo( int texpos ) {
@@ -605,8 +616,8 @@ struct TerrainDef native {
 		double texangle = tempInfoSec.GetAngle( texpos );
 
 		//if ( texofs.Length() != 0.0 || texscale.x != 1.0 || texscale.y != 1.0 || texangle != 0.0 )
-			outstr.AppendFormat( "\n    mul (" .. OLIVE .. "%.2f,%.2f" .. DARKGRAY .. ") +(" .. PURPLE .. "%.2f,%.2f" .. DARKGRAY .. ");" ..
-								"\n    angle " .. DARKBROWN .. "%.2f" .. DARKGRAY, texscale.x, texscale.y, texofs.x, texofs.y, texangle );
+			outstr.AppendFormat( BLACK .. "\n    scale" .. DARKGRAY .. "(" .. OLIVE .. "%.2f,%.2f" .. DARKGRAY .. ") " .. BLACK .. "+" .. DARKGRAY .. "(" .. PURPLE .. "%.2f,%.2f" .. DARKGRAY .. ");" ..
+								 BLACK .. "\n    angle " .. DARKBROWN .. "%.2f" .. DARKGRAY, texscale.x, texscale.y, texofs.x, texofs.y, texangle );
 
 		return outstr;
 	}
@@ -665,6 +676,7 @@ SECF_DMGTERRAINFX	= 128,	// spawns terrain splash when inflicting damage
 SECF_ENDGODMODE		= 256,	// getting damaged by this sector ends god mode
 SECF_ENDLEVEL		= 512,	// ends level when health goes below 10
 SECF_HAZARD			= 1024,	// Change to Strife's delayed damage handling.
+//SECF_NOATTACK		= 2048  // [New engine versions flag].
 
 SECF_WASSECRET		= 1 << 30,	// a secret that was discovered
 SECF_SECRET			= 1 << 31,	// a secret sector
@@ -681,32 +693,56 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 */
 
 		tempFlagsStr = "";
+		secFlagsAmount = 0;
 
 		switch ( printSecFlagsMode ) {
 			case 1: // Short flag names.
-				addSecFlag( Sector.SECF_SILENT, "quiet" );
-				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "xfaldmg" );
-				addSecFlag( Sector.SECF_FLOORDROP, "liftdrp" );
-				addSecFlag( Sector.SECF_NORESPAWN, "xrespw" );
-				addSecFlag( Sector.SECF_FRICTION, "frict" );
-				addSecFlag( Sector.SECF_PUSH, "push" );
-				addSecFlag( Sector.SECF_SILENTMOVE, "mvquiet" );
-				addSecFlag( Sector.SECF_DMGTERRAINFX, "terrafx" );
-				addSecFlag( Sector.SECF_ENDGODMODE, "xiddqd" );
-				addSecFlag( Sector.SECF_ENDLEVEL, "endlvl" );
-				addSecFlag( Sector.SECF_HAZARD, "StrfHzr" );
-				addSecFlag( Sector.SECF_WASSECRET, "wassecr" );
-				addSecFlag( Sector.SECF_SECRET, "newsecr" );
-				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fakeflr" );
-				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "clipfake" );
-				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "xfakelit" );
-				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "nofake" );
-				addSecFlag2( Sector.SECMF_UNDERWATER, "water", SAPPHIRE );
-				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "watrforc", CYAN );
-				addSecFlag2( Sector.SECMF_DRAWN, "drawn" );
-				addSecFlag2( Sector.SECMF_HIDDEN, "hidden" );
+				addSecFlag( Sector.SECF_SILENT, "qit" );
+				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "-fld" );
+				addSecFlag( Sector.SECF_FLOORDROP, "lftd" );
+				addSecFlag( Sector.SECF_NORESPAWN, "-rspw" );
+				addSecFlag( Sector.SECF_FRICTION, "fric" );
+				addSecFlag( Sector.SECF_PUSH, "p" );
+				addSecFlag( Sector.SECF_SILENTMOVE, "mvqt" );
+				addSecFlag( Sector.SECF_DMGTERRAINFX, "tfx" );
+				addSecFlag( Sector.SECF_ENDGODMODE, "-god" );
+				addSecFlag( Sector.SECF_ENDLEVEL, "endl" );
+				addSecFlag( Sector.SECF_HAZARD, "stfhz" );
+				addSecFlag( Sector.SECF_WASSECRET, "was9" );
+				addSecFlag( Sector.SECF_SECRET, "is9" );
+				addSecFlag( 2048, "xmna" ); // Not found in GZDoom 3.3.0.
+				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fflr" );
+				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "fclp" );
+				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "-flit" );
+				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "-fhs" );
+				addSecFlag2( Sector.SECMF_UNDERWATER, "wtr" );
+				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "wtr2" );
+				addSecFlag2( Sector.SECMF_DRAWN, "vis" );
+				addSecFlag2( Sector.SECMF_HIDDEN, "hid" );
 				break;
 			case 2: // Long flag names.
+				addSecFlag( Sector.SECF_SILENT, "quiet" );
+				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "-falldmg" );
+				addSecFlag( Sector.SECF_FLOORDROP, "liftdrp" );
+				addSecFlag( Sector.SECF_NORESPAWN, "-respawn" );
+				addSecFlag( Sector.SECF_FRICTION, "frict" );
+				addSecFlag( Sector.SECF_PUSH, "push" );
+				addSecFlag( Sector.SECF_SILENTMOVE, "movquiet" );
+				addSecFlag( Sector.SECF_DMGTERRAINFX, "terrainfx" );
+				addSecFlag( Sector.SECF_ENDGODMODE, "-iddqd" );
+				addSecFlag( Sector.SECF_ENDLEVEL, "endlvl" );
+				addSecFlag( Sector.SECF_HAZARD, "strifehzrd" );
+				addSecFlag( Sector.SECF_WASSECRET, "wassecr" );
+				addSecFlag( Sector.SECF_SECRET, "newsecr" );
+				addSecFlag( 2048, "-monatk" ); // Not found in GZDoom 3.3.0.
+				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fakeflr" );
+				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "clipfakeplns" );
+				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "-fakelit" );
+				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "-fakehghtsec" );
+				addSecFlag2( Sector.SECMF_UNDERWATER, "water" );
+				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "waterforc" );
+				addSecFlag2( Sector.SECMF_DRAWN, "drawn" );
+				addSecFlag2( Sector.SECMF_HIDDEN, "hidden" );
 				break;
 			case 0:
 			default:
@@ -714,7 +750,7 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 		}
 
 		if ( tempFlagsStr != "" ) {
-			BrokenLines lines = flagsfont.BreakLines( tempFlagsStr, flagsfont.GetCharWidth( 0x61 ) * 30 );
+			BrokenLines lines = flagsfont.BreakLines( tempFlagsStr, flagsfont.GetCharWidth( 0x61 ) * 32 );
 
 			for ( int i = 0; i < lines.Count(); i++ )
 				info = info .. "  " .. lines.StringAt( i ) .. "\n";
