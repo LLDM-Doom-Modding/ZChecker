@@ -7,7 +7,9 @@ A G-/Q-/LZDoom universal debugger and actors card-index assistant written on ZSc
 
 Idea, code, realisation: JSO_x a.k.a. Morthimer McMare.
 
-Maps: StormCatcher.77.
+Map: StormCatcher.77.
+
+Alternative font: Dezette.
 
 Bug reporting: Il Str.
 
