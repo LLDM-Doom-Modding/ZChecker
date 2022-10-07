@@ -512,6 +512,8 @@ class ZCPanelsStorage {
 				curPanels.Push( defaultPanels[ i ] );
 		}
 
+		panelsstr = "";
+
 		for ( int i = 0; i < curPanels.Size(); i++ ) {
 			ZCInfoPanelNode panelnode = curPanels.nodes[ i ];
 
@@ -519,6 +521,8 @@ class ZCPanelsStorage {
 
 			if ( !panelnode.panelCVar )
 				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::UpdatePanels(). Panel \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
+
+			panelsstr = panelsstr .. panelnode.panel.GetClassName() .. ",";
 		}
 
 		InitSetPanelsorderCVar();

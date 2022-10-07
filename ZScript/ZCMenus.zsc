@@ -30,16 +30,17 @@ class ZCOptionMenuPanels: OptionMenu {
 	}
 
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
-        desc.mItems.Clear();
-
 		desc.mItems.Push( AddStaticText() );
 		desc.mItems.Push( AddStaticText( GOLD .. "Information panels settings:" ) );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ";" ) );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "', '" .. GRAY .. "-" .. DARKGRAY .. "', " .. GRAY .. "<KP+>" .. DARKGRAY .. " or " .. GRAY .. "<KP->" .. DARKGRAY .. "." ) );
+		desc.mItems.Push( AddStaticText( DARKGRAY .. "Note: order will be saved in several play tics." ) );
 		desc.mItems.Push( AddStaticText() );
 	}
 
 	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
+		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset information panels order", self ) );
 		desc.mItems.Push( AddStaticText() );
 		desc.mItems.Push( AddStaticText( GOLD .. "General settings:" ) );
 		desc.mItems.Push( new( "OptionMenuItemSubmenu" ).Init( "Information panel settings", "mcm_ZChecker_InfoPanelControl" ) );
@@ -88,7 +89,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		return 1; // Items offset (+1, option only).
 	}
 
-	void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
+	protected void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
 		int addedItemsAmount = 0;
 
 		if ( handler.panels.panelsorderChanged )
@@ -98,15 +99,14 @@ class ZCOptionMenuPanels: OptionMenu {
 			ZCBaseInfoPanelPart newpart = handler.panels.curPanels.nodes[ i ].panel;
 
 			addedItemsAmount += InsertMenuPanelPart( newpart, desc );
-			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::GetPanelOptionsOrder(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. newpart.GetClassName() .. "\"." );
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::ReinitMenuPanels(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. newpart.GetClassName() .. "\"." );
 		}
 
 		lastPanelItemPos += addedItemsAmount;
 	}
 
-	override void Init( Menu parent, OptionMenuDescriptor desc ) {
-		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
-
+	void ReinitMenuItems( OptionMenuDescriptor desc ) {
+        desc.mItems.Clear();
 		ReinitMenuHeaderPart( desc );
 
 		firstPanelItemPos = lastPanelItemPos = desc.mItems.Size();
@@ -119,6 +119,12 @@ class ZCOptionMenuPanels: OptionMenu {
 		}
 
 		ReinitMenuLastPart( desc );
+	}
+
+	override void Init( Menu parent, OptionMenuDescriptor desc ) {
+		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
+
+		ReinitMenuItems( desc );
 
 		Super.Init( parent, desc );
 	} // of override void Init( Menu parent, OptionMenuDescriptor desc ) {}
@@ -289,4 +295,40 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 		return true;
 	}*/
-}
+
+} // of class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {}
+
+class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
+	ZCOptionMenuPanels zcparentmenu;
+
+	ZCOptionMenuItemRecreateInfopanels Init( String label, ZCOptionMenuPanels parentmenu ) {
+		Super.Init( label, 'None' );
+		zcparentmenu = parentmenu;
+
+		return self;
+	}
+
+	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
+		drawLabel( indent, y, selected? OptionMenuSettings.mFontColorSelection : OptionMenuSettings.mFontColor );
+
+		return indent;
+	}
+
+	override bool Activate() {
+		if ( zcparentmenu.handler && zcparentmenu.handler.panels ) {
+			ZCPanelsStorage panels = zcparentmenu.handler.panels;
+
+			panels.panelsstr = "";
+			panels.UpdatePanels( false );
+			zcparentmenu.ReinitMenuItems( zcparentmenu.mDesc );
+
+			zcparentmenu.mDesc.mSelectedItem = zcparentmenu.lastPanelItemPos + 1;
+
+			Menu.MenuSound( "menu/activate" );
+
+			ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The information panels order has been reset." );
+		}
+
+		return true;
+	}
+} // of class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {}
