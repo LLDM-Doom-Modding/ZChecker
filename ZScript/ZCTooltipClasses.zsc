@@ -20,7 +20,7 @@ class ZCTooltipSummon: ZCTooltipClass {
 			"  \"##zcsummon sta##@@*@@##ff##\" will print a list with elements \"Staff\" and \"Staff~~Pu~~ff\";\n" ..
 			"  \"##zcsummon sta##@@-@@##ff##\" will summon a \"StaffPuff\";\n" ..
 			"  \"##zcsummon $2 15##\" will summon fifteen actors of class in the second panel;\n" ..
-			"  \"##zctake 1 ##@@*@@##card##\" will show a list of all Inventory classes ending with a \"card\" ~~(while trying to give item to the actor in the first panel)~~;\n" ..
+			"  \"##zcgive 1 ##@@*@@##card##\" will show a list of all Inventory classes ending with a \"card\" ~~(while trying to give item to the actor in the first panel)~~;\n" ..
 			"  \"##zctake 1 z##@@-@@##man##\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
 		);
 	}
