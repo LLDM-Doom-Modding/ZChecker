@@ -372,6 +372,12 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 
+		bool curstateExtraInfo = CVar.GetCVar( "mcm_zchecker_infovar_statecurinfo", players[ consoleplayer ] ).GetBool();
+
+		if ( !curstateExtraInfo )
+			return outStr;
+
+
 		if ( st.Tics < 0 ) {
 			outStr = outStr .. DARKGREEN .. "===== static =====";
 		} else {

@@ -72,6 +72,7 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 	StaticText " "
 
 	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
+	Option "Current state extra", "mcm_zchecker_infovar_statecurinfo", "YesNo"
 	StaticText " "
 	Option "Log to console", "mcm_zchecker_infovar_stateslogging", "YesNo"
 }
