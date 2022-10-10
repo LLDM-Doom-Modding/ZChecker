@@ -576,7 +576,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 							int paramvalue; 
 							int paramnamelen = paramdiv[ 0 ].Length();
 
-							if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue ) ) {
+							if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue, true ) ) {
 								if ( paramdiv[ 0 ] == "ang" || paramdiv[ 0 ] == "angle" ) {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = false;

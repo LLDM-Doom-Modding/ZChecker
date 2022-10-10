@@ -118,9 +118,6 @@ class ZCConsoleSeparator: ZCConsoleClass {
 
 
 class ZCConsoleCommand: ZCConsoleClass abstract play {
-	const NOT_INT = 0x7FFFFFFF;
-	const NOT_INT_REPLACER = 0x7FFFFFFE;
-
 	enum EClassnameParseStatus {
 		CPS_Default = 0,
 		CPS_Variable,
@@ -133,35 +130,29 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInfo ccmd;
 
 	protected clearscope bool checkTesteePlace( uint place ) {
-		return ( place >= 0 && place < MaxTestee );
-	}
-
-	// Returns converted int or "NOT_INT" if string isn't an integer:
-	protected clearscope int str2int( in String str ) {
-		int outConverted = NOT_INT;
-
-		if ( str && str.Length() ) {
-			int converted = str.ToInt();
-			int firstChar = str.CharCodeAt( 0 );
-
-			if ( ( firstChar >= 0x31 && firstChar <= 0x39 && converted != 0 ) || ( firstChar == 0x30 && str.Length() == 1 ) )
-				outConverted = ( converted != NOT_INT )? converted : NOT_INT_REPLACER;
-		}
-
-		return outConverted;
+		return ( place < MaxTestee ); // Unsigned int, of course, cannot obtain values less than 0.
 	}
 
 	// Returns "true" is string is an integer; "converted" is a pointer:
-	protected clearscope bool str2int_Ptr( in String str, out int converted ) {
+	protected clearscope bool str2int_Ptr( in String str, out int converted, bool usesign = false ) {
 		bool isInteger = false;
 
 		if ( str && str.Length() ) {
-			int tempConverted = str.ToInt();
+			bool isSigned = false;
+
 			int firstChar = str.CharCodeAt( 0 );
 
+			if ( firstChar == 0x2D /* '-' */ && usesign ) {
+				isSigned = true;
+				str = str.Mid( 1, str.Length() - 1 );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			int tempConverted = str.ToInt();
+
 			if ( ( firstChar >= 0x31 && firstChar <= 0x39 && converted != 0 ) || ( firstChar == 0x30 && str.Length() == 1 ) ) {
-				isInteger = true;
-				converted = tempConverted;
+				isInteger = ( usesign || !isSigned );
+				converted = ( isSigned? -tempConverted : tempConverted );
 			}
 		}
 
