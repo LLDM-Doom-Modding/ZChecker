@@ -11,7 +11,7 @@ class ZCheckerCCMDInfo play {
 		e.Name.Split( args, ZCHECKER_AGRS_SEPARATOR, TOK_SKIPEMPTY );
 
 		// If debug, display maximal amount of arguments (sometimes it saves
-		//about ten minutes of the bug-hunt...):
+		//about ten minutes of the bughunting...):
 		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
 			int delimetersAmount = 0;
 

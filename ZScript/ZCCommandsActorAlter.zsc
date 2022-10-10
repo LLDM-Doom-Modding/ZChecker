@@ -451,37 +451,181 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 } // of class ZCActorActionCommand: ZCConsoleCommand {}
 
+
+struct ZCSummonExtraParameters play {
+	double faceangle;
+	bool isAngled;
+	bool isFaceangleRelative;
+	double zofs, forwardofs;
+
+	const SPECARGS_MAX = 5;
+
+	int tid;
+	int special;
+	int specargs[ SPECARGS_MAX ];
+
+	bool isFriend;
+	bool isFoe;
+
+	void Clear( void ) {
+		isAngled = false;
+		isFaceangleRelative = false;
+		faceangle = 0.0;
+		zofs = forwardofs = 0.0;
+
+		tid = special = 0;
+
+		for ( int i = 0; i < SPECARGS_MAX; i++ )
+			specargs[ i ] = 0;
+
+		isFriend = isFoe = false;
+	}
+
+	private void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
+		double tmpfloat = clamp( value, minlimit, maxlimit );
+
+		if ( value != tmpfloat ) {
+			ZCGlobal.Log( LL_Main, valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. Clamped to " .. tmpfloat );
+			value = tmpfloat;
+		}
+	}
+
+	private void clampint( out int value, String valuedesc, int minlimit, int maxlimit ) {
+		int tmpint = clamp( value, minlimit, maxlimit );
+
+		if ( value != tmpint ) {
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpint );
+			value = tmpint;
+		}
+	}
+
+	void AdjustValues( void ) {
+		faceangle %= 360.0;
+
+		clampfloat( zofs, "Z offset", -32767, 32768 );
+		clampfloat( forwardofs, "Forward offset", -32767, 32768 );
+
+		clampint( special, "Actor special", 0, 255 );
+
+		for ( int i = 0; i < SPECARGS_MAX; i++ )
+			clampint( specargs[ i ], "Arg[ " .. i .. " ]", 0, 255 );
+	}
+};
+
 class ZCSummonCommand: ZCConsoleCommand {
 	String summonee;
 	int summoneeAmount;
+	ZCSummonExtraParameters params;
 
 	override String GetCommand() {
 		return "zc_summon";
 	}
 
 	override String GetHelpNameString() {
-		return "zcsummon <class> [<amount=1>]";
+		return "zcsummon <class> [<amount=1>] [<comma-separated extras: [rel]angle,tid,spec,arg0-4,zofs,fwdofs (...:<value>); friend|foe>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Summon <amount> of <class>es on position by rules of build-in eponymous command.";
+		return "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>.";
 	}
 
 	override bool HandleArguments() {
 		summoneeAmount = 1;
 		summonee = "";
+		params.Clear();
+
 		bool outValue = false;
+		int argsSize = ccmd.args.Size();
+		String paramstr = "";
 
-		if ( ccmd.args.Size() == 2 ) {
-			if ( str2int_Ptr( ccmd.args[ ccmd.args.Size() - 1 ], +summoneeAmount ) )
-				outValue = true;
-		} else if ( ccmd.args.Size() == 1 ) {
+		if ( argsSize > 0 ) {
 			summonee = ccmd.args[ 0 ];
-			outValue = true;
-		}
 
-		if ( outValue )
+			if ( argsSize > 1 ) {
+				if ( str2int_Ptr( ccmd.args[ 1 ], +summoneeAmount ) ) {
+					if ( argsSize == 3 )
+						paramstr = ccmd.args[ 2 ];
+				} else {
+					paramstr = ccmd.args[ 1 ];
+				}
+			}
+
+			outValue = true;
+
+			if ( paramstr != "" ) {
+				Array<String> paramlist;
+				paramstr.ToLower();
+				paramstr.Split( paramlist, ",", TOK_SKIPEMPTY );
+
+				for ( int i = 0; i < paramlist.Size(); i++ ) {
+					String curparam = paramlist[ i ];
+					int colonIndex = -1;
+
+					if ( curparam == "f" || curparam == "fr" || curparam == "friend" || curparam == "friends" ) {
+						params.isFriend = true;
+						params.isFoe = false;
+					} else if ( curparam == "foe" || curparam == "enemy" ) {
+						params.isFriend = false;
+						params.isFoe = true;
+					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) ) {
+						if ( colonIndex < curparam.Length() ) {
+							String paramdiv[ 2 ];
+							paramdiv[ 0 ] = curparam.Left( colonIndex );
+							paramdiv[ 1 ] = curparam.Mid( colonIndex + 1, curparam.Length() - colonIndex - 1 );
+
+							int paramvalue; 
+							int paramnamelen = paramdiv[ 0 ].Length();
+
+							if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue ) ) {
+								if ( paramdiv[ 0 ] == "ang" || paramdiv[ 0 ] == "angle" ) {
+									params.faceangle = paramvalue;
+									params.isFaceangleRelative = false;
+									params.isAngled = true;
+								} else if ( paramdiv[ 0 ] == "relang" || paramdiv[ 0 ] == "relangle" || paramdiv[ 0 ] == "relativeang" || paramdiv[ 0 ] == "relativeangle" || paramdiv[ 0 ] == "rang" || paramdiv[ 0 ] == "rangle" ) {
+									params.faceangle = paramvalue;
+									params.isFaceangleRelative = true;
+									params.isAngled = true;
+								} else if ( paramdiv[ 0 ] == "tid" ) {
+									params.tid = paramvalue;
+								} else if ( paramdiv[ 0 ] == "spec" || paramdiv[ 0 ] == "special" ) {
+									params.special = paramvalue;
+								} else if ( paramdiv[ 0 ] == "z" || paramdiv[ 0 ] == "zofs" || paramdiv[ 0 ] == "zoffset" ) {
+									params.zofs = paramvalue;
+								} else if ( paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
+									params.forwardofs = paramvalue;
+								} else if ( ( paramnamelen == 2 && paramdiv[ 0 ].Left( 1 ) == "a" ) || ( paramnamelen == 4 && paramdiv[ 0 ].Left( 3 ) == "arg" ) ) {
+									int argnum = paramdiv[ 0 ].Mid( paramnamelen - 1, 1 ).CharCodeAt( 1 );
+
+									if ( argnum >= 0 && argnum <= 4 ) {
+										params.specargs[ argnum ] = paramvalue;
+									} else {
+										ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
+									}
+								} else {
+									ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown parameter \"" .. curparam .. "\"." );
+								}
+							} else {
+								ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Value \"" .. paramdiv[ 1 ] .. "\" for parameter \"" .. paramdiv[ 0 ] .. "\" isn't a digit." );
+							} // of else of if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue ) ) {}
+
+						} else {
+							ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "No value " .. LLCOLOR_MAIN .. "for parameter \"" .. curparam .. "\"." );
+						} // of if ( colonIndex < curparam.Length() ) {}
+
+					} else {
+						ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown flag \"" .. curparam .. "\"." );
+					}
+
+				} // of for ( int i = 0; i < paramlist.Size(); i++ ) {}
+			} // of if ( paramstr != "" ) {}
+
+		} // of if ( argsSize > 0 ) {}
+
+
+		if ( outValue ) {
 			summonee = ParseSpecialActorName( ccmd.args[ 0 ] );
+			params.AdjustValues();
+		}
 
 		return outValue;
 	}
@@ -502,10 +646,28 @@ class ZCSummonCommand: ZCConsoleCommand {
 						player.SpawnPlayerMissile( summoneeClass );
 				} else {
 					readonly<Actor> summoneeDef = GetDefaultByType( summoneeClass );
-					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius, player.angle, 8.0 );
+					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius + params.forwardofs, player.angle, 8.0 + params.zofs );
 
-					for ( int i = 0; i < summoneeAmount; i++ )
-						Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE );
+					for ( int i = 0; i < summoneeAmount; i++ ) {
+						Actor summoned = Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE );
+
+						if ( params.isAngled )
+							summoned.angle = ( params.isFaceangleRelative? summoned.AngleTo( player ) : 0.0 ) + params.faceangle;
+
+						if ( params.isFriend )
+							summoned.bFRIENDLY = true;
+						else if ( params.isFoe )
+							summoned.bFRIENDLY = false;
+
+						if ( params.tid )
+							summoned.ChangeTid( params.tid );
+						if ( params.special )
+							summoned.special = params.special;
+
+						for ( int i = 0; i < params.SPECARGS_MAX; i++ )
+							if ( params.specargs[ i ] != 0 )
+								summoned.args[ i ] = params.specargs[ i ];
+					}
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
 				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. " of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );

@@ -976,7 +976,7 @@ class ZCheckerHandler: StaticEventHandler {
 		// Polling ZChecker CCMD handlers by stored netevent name:
 		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
 			if ( !( zcConsoleHandleClasses[ i ] is 'ZCConsoleCommand' ) )
-				continue;
+				continue; // Skipping tooltips.
 
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 
