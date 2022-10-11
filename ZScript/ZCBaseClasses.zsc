@@ -377,7 +377,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 									candidateFound = false;
 
 							// Handling a "word-" case:
-							} else if ( curname.Length() < curpartindex + partindices[ partsPreSize ] - 1 ) {
+							} else if ( curname.Length() < partindices[ partsPreSize ] ) {
 								//console.printf( "\"%20s\": " .. TEXTCOLOR_BRICK .. "not found, len %i (<) partindex %i.", curname, curname.Length(), partindices[ partsPreSize ] );
 								candidateFound = false;
 							}
