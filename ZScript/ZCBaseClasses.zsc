@@ -150,7 +150,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 			int tempConverted = str.ToInt();
 
-			if ( ( firstChar >= 0x31 && firstChar <= 0x39 && converted != 0 ) || ( firstChar == 0x30 && str.Length() == 1 ) ) {
+			if ( ( firstChar >= 0x31 && firstChar <= 0x39 ) || ( firstChar == 0x30 && str.Length() == 1 ) ) {
 				isInteger = ( usesign || !isSigned );
 				converted = ( isSigned? -tempConverted : tempConverted );
 			}
@@ -243,6 +243,24 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			classnameParseStatus = CPS_Variable;
 			classname = "";
 		}
+
+
+		int preventiveChoice = -1;
+		int preventiveChoiceStrStart;
+
+		if ( ( preventiveChoiceStrStart = classname.IndexOf( ":" ) ) == -1 )
+			preventiveChoiceStrStart = classname.IndexOf( "," );
+
+		if ( preventiveChoiceStrStart != -1 ) {
+			String preventiveChoiceStr = classname.Mid( preventiveChoiceStrStart + 1, classname.Length() - preventiveChoiceStrStart - 1 );
+
+			if ( !str2int_Ptr( preventiveChoiceStr, preventiveChoice ) ) {
+				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "\"" .. preventiveChoiceStr .. "\" isn't a numerical selection." );
+				preventiveChoice = -1;
+			}
+
+			classname.Truncate( preventiveChoiceStrStart );
+		} // of if ( preventiveChoiceStrStart != -1 ) {}
 
 
 		if ( isSpecial ) {
@@ -393,30 +411,45 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 				} // of for ( int i = firstSearchNameCellIndex; i < lastSearchNameCellIndex; i++ ) {}
 
-				if ( nameCandidates.Size() == 1 ) {
+
+				int nameCandidatesSize = nameCandidates.Size();
+
+				String filtertip = "";
+				if ( parentfilter != "Actor" )
+					filtertip = TEXTCOLOR_DARKGRAY .. " with filter " .. TEXTCOLOR_WHITE .. parentfilter.GetClassName() .. TEXTCOLOR_DARKGRAY .. "" .. LLCOLOR_MAIN;
+
+				if ( nameCandidatesSize == 1 ) {
 					classnameParseStatus = CPS_RegexFound;
 					classname = nameCandidates[ 0 ];
 					ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
-				} else {
+				} else if ( nameCandidatesSize == 0 ) {
 					classname = "";
 					classnameParseStatus = CPS_RegexFailed;
+					ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
+				} else {
+					if ( preventiveChoice >= nameCandidatesSize ) {
+						ZCGlobal.Log( LL_Main, "Selected index " .. TEXTCOLOR_TEAL .. preventiveChoice .. LLCOLOR_MAIN .. " is " .. TEXTCOLOR_YELLOW .. "out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
+						preventiveChoice = -1;
+					}
 
-					String filtertip = "";
-
-					if ( parentfilter != "Actor" )
-						filtertip = TEXTCOLOR_DARKGRAY .. " with filter " .. TEXTCOLOR_WHITE .. parentfilter.GetClassName() .. TEXTCOLOR_DARKGRAY .. "" .. LLCOLOR_MAIN;
-
-					if ( nameCandidates.Size() == 0 ) {
-						ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
+					if ( preventiveChoice != -1 ) {
+						classname = nameCandidates[ preventiveChoice ];
+						classnameParseStatus = CPS_RegexFound;
+						ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
 					} else {
+						classname = "";
+						classnameParseStatus = CPS_RegexFailed;
+
 						ZCGlobal.Log( LL_Main, "Found more than one suitable actor name candidate" .. filtertip .. ":" );
 
-						for ( int i = 0; i < nameCandidates.Size(); i++ )
+						for ( int i = 0; i < nameCandidatesSize; i++ )
 							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. i .. ". \"" .. TEXTCOLOR_WHITE .. nameCandidates[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
 					}
 				}
 			} // of if ( parts.Size() > 1 ) {}
 
+		} else if ( preventiveChoice != -1 ) {
+			ZCGlobal.Log( LL_Main, "Ignoring numerical selection " .. preventiveChoice );
 		}
 
 		return classname;
