@@ -466,6 +466,7 @@ struct ZCSummonExtraParameters play {
 
 	bool isFriend;
 	bool isFoe;
+	bool notProjectileRules;
 
 	void Clear( void ) {
 		isAngled = false;
@@ -478,7 +479,7 @@ struct ZCSummonExtraParameters play {
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			specargs[ i ] = 0;
 
-		isFriend = isFoe = false;
+		isFriend = isFoe = notProjectileRules = false;
 	}
 
 	private void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
@@ -522,11 +523,11 @@ class ZCSummonCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsummon <class> [<amount=1>] [<comma-separated extras: [rel]angle,tid,spec,arg0-4,zofs,fwdofs (...:<value>); friend|foe>]";
+		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs (...:<value>); notproj,friend|foe>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>.";
+		return "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>.";
 	}
 
 	override bool HandleArguments() {
@@ -561,12 +562,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 					String curparam = paramlist[ i ];
 					int colonIndex = -1;
 
-					if ( curparam == "f" || curparam == "fr" || curparam == "friend" || curparam == "friends" ) {
+					if ( curparam == "f" || curparam == "fr" || curparam == "friend" || curparam == "friendly" || curparam == "friends" ) {
 						params.isFriend = true;
 						params.isFoe = false;
 					} else if ( curparam == "foe" || curparam == "enemy" ) {
 						params.isFriend = false;
 						params.isFoe = true;
+					} else if ( curparam == "notproj" || curparam == "notprojectile" ) {
+						params.notProjectileRules = true;
 					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) ) {
 						if ( colonIndex < curparam.Length() ) {
 							String paramdiv[ 2 ];
@@ -594,13 +597,12 @@ class ZCSummonCommand: ZCConsoleCommand {
 								} else if ( paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
 									params.forwardofs = paramvalue;
 								} else if ( ( paramnamelen == 2 && paramdiv[ 0 ].Left( 1 ) == "a" ) || ( paramnamelen == 4 && paramdiv[ 0 ].Left( 3 ) == "arg" ) ) {
-									int argnum = paramdiv[ 0 ].Mid( paramnamelen - 1, 1 ).CharCodeAt( 1 );
+									int argnum = paramdiv[ 0 ].Mid( paramnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
 
-									if ( argnum >= 0 && argnum <= 4 ) {
+									if ( argnum >= 0 && argnum <= 4 )
 										params.specargs[ argnum ] = paramvalue;
-									} else {
+									else
 										ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
-									}
 								} else {
 									ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown parameter \"" .. curparam .. "\"." );
 								}
@@ -630,6 +632,28 @@ class ZCSummonCommand: ZCConsoleCommand {
 		return outValue;
 	}
 
+	protected virtual void PostActorSummon( Actor summoned, Actor splayer ) {
+		if ( !summoned )
+			return;
+
+		if ( params.isAngled )
+			summoned.angle = ( params.isFaceangleRelative? summoned.AngleTo( splayer ) : 0.0 ) + params.faceangle;
+
+		if ( params.isFriend )
+			summoned.bFRIENDLY = true;
+		else if ( params.isFoe )
+			summoned.bFRIENDLY = false;
+
+		if ( params.tid )
+			summoned.ChangeTid( params.tid );
+		if ( params.special )
+			summoned.special = params.special;
+
+		for ( int i = 0; i < params.SPECARGS_MAX; i++ )
+			if ( params.specargs[ i ] != 0 )
+				summoned.args[ i ] = params.specargs[ i ];
+	}
+
 	override void DoCommand( void ) {
 		if ( classnameParseStatus == CPS_RegexFailed )
 			return;
@@ -641,33 +665,24 @@ class ZCSummonCommand: ZCConsoleCommand {
 			Actor player = players[ ccmd.e.Player ].mo;
 
 			if ( player ) {
-				if ( GetDefaultByType( summoneeClass ).bMISSILE ) {
-					for ( int i = 0; i < summoneeAmount; i++ )
-						player.SpawnPlayerMissile( summoneeClass );
-				} else {
-					readonly<Actor> summoneeDef = GetDefaultByType( summoneeClass );
+				readonly<Actor> summoneeDef = GetDefaultByType( summoneeClass );
+
+				if ( !params.notProjectileRules && summoneeDef.bMISSILE ) {
 					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius + params.forwardofs, player.angle, 8.0 + params.zofs );
 
 					for ( int i = 0; i < summoneeAmount; i++ ) {
-						Actor summoned = Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE );
+						Actor summoned = player.SpawnPlayerMissile( summoneeClass );
 
-						if ( params.isAngled )
-							summoned.angle = ( params.isFaceangleRelative? summoned.AngleTo( player ) : 0.0 ) + params.faceangle;
+						vector2 dirFromPlayer = player.Vec2To( summoned );
+						summoned.SetOrigin( summoned.pos + ( dirFromPlayer / dirFromPlayer.Length() * params.forwardofs, params.zofs ), false );
 
-						if ( params.isFriend )
-							summoned.bFRIENDLY = true;
-						else if ( params.isFoe )
-							summoned.bFRIENDLY = false;
-
-						if ( params.tid )
-							summoned.ChangeTid( params.tid );
-						if ( params.special )
-							summoned.special = params.special;
-
-						for ( int i = 0; i < params.SPECARGS_MAX; i++ )
-							if ( params.specargs[ i ] != 0 )
-								summoned.args[ i ] = params.specargs[ i ];
+						PostActorSummon( summoned, player );
 					}
+				} else {
+					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius + params.forwardofs, player.angle, 8.0 + params.zofs );
+
+					for ( int i = 0; i < summoneeAmount; i++ )
+						PostActorSummon( Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE ), player );
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
 				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. " of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
