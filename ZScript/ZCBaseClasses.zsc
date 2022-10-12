@@ -129,6 +129,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	ZCheckerCCMDInfo ccmd;
 
+
 	protected clearscope bool checkTesteePlace( uint place ) {
 		return ( place < MaxTestee ); // Unsigned int, of course, cannot obtain values less than 0.
 	}
@@ -493,7 +494,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	// Returns aliases separated by a semicolon:
 	virtual String GetHelpNameString( void ) const {
-		return TEXTCOLOR_RED .. "GetHelpNameString() usage example: \"zcAlias <arg>;zcAlias2;zc-alias [<arg1>] [<arg2>]\"\c-";
+		return TEXTCOLOR_RED .. GetClassName() .. "::GetHelpNameString() usage example: \"zcAlias <arg>;zcAlias2;zc-alias [<arg1>] [<arg2>]\"\c-";
 	}
 
 	// Returns usage quick help (command description):
@@ -744,7 +745,7 @@ class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
 	}
 
 	play virtual String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
-		return GetClassName() .. "::GetInfo_play(). Not overrided.";
+		return RED .. GetClassName() .. "::GetInfo_play(). Not overrided.";
 	}
 
 	clearscope String InternalGetInfo_clearscope( int index ) {
@@ -752,6 +753,6 @@ class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
 	}
 
 	final override String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		return RED .. GetClassName() .. "GetInfo(). " .. FIRE .. "Override \"GetInfo_play()\" instead" .. RED .. ".";
+		return RED .. GetClassName() .. "::GetInfo(). " .. FIRE .. "Override \"GetInfo_play()\" instead" .. RED .. ".";
 	}
 }

@@ -486,7 +486,7 @@ struct ZCSummonExtraParameters play {
 		double tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {
-			ZCGlobal.Log( LL_Main, valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. Clamped to " .. tmpfloat );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpfloat );
 			value = tmpfloat;
 		}
 	}
@@ -503,8 +503,8 @@ struct ZCSummonExtraParameters play {
 	void AdjustValues( void ) {
 		faceangle %= 360.0;
 
-		clampfloat( zofs, "Z offset", -32767, 32768 );
-		clampfloat( forwardofs, "Forward offset", -32767, 32768 );
+		clampfloat( zofs, "Z offset", -32767.0, 32768.0 );
+		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
 
 		clampint( special, "Actor special", 0, 255 );
 
@@ -562,13 +562,13 @@ class ZCSummonCommand: ZCConsoleCommand {
 					String curparam = paramlist[ i ];
 					int colonIndex = -1;
 
-					if ( curparam == "f" || curparam == "fr" || curparam == "friend" || curparam == "friendly" || curparam == "friends" ) {
+					if ( curparam == "f" || curparam.Left( 2 ) == "fr" ) {
 						params.isFriend = true;
 						params.isFoe = false;
 					} else if ( curparam == "foe" || curparam == "enemy" ) {
 						params.isFriend = false;
 						params.isFoe = true;
-					} else if ( curparam == "notproj" || curparam == "notprojectile" ) {
+					} else if ( curparam == "notprj" || curparam.Left( 7 ) == "notproj" ) {
 						params.notProjectileRules = true;
 					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) ) {
 						if ( colonIndex < curparam.Length() ) {
@@ -594,7 +594,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.special = paramvalue;
 								} else if ( paramdiv[ 0 ] == "z" || paramdiv[ 0 ] == "zofs" || paramdiv[ 0 ] == "zoffset" ) {
 									params.zofs = paramvalue;
-								} else if ( paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
+								} else if ( paramdiv[ 0 ] == "fwd" || paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
 									params.forwardofs = paramvalue;
 								} else if ( ( paramnamelen == 2 && paramdiv[ 0 ].Left( 1 ) == "a" ) || ( paramnamelen == 4 && paramdiv[ 0 ].Left( 3 ) == "arg" ) ) {
 									int argnum = paramdiv[ 0 ].Mid( paramnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
