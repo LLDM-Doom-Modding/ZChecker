@@ -465,7 +465,7 @@ class ZCPanelsStorage {
 			Array<String> neworder;
 
 			if ( curloglevel >= LL_Debug )
-				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). panelsOrderCVar: \"" .. TEXTCOLOR_TAN .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
+				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). panelsOrderStr: \"" .. TEXTCOLOR_OLIVE .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
 
 			panelsOrderStr.Split( neworder, ",", TOK_SKIPEMPTY );
 
@@ -481,7 +481,7 @@ class ZCPanelsStorage {
 							curPanels.Push( defaultPanels[ j ] );
 
 							if ( curloglevel >= LL_Debug )
-								ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. neworder[ i ] .. "\"." );
+								ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). Added Panel class \"" .. TEXTCOLOR_DARKGREEN .. neworder[ i ] .. LLCOLOR_DEBUG .. "\"." );
 
 							break;
 						}

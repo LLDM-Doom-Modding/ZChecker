@@ -63,7 +63,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 			if ( paneloption ) {
 				curorder = curorder .. paneloption.panelclass.GetClassName() .. ",";
-				ZCGlobal.UILog( LL_Debug, GetClassName() .. "::SetPanelOptionsOrder(). Saved \"" .. TEXTCOLOR_GREEN .. paneloption.panelclass.GetClassName() .. "\c-\"." );
+				ZCGlobal.UILog( LL_Debug, GetClassName() .. "::SetPanelOptionsOrder(). Saved \"" .. TEXTCOLOR_OLIVE .. paneloption.panelclass.GetClassName() .. LLCOLOR_DEBUG .. "\"." );
 			}
 		}
 
@@ -99,7 +99,7 @@ class ZCOptionMenuPanels: OptionMenu {
 			ZCBaseInfoPanelPart newpart = handler.panels.curPanels.nodes[ i ].panel;
 
 			addedItemsAmount += InsertMenuPanelPart( newpart, desc );
-			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::ReinitMenuPanels(). " .. TEXTCOLOR_GREEN .. "Added Panel class \"" .. newpart.GetClassName() .. "\"." );
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::ReinitMenuPanels(). Added Panel class \"" .. TEXTCOLOR_ICE .. newpart.GetClassName() .. LLCOLOR_DEBUG .. "\"." );
 		}
 
 		lastPanelItemPos += addedItemsAmount;
