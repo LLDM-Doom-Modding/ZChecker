@@ -342,7 +342,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		AC_Error = 0,
 		AC_Revive,
 		AC_Kill,
-		AC_Destroy
+		AC_Destroy,
+		AC_XKill,
 	};
 
 	Actor thing;
@@ -358,7 +359,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Do special complex action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
+		return "Do special complex action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
 	}
 
 	override bool HandleArguments() {
@@ -375,6 +376,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				actoraction = AC_Revive;
 			else if ( what == "kill" || what == "k" || what == "die" )
 				actoraction = AC_Kill;
+			else if ( what == "xk" || what == "xkill" || what == "mdk" )
+				actoraction = AC_XKill;
 			else if ( what == "destroy" || what3chars == "rem" || what == "rm" || what3chars == "del" )
 				actoraction = AC_Destroy;
 			else
@@ -435,6 +438,14 @@ class ZCActorActionCommand: ZCConsoleCommand {
 					ZCGlobal.Log( LL_Detailed, "Cannot kill actor " .. thing.GetClassName() );
 				else
 					ZCGlobal.Log( LL_Detailed, "Killed actor " .. thing.GetClassName() );
+				break;
+			case AC_XKill:
+				thing.DamageMobj( thing, thing, 0x7FFFFFF, 'None', DMSS_FOILINVUL | DMSS_NOFACTOR | DMSS_NOPROTECT );
+
+				if ( thing.health > 0 )
+					ZCGlobal.Log( LL_Detailed, "Cannot extremely kill actor " .. thing.GetClassName() );
+				else
+					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thing.GetClassName() );
 				break;
 			case AC_Destroy:
 				if ( thing.player && thing.player.mo == thing ) {
