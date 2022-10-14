@@ -196,6 +196,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {
 		EPositionParseStatus newTesteePosStatus = PPS_Error;
+		newTestee = NULL;
 
 		String arg = ccmd.args[ argpos ];
 		arg.ToLower();
@@ -223,7 +224,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown placeholder \"" .. arg .. "\" in position " .. ( argpos + 1 ) .. TEXTCOLOR_DARKGRAY .. ". Possible values: " .. LLCOLOR_MAIN .. "1.." .. MaxTestee .. ", s[elf], cam[era], lt" .. TEXTCOLOR_DARKGRAY .. "|" .. LLCOLOR_MAIN .. "linetarget" .. TEXTCOLOR_DARKGRAY .. "." );
 		}
 
-		//console.printf( "newTestee " .. newTestee .. ", newTesteePosStatus " .. newTesteePosStatus .. ", arg " .. arg );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getPlaceTestee(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg \"" .. arg .. "\"." );
 
 		return newTesteePosStatus;
 	} // of protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {}
