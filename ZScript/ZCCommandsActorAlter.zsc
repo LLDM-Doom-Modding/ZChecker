@@ -49,7 +49,8 @@ class ZCSetStateCommandThinker: ZCSetFlagCommandThinker {
 // Real commands:
 
 class ZCSetStateCommand: ZCConsoleCommand {
-	int zcPos;
+	EPositionParseStatus testeeStatus;
+	Actor testee;
 	String newState;
 
 	override String GetCommand() {
@@ -65,15 +66,16 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	}
 
 	override bool HandleArguments() {
-		zcPos = -1;
+		testeeStatus = PPS_Error;
 		bool outValue = false;
 
 		if ( ccmd.args.Size() == 1 ) {
 			newState = ccmd.args[ 0 ];
 			outValue = true;
-		} else if ( ccmd.args.Size() == 2 && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) ) {
+			testee = LinetraceActor();
+		} else if ( ccmd.args.Size() == 2 && PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
 			newState = ccmd.args[ 1 ];
-			outValue = checkTesteePlace( --zcPos );
+			outValue = true;
 		}
 
 		return outValue;
@@ -81,9 +83,6 @@ class ZCSetStateCommand: ZCConsoleCommand {
 
 	// I have no idea how to convert String to StateLabel less crooked...
 	override void DoCommand( void ) {
-		// Linetarget if position is omitted or testee[pos] otherwise:
-		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
-
 		if ( testee ) {
 			ZCSetStateCommandThinker.Get().AddString( newState );
 			// Cannot get ACS asynchronous "SetResultValue()" here.
@@ -131,6 +130,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 			if ( flagSetType != -1 ) {
 				flagName = ccmd.args[ 0 ];
 				outValue = true;
+				testee = LinetraceActor();
 			} else if ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
 				flagName = ccmd.args[ 1 ];
 				outValue = true;
@@ -147,7 +147,6 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 
 	// I have no idea how to convert String to flag name less crooked, too...
 	override void DoCommand( void ) {
-		// Linetarget if position is omitted or testee[pos] otherwise:
 		if ( testee ) {
 			ZCSetFlagCommandThinker.Get().AddString( flagName );
 			// Cannot get ACS asynchronous "SetResultValue()" here.
@@ -162,7 +161,8 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 
 class ZCBuddhaCommand: ZCConsoleCommand {
 	// Actually a legacy shortcut, but it turned out to be very convenient.
-	int zcPos;
+	Actor testee;
+	EPositionParseStatus testeeStatus;
 	int flagSetType;
 
 	override String GetCommand() {
@@ -170,43 +170,44 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcbud <pos> [<value>]";
+		return "zcbud [<pos>] [<value>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Optimized shortcut for the \"zcsetflag <pos> buddha <value>\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it.";
+		return "Optimized shortcut for the \"zcsetflag [<pos>] buddha [<value>]\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it.";
 	}
 
 	override bool HandleArguments() {
-		zcPos = -1;
+		testeeStatus = PPS_Error;
 		flagSetType = -1;
-		int ccmdArgsSize = ccmd.args.Size();
-		bool outValue = ( ccmdArgsSize == 0 );
-
-		if ( !outValue && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) ) {
-			if ( ccmdArgsSize == 1 )
-				outValue = checkTesteePlace( --zcPos );
-			else if ( ccmdArgsSize == 2 && ( (flagSetType = getBoolArg( 1 )) != -1 ) )
-				outValue = checkTesteePlace( --zcPos );
-		}
+		bool outValue = false;
 
 		// One arg is a position (flag will be toggled), two args are a 
 		//position and a flag value:
-		//if ( ccmdArgsSize > 0 && ccmdArgsSize < 3 && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) && ( ( ccmdArgsSize != 2 ) || str2int_Ptr( ccmd.args[ 1 ], +flagValue ) ) )
-		//	outValue = checkTesteePlace( --zcPos );
+		switch ( ccmd.args.Size() ) {
+			case 1:
+				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) );
+				break;
+			case 2:
+				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) )
+						&& ( ( flagSetType = getBoolArg( 1 ) ) != -1 );
+				break;
+			case 0:
+			default:
+				testee = LinetraceActor();
+				outValue = true;
+				break;
+		}
 
 		return outValue;
 	}
 
 	override void DoCommand( void ) {
-		// Linetarget if position is omitted or testee[pos] otherwise:
-		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
-
 		if ( testee ) {
 			if ( flagSetType == -1 )
-				testee.bBuddha ^= true;
+				testee.bBUDDHA ^= true;
 			else
-				testee.bBuddha = flagSetType;
+				testee.bBUDDHA = flagSetType;
 		}
 	}
 } // of class ZCBudCommand: ZCConsoleCommand {}

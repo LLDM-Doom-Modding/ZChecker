@@ -139,8 +139,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInfo ccmd;
 
 
-	protected clearscope bool checkTesteePlace( uint place ) {
-		return ( place < MaxTestee ); // Unsigned int, of course, cannot obtain values less than 0.
+	protected clearscope bool checkTesteePlace( int place ) {
+		return ( place >= 0 && place < MaxTestee );
 	}
 
 	// Returns "true" is string is an integer; "converted" is a pointer:
@@ -213,7 +213,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				if ( !( newTestee = ccmd.handler.Testee[ newTesteePosStatus ].mo ) )
 					ZCGlobal.Log( LL_Main, "No actor in position " .. ( newTesteePosStatus + 1 ) );
 			} else {
-				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (max. " .. MaxTestee .. ")." );
+				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (must be in range [1.." .. MaxTestee .. "])." );
 				newTesteePosStatus = PPS_WrongPos;
 			}
 		} else if ( arg == "lt" || arg == "linetarget" ) {
