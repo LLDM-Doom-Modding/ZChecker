@@ -98,7 +98,8 @@ class ZCSetStateCommand: ZCConsoleCommand {
 
 
 class ZCSetFlagCommand: ZCConsoleCommand {
-	int zcPos;
+	Actor testee;
+	EPositionParseStatus testeeStatus;
 	String flagName;
 	int flagSetType;
 
@@ -115,7 +116,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	}
 
 	override bool HandleArguments() {
-		zcPos = -1;
+		testee = NULL;
 		flagSetType = -1;
 		bool outValue = false;
 
@@ -125,20 +126,21 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 		if ( ccmd.args.Size() == 1 ) {
 			flagName = ccmd.args[ 0 ];
 			outValue = true;
+			testee = LinetraceActor();
 		} else if ( ccmd.args.Size() == 2 ) {
 			if ( flagSetType != -1 ) {
 				flagName = ccmd.args[ 0 ];
 				outValue = true;
-			} else if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) ) {
-				outValue = checkTesteePlace( --zcPos );
+			} else if ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
 				flagName = ccmd.args[ 1 ];
+				outValue = true;
 			}
-		} else if ( ( ccmd.args.Size() == 3 ) && str2int_Ptr( ccmd.args[ 0 ], +zcPos ) ) {
+		} else if ( ( ccmd.args.Size() == 3 ) && ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) ) {
 			flagName = ccmd.args[ 1 ];
-			outValue = checkTesteePlace( --zcPos ) && ( flagSetType != -1 );
+			outValue = ( flagSetType != -1 );
 		}
 
-		//console.printf( "zcPos: " .. zcPos .. ", flagName: " .. flagName .. ", flagSetType: " .. flagSetType .. ".  outValue: " .. outValue );
+		//console.printf( TEXTCOLOR_DARKGRAY .. GetClassName() .. "HandleArguments(). zcStatus: " .. testeeStatus .. " (actor " .. ZCGlobal.ObjectName( testee ) .. "), flagName: " .. flagName .. ", flagSetType: " .. flagSetType .. ".  outValue: " .. outValue .. "." );
 
 		return outValue;
 	}
@@ -146,8 +148,6 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	// I have no idea how to convert String to flag name less crooked, too...
 	override void DoCommand( void ) {
 		// Linetarget if position is omitted or testee[pos] otherwise:
-		Actor testee = ( zcPos == -1 )? LinetraceActor( players[ ccmd.e.Player ].mo ) : ccmd.handler.Testee[ zcPos ].mo;
-
 		if ( testee ) {
 			ZCSetFlagCommandThinker.Get().AddString( flagName );
 			// Cannot get ACS asynchronous "SetResultValue()" here.
@@ -174,7 +174,7 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Shortcut for the \"zcsetflag <pos> buddha <value>\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it.";
+		return "Optimized shortcut for the \"zcsetflag <pos> buddha <value>\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it.";
 	}
 
 	override bool HandleArguments() {

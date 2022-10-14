@@ -125,6 +125,15 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		CPS_RegexFailed
 	};
 
+	enum EPositionParseStatus {
+		PPS_Error = -4,
+		PPS_WrongPos = -3,
+		PPS_Linetarget = -2,
+		PPS_Self = -1,
+		PPS_First = 0
+	};
+
+
 	EClassnameParseStatus classnameParseStatus;
 
 	ZCheckerCCMDInfo ccmd;
@@ -160,6 +169,66 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return isInteger;
 	}
 
+	// Gets a linetarget actor:
+	protected play Actor LinetraceActor( Actor from = NULL ) {
+		Actor outActor = NULL;
+        FLineTraceData RemoteRay;
+
+		if ( from == NULL )
+			from = players[ ccmd.e.Player ].mo;
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::LinertraceActor(). Address of source actor: " .. from );
+
+		from.LineTrace( from.Angle, 0xFFFF, from.Pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: RemoteRay );
+
+		if ( RemoteRay.HitType == TRACE_HitActor ) {
+			outActor = RemoteRay.HitActor;
+
+			if ( outActor is "ZCheckerActorInfo" && outActor.master )
+				outActor = outActor.master;
+		} else {
+			ZCGlobal.Log( LL_Normal, "No available actors found in nearest 65535 mappixels." );
+		}
+
+		return outActor;
+	} // of protected play Actor LinetraceActor( void ) {}
+
+
+	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {
+		EPositionParseStatus newTesteePosStatus = PPS_Error;
+
+		String arg = ccmd.args[ argpos ];
+		arg.ToLower();
+
+		if ( arg == "self" || arg == "s" ) {			
+			if ( newTestee = players[ ccmd.e.Player ].mo )
+				newTesteePosStatus = PPS_Self;
+
+		} else if ( arg.Left( 3 ) == "cam" ) {
+			if ( newTestee = players[ ccmd.e.Player ].Camera )
+				newTesteePosStatus = PPS_Self;
+
+		} else if ( str2int_Ptr( arg, +newTesteePosStatus ) ) {
+			if ( checkTesteePlace( --newTesteePosStatus ) ) {
+				if ( !( newTestee = ccmd.handler.Testee[ newTesteePosStatus ].mo ) )
+					ZCGlobal.Log( LL_Main, "No actor in position " .. ( newTesteePosStatus + 1 ) );
+			} else {
+				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (max. " .. MaxTestee .. ")." );
+				newTesteePosStatus = PPS_WrongPos;
+			}
+		} else if ( arg == "lt" || arg == "linetarget" ) {
+			newTestee = LinetraceActor();
+			newTesteePosStatus = PPS_Linetarget;
+		} else {
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown placeholder \"" .. arg .. "\" in position " .. ( argpos + 1 ) .. TEXTCOLOR_DARKGRAY .. ". Possible values: " .. LLCOLOR_MAIN .. "1.." .. MaxTestee .. ", s[elf], cam[era], lt" .. TEXTCOLOR_DARKGRAY .. "|" .. LLCOLOR_MAIN .. "linetarget" .. TEXTCOLOR_DARKGRAY .. "." );
+		}
+
+		//console.printf( "newTestee " .. newTestee .. ", newTesteePosStatus " .. newTesteePosStatus .. ", arg " .. arg );
+
+		return newTesteePosStatus;
+	} // of protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {}
+
+
 	// Returns "-1" if argument cannot be resolved as boolean, and "0"/"1" otherwise:
 	protected int getBoolArg( uint argnum ) {
 		int argxtype = -1;
@@ -177,27 +246,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		return argxtype;
 	}
-
-	// Gets a linetarget actor:
-	protected play Actor LinetraceActor( Actor from ) {
-		Actor outActor = NULL;
-        FLineTraceData RemoteRay;
-
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::LinertraceActor(). Address of source actor: " .. from );
-
-		from.LineTrace( from.Angle, 0xFFFF, from.Pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: RemoteRay );
-
-		if ( RemoteRay.HitType == TRACE_HitActor ) {
-			outActor = RemoteRay.HitActor;
-
-			if ( outActor is "ZCheckerActorInfo" && outActor.master )
-				outActor = outActor.master;
-		} else {
-			ZCGlobal.Log( LL_Normal, "No available actors found in nearest 65535 mappixels." );
-		}
-
-		return outActor;
-	} // of protected play Actor LinetraceActor( void ) {}
 
 	protected String GetInternalZCheckerString( String zcname ) {
 		return ZCGlobal.Get().GetZCheckerString( zcname );
