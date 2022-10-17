@@ -242,7 +242,12 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 	class<ZCBaseInfoPanelPart> panelclass;
 
 	ZCOptionMenuItemInfopanel Init( ZCBaseInfoPanelPart panel ) {
-		Super.Init( panel.optionLabel, panel.optionCVarName, 'OnOff' );
+		String panellabel = panel.optionLabel;
+		if ( panel is "ZCBaseInfoPanelPart_PlayScope" )
+			panellabel = "[play] >> " .. panellabel;
+
+		Super.Init( panellabel, panel.optionCVarName, 'OnOff' );
+
 		mSubmenu = panel.optionSubmenuName;
 		panelclass = panel.GetClass();
 

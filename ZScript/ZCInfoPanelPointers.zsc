@@ -1,12 +1,12 @@
-class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
+class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 	Actor testeething;
 
-	override void OnCreate_play( void ) {
+	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_mainpointers";
 		optionLabel = "Common pointers";
 	}
 
-	protected String decoratePointerString( Actor ptr, String desc, String ptrcolor = WHITE ) {
+	static clearscope String DecoratePointerString( Actor testee, ZCheckerHandler zchandler, Actor ptr, String desc, String ptrcolor = WHITE ) {
 		String str = DARKGRAY .. desc .. "\c-: " .. ptrcolor;
 
 		if ( ptr ) {
@@ -14,7 +14,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 
 			if ( ptr == players[ consoleplayer ].mo ) {
 				str = str .. "(you)";
-			} else if ( ptr == testeething ) {
+			} else if ( ptr == testee ) {
 				str = str .. "(self)";
 			} else {
 				bool found = false;
@@ -29,7 +29,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 
 				if ( !found ) {
 					for ( int i = 0; i < MaxTestee; i++ ) {
-						if ( ptr == handler.Testee[ i ].mo ) {
+						if ( ptr == zchandler.Testee[ i ].mo ) {
 							str = str .. "(" .. ( i + 1 ) .. ")";
 							break;
 						}
@@ -41,78 +41,81 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 		}
 
 		return str;
-	} // of protected String decoratePointerString( Actor ptr, String desc, String ptrcolor ) {}
+	} // of static clearscope String decoratePointerString( Actor ptr, String desc, String ptrcolor ) {}
 
-	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+	protected ui String decoratePointerStringUI( Actor ptr, String desc, String ptrcolor = WHITE ) {
+		return DecoratePointerString( testeething, handler, ptr, desc, ptrcolor );
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 		String outstr = "";
 
 		outstr = 
-			decoratePointerString( thing.target, "Target", RED ) .. "\n" ..
-			decoratePointerString( thing.master, "Master", TEAL ) .. "\n" ..
-			decoratePointerString( thing.tracer, "Tracer", ORANGE );
+			decoratePointerStringUI( thing.target, "Target", RED ) .. "\n" ..
+			decoratePointerStringUI( thing.master, "Master", TEAL ) .. "\n" ..
+			decoratePointerStringUI( thing.tracer, "Tracer", ORANGE );
 
 		if ( Inventory( thing ) )
-			outstr = outstr .. "\n" .. decoratePointerString( Inventory( thing ).owner, BLACK .. "Inv." .. DARKGRAY .. "Owner", DARKGREEN ) .. "\n";
+			outstr = outstr .. "\n" .. decoratePointerStringUI( Inventory( thing ).owner, BLACK .. "Inv." .. DARKGRAY .. "Owner", DARKGREEN ) .. "\n";
 
 		return outstr;
 	}
 } // of class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {}
 
-class ZCInteractionPointersInfoPanel: ZCCommonPointersInfoPanel {
+class ZCInteractionPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_levelpointers";
 		optionLabel = "Interaction pointers";
 	}
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
-		testeething = thing;
 		Actor linetargeted = thing.GetPointer( thing.player? AAPTR_PLAYER_GETTARGET : AAPTR_LINETARGET );
 
 		return
-			decoratePointerString( linetargeted, "Linetarget", ICE ) .. "\n" ..
-			decoratePointerString( thing.BlockingMobj, "Blocking" );
+			ZCCommonPointersInfoPanel.DecoratePointerString( thing, handler, linetargeted, "Linetarget", ICE ) .. "\n" ..
+			ZCCommonPointersInfoPanel.DecoratePointerString( thing, handler, thing.BlockingMobj, "Blocking" );
 	}
 }
 
 class ZCDeferredLinksPointersInfoPanel: ZCCommonPointersInfoPanel {
-	override void OnCreate_play( void ) {
+	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_dfrlinkpointers";
 		optionLabel = "Deferred link pointers";
 	}
 
-	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 
 		return
-			decoratePointerString( thing.LastHeard, "LastHeard", OLIVE ) .. "\n" ..
-			decoratePointerString( thing.LastEnemy, "LastEnemy", RED ) .. "\n" ..
-			decoratePointerString( thing.LastLookActor, "LastLook", OLIVE ) .. "\n" ..
-			decoratePointerString( thing.Poisoner, "Poisoner", GREEN );
+			decoratePointerStringUI( thing.LastHeard, "LastHeard", OLIVE ) .. "\n" ..
+			decoratePointerStringUI( thing.LastEnemy, "LastEnemy", RED ) .. "\n" ..
+			decoratePointerStringUI( thing.LastLookActor, "LastLook", OLIVE ) .. "\n" ..
+			decoratePointerStringUI( thing.Poisoner, "Poisoner", GREEN );
 	}
 }
 
 class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
-	override void OnCreate_play( void ) {
+	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_otherpointers";
 		optionLabel = "Other pointers";
 	}
 
-	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		testeething = thing;
 		String outstr = "";
 
 		if ( Weapon( thing ) ) {
 			outstr =
-				decoratePointerString( Weapon( thing ).Ammo1, BLACK .. "Weap." .. DARKGRAY .. "Ammo1", GRAY ) .. "\n" ..
-				decoratePointerString( Weapon( thing ).Ammo2, BLACK .. "Weap." .. DARKGRAY .. "Ammo2", GRAY ) .. "\n" ..
-				decoratePointerString( Weapon( thing ).SisterWeapon, BLACK .. "Weap." .. DARKGRAY .. "SisterWeap", BRICK ) .. "\n";
+				decoratePointerStringUI( Weapon( thing ).Ammo1, BLACK .. "Weap." .. DARKGRAY .. "Ammo1", GRAY ) .. "\n" ..
+				decoratePointerStringUI( Weapon( thing ).Ammo2, BLACK .. "Weap." .. DARKGRAY .. "Ammo2", GRAY ) .. "\n" ..
+				decoratePointerStringUI( Weapon( thing ).SisterWeapon, BLACK .. "Weap." .. DARKGRAY .. "SisterWeap", BRICK ) .. "\n";
 		}
 
 		return outstr ..
-			decoratePointerString( thing.Alternative, "Alternative", BRICK ) .. "\n" ..
-			decoratePointerString( thing.Goal, "Goal", FIRE ) .. "\n" ..
-			decoratePointerString( thing.Inv, "Inv&", GRAY ) .. "\n" ..
-			decoratePointerString( thing.snext, "SecNext&", BROWN );
+			decoratePointerStringUI( thing.Alternative, "Alternative", BRICK ) .. "\n" ..
+			decoratePointerStringUI( thing.Goal, "Goal", FIRE ) .. "\n" ..
+			decoratePointerStringUI( thing.Inv, "Inv&", GRAY ) .. "\n" ..
+			decoratePointerStringUI( thing.snext, "SecNext&", BROWN );
 	}
 }
