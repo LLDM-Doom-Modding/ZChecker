@@ -582,7 +582,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
 
 			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? CCMDCOLOR_TITLEWIP .. "[WIP] " : CCMDCOLOR_DESC ) .. GetHelpDescString();
+			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. GetHelpDescString();
 
 			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
 

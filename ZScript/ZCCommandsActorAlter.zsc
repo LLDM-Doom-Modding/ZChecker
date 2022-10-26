@@ -54,7 +54,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	String newState;
 
 	override String GetCommand() {
-		return "zc_setState";
+		return "zc_setstate";
 	}
 
 	override String GetHelpNameString() {
@@ -103,7 +103,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	int flagSetType;
 
 	override String GetCommand() {
-		return "zc_setFlag";
+		return "zc_setflag";
 	}
 
 	override String GetHelpNameString() {
@@ -523,7 +523,7 @@ struct ZCSummonExtraParameters play {
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			clampint( specargs[ i ], "Arg[ " .. i .. " ]", 0, 255 );
 	}
-};
+}; // of struct ZCSummonExtraParameters play {}
 
 class ZCSummonCommand: ZCConsoleCommand {
 	String summonee;
@@ -582,7 +582,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						params.isFoe = true;
 					} else if ( curparam == "notprj" || curparam.Left( 7 ) == "notproj" ) {
 						params.notProjectileRules = true;
-					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) ) {
+					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
 						if ( colonIndex < curparam.Length() ) {
 							String paramdiv[ 2 ];
 							paramdiv[ 0 ] = curparam.Left( colonIndex );
@@ -704,4 +704,32 @@ class ZCSummonCommand: ZCConsoleCommand {
 			ZCGlobal.Log( LL_Main, "\"" .. summonee .. "\" isn't an actor class." );
 		}
 	}
-} // of class ZCGiveCommand: ZCConsoleCommand {}
+} // of class ZCSummonCommand: ZCConsoleCommand {}
+
+class ZCSetPropertyCommand: ZCConsoleCommand {
+	override void OnLoad( void ) {
+		zcFlags = CCF_Unreleased;
+	}
+
+	override String GetCommand() {
+		return "zc_setproperty";
+	}
+
+	override String GetHelpNameString() {
+		return "zcsetprop[erty] [<pos>] <property> <value>;zcsetp [<pos>] <property> <value>;zcwrite [<pos>] <property> <value>;zcw [<pos>] <property> <value>";
+	}
+
+	override String GetHelpDescString() {
+		return "Sets a <property> to <value> for the actor in position <pos> (or for the linetarget). By default all properties will be simply overwritten, but some of them may has a prefix \"a[dd]\"|\"+\" for adding to current value, or \"r[el[ative]]]\" for setting it relative to caller (player). Possible properties are:\n" ..
+				"  [a|r](pos|warp) <x>,<y>[,<z>]; [a](h[ealth]|hp) <val>; [a]speed <val>; [a|r]ang[le] <val>; [a|r]pitch <val>; [a|r]roll <val>; [a]scale (<both>|<x>,<y>); [a]alpha <val>; [a]radius <val>; [a]height <val>; target|pt <pos>; master|pm <pos>; tracer|pr <pos>; [a]a[rg]0..[a]a[rg]4 <val>; special|action <val>; [a]mass <val>; tid <val>; tidtohate <val>; [a|r]grav[ity] <val>";
+	}
+
+	override bool HandleArguments() {
+		ZCGlobal.Log( LL_Main, LLCOLOR_EMERGENCY .. "[Work-in-progress, not released yet]." );
+		return false;
+	}
+
+	override void DoCommand( void ) {
+		ZCGlobal.Log( LL_Main, "Impossible inscription, actually. Despite the fact it is a dummy." );
+	}
+} // of class ZCSetPropertyCommand: ZCConsoleCommand {}
