@@ -107,11 +107,13 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 	Option "Light level", "mcm_zchecker_infovar_geomseclight", "YesNo"
 	Option "Textures", "mcm_zchecker_infovar_geomsectex", "YesNo"
 	Option "Flags", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
+	Option "Damage (also for terrain)", "mcm_zchecker_infovar_geomsecdamage", "YesNo"
+	StaticText " "
+	Option "Floor terrain data", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
 	StaticText " "
 	StaticText "(Not released yet):", Darkgray
-	Option "Common: damage, waterlevel, ...", "mcm_zchecker_infovar_geomsecother", "YesNo"
 	Option "Portals", "mcm_zchecker_infovar_geomsecportal", "YesNo"
-	Option "Floor terrain", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
+	Option "Other: waterlvl, gravity, ...", "mcm_zchecker_infovar_geomsecother", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomlines" {

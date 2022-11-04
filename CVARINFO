@@ -44,7 +44,8 @@ user bool mcm_zchecker_infovar_geomseclight	= true;	 //  \_ Sector light level.
 user int  mcm_zchecker_infovar_geomsecflags	= 0;	 //  \_ Sector flags: "Disabled", "Short names", "Long names".
 user int  mcm_zchecker_infovar_geomsecheights = 1;	 //  \_ "Off", "Heights", "Heights & delta to player".
 user bool mcm_zchecker_infovar_geomsectex	= false; //  \_ Sector textures.
-user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (damage interval, water level, ...).
+user bool mcm_zchecker_infovar_geomsecdamage= false; //  \_ Sector damage (also for terrain).
+user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (water level, gravity, ...).
 user bool mcm_zchecker_infovar_geomsecportal= false; //  \_ Sector portal info.
 user bool mcm_zchecker_infovar_geomsecterrain= false;//  \_ Shows floorsector terrain, if any.
 // Something about sector normals?

@@ -113,8 +113,69 @@ class ZCConsoleSeparator: ZCConsoleClass {
 		}
 
 		return helpCacheString;
+	} // of override final String GetHelpString( void ) {}
+
+} // of class ZCConsoleSeparator: ZCConsoleClass {}
+
+class ZCTooltipClass: ZCConsoleClass {
+	const HEADER	= TEXTCOLOR_SAPPHIRE;
+	const NORMAL	= TEXTCOLOR_WHITE;
+	const DARKGRAY	= TEXTCOLOR_DARKGRAY;
+	const HIGHLIGHT1= TEXTCOLOR_GOLD;
+	const HIGHLIGHT2= TEXTCOLOR_DARKGREEN;
+
+	protected String HighlightTextPart( String origstr, String boundPattern, String highlightColor ) {
+		String outstr = "";
+		int prevCharIndexStart = 0;
+		int curCharIndex;
+		bool highlight = false;
+
+		while ( ( curCharIndex = origstr.IndexOf( boundPattern, prevCharIndexStart ) ) != -1 ) {
+			highlight = !highlight;
+			outstr = outstr .. origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart ) .. ( highlight? highlightColor : NORMAL );
+
+			prevCharIndexStart = curCharIndex + 2;
+		}
+
+		if ( !highlight )
+			outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
+
+		return ( outstr == "" )? origstr : outstr;
 	}
-}
+
+	String HighlightText( String str ) {
+		str = HighlightTextPart( str, "~~", DARKGRAY );
+		str = HighlightTextPart( str, "@@", HIGHLIGHT1 );
+		str = HighlightTextPart( str, "##", HIGHLIGHT2 );
+
+		return str;
+	}
+
+	virtual String GetPlaintext( void ) {
+		return "";
+	}
+	virtual String GetExamples( void ) {
+		return "";
+	}
+
+	override String GetHelpString( void ) {
+		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+			helpCacheString = "";
+			String addtext = GetPlaintext();
+
+			if ( addtext != "" )
+				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n| Tips: " .. NORMAL .. addtext .. "\n";
+
+			addtext = GetExamples();
+
+			if ( addtext != "" )
+				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n| Examples:\n" .. NORMAL .. addtext .. "\n";
+		}
+
+		return helpCacheString;
+	}
+} // of class ZCTooltipClass: ZCConsoleClass {}
+
 
 
 class ZCConsoleCommand: ZCConsoleClass abstract play {
@@ -137,6 +198,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	EClassnameParseStatus classnameParseStatus;
 
 	ZCheckerCCMDInfo ccmd;
+	ZCTooltipClass helpTooltip;
 
 
 	protected clearscope bool checkTesteePlace( int place ) {
@@ -602,65 +664,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	virtual void DoCommand( void ) { }
 
 } // of class ZCConsoleCommand abstract {}
-
-class ZCTooltipClass: ZCConsoleClass {
-	const HEADER	= TEXTCOLOR_SAPPHIRE;
-	const NORMAL	= TEXTCOLOR_WHITE;
-	const DARKGRAY	= TEXTCOLOR_DARKGRAY;
-	const HIGHLIGHT1= TEXTCOLOR_GOLD;
-	const HIGHLIGHT2= TEXTCOLOR_DARKGREEN;
-
-	protected String HighlightTextPart( String origstr, String boundPattern, String highlightColor ) {
-		String outstr = "";
-		int prevCharIndexStart = 0;
-		int curCharIndex;
-		bool highlight = false;
-
-		while ( ( curCharIndex = origstr.IndexOf( boundPattern, prevCharIndexStart ) ) != -1 ) {
-			highlight = !highlight;
-			outstr = outstr .. origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart ) .. ( highlight? highlightColor : NORMAL );
-
-			prevCharIndexStart = curCharIndex + 2;
-		}
-
-		if ( !highlight )
-			outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
-
-		return ( outstr == "" )? origstr : outstr;
-	}
-
-	String HighlightText( String str ) {
-		str = HighlightTextPart( str, "~~", DARKGRAY );
-		str = HighlightTextPart( str, "@@", HIGHLIGHT1 );
-		str = HighlightTextPart( str, "##", HIGHLIGHT2 );
-
-		return str;
-	}
-
-	virtual String GetPlaintext( void ) {
-		return "";
-	}
-	virtual String GetExamples( void ) {
-		return "";
-	}
-
-	override String GetHelpString( void ) {
-		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
-			helpCacheString = "";
-			String addtext = GetPlaintext();
-
-			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n| Tips: " .. NORMAL .. addtext .. "\n";
-
-			addtext = GetExamples();
-
-			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n| Examples:\n" .. NORMAL .. addtext .. "\n";
-		}
-
-		return helpCacheString;
-	}
-} // of class ZCTooltipClass: ZCConsoleClass {}
 
 
 class ZCBaseInfoPanelPart abstract {

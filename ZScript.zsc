@@ -12,6 +12,7 @@ version "3.3.0"
 
 #include "ZScript/ZCInfoPanelMain.zsc"
 #include "ZScript/ZCInfoPanelPointers.zsc"
+#include "ZScript/ZCInfoPanelGeometry.zsc"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
@@ -661,7 +662,7 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( classname ) {
 			ZCConsoleClass newCCMD = ZCConsoleClass.Create( classname, importantFlag );
 			zcConsoleHandleClasses.Push( newCCMD );
-			newCCMD.PostBeginPlay();
+			newCCMD.PostBeginPlay(); // Calls "OnLoad()".
 		}
 
 		return !!classname;

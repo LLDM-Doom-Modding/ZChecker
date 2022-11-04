@@ -11,7 +11,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "This help. If argument is provided, displays complete help.";
+		return "This help. If <command> is provided, prints out a help for a specific command (in most cases with examples). Else, if <all> output is enabled, displays general complete help.";
 	}
 
 	override bool HandleArguments() {
@@ -60,7 +60,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size(); i++ ) {}
 
 				ZCGlobal.Log( LL_Main | LL_NoDot, ( outValue
-						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ==="
+						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n"
 						: TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
 					) );
 			}
@@ -77,6 +77,9 @@ class ZCHelpCommand: ZCConsoleCommand {
 		}
 
 		if ( infoclass ) {
+			if ( infoclass.helpTooltip )
+				console.printf( infoclass.helpTooltip.GetHelpString() );
+
 			console.printf( infoclass.GetHelpString() );
 		} else {
 			console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
