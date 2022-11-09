@@ -1,5 +1,6 @@
 // Common console variables.
 server int mcm_zchecker_loglevel = 1;
+server bool mcm_zchecker_allowdangerccmds = false;
 
 // General information panel variables.
 user float mcm_zchecker_infopanel_startx	= 2.0;

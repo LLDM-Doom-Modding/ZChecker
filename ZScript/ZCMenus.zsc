@@ -40,18 +40,9 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( AddStaticText( TEXTCOLOR_GOLD .. "Panels order reset" ) );
 		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset information panels order", self ) );
 		desc.mItems.Push( AddStaticText() );
-		desc.mItems.Push( AddStaticText( GOLD .. "General settings:" ) );
-		desc.mItems.Push( new( "OptionMenuItemSubmenu" ).Init( "Information panel settings", "mcm_ZChecker_InfoPanelControl" ) );
-		desc.mItems.Push( AddOption( "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels" ) );
-
-		desc.mItems.Push( AddStaticText() );
-		desc.mItems.Push( AddStaticText( GOLD .. "\"Everything\" map settings:" ) );
-		desc.mItems.Push( AddOption( "Spawn +STEALTH actors: ", "mcm_zchecker_ev_spawnstealth", "YesNo" ) );
-		desc.mItems.Push( AddOption( "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo" ) );
-		desc.mItems.Push( AddOption( "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo" ) );
-		desc.mItems.Push( AddOption( "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo" ) );
 	}
 
 	void SetPanelOptionsOrder( OptionMenuDescriptor desc ) {

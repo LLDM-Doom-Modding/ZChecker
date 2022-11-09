@@ -1,27 +1,87 @@
-// 
-
-OptionMenu "mcm_ZChecker_Control" protected {
-    // See "ZScript/ZCMenus.zsc" for the full menu code.
-    Class "ZCOptionMenuPanels"
-
-    Title "ZChecker control"
-}
+// ZChecker menu definitions.
 
 AddOptionMenu "OptionsMenu" {
 	StaticText " "
-	Submenu "ZChecker Control", "mcm_ZChecker_Control"
+	Submenu "ZChecker Control", "mcm_ZChecker_ControlMenu"
 }
 
-OptionMenu "mcm_ZChecker_InfoPanelControl" {
-    Title "Information panels control"
+OptionMenu "mcm_ZChecker_ControlMenu" {
+    Title "ZChecker control"
+	StaticText " "
+
+	StaticText "Information panels", GOLD
+	Submenu "Panels control", "mcm_ZChecker_ControlMenu_Panels"
+	Submenu "Panels visual settings", "mcm_ZChecker_ControlMenu_PanelsPosition"
+	Control "Open panels order menu", "openmenu mcm_ZChecker_ControlMenu_Panels"
+
+	StaticText " "
+	StaticText "Console commands menu [WIP]", GOLD
+	Submenu "Call console command", "mcm_ZChecker_ControlMenu_CallCCMD"
+	Control "Open CCMD call menu", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
+
+	StaticText " "
+	StaticText "Other controls", GOLD
+	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
+	StaticText " "
+	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
+	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
+}
+
+OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {
+    Title "ZChecker panels"
+
+    // See "ZScript/ZCMenus.zsc" for the full menu code.
+    class "ZCOptionMenuPanels"
+}
+
+OptionMenu "mcm_ZChecker_ControlMenu_PanelsPosition" {
+    Title "ZChecker: Panels visual settings"
     StaticText " "
 
 	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
 	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
+    StaticText " "
 	Option "Font", "mcm_zchecker_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
 }
+
+OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
+    Title "ZChecker: \"Everything\" map settings"
+    StaticText " "
+
+	Option "Spawn +STEALTH actors:", "mcm_zchecker_ev_spawnstealth", "YesNo"
+	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
+	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
+	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+
+    StaticText " "
+    StaticText "This option allows using a special \"Everything\" map", DARKGRAY
+    StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
+	Option "Force use map scripts", "mcm_zchecker_ev_forcemap", "YesNo"
+}
+
+OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
+    Title "ZChecker: call console command"
+
+    StaticText " "
+    StaticText "[WIP] Some frequently used commands will be here.", DARKGRAY
+    StaticText "All commands may be shown via \"zchelp all\";", DARKGREEN
+    StaticText "Also you may use a \"zchelp <command>\".", DARKGREEN
+    StaticText " "
+    StaticText " "
+
+    StaticText "Command examples:", GOLD
+    StaticText " "
+
+	Command "\"zcadd\": Add linetarget to panel", "zcadd"
+	Command "\"zcadd self\": Add self to panel", "zcadd self"
+	Command "\"zcrem\": Clear all panels", "zcrem"
+
+    // See "ZScript/ZCMenus.zsc" for the full menu code.
+	//class "ZCOptionMenuCallCCMD"
+}
+
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
 	1, "1. Main/default"
@@ -68,7 +128,7 @@ OptionValue "mcm_ZCheckerOption_panelgeom_lineaction" {
 // Submenus:
 
 OptionMenu "mcm_ZCheckerSubmenu_states" {
-	Title "ZChecker: States"
+	Title "ZChecker panel: States"
 	StaticText " "
 
 	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
@@ -79,7 +139,7 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 
 
 OptionMenu "mcm_ZCheckerSubmenu_main" {
-	Title "ZChecker: General info"
+	Title "ZChecker panel: General info"
 	StaticText " "
 
 	Option "Actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
@@ -88,17 +148,17 @@ OptionMenu "mcm_ZCheckerSubmenu_main" {
 
 
 OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
-	Title "ZChecker: World positioning"
+	Title "ZChecker panel: World positioning"
 	StaticText " "
 
 	Option "Player buttons", "mcm_zchecker_infovar_wposplayerbuttons", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
-	Title "ZChecker: Sectors geometry"
+	Title "ZChecker panel: Sectors geometry"
 	StaticText " "
 
-	StaticText "Play-scoped class. Will be updated in world tick.", Fire
+	StaticText "Play-scoped class. Will be updated in world tick.", FIRE
 	StaticText " "
 
 	Option "Separated floor and ceiling", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
@@ -111,24 +171,24 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 	StaticText " "
 	Option "Floor terrain data", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
 	StaticText " "
-	StaticText "(Not released yet):", Darkgray
+	StaticText "(Not released yet):", DARKGRAY
 	Option "Portals", "mcm_zchecker_infovar_geomsecportal", "YesNo"
 	Option "Other: waterlvl, gravity, ...", "mcm_zchecker_infovar_geomsecother", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
-	Title "ZChecker: Lines geometry"
+	Title "ZChecker panel: Lines geometry"
 	StaticText " "
 
-	StaticText "Play-scoped class. Will be updated in world tick.", Fire
+	StaticText "Play-scoped class. Will be updated in world tick.", FIRE
 	StaticText " "
 
 	Option "Line type", "mcm_zchecker_infovar_geomlinetype", "mcm_ZCheckerOption_panelgeom_linetype"
 	Option "Length and flags", "mcm_zchecker_infovar_geomlnmain", "mcm_ZCheckerOption_flags_names"
 	Option "Textures", "mcm_zchecker_infovar_geomlntex", "YesNo"
 	StaticText " "
-	StaticText "Tags depth depends on the minimal and", Gold
-	StaticText "maximal sector/line tag search setting.", Gold
+	StaticText "Tags depth depends on the minimal and", GOLD
+	StaticText "maximal sector/line tag search setting.", GOLD
 	Option "Line action", "mcm_zchecker_infovar_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
 	StaticText " "
 	Option "Portals", "mcm_zchecker_infovar_geomlnportal", "YesNo"
