@@ -312,7 +312,7 @@ struct TerrainDef native {
 			}
 		} // of if ( printSecTerrain ) {}
 
-		return outinfo .. "\n";
+		return outinfo;
 	}
 } // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {}
 

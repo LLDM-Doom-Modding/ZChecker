@@ -96,8 +96,8 @@ spd.strf..t180.scor
 			outStr = outStr .. String.Format(
 				"%suse %st   %s^    %su   %sfr %saf\n" ..
 				"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
-				"%scrh                  " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
-				"%sspd %sstrf  %st180 %sscor",
+				"%scrh                " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
+				"%sspd %sstrf %st180 %sscor",
 				Col( USE ) , Col( MOVU ), Col( MOVF ), Col( TRNU ), Col( FIRE ), Col( ALTF ),
 				Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
 				Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
