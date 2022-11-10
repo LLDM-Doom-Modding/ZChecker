@@ -20,11 +20,14 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Control "Open CCMD call menu", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
 
 	StaticText " "
-	StaticText "Other controls", GOLD
+	StaticText "Other options", GOLD
 	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
 	StaticText " "
-	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
 	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
+    StaticText "Allows operations which may cause game to crash:", DARKGRAY
+	StaticText " "
+	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
+    StaticText "Will be updated after up to five world tics.", DARKGRAY
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {
@@ -38,11 +41,13 @@ OptionMenu "mcm_ZChecker_ControlMenu_PanelsPosition" {
     Title "ZChecker: Panels visual settings"
     StaticText " "
 
+    StaticText "Positioning", GOLD
 	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
 	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
     StaticText " "
+    StaticText "Other", GOLD
 	Option "Font", "mcm_zchecker_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
 }
 
@@ -50,12 +55,14 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     Title "ZChecker: \"Everything\" map settings"
     StaticText " "
 
+    StaticText "Spawn options", GOLD
 	Option "Spawn +STEALTH actors:", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
-	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
 	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
 
     StaticText " "
+    StaticText "Mapping", GOLD
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
     StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
 	Option "Force use map scripts", "mcm_zchecker_ev_forcemap", "YesNo"
