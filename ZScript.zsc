@@ -602,7 +602,7 @@ class ZCheckerHandler: StaticEventHandler {
 			int height = int( scale * Screen.GetHeight() );
 			double stringWidth = panels.infopanelsFont.StringWidth( outStr );
 
-			x = ( width * x ); //- stringWidth / 2;
+			x = ( width * x );
 			y *= height;
 
 			// Push the text out from the borders:

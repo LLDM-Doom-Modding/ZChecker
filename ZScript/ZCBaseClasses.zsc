@@ -304,7 +304,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			else if ( argx == "1" || argx ~== "true" || argx ~== "t" || argx ~== "set" )
 				argxtype = 1;
 		} else {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::getBoolArg(). Argument " .. argnum .. " is too large (max " .. ccmd.args.Size() .. ")." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::getBoolArg(). Argument index " .. argnum .. " is out of bounds (max " .. ccmd.args.Size() .. ")." );
 		}
 
 		return argxtype;
@@ -367,7 +367,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			String preventiveChoiceStr = classname.Mid( preventiveChoiceStrStart + 1, classname.Length() - preventiveChoiceStrStart - 1 );
 
 			if ( !str2int_Ptr( preventiveChoiceStr, preventiveChoice ) ) {
-				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "\"" .. preventiveChoiceStr .. "\" isn't a numerical selection." );
+				preventiveChoice = -1;
+			}
+
+			if ( preventiveChoice < 1 ) {
+				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Selection \"" .. preventiveChoiceStr .. "\" isn't a positive integer." );
 				preventiveChoice = -1;
 			}
 
@@ -540,12 +544,12 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
 				} else {
 					if ( preventiveChoice >= nameCandidatesSize ) {
-						ZCGlobal.Log( LL_Main, "Selected index " .. TEXTCOLOR_TEAL .. preventiveChoice .. LLCOLOR_MAIN .. " is " .. TEXTCOLOR_YELLOW .. "out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
+						ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Selected index " .. TEXTCOLOR_LIGHTBLUE .. preventiveChoice .. TEXTCOLOR_YELLOW .. " is out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
 						preventiveChoice = -1;
 					}
 
 					if ( preventiveChoice != -1 ) {
-						classname = nameCandidates[ preventiveChoice ];
+						classname = nameCandidates[ preventiveChoice - 1 ];
 						classnameParseStatus = CPS_RegexFound;
 						ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
 					} else {
@@ -555,13 +559,13 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 						ZCGlobal.Log( LL_Main, "Found more than one suitable actor name candidate" .. filtertip .. ":" );
 
 						for ( int i = 0; i < nameCandidatesSize; i++ )
-							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. i .. ". \"" .. TEXTCOLOR_WHITE .. nameCandidates[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
+							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. ( i + 1 ) .. ". \"" .. TEXTCOLOR_WHITE .. nameCandidates[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
 					}
 				}
 			} // of if ( parts.Size() > 1 ) {}
 
 		} else if ( preventiveChoice != -1 ) {
-			ZCGlobal.Log( LL_Main, "Ignoring numerical selection " .. preventiveChoice );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Ignoring numerical selection " .. preventiveChoice .. LLCOLOR_MAIN );
 		}
 
 		return classname;
@@ -610,7 +614,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	// Returns usage quick help (command description):
 	virtual String GetHelpDescString( void ) const {
-		return GetCommand() .. " help!";
+		return GetClassName() .. "::GetHelpDescString(). \"" .. GetCommand() .. " help!\"";
 	}
 
 	// A wrapper which unites aliases and description to one nice string:
