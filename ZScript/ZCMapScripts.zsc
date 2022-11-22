@@ -116,11 +116,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	} // of virtual ESectorStarts getSectorStartForClass( class<Actor> cls ) {}
 
 
-	// 2D vector to 3D vector with zero last coordinate:
-	static vector3 vec2dto3d( vector2 original ) {
-		return ( original.x, original.y, 0 );
-	}
-
 	// Next classes forces the game to crash/end the level/etc:
 	bool IsClassRestricted( class<Actor> cur ) {
 		return (cur is "DynamicLight"
@@ -186,7 +181,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ i ] );
 
 			evSectors[ i ].curSegment = 0;
-			evSectors[ i ].setter.SetOrigin( vec2dto3d( evSectors[ i ].startSectors[ firstExistingSectorIndex ].centerspot ), false );
+			evSectors[ i ].setter.SetOrigin( ( evSectors[ i ].startSectors[ firstExistingSectorIndex ].centerspot, 0 ), false );
 			evSectors[ i ].setter.curJumpAmount = 0;
 		}
 
@@ -283,7 +278,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ j ] );
 
 						if ( firstExistingSectorIndex != -1 ) {
-							vector3 setterPos = vec2dto3d( evSectors[ j ].startSectors[ firstExistingSectorIndex ].centerspot );
+							vector3 setterPos = ( evSectors[ j ].startSectors[ firstExistingSectorIndex ].centerspot, 0 );
 
 							evSectors[ j ].setter = ZCheckerSectorSetter( Actor.Spawn( "ZCheckerSectorSetter", setterPos ) );
 							evSectors[ j ].setter.evSectorDef = evSectors[ j ];
@@ -490,7 +485,7 @@ class ZCheckerSectorSetter: Actor {
 				success = false;
 			} else {
 				evSectorDef.curSegment = nextSegment;
-				SetOrigin( ZCheckerEverythingMapHandler.vec2dto3d( evSectorDef.startSectors[ evSectorDef.curSegment ].centerspot ), false );
+				SetOrigin( ( evSectorDef.startSectors[ evSectorDef.curSegment ].centerspot, 0 ), false );
 				InitFromPos();
 			}
 		}
@@ -503,7 +498,7 @@ class ZCheckerSectorSetter: Actor {
 			Actor testeeActor = Actor.Spawn( cls, pos );
 
 			if ( testeeActor ) {
-				vector3 infoActorPos = pos + ZCheckerEverythingMapHandler.vec2dto3d( infoActorOffset );
+				vector3 infoActorPos = pos + ( infoActorOffset, 0 );
 
 				ZCheckerActorInfo infoActor = ZCheckerActorInfo( Actor.Spawn( "ZCheckerActorInfo", infoActorPos ) );
 				infoActor.master = testeeActor;
