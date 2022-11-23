@@ -733,7 +733,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						PostActorSummon( Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE ), player );
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
-				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. " of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
+				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. "of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
 			} // of if ( player ) {}
 
 		} else {
