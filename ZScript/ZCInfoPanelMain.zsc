@@ -21,6 +21,8 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 		if ( displaySelfPointerMode )
 			info = info .. "\n" .. BLACK .. "&self: " .. DARKGRAY .. thing;
 
+		info = info .. "\n" .. "MinMissileChance: " .. thing.MinMissileChance;
+
 		return info;
 	}
 } // of class ZCMainInfoPanel: ZCBaseInfoPanelPart {}

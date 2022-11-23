@@ -465,12 +465,12 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 
 struct ZCSummonExtraParameters play {
+	const SPECARGS_MAX = 5;
+
 	double faceangle;
 	bool isAngled;
 	bool isFaceangleRelative;
 	double zofs, forwardofs;
-
-	const SPECARGS_MAX = 5;
 
 	int tid;
 	int special;
@@ -479,6 +479,10 @@ struct ZCSummonExtraParameters play {
 	bool isFriend;
 	bool isFoe;
 	bool notProjectileRules;
+	int spawnhp;
+	int aggresiveness;
+	bool forceInfight;
+	bool cannotInfight;
 
 	void Clear( void ) {
 		isAngled = false;
@@ -487,11 +491,13 @@ struct ZCSummonExtraParameters play {
 		zofs = forwardofs = 0.0;
 
 		tid = special = 0;
+		aggresiveness = -1;
+		spawnhp = 0;
 
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			specargs[ i ] = 0;
 
-		isFriend = isFoe = notProjectileRules = false;
+		isFriend = isFoe = notProjectileRules = forceInfight = cannotInfight = false;
 	}
 
 	private void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
@@ -519,6 +525,10 @@ struct ZCSummonExtraParameters play {
 		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
 
 		clampint( special, "Actor special", 0, 255 );
+		clampint( spawnhp, "Spawn health", 0, 0x7FFFFFFF );
+
+		if ( aggresiveness != -1 )
+			clampint( aggresiveness, "Aggresiveness", 0, 255 );
 
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			clampint( specargs[ i ], "Arg[ " .. i .. " ]", 0, 255 );
@@ -535,11 +545,11 @@ class ZCSummonCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs (...:<value>); notproj,friend|foe>]";
+		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>); notproj,friend|foe,[no]infi>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>.";
+		return "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, hp|health:<hp>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, aggr[essiveness]:<dflt55>, [no]infi[ght].";
 	}
 
 	override bool HandleArguments() {
@@ -574,6 +584,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 					String curparam = paramlist[ i ];
 					int colonIndex = -1;
 
+					// Flags:
 					if ( curparam == "f" || curparam.Left( 2 ) == "fr" ) {
 						params.isFriend = true;
 						params.isFoe = false;
@@ -582,13 +593,20 @@ class ZCSummonCommand: ZCConsoleCommand {
 						params.isFoe = true;
 					} else if ( curparam == "notprj" || curparam.Left( 7 ) == "notproj" ) {
 						params.notProjectileRules = true;
+					} else if ( curparam.Left( 4 ) == "infi" ) {
+						params.forceInfight = true;
+						params.cannotInfight = false;
+					} else if ( curparam.Left( 6 ) == "noinfi" ) {
+						params.forceInfight = false;
+						params.cannotInfight = true;
+
 					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
 						if ( colonIndex < curparam.Length() ) {
 							String paramdiv[ 2 ];
 							paramdiv[ 0 ] = curparam.Left( colonIndex );
 							paramdiv[ 1 ] = curparam.Mid( colonIndex + 1, curparam.Length() - colonIndex - 1 );
 
-							int paramvalue; 
+							int paramvalue;
 							int paramnamelen = paramdiv[ 0 ].Length();
 
 							if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue, true ) ) {
@@ -608,10 +626,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.zofs = paramvalue;
 								} else if ( paramdiv[ 0 ] == "fwd" || paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
 									params.forwardofs = paramvalue;
+								} else if ( paramdiv[ 0 ] == "hp" || paramdiv[ 0 ] == "health" ) {
+									params.spawnhp = paramvalue;
+								} else if ( paramdiv[ 0 ].Left( 4 ) == "aggr" ) {
+									params.aggresiveness = paramvalue;
 								} else if ( ( paramnamelen == 2 && paramdiv[ 0 ].Left( 1 ) == "a" ) || ( paramnamelen == 4 && paramdiv[ 0 ].Left( 3 ) == "arg" ) ) {
 									int argnum = paramdiv[ 0 ].Mid( paramnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
 
-									if ( argnum >= 0 && argnum <= 4 )
+									if ( argnum >= 0 && argnum < params.SPECARGS_MAX )
 										params.specargs[ argnum ] = paramvalue;
 									else
 										ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
@@ -655,6 +677,20 @@ class ZCSummonCommand: ZCConsoleCommand {
 			summoned.bFRIENDLY = true;
 		else if ( params.isFoe )
 			summoned.bFRIENDLY = false;
+
+		if ( params.forceInfight ) {
+			summoned.bFORCEINFIGHTING = true;
+			summoned.bNOINFIGHTING = false;
+		} else if ( params.cannotInfight ) {
+			summoned.bFORCEINFIGHTING = false;
+			summoned.bNOINFIGHTING = true;
+		}
+
+		if ( params.aggresiveness != -1 )
+			summoned.MinMissileChance = 255 - params.aggresiveness;
+
+		if ( params.spawnhp != 0 )
+			summoned.health = params.spawnhp;
 
 		if ( params.tid )
 			summoned.ChangeTid( params.tid );
