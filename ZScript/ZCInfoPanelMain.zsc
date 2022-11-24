@@ -21,8 +21,6 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 		if ( displaySelfPointerMode )
 			info = info .. "\n" .. BLACK .. "&self: " .. DARKGRAY .. thing;
 
-		info = info .. "\n" .. "MinMissileChance: " .. thing.MinMissileChance;
-
 		return info;
 	}
 } // of class ZCMainInfoPanel: ZCBaseInfoPanelPart {}
@@ -232,6 +230,9 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	Array<ZCStatesInfoData> prevLogStates;
 	int prevLogStateTics;
 
+	String tempFlagsStr;
+
+
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_states";
 		optionLabel = "States";
@@ -242,6 +243,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	protected String DecoratedState( State st ) {
+		// SpriteID: 0 == "TNT1A0", 1 == fixed, 2 == SameSprite.
 		return
 			String.Format( SAPPHIRE .. SpriteID( st.sprite ) .. LIGHTBLUE .. " %c " .. SAPPHIRE .. "%i\c-",
 						st.Frame + 65, st.Tics );
@@ -300,6 +302,10 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		prevLogStates[ thingfield.fieldPos ].st = st;
 		prevLogStateTics = thing.Tics;
 	} // of protected void DoStatesLogging( Actor thing, ZCheckerField thingfield ) {}
+
+	protected void addFlag( bool flagcond, String flagname ) {
+		tempFlagsStr = tempFlagsStr .. ( flagcond? GREEN : BLACK ) .. flagname .. " ";
+	}
 
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -374,67 +380,105 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 
-		bool curstateExtraInfo = CVar.GetCVar( "mcm_zchecker_infovar_statecurinfo", players[ consoleplayer ] ).GetBool();
+		PSprite pspr = NULL;
+		if ( weapOwner && weapOwner.player )
+			pspr = weapOwner.player.psprites;
+
+		// Tics information:
+		if ( CVar.GetCVar( "mcm_zchecker_infovar_statetic", players[ consoleplayer ] ).GetBool() ) {
+			if ( st.Tics < 0 ) {
+				outStr = outStr .. DARKGREEN .. "===== static =====";
+			} else {
+				int ticsbarLeft = 1;
+
+				int curtics = ( isWeapon? weapOwner.player.psprites.Tics : thing.tics );
+
+				if ( curtics > 1 )
+					ticsbarLeft = int( 20 * ( curtics - 1 ) / ( st.Tics? st.Tics : 1 ) );
+
+				if ( ticsbarLeft > 20 ) {
+					outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
+				} else {
+					String ticbar = DARKGREEN;
+    
+					for ( int i = 0; i < 20 - ticsbarLeft; i++ )
+						ticbar = ticbar .. "=";
+
+					ticbar = ticbar .. ">" .. BLACK;
+
+					for ( int i = 0; i < ticsbarLeft - 1; i++ )
+						ticbar = ticbar .. "+";
+
+					outStr = outStr .. ticbar .. DARKGRAY;
+				}
+			}
+
+			if ( !isWeapon )
+				outStr = outStr .. " (" .. thing.tics .. ")\n";
+			else if ( pspr )
+				outStr = outStr .. " (" .. pspr.tics .. ")\n";
+		}
+
+
+		// Extra state information:
+		int curstateExtraInfo = CVar.GetCVar( "mcm_zchecker_infovar_stateextras", players[ consoleplayer ] ).GetInt();
 
 		if ( !curstateExtraInfo )
 			return outStr;
 
-
-		if ( st.Tics < 0 ) {
-			outStr = outStr .. DARKGREEN .. "===== static =====";
-		} else {
-			int ticsbarLeft = 1;
-
-			int curtics = ( isWeapon? weapOwner.player.psprites.Tics : thing.tics );
-
-			if ( curtics > 1 )
-				ticsbarLeft = int( 20 * ( curtics - 1 ) / ( st.Tics? st.Tics : 1 ) );
-
-			if ( ticsbarLeft > 20 ) {
-				outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
-			} else {
-				String ticbar = DARKGREEN;
-
-				for ( int i = 0; i < 20 - ticsbarLeft; i++ )
-					ticbar = ticbar .. "=";
-
-				ticbar = ticbar .. ">" .. BLACK;
-
-				for ( int i = 0; i < ticsbarLeft - 1; i++ )
-					ticbar = ticbar .. "+";
-
-				outStr = outStr .. ticbar .. DARKGRAY;
-			}
-		}
-
 		if ( !isWeapon ) {
-			outStr = outStr .. " (" .. thing.tics .. ")\c-\n" ..
-				"  Flags: " ..
-					( st.bFast? "\c[Fire]Fst\c- " : "" ) ..
-					( st.bSlow? "\c[Fire]Slw\c- " : "" ) ..
-					( st.bFullbright? "\c[Yellow]Lit\c- " : "" ) ..
-					( st.bNoDelay? "\c[Sapphire]NoDelay\c- " : "" ) .. "\n"
-				"  Flags 2:" ..
-					( st.bSameFrame? "\c[Sapphire]SameFrm\c- " : "" ) ..
-					( st.bCanRaise? "\c[Green]CanRaise\c- " : "" ) ..
-					( st.bDehacked? "\c[Red]Deh\c- " : "" ) .. "\n" ..
-				"  UseFlags: " .. st.UseFlags .. ", TicRange: " .. st.TicRange .. "; \n" ..
-				"  Misc: " .. st.Misc1 .. "/" .. st.Misc2 .. "\n";
+			tempFlagsStr = "";
 
-		} else if ( weapOwner.player.psprites ) { // Thanks to Il Str for crash reporting.
-			PSprite pst = weapOwner.player.psprites;
+			switch ( curstateExtraInfo ) {
+				case 1:
+					addFlag( st.bFast, "fst" );
+					addFlag( st.bSlow, "slw" );
+					addFlag( st.bFullbright, "lit" );
+					addFlag( st.bNoDelay, "-dly" );
+					addFlag( st.bSameFrame, "frcpy" );
+					addFlag( st.bCanRaise, "raise" );
+					addFlag( st.bDehacked, "deh" );
+					outStr = outStr .. BreakPanelLines( tempFlagsStr );
+					break;
+				case 2:
+					addFlag( st.bFast, "fast" );
+					addFlag( st.bSlow, "slow" );
+					addFlag( st.bFullbright, "lit" );
+					addFlag( st.bNoDelay, "nodelay" );
+					addFlag( st.bSameFrame, "sameframe" );
+					addFlag( st.bCanRaise, "canraise" );
+					addFlag( st.bDehacked, "deh-modified" );
+					outStr = outStr .. BreakPanelLines( tempFlagsStr ) .. DARKRED .. " Used by " .. GRAY;
 
-			outStr = outStr .. " (" .. pst.tics .. ")\c-\n" ..
-				"  Pos: " .. pst.x .. "/" .. pst.y .. "\n" ..
+					tempFlagsStr = "";
+					if ( st.UseFlags & SUF_ACTOR )
+						tempFlagsStr = tempFlagsStr .. "actor";
+					if ( st.UseFlags & SUF_OVERLAY )
+						tempFlagsStr = tempFlagsStr .. ( tempFlagsStr != ""? ", " : "" ) .. "overlay";
+					if ( st.UseFlags & SUF_WEAPON )
+						tempFlagsStr = tempFlagsStr .. ( tempFlagsStr != ""? ", " : "" ) .. "weap";
+					if ( st.UseFlags & SUF_ITEM )
+						tempFlagsStr = tempFlagsStr .. ( tempFlagsStr != ""? ", " : "" ) .. "item";
+
+					outStr = outStr .. tempFlagsStr .. DARKGRAY .. "\n TicRange " .. GRAY .. st.TicRange .. DARKGRAY .. ", misc " .. GRAY .. st.misc1 .. DARKGRAY .. "/" .. GRAY .. st.misc2 .. "\n";
+					break;
+				case 0:
+				default:
+					break;
+			}
+
+		} else if ( pspr ) { // Thanks to Il Str for crash reporting.
+			outStr = outStr .. " (" .. pspr.tics .. ")\c-\n" ..
+				"  Pos: " .. pspr.x .. "/" .. pspr.y .. "\n" ..
 				"  Flags: " .. 
-					( pst.bCVarFast? "\c[Green]Fast\c- " : "" ) ..
-					( pst.processPending? "\c[Gray]Pend\c- " : "" ) .. "\n" ..
+					( pspr.bCVarFast? "\c[Green]Fast\c- " : "" ) ..
+					( pspr.processPending? "\c[Gray]Pend\c- " : "" ) .. "\n" ..
 				"  Flags 2: " ..
-					( pst.bFlip? "\c[Red]Flip\c- " : "" ) ..
-					( pst.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
-					( pst.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
-					( pst.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
-					( pst.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
+					( pspr.bFlip? "\c[Red]Flip\c- " : "" ) ..
+					( pspr.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
+					( pspr.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
+					( pspr.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
+					( pspr.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
 		}
 
 		return outStr;

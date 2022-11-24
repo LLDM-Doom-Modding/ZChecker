@@ -111,8 +111,8 @@ OptionValue "mcm_ZCheckerOption_panelmain_tags" {
 }
 OptionValue "mcm_ZCheckerOption_flags_names" {
 	0, "Disabled"
-	1, "Short names"
-	2, "Long names"
+	1, "Shorten"
+	2, "Long"
 }
 OptionValue "mcm_ZCheckerOption_panelgeom_secheights" {
 	0, "Disabled"
@@ -134,17 +134,6 @@ OptionValue "mcm_ZCheckerOption_panelgeom_lineaction" {
 
 // Submenus:
 
-OptionMenu "mcm_ZCheckerSubmenu_states" {
-	Title "ZChecker panel: States"
-	StaticText " "
-
-	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
-	Option "Current state extra", "mcm_zchecker_infovar_statecurinfo", "YesNo"
-	StaticText " "
-	Option "Log to console", "mcm_zchecker_infovar_stateslogging", "YesNo"
-}
-
-
 OptionMenu "mcm_ZCheckerSubmenu_main" {
 	Title "ZChecker panel: General info"
 	StaticText " "
@@ -153,6 +142,16 @@ OptionMenu "mcm_ZCheckerSubmenu_main" {
 	Option "Self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
 }
 
+OptionMenu "mcm_ZCheckerSubmenu_states" {
+	Title "ZChecker panel: States"
+	StaticText " "
+
+	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
+	Option "Current state tic", "mcm_zchecker_infovar_statetic", "YesNo"
+	Option "Current state extra", "mcm_zchecker_infovar_stateextras", "mcm_ZCheckerOption_flags_names"
+	StaticText " "
+	Option "Log to console", "mcm_zchecker_infovar_stateslogging", "YesNo"
+}
 
 OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 	Title "ZChecker panel: World positioning"

@@ -5,15 +5,12 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	bool printSecLights, printSecTextures, printSecDamage, printSecOther, printSecPortal, printSecTerrain;
 	int printSecFlagsMode, printSecHeightsMode;
 
-	transient Font flagsfont;
-
 	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_geomsectors";
 		optionLabel = "Actor sectors";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
 
 		printSecLights = printSecTextures = printSecOther = printSecPortal = printSecTerrain = false;
-		flagsfont = Font.FindFont( "smallfont" );
 	}
 
 /*
@@ -202,12 +199,8 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 				break;
 		}
 
-		if ( tempFlagsStr != "" ) {
-			BrokenLines lines = flagsfont.BreakLines( tempFlagsStr, flagsfont.GetCharWidth( 0x61 ) * 32 );
-
-			for ( int i = 0; i < lines.Count(); i++ )
-				info = info .. "  " .. lines.StringAt( i ) .. "\n";
-		}
+		if ( tempFlagsStr != "" )
+			info = info .. BreakPanelLines( tempFlagsStr );
 
 		outinfo = outinfo .. info;
 	} // of protected void addSectorInfo( Sector sec, String sectorName = "" ) {}

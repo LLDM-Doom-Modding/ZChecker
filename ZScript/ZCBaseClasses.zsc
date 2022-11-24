@@ -778,6 +778,18 @@ class ZCBaseInfoPanelPart abstract {
 	protected bool isItemPickedupWeapon( Actor item ) {
 		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
 	}
+
+	protected String BreakPanelLines( String instr ) {
+		String brokenstr = "";
+		Font panelsfont = handler.panels.infopanelsFont;
+
+		BrokenLines lines = panelsfont.BreakLines( instr, panelsfont.GetCharWidth( 0x61 ) * 32 );
+
+		for ( int i = 0; i < lines.Count(); i++ )
+			brokenstr = brokenstr .. "  " .. lines.StringAt( i ) .. "\n";
+
+		return brokenstr;
+	}
 } // of class ZCBaseInfoPanelPart abstract {}
 
 class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
