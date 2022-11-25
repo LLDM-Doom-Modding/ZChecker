@@ -65,27 +65,31 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		return outstr;
 	}
 
-	protected void addSectorInfo( Sector sec, String sectorName = "" ) {
+	protected void addSectorInfo( Sector sec, String sectorName = "", bool fromnewline = false ) {
 		if ( !sec ) {
-			outinfo.AppendFormat( BLACK .. "(No%s%s sector)\n" .. GRAY, ( sectorName == ""? "" : " " ), sectorName .. BLACK );
+			outinfo.AppendFormat( BLACK .. "\n(No%s%s sector)" .. GRAY, ( sectorName == ""? "" : " " ), sectorName .. BLACK );
 			return;
 		}
 
-		String info = DARKGRAY .. "Sector " .. GRAY .. sec.Index() .. DARKGRAY .. ( sectorName == ""? ":" : " (" .. sectorName .. DARKGRAY .. "):\n" );
+		bool noextrainfo = true;
+
+		String info = ( fromnewline? "\n" : "" ) .. DARKGRAY .. "Sector " .. GRAY .. sec.Index() .. DARKGRAY .. ( sectorName == ""? ":" : " (" .. sectorName .. DARKGRAY .. "):" );
 		tempInfoSec = sec;
 
 		switch ( printSecHeightsMode ) {
 			case 1:
-				info.AppendFormat( "  Flr " .. DARKGREEN .. "%i" .. DARKGRAY .. "/Ceil " .. TAN .. "%i" .. DARKGRAY .. ".\n",
+				info.AppendFormat( "\n  Flr " .. DARKGREEN .. "%i" .. DARKGRAY .. "/Ceil " .. TAN .. "%i" .. DARKGRAY .. ".",
 									int( sec.floorplane.d * sec.floorplane.negiC ), int( sec.ceilingplane.d * sec.ceilingplane.negiC ) );
+				noextrainfo = false;
 				break;
 			case 2:
 				double floorz = sec.floorplane.d * sec.floorplane.negiC;
 				double ceilingz = sec.ceilingplane.d * sec.ceilingplane.negiC;
 
-				info.AppendFormat( "  Ceil " .. TAN .. "%-4i" .. DARKGRAY .. " (head delta " .. TAN.. "%i" .. DARKGRAY .. ");\n"
-								.. "  Flr " .. DARKGREEN .. "%-4i" .. DARKGRAY .. " (feet delta " .. DARKGREEN.. "%i" .. DARKGRAY .. ").\n",
+				info.AppendFormat( "\n  Ceil " .. TAN .. "%-4i" .. DARKGRAY .. " (head delta " .. TAN.. "%i" .. DARKGRAY .. ");\n"
+								.. "  Flr " .. DARKGREEN .. "%-4i" .. DARKGRAY .. " (feet delta " .. DARKGREEN.. "%i" .. DARKGRAY .. ").",
 								int( ceilingz ), int( ceilingz - infothing.pos.z - infothing.height ), int( floorz ), int( infothing.pos.z - floorz ) );
+				noextrainfo = false;
 				break;
 			case 0:
 			default:
@@ -95,23 +99,26 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		if ( printSecLights ) {
 			int floorlight = sec.GetFloorLight();
 			int ceillight = sec.GetCeilingLight();
+			noextrainfo = false;
 
 			if ( floorlight == sec.lightlevel && floorlight == ceillight )
-				info = info .. "  Light level " .. WHITE .. sec.lightlevel .. DARKGRAY .. ".\n";
+				info = info .. "\n  Light level " .. WHITE .. sec.lightlevel .. DARKGRAY .. ".";
 			else
-				info = info .. "  Light " .. WHITE .. sec.lightlevel .. DARKGRAY .. ", flr " .. GRAY .. floorlight .. DARKGRAY .. ", ceil " .. GRAY .. ceillight .. ".\n";
+				info = info .. "\n  Light " .. WHITE .. sec.lightlevel .. DARKGRAY .. ", flr " .. GRAY .. floorlight .. DARKGRAY .. ", ceil " .. GRAY .. ceillight .. ".";
 		}
 
 		if ( printSecTextures ) {
-			info = info .. "  Tex:" .. TAN .. "C " .. getTextureInfo( Sector.ceiling ) ..
-						";\n  Tex:" .. DARKGREEN .. "F " .. getTextureInfo( Sector.floor ) .. ".\n";
+			noextrainfo = false;
+			info = info .. "\n  Tex:" .. TAN .. "C " .. getTextureInfo( Sector.ceiling ) ..
+						";\n  Tex:" .. DARKGREEN .. "F " .. getTextureInfo( Sector.floor ) .. ".";
 		}
 
 		if ( printSecDamage ) {
 			// [McM]: now "sec.GetSpecial()" is not used.
+			noextrainfo = false;
 
-			info = info .. BRICK .. "  Damage" .. DARKRED .. ": type \"" .. ( sec.damageType == 'None'? DARKGRAY : ORANGE ) .. sec.damageType .. DARKRED .. "\",\n    " ..
-				( sec.damageAmount == 0? DARKGRAY : BRICK ) .. sec.damageAmount .. DARKRED .. " hp/" .. BRICK .. sec.damageInterval .. DARKRED .. " tics, leakydmg " .. sec.leakydamage .. ".\n";
+			info = info .. BRICK .. "\n  Damage" .. DARKRED .. ": type \"" .. ( sec.damageType == 'None'? DARKGRAY : ORANGE ) .. sec.damageType .. DARKRED .. "\",\n    " ..
+				( sec.damageAmount == 0? DARKGRAY : BRICK ) .. sec.damageAmount .. DARKRED .. " hp/" .. BRICK .. sec.damageInterval .. DARKRED .. " tics, leakydmg " .. sec.leakydamage .. ".";
 		}
 
 
@@ -199,8 +206,15 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 				break;
 		}
 
-		if ( tempFlagsStr != "" )
-			info = info .. BreakPanelLines( tempFlagsStr );
+		if ( tempFlagsStr != "" ) {
+			info = info .. "\n" .. BreakPanelLines( tempFlagsStr );
+			noextrainfo = false;
+		}
+
+		if ( noextrainfo )
+			info.Replace( ":", "." );
+		else
+			RemoveLastNewlineSymbol( info );
 
 		outinfo = outinfo .. info;
 	} // of protected void addSectorInfo( Sector sec, String sectorName = "" ) {}
@@ -225,9 +239,14 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 
 		if ( differFloorCeilSectors ) {
 			if ( thing.cursector != thing.floorsector && thing.cursector != thing.ceilingsector ) {
-				addSectorInfo( thing.ceilingsector, "ceiling" );
-				addSectorInfo( thing.floorsector, "floor" );
-				addSectorInfo( thing.cursector, YELLOW .. "actual" );
+				if ( thing.floorsector == thing.ceilingsector ) {
+					addSectorInfo( thing.floorsector, "floor/ceil" );
+				} else {
+					addSectorInfo( thing.ceilingsector, "ceiling" );
+					addSectorInfo( thing.floorsector, "floor", true );
+				}
+				addSectorInfo( thing.cursector, YELLOW .. "actual", true );
+
 			} else {
 				String header = "ceil";
 				if ( thing.cursector == thing.ceilingsector )
@@ -239,7 +258,7 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 				if ( thing.cursector == thing.floorsector )
 					header = header .. ", " .. YELLOW .. "cur";
 
-				addSectorInfo( thing.floorsector, header );
+				addSectorInfo( thing.floorsector, header, true );
 			}
 		} else {
 			String cursecname = "";
@@ -289,11 +308,11 @@ struct TerrainDef native {
 				}
 
 				outinfo.AppendFormat( C ..
-						"Terrain \"" .. TAN .. "%s" .. C .. "\" (" .. DARKGRAY .. "%i" .. C .. "):\n" ..
+						"\nTerrain \"" .. TAN .. "%s" .. C .. "\" (" .. DARKGRAY .. "%i" .. C .. "):\n" ..
 						"  Fric " .. TAN .. "%1.2f" .. C .. ", mul " .. TAN .. "%1.2f" .. C .. ", clipping " .. TAN .. "%1.2f\n" ..
 						"  %s" .. C .. ", splash " .. GRAY .. "%i" .. C .. ".\n%s" .. C ..
 						"  Steps: vol " .. GRAY .. "%1.2f, " .. C .. "tics " .. DARKGRAY .. "wlk" .. CYAN .. "%i" .. C .. "/" .. DARKGRAY .. "run" .. CYAN .. "%i" .. C .. ".\n"
-						"    Left snd \"" .. TAN .. ter.LeftStepSound .. C .. "\";\n    Right snd \"" .. TAN .. ter.RightStepSound .. C .. "\".\n",
+						"    Left snd \"" .. TAN .. ter.LeftStepSound .. C .. "\";\n    Right snd \"" .. TAN .. ter.RightStepSound .. C .. "\".",
 					ter.TerrainName, thing.floorterrain,
 					ter.Friction, ter.MoveFactor, ter.FootClip,
 					( ter.IsLiquid? DARKGRAY .. "Not liquid" : BLUE .. "Is liquid" ), ter.Splash,
@@ -301,7 +320,7 @@ struct TerrainDef native {
 					ter.StepVolume, ter.WalkStepTics, ter.RunStepTics
 				);
 			} else {
-				outinfo = outinfo .. DARKGRAY .. "No terrain (" .. thing.floorterrain .. ").\n";
+				outinfo = outinfo .. DARKGRAY .. "\nNo terrain (" .. thing.floorterrain .. ").";
 			}
 		} // of if ( printSecTerrain ) {}
 
@@ -317,6 +336,6 @@ class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	}
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
-		return "(Linedefs geometry).";
+		return BLACK .. "([WIP] Linedefs geometry must be here).";
 	}
 } // of class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {}

@@ -45,7 +45,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_PanelsPosition" {
 	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
 	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 100.0, 1.0, 0
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
-	Slider "Scaling", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
+	Slider "Screen scale", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
+	Slider "Panels interval Y, multiplier", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "
     StaticText "Other", GOLD
 	Option "Font", "mcm_zchecker_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"

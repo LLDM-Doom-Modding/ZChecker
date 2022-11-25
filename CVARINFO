@@ -2,16 +2,16 @@
 server int mcm_zchecker_loglevel = 1;
 server bool mcm_zchecker_allowdangerccmds = false;
 
+user int mcm_zchecker_min_sectorslines_tag	= 1;
+user int mcm_zchecker_max_sectorslines_tag	= 700;
+
 // General information panel variables.
 user float mcm_zchecker_infopanel_startx	= 2.0;
 user float mcm_zchecker_infopanel_starty	= 1.0;
 user float mcm_zchecker_infopanel_offsetx	= 33.0;
 user float mcm_zchecker_infopanel_scale		= 1.0;
-
-user int mcm_zchecker_min_sectorslines_tag	= 1;
-user int mcm_zchecker_max_sectorslines_tag	= 700;
-
-user int mcm_zchecker_fonttype				= 0;
+user float mcm_zchecker_infopanelparts_y_gap= 0.55;
+user int mcm_zchecker_infopanel_fonttype	= 0;
 
 // Internal string for the API between ZScript and ACS.
 user noarchive string mcm_zchecker_internal_metastring;

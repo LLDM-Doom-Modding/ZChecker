@@ -785,10 +785,24 @@ class ZCBaseInfoPanelPart abstract {
 
 		BrokenLines lines = panelsfont.BreakLines( instr, panelsfont.GetCharWidth( 0x61 ) * 32 );
 
-		for ( int i = 0; i < lines.Count(); i++ )
+		int linesAmount = lines.Count();
+
+		for ( int i = 0; i < linesAmount - 1; i++ )
 			brokenstr = brokenstr .. "  " .. lines.StringAt( i ) .. "\n";
 
+		// Do not insert a last newline character:
+		if ( linesAmount )
+			brokenstr = brokenstr .. "  " .. lines.StringAt( linesAmount - 1 );
+
 		return brokenstr;
+	}
+
+	// Actually this is a convenience crutch.
+	protected void RemoveLastNewlineSymbol( out String str ) {
+		String lastchar = str.CharAt( str.Length() - 1 );
+
+		if ( lastchar == "\n" )
+			str = str.Left( str.Length() - 1 );
 	}
 } // of class ZCBaseInfoPanelPart abstract {}
 

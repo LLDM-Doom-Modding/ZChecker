@@ -77,23 +77,21 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 							int( thing.roll ) .. ");\n" .. TEAL ..
 				"Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
 				String.Format( "Vel: (%.2f, %.2f, %.2f)", thing.vel.x, thing.vel.y, thing.vel.z ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
-				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".\n", thing.radius, thing.height );
+				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".", thing.radius, thing.height );
 
 
 		bool showPlayerButtons = CVar.GetCVar( "mcm_zchecker_infovar_wposplayerbuttons", players[ consoleplayer ] ).GetBool();
 
 		if ( thing is "PlayerPawn" && thing.player && showPlayerButtons ) {
-			outStr.AppendFormat( DARKGRAY .. "Keys 0x" .. GRAY .. "%08x\n", thing.player.cmd.buttons );
+			outStr.AppendFormat( DARKGRAY .. "\nKeys 0x" .. GRAY .. "%08x\n", thing.player.cmd.buttons );
 			curPlayerButtons = thing.player.cmd.buttons;
-
 /*
 use.t..^...u..fr.af
 jmp.b.<v>.ldr.rl.zm
 crh...........u1234
 spd.strf..t180.scor
 */
-
-			outStr = outStr .. String.Format(
+			outStr.AppendFormat(
 				"%suse %st   %s^    %su   %sfr %saf\n" ..
 				"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
 				"%scrh                " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
@@ -102,7 +100,7 @@ spd.strf..t180.scor
 				Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
 				Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
 				Col( SPD ) , Col( STRF ), Col( T180 ), Col( SCOR )
-			) .. "\n";
+			);
 		}
 
 		return outStr;
@@ -217,7 +215,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 			outStr = outStr .. "none";
 		}
 
-		return outStr .. ".\n";
+		return outStr .. ".";
 	}
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
 
@@ -331,6 +329,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		if ( statesAmount == 0 )
 			statesAmount = 0xFFFF;
 
+		// States and loops information:
 		prevstates.Clear();
 		prevstatesstr.Clear();
 		outStr = outStr .. ( isWeapon? "PSprite states" : "States" );
@@ -366,11 +365,10 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			statesCnt++;
 		} while ( st && st != curState && statesCnt < statesAmount && !loopFound );
 
-
-		st = curState;
-
 		for ( int i = 0; i < prevstatesstr.Size(); i++ )
 			outStr = outStr .. prevstatesstr[ i ] .. "\n";
+
+		RemoveLastNewlineSymbol( outStr );
 
 		if ( statesAmount != 0xFFFF ) {
 			while ( statesCnt < statesAmount ) {
@@ -380,12 +378,16 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 
+		st = curState;
 		PSprite pspr = NULL;
+
 		if ( weapOwner && weapOwner.player )
 			pspr = weapOwner.player.psprites;
 
 		// Tics information:
 		if ( CVar.GetCVar( "mcm_zchecker_infovar_statetic", players[ consoleplayer ] ).GetBool() ) {
+			outStr = outStr .. "\n";
+
 			if ( st.Tics < 0 ) {
 				outStr = outStr .. DARKGREEN .. "===== static =====";
 			} else {
@@ -414,9 +416,9 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			}
 
 			if ( !isWeapon )
-				outStr = outStr .. " (" .. thing.tics .. ")\n";
+				outStr = outStr .. " (" .. thing.tics .. ")";
 			else if ( pspr )
-				outStr = outStr .. " (" .. pspr.tics .. ")\n";
+				outStr = outStr .. " (" .. pspr.tics .. ")";
 		}
 
 
@@ -438,7 +440,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					addFlag( st.bSameFrame, "frcpy" );
 					addFlag( st.bCanRaise, "raise" );
 					addFlag( st.bDehacked, "deh" );
-					outStr = outStr .. BreakPanelLines( tempFlagsStr );
+					outStr = outStr .. "\n" .. BreakPanelLines( tempFlagsStr );
 					break;
 				case 2:
 					addFlag( st.bFast, "fast" );
@@ -448,7 +450,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					addFlag( st.bSameFrame, "sameframe" );
 					addFlag( st.bCanRaise, "canraise" );
 					addFlag( st.bDehacked, "deh-modified" );
-					outStr = outStr .. BreakPanelLines( tempFlagsStr ) .. DARKRED .. " Used by " .. GRAY;
+					outStr = outStr .. "\n" .. BreakPanelLines( tempFlagsStr ) .. DARKRED .. "\n Used by " .. GRAY;
 
 					tempFlagsStr = "";
 					if ( st.UseFlags & SUF_ACTOR )
@@ -460,7 +462,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					if ( st.UseFlags & SUF_ITEM )
 						tempFlagsStr = tempFlagsStr .. ( tempFlagsStr != ""? ", " : "" ) .. "item";
 
-					outStr = outStr .. tempFlagsStr .. DARKGRAY .. "\n TicRange " .. GRAY .. st.TicRange .. DARKGRAY .. ", misc " .. GRAY .. st.misc1 .. DARKGRAY .. "/" .. GRAY .. st.misc2 .. "\n";
+					outStr = outStr .. tempFlagsStr .. DARKGRAY .. "\n TicRange " .. GRAY .. st.TicRange .. DARKGRAY .. ", misc " .. GRAY .. st.misc1 .. DARKGRAY .. "/" .. GRAY .. st.misc2;
 					break;
 				case 0:
 				default:
@@ -478,11 +480,12 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					( pspr.firstTic? "\c[Fire]1stTic\c- " : "" ) ..
 					( pspr.bAddWeapon? "\c[Yellow]AddWeap\c- " : "" ) ..
 					( pspr.bAddBob? "\c[Sapphire]AddBob\c- " : "" ) ..
-					( pspr.bPowDouble? "\c[Yellow]Pow2x\c- " : "" ) .. "\c-\n";
+					( pspr.bPowDouble? "\c[Yellow]Pow2x\c- " : "" );
 		}
 
 		return outStr;
-	}
+	} // of override String GetInfo( Actor thing, ZCheckerField thingfield ) {}
+
 } // of class ZCStatesInfoPanel: ZCBaseInfoPanelPart {}
 
 
@@ -553,7 +556,7 @@ class ZCSpritesInfoPanel: ZCBaseInfoPanelPart {
 		outStr.AppendFormat( GRAY .. ( textureName.Mid( 5, 1 ) == "0"? "Faced" : "Rotor" ) .. DARKGRAY .. " ID %i, TranslID %i;\n", int( thing.sprite ), thing.Translation );
 		outStr.AppendFormat( DARKGRAY .. "Txtr ofs " .. ZCGlobal.squeezeVector2dec2( textureOffset ) .. ";\nbool %i vec2 " .. ZCGlobal.squeezeVector2dec2( textureVec2 ) .. ".", textureBool );
 
-		return outStr .. "\n";
+		return outStr;
 	}
 } // of class ZCSpritesInfoPanel: ZCBaseInfoPanelPart {}
 
@@ -580,6 +583,6 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 			info.AppendFormat( DARKRED .. ")" .. DARKGRAY .. ".\n" .. DARKRED .. "Mass " .. thing.mass .. DARKGRAY .. ", " .. DARKRED .. "Grav %.3f" .. DARKGRAY .. "." , thing.gravity );
 		}
 
-		return info .. "\n";
+		return info;
 	}
 } // of class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {}

@@ -94,7 +94,7 @@ class ZCInfoPanelNodeKeeper {
 
 // Data-scoped panels storage:
 class ZCPanelsStorage {
-	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file.
+	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file ("zchecker.cfg").
 	ZCInfoPanelNodeKeeper curPanels;			// Loaded from the *.ini.
 
 	transient CVar panelsOrderCVar;
@@ -261,7 +261,7 @@ class ZCPanelsStorage {
 		int fonttype = -1;
 
 		if ( !fonttypeCVar )
-			fonttypeCVar = CVar.GetCVar( "mcm_zchecker_fonttype", players[ consoleplayer ] );
+			fonttypeCVar = CVar.GetCVar( "mcm_zchecker_infopanel_fonttype", players[ consoleplayer ] );
 
 		fonttype = fonttypeCVar.GetInt();
 
@@ -572,6 +572,16 @@ class ZCheckerHandler: StaticEventHandler {
 		double infopanelStartY = CVar.FindCVar( "mcm_zchecker_infopanel_starty" ).GetFloat();
 		double infopanelScale = CVar.FindCVar( "mcm_zchecker_infopanel_scale" ).GetFloat();
 		double infopanelOffsetX = CVar.FindCVar( "mcm_zchecker_infopanel_offsetx" ).GetFloat();
+		double infopanelPartsSpaceY = CVar.FindCVar( "mcm_zchecker_infopanelparts_y_gap" ).GetFloat();
+
+		// Thanks to m8f for the "drawTextCenter()" function code from its "Hellscape Navigator".
+		double bordersXMargin = 4.0;
+		double scale = 1.0 / infopanelScale;
+
+		int height = int( scale * Screen.GetHeight() );
+		int width = int( scale * Screen.GetWidth() );
+
+		int fontSymbolHeight = panels.infopanelsFont.GetHeight() + 1;
 
 
 		for ( int i = 0; i < MaxTestee; i++ ) {
@@ -580,39 +590,54 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( !curTestee )
 				continue;
 
+			double y = infopanelStartY * 0.01 * height;
+			double x = infopanelStartX * 0.01 + i * infopanelOffsetX * 0.01;
+			x *= width;
 
 			// Forming a full information panel:
-			String outStr = "";
+			Array<String> panelsstr;
+			panelsstr.Clear();
 
 			for ( int j = 0; j < infoPanelParts.Size(); j++ ) {
+				String outStr = "\c-";
+
 				if ( infoPanelParts[ j ].IsPlayScope() )
-					outStr = outStr .. "\c-" .. ZCBaseInfoPanelPart_PlayScope( infoPanelParts[ j ] ).InternalGetInfo_clearscope( i ) .. "\n";
+					outStr = outStr .. ZCBaseInfoPanelPart_PlayScope( infoPanelParts[ j ] ).InternalGetInfo_clearscope( i ) .. "\n";
 				else
-					outStr = outStr .. "\c-" .. infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] ) .. "\n";
+					outStr = outStr .. infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] ) .. "\n";
+
+				panelsstr.Push( outstr );
+
+				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
+
+				// Push the text out from the borders:
+				if ( x < bordersXMargin )
+					x = bordersXMargin;
+				else if ( x > width - stringWidth - bordersXMargin )
+					x = width - stringWidth - bordersXMargin;
 			}
 
+			// Printing infopanels parts:
+			int panelsstrAmount = panelsstr.Size();
 
-			// Thanks to m8f for the "drawTextCenter()" function code from its "Hellscape Navigator".
-			double bordersXMargin = 4.0;
-			double scale = 1.0 / infopanelScale;
-			double x = infopanelStartX * 0.01 + i * infopanelOffsetX * 0.01;
-			double y = infopanelStartY * 0.01;
+			for ( int j = 0; j < panelsstrAmount - 1; j++ ) {
+				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ j ],
+								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
 
-			int width = int( scale * Screen.GetWidth() );
-			int height = int( scale * Screen.GetHeight() );
-			double stringWidth = panels.infopanelsFont.StringWidth( outStr );
+				// Adding an Y-offset for the next panel part:
+				int newlinesAmount = 0;
+				int nextNewlinePos = -1;
 
-			x = ( width * x );
-			y *= height;
+				while ( -1 != ( nextNewlinePos = panelsstr[ j ].IndexOf( "\n", nextNewlinePos + 1 ) ) )
+					newlinesAmount++;
 
-			// Push the text out from the borders:
-			if ( x < bordersXMargin )
-				x = bordersXMargin;
-			else if ( x > width - stringWidth - bordersXMargin )
-				x = width - stringWidth - bordersXMargin;
+				y += fontSymbolHeight * ( newlinesAmount + infopanelPartsSpaceY );
+			}
 
-			Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, outStr,
-							DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
+			if ( panelsstrAmount ) {
+				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ panelsstrAmount - 1 ],
+								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
+			}
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
 
 		Super.RenderOverlay( e );

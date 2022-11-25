@@ -12,7 +12,7 @@ class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 
 		outStr = outStr .. thing.Args[ 4 ] .. OLIVE .. "]; \n" ..
 				DARKGRAY .. "TID: " .. ( thing.TID? N : "" ) .. thing.TID .. "; \n" ..
-				DARKGRAY .. "TID to hate: " .. ( thing.TIDtoHate? N : "" ) .. thing.TIDtoHate .. ".\n";
+				DARKGRAY .. "TID to hate: " .. ( thing.TIDtoHate? N : "" ) .. thing.TIDtoHate .. ".";
 
 		return outStr;
 	}
@@ -68,7 +68,7 @@ class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
 			outStr = outStr .. DARKGRAY .. "Not in any team (" .. team .. ")\c-.";
 		}
 
-		return outStr .. "\n";
+		return outStr;
 	}
 } // of class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {}
 
