@@ -85,9 +85,9 @@ class ZCSoundInfoPanel: ZCBaseInfoPanelPart
 	{
         String info = "";
 
-		info = info .. TEXTCOLOR_WHITE .. "Sounds:";
+	info = info .. TEXTCOLOR_WHITE .. "Sounds:";
         info = info .. TEXTCOLOR_RED .. "\n Attack: " .. Thing.AttackSound;
-		info = info .. TEXTCOLOR_RED .. "\n Pain: " .. Thing.PainSound;
+	info = info .. TEXTCOLOR_RED .. "\n Pain: " .. Thing.PainSound;
         info = info .. TEXTCOLOR_RED .. "\n Death: " .. Thing.DeathSound;
         info = info .. TEXTCOLOR_PURPLE .. "\n See: " .. Thing.SeeSound;
         info = info .. TEXTCOLOR_PURPLE .. "\n Active: " .. Thing.ActiveSound;
