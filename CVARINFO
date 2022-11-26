@@ -76,7 +76,7 @@ user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
 //user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
-
+user bool mcm_zchecker_sound_info			= true;
 
 // The "Everything" map console variables.
 server bool mcm_zchecker_ev_forcemap		= false; // Skip the Everything map check (use the code attached to it on any map).
