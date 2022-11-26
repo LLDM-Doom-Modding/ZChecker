@@ -17,12 +17,14 @@ version "3.3.0"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
-const MaxTestee = 3;
 const ZCheckerVersion = "0.69";
+
 
 // AutoAmbient: 0x7FAA0004.
 const ZCheckerHandlerOrder = 0x7FAA0005;
 const ZCheckerMapHandlerOrder = 0x7FAA0006;
+
+const MaxTestee = 3; // Will rename someday...
 
 const ZCHECKER_AGRS_SEPARATOR = "@@";
 
@@ -512,11 +514,8 @@ class ZCheckerHandler: StaticEventHandler {
 
 		panels = ZCPanelsStorage.Create();
 
-		for ( int i = 0; i < MaxTestee; i++ ) {
-			Testee[ i ] = new( 'ZCheckerField' );
-			Testee[ i ].fieldPos = i;
-			Testee[ i ].actorType = IAT_Normal;
-		}
+		for ( int i = 0; i < MaxTestee; i++ )
+			Testee[ i ] = ZCheckerField.Create( i );
 
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
@@ -583,16 +582,19 @@ class ZCheckerHandler: StaticEventHandler {
 
 		int fontSymbolHeight = panels.infopanelsFont.GetHeight() + 1;
 
-
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			Actor curTestee = UpdateTesteeField( i );
 
 			if ( !curTestee )
 				continue;
 
-			double y = infopanelStartY * 0.01 * height;
+			double starty = infopanelStartY * 0.01 * height;
+			double y = starty;
 			double x = infopanelStartX * 0.01 + i * infopanelOffsetX * 0.01;
 			x *= width;
+
+			double maxStringWidth = 0.0;
+
 
 			// Forming a full information panel:
 			Array<String> panelsstr;
@@ -615,12 +617,15 @@ class ZCheckerHandler: StaticEventHandler {
 					x = bordersXMargin;
 				else if ( x > width - stringWidth - bordersXMargin )
 					x = width - stringWidth - bordersXMargin;
+
+				if ( maxStringWidth < stringWidth )
+					maxStringWidth = stringWidth;
 			}
 
 			// Printing infopanels parts:
 			int panelsstrAmount = panelsstr.Size();
 
-			for ( int j = 0; j < panelsstrAmount - 1; j++ ) {
+			for ( int j = 0; j < panelsstrAmount; j++ ) {
 				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ j ],
 								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
 
@@ -634,10 +639,10 @@ class ZCheckerHandler: StaticEventHandler {
 				y += fontSymbolHeight * ( newlinesAmount + infopanelPartsSpaceY );
 			}
 
-			if ( panelsstrAmount ) {
-				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ panelsstrAmount - 1 ],
-								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
-			}
+			/*if ( panelsstrAmount ) {
+				//native static void Dim(Color col, double amount, int x, int y, int w, int h);
+				Screen.Dim( 0x000000, 0.5, int( x ), int( starty ), int( maxStringWidth * CleanXFac ), int( ( y - starty ) * CleanYFac ) );
+			}*/
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
 
 		Super.RenderOverlay( e );
@@ -654,7 +659,7 @@ class ZCheckerHandler: StaticEventHandler {
 				panels.UpdatePanels();
 				panels.InitSetPanelsorderCVar( zcCCMDInfo.args[ 0 ] );
 			} else {
-				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Updating panels order network event has wrong amount of arguments (must be 1, got " .. zcCCMDInfo.args.Size() .. ")." );
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Updating panels order netevent has wrong amount of arguments (must be 1, got " .. zcCCMDInfo.args.Size() .. ")." );
 				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
 			}
 
@@ -662,6 +667,37 @@ class ZCheckerHandler: StaticEventHandler {
 			return;
 		}
 
+		if ( multiplayer && ccmdName ~== "zc_multiplayer_synctest" && e.args[ 1 ] != consoleplayer ) {
+			if ( zcCCMDInfo.args.Size() == 1 ) {
+				uint testeePos = e.args[ 0 ];
+				uint srcPlayer = e.args[ 1 ];
+
+				bool argerror = false;
+
+				if ( testeePos >= MaxTestee ) {
+					argerror = true;
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent: wrong position " .. testeePos .. " to compare." );
+				}
+
+				if ( srcPlayer >= MAXPLAYERS ) {
+					argerror = true;
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent: wrong source player #" .. srcPlayer .. "." );
+				}
+
+				if ( !argerror ) {
+					Testee[ testeePos ].asyncwith = ( ( Testee[ testeePos ].hashsync[ srcPlayer ] == zcCCMDInfo.args[ 0 ] )? 0 : srcPlayer + 1 );
+				}
+
+			} else {
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent has wrong amount of arguments (must be 3, got " .. zcCCMDInfo.args.Size() .. ")." );
+				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
+			}
+
+			Super.NetworkProcess( e );
+			return;
+		}
+
+		// Just a debug NetworkProcess() output.
 		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
 			String debugstr = GetClassName() .. "::NetworkProcess(). CCMD: \"" .. ccmdName .. "\"";
 
@@ -718,6 +754,22 @@ class ZCheckerHandler: StaticEventHandler {
 		}
 
 		Super.WorldTick();
+
+		// Test for asynchronous actors:
+		int playernum = ( level.maptime % MAXPLAYERS );
+
+		if ( multiplayer && playeringame[ playernum ] ) {
+			if ( playernum == consoleplayer ) {
+				for ( int i = 0; i < MaxTestee; i++ )
+					EventHandler.SendNetworkEvent( "zc_multiplayer_synctest" .. ZCHECKER_AGRS_SEPARATOR .. Testee[ i ].GetHash(), i, consoleplayer );
+			} else {
+				for ( int i = 0; i < MaxTestee; i++ )
+					Testee[ i ].UpdateHash( playernum );
+			}
+
+			//for ( int i = 0; i < MaxTestee; i++ )
+			//	console.printf( GetClassName() .. "::WorldTick(). ZCheckerField[ " .. i .. " ]: \"" .. Testee[ i ].GetHash() .. "\"" );
+		}
 	} // of override void WorldTick() {}
 
 	override void WorldLoaded( WorldEvent e ) {

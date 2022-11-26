@@ -252,6 +252,8 @@ class ZCAddCommand: ZCConsoleCommand {
 			if ( field.mo ) {
 				SetInternalZCheckerString( "$last", field.mo.GetClassName() );
 				ccmd.handler.UpdateInternalClassnameByField( zcPos );
+
+				field.UpdateHash( ccmd.e.Player );
 			}
 
 		} else {

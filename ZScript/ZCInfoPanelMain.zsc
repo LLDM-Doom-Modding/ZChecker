@@ -18,8 +18,12 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 		if ( displayTagsMode == 2 || ( displayTagsMode == 1 && thing.GetTag() != thing.GetClassName() ) )
 			info = info .. "\n" .. ORANGE .. "Tag" .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
+
 		if ( displaySelfPointerMode )
 			info = info .. "\n" .. BLACK .. "&self: " .. DARKGRAY .. thing;
+
+		if ( thingfield.asyncwith && playeringame[ thingfield.asyncwith ] )
+			info = info .. "\n" .. ( level.time & 16? ORANGE : FIRE ) .. "Async" .. RED .. " with player " .. thingfield.asyncwith .. "/" ..MAXPLAYERS .. "!";
 
 		return info;
 	}

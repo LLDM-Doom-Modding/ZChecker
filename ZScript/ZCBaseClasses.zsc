@@ -15,9 +15,10 @@ class ZCheckerCCMDInfo play {
 		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
 			int delimetersAmount = 0;
 
-			for ( int i = 0; i < e.Name.Length(); i++ )
-				if ( e.Name.CharAt( i ) == ZCHECKER_AGRS_SEPARATOR )
-					delimetersAmount++;
+			int curpos = 0;
+
+			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + 2 ) ) )
+				delimetersAmount++;
 
 			ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::InitFromEvent(). Maximal amount of arguments (excluding name): " .. delimetersAmount );
 		}
@@ -41,7 +42,66 @@ class ZCheckerField {
 	uint fieldPos;
 	Actor mo;				// Testee actor itself.
 	EZCheckerInfoActorType actorType;
-}
+
+	uint asyncwith;			// Warn in multiplayer (0 == synced, 1..8 == player).
+	String hashsync[ MAXPLAYERS ];
+
+
+	static ZCheckerField Create( int testeepos ) {
+		ZCheckerField newfield = new( 'ZCheckerField' );
+
+		newfield.fieldPos = testeepos;
+		newfield.mo = NULL;
+		newfield.actorType = IAT_Normal;
+		newfield.asyncwith = 0;
+
+		for ( int i = 0; i < MAXPLAYERS; i++ )
+			newfield.hashsync[ i ] = "<Field " .. testeepos .. " hash " .. i .. " not initialized>";
+
+		return newfield;
+	}
+
+	private String mixStrings( String a, String b ) {
+		String outstr = "";
+		int alen = a.Length();
+		int blen = b.Length();
+
+		// Adjusting string lengths:
+		while ( alen > blen ) {
+			b = b .. b.Left( min( blen, alen - blen ) );
+			blen = b.Length();
+		}
+		while ( blen > alen ) {
+			a = a .. a.Left( min( alen, blen - alen ) );
+			alen = a.Length();
+		}
+
+		if ( alen != blen ) {
+			ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::mixStrings(). Mismatch ajdusted string lengths: \"" .. TEXTCOLOR_WHITE .. a .. LLCOLOR_EMERGENCY .. "\" (" .. alen .. ") vs \"" .. TEXTCOLOR_WHITE .. b .. LLCOLOR_EMERGENCY .. "\" (" .. blen .. ")." );
+			return a;
+		}
+
+		// Mixing:
+		for ( int i = 0; i < alen; i++ ) {
+			uint nextchar = a.CharCodeAt( i ) ^ b.CharCodeAt( i );
+
+			outstr.AppendFormat( "%c", ( nextchar == 0? 32 : nextchar ) );
+		}
+
+		return outstr;
+	} // of private void mixStrings( String a, String b ) {}
+
+	String GetHash( void ) {
+		if ( !mo )
+			return "<No actor at " .. fieldPos .. ">";
+
+		return mixStrings( mo.GetClassName(), String.Format( "%i%i%.2f%.2f%.2f", fieldPos, actorType, mo.pos.x, mo.pos.y, mo.pos.z ) );
+	}
+
+	void UpdateHash( int playernum ) {
+		hashsync[ playernum ] = GetHash();
+	}
+} // of class ZCheckerField {}
 
 
 // Base ZChecker CCMD class.
@@ -779,20 +839,24 @@ class ZCBaseInfoPanelPart abstract {
 		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
 	}
 
-	protected String BreakPanelLines( String instr ) {
+	// Translates a string into multiline text.
+	protected String BreakPanelLines( String instr, String prefix = "  ", uint textwidth = -1 ) {
 		String brokenstr = "";
 		Font panelsfont = handler.panels.infopanelsFont;
 
-		BrokenLines lines = panelsfont.BreakLines( instr, panelsfont.GetCharWidth( 0x61 ) * 32 );
+		if ( textwidth <= 0 )
+			textwidth = 32;
+
+		BrokenLines lines = panelsfont.BreakLines( instr, panelsfont.GetCharWidth( 0x61 ) * textwidth );
 
 		int linesAmount = lines.Count();
 
 		for ( int i = 0; i < linesAmount - 1; i++ )
-			brokenstr = brokenstr .. "  " .. lines.StringAt( i ) .. "\n";
+			brokenstr = brokenstr .. prefix .. lines.StringAt( i ) .. "\n";
 
 		// Do not insert a last newline character:
 		if ( linesAmount )
-			brokenstr = brokenstr .. "  " .. lines.StringAt( linesAmount - 1 );
+			brokenstr = brokenstr .. prefix .. lines.StringAt( linesAmount - 1 );
 
 		return brokenstr;
 	}
