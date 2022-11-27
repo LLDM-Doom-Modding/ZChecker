@@ -95,7 +95,9 @@ class ZCheckerField {
 		if ( !mo )
 			return "<No actor at " .. fieldPos .. ">";
 
-		return mixStrings( mo.GetClassName(), String.Format( "%i%i%.2f%.2f%.2f", fieldPos, actorType, mo.pos.x, mo.pos.y, mo.pos.z ) );
+		String outstr = mixStrings( mo.GetClassName(), String.Format( "%i%.2f%.2f%.2f%.2f", mo.tics + fieldPos * 10 + actorType * 100, mo.angle + mo.pitch, mo.pos.x, mo.pos.y, mo.pos.z ) );
+
+		return mixStrings( outstr, ( mo.inv? mo.inv.GetClassName() .. "" : "<No_inventory>" ) );
 	}
 
 	void UpdateHash( int playernum ) {

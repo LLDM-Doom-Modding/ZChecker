@@ -760,8 +760,10 @@ class ZCheckerHandler: StaticEventHandler {
 
 		if ( multiplayer && playeringame[ playernum ] ) {
 			if ( playernum == consoleplayer ) {
-				for ( int i = 0; i < MaxTestee; i++ )
+				for ( int i = 0; i < MaxTestee; i++ ) {
+					// Warning! Hash may generate a format specifier ("%s" etc). Do not use any "printf()" output!
 					EventHandler.SendNetworkEvent( "zc_multiplayer_synctest" .. ZCHECKER_AGRS_SEPARATOR .. Testee[ i ].GetHash(), i, consoleplayer );
+				}
 			} else {
 				for ( int i = 0; i < MaxTestee; i++ )
 					Testee[ i ].UpdateHash( playernum );
