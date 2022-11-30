@@ -296,17 +296,17 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	// Gets a linetarget actor:
 	protected play Actor LinetraceActor( Actor from = NULL ) {
 		Actor outActor = NULL;
-        FLineTraceData RemoteRay;
+        FLineTraceData remoteRay;
 
 		if ( from == NULL )
 			from = players[ ccmd.e.Player ].mo;
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::LinertraceActor(). Address of source actor: " .. from );
 
-		from.LineTrace( from.Angle, 0xFFFF, from.Pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: RemoteRay );
+		from.LineTrace( from.angle, 0xFFFF, from.pitch, TRF_ALLACTORS, offsetz: from.height - 12, data: remoteRay );
 
-		if ( RemoteRay.HitType == TRACE_HitActor ) {
-			outActor = RemoteRay.HitActor;
+		if ( remoteRay.HitType == TRACE_HitActor ) {
+			outActor = remoteRay.HitActor;
 
 			if ( outActor is "ZCheckerActorInfo" && outActor.master )
 				outActor = outActor.master;
