@@ -649,6 +649,10 @@ class ZCheckerHandler: StaticEventHandler {
 	} // of override void RenderOverlay( RenderEvent e ) {}
 
 
+	private String argColored( int value ) {
+		return ( value == 0? TEXTCOLOR_DARKBROWN : TEXTCOLOR_CREAM ) .. value;
+	}
+
 	override void NetworkProcess( ConsoleEvent e ) {
 		// ZChecker CCMDs parsing:
 		String ccmdName = zcCCMDInfo.InitFromEvent( e );
@@ -711,6 +715,8 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCGlobal.ClearscopeLog( LL_Debug, debugstr );
 		}
 
+		int interceptNeteventsMode = clamp( CVar.GetCVar( "mcm_zchecker_specinfo_netevents", players[ e.Player ] ).GetInt(), 0, 3 );
+
 		// Polling ZChecker CCMD handlers by stored netevent name:
 		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
 			if ( !( zcConsoleHandleClasses[ i ] is 'ZCConsoleCommand' ) )
@@ -724,12 +730,40 @@ class ZCheckerHandler: StaticEventHandler {
 				if ( curCCMD.HandleArguments() ) {
 					curCCMD.DoCommand();
 				} else {
-					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage\c-:\n" .. curCCMD.GetHelpString() );
+					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage" .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
 				}
 
+				interceptNeteventsMode = 0;
 				break;
 			}
 		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {}
+
+		if ( interceptNeteventsMode ) {
+			String outstr = "";
+
+			if ( interceptNeteventsMode == 3 )
+				outstr = TEXTCOLOR_GRAY .. ( e.IsManual? "Manual" : "System" ) .. TEXTCOLOR_DARKGRAY .. " netevent ";
+			else
+				outstr = TEXTCOLOR_DARKGRAY .. "Netevent ";
+
+			// Compatibility between all *ZDoom versions:
+			int compatTicRate = max( Thinker.Tics2Seconds( 350000 ), 1 );
+			compatTicRate = int( 350000 / compatTicRate );
+
+			if ( interceptNeteventsMode >= 2 )
+				outstr.AppendFormat( "at %s.%02i ", level.TimeFormatted(), int( floor( ( level.time % compatTicRate ) / double( compatTicRate ) * 100.0 ) ) );
+
+			String ARGSSEP = TEXTCOLOR_DARKGRAY .. "/" .. TEXTCOLOR_CREAM;
+
+			outstr.AppendFormat( "\"" .. TEXTCOLOR_LIGHTBLUE .. e.Name .. " " .. TEXTCOLOR_CREAM .. "%s%s%s%s%s" .. TEXTCOLOR_DARKGRAY .. "\"",
+								argColored( e.args[ 0 ] ), ARGSSEP, argColored( e.args[ 1 ] ), ARGSSEP, argColored( e.args[ 2 ] ) );
+
+			if ( interceptNeteventsMode == 3 )
+				outstr = outstr .. " from player #" .. TEXTCOLOR_WHITE .. e.Player;
+
+			ZCGlobal.Log( LL_Normal, outstr );
+		} // of if ( interceptNeteventsMode ) {}
+
 
 		Super.NetworkProcess( e );
 	} // of override void NetworkProcess( ConsoleEvent e ) {}

@@ -23,8 +23,11 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	StaticText "Other options", GOLD
 	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
 	StaticText " "
+	Option "Netevents info intercepting", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_specinfo_netevents"
+    StaticText "Try to caught a network events information.", DARKGRAY
+	StaticText " "
 	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
-    StaticText "Allows operations which may cause game to crash:", DARKGRAY
+    StaticText "Allows operations which may cause game to crash.", DARKGRAY
 	StaticText " "
 	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "Will be updated after up to five world tics.", DARKGRAY
@@ -130,6 +133,12 @@ OptionValue "mcm_ZCheckerOption_panelgeom_lineaction" {
 	1, "Action and tag"
 	2, "Action, args and tag"
 	3, "Everything"
+}
+OptionValue "mcm_ZCheckerOption_specinfo_netevents" {
+	0, "Disabled"
+	1, "Names and args"
+	2, "Names, args and maptime"
+	3, "Full information"
 }
 
 

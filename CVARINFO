@@ -85,3 +85,7 @@ server bool mcm_zchecker_ev_spawnstealth	= true;
 server bool mcm_zchecker_ev_spawnplyc		= false;
 server bool mcm_zchecker_ev_spawntnt1a0		= false;
 
+
+// Non-panel CVars:
+user int mcm_zchecker_specinfo_netevents	= 0; // "Disabled", "Name and args", "Name, args and maptime", "All information".
+
