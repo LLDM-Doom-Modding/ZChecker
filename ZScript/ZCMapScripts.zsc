@@ -129,6 +129,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "WeaponPiece"
 			||  cur is "SectorAction"
 			||  cur is "SlideshowStarter"
+			||  cur == 'IceChunkHead'
 		);
 	}
 
@@ -159,10 +160,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	}
 
 
+	private void logCreatingActor( String msg ) {
+		ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "RecreateEverything(): " .. LLCOLOR_MAIN .. msg );
+	}
+
 	// Clears all previous spawned actors excluding forbidden and summons all of them again:
 	void RecreateEverything( void ) {
 		if ( !canRecreateEverything ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). Cannot run due to map errors, terminating." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). Cannot run due to the map errors, terminating." );
 			return;
 		}
 
@@ -199,14 +204,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				String spawnSprite = TexMan.GetName( GetDefaultByType( cls ).SpawnState.GetSpriteTexture( 0 ) );
 
 				if ( ( spawnSprite == "TNT1A0" && !spawnTNT1A0 ) || ( spawnSprite.Left( 4 ) == "PLYC" && !spawnPLYC ) ) {
-					ZCGlobal.Log( LL_Detailed, "RecreateEverything(): class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite." );
+					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite." );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
-					ZCGlobal.Log( LL_Detailed, "RecreateEverything(): class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
+					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
 
 				} else {
 					if ( clsType != S__Nothing ) {
-						ZCGlobal.Log( LL_Detailed, "RecreateEverything(): " .. TEXTCOLOR_GREEN .. "summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
+						logCreatingActor( TEXTCOLOR_GREEN .. "summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
 						evSectors[ clsType ].setter.DoJump( cls );
 					}
 				}

@@ -307,10 +307,16 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		if ( remoteRay.HitType == TRACE_HitActor ) {
 			outActor = remoteRay.HitActor;
 
-			if ( outActor is "ZCheckerActorInfo" && outActor.master )
-				outActor = outActor.master;
+			if ( outActor is "ZCheckerActorInfo" ) {
+				if ( outActor.master ) {
+					outActor = outActor.master;
+				} else {
+					outActor = NULL;
+					ZCGlobal.Log( LL_Normal, TEXTCOLOR_DARKGRAY .. "Skipped special class \"" .. outActor.GetClassName() .. "\"." );
+				}
+			}
 		} else {
-			ZCGlobal.Log( LL_Normal, "No available actors found in nearest 65535 mappixels." );
+			ZCGlobal.Log( LL_Normal, "No available linetarget actors found." );
 		}
 
 		return outActor;
