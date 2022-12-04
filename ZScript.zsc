@@ -649,7 +649,7 @@ class ZCheckerHandler: StaticEventHandler {
 	} // of override void RenderOverlay( RenderEvent e ) {}
 
 
-	private String argColored( int value ) {
+	private String neteventArgColored( int value ) {
 		return ( value == 0? TEXTCOLOR_DARKBROWN : TEXTCOLOR_CREAM ) .. value;
 	}
 
@@ -671,30 +671,31 @@ class ZCheckerHandler: StaticEventHandler {
 			return;
 		}
 
-		if ( multiplayer && ccmdName ~== "zc_multiplayer_synctest" && e.args[ 1 ] != consoleplayer ) {
-			if ( zcCCMDInfo.args.Size() == 1 ) {
-				uint testeePos = e.args[ 0 ];
-				uint srcPlayer = e.args[ 1 ];
+		if ( multiplayer && ccmdName ~== "zc_multiplayer_synctest" ) {
+			if ( e.args[ 1 ] != consoleplayer ) {
+				if ( zcCCMDInfo.args.Size() == 1 ) {
+					uint testeePos = e.args[ 0 ];
+					uint srcPlayer = e.args[ 1 ];
 
-				bool argerror = false;
+					bool argerror = false;
 
-				if ( testeePos >= MaxTestee ) {
-					argerror = true;
-					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent: wrong position " .. testeePos .. " to compare." );
+					if ( testeePos >= MaxTestee ) {
+						argerror = true;
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent: wrong position " .. testeePos .. " to compare." );
+					}
+
+					if ( srcPlayer >= MAXPLAYERS ) {
+						argerror = true;
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent: wrong source player #" .. srcPlayer .. "." );
+					}
+
+					if ( !argerror )
+						Testee[ testeePos ].asyncwith = ( ( Testee[ testeePos ].hashsync[ srcPlayer ] == zcCCMDInfo.args[ 0 ] )? 0 : srcPlayer + 1 );
+
+				} else {
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent has wrong amount of arguments (must be 3, got " .. zcCCMDInfo.args.Size() .. ")." );
+					ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
 				}
-
-				if ( srcPlayer >= MAXPLAYERS ) {
-					argerror = true;
-					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent: wrong source player #" .. srcPlayer .. "." );
-				}
-
-				if ( !argerror ) {
-					Testee[ testeePos ].asyncwith = ( ( Testee[ testeePos ].hashsync[ srcPlayer ] == zcCCMDInfo.args[ 0 ] )? 0 : srcPlayer + 1 );
-				}
-
-			} else {
-				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent has wrong amount of arguments (must be 3, got " .. zcCCMDInfo.args.Size() .. ")." );
-				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
 			}
 
 			Super.NetworkProcess( e );
@@ -756,7 +757,7 @@ class ZCheckerHandler: StaticEventHandler {
 			String ARGSSEP = TEXTCOLOR_DARKGRAY .. "/" .. TEXTCOLOR_CREAM;
 
 			outstr.AppendFormat( "\"" .. TEXTCOLOR_LIGHTBLUE .. e.Name .. " " .. TEXTCOLOR_CREAM .. "%s%s%s%s%s" .. TEXTCOLOR_DARKGRAY .. "\"",
-								argColored( e.args[ 0 ] ), ARGSSEP, argColored( e.args[ 1 ] ), ARGSSEP, argColored( e.args[ 2 ] ) );
+								neteventArgColored( e.args[ 0 ] ), ARGSSEP, neteventArgColored( e.args[ 1 ] ), ARGSSEP, neteventArgColored( e.args[ 2 ] ) );
 
 			if ( interceptNeteventsMode == 3 )
 				outstr = outstr .. " from player #" .. TEXTCOLOR_WHITE .. e.Player;
