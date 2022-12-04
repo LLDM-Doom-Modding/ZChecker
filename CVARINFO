@@ -84,6 +84,7 @@ server bool mcm_zchecker_ev_spawninvisible	= true;
 server bool mcm_zchecker_ev_spawnstealth	= true;
 server bool mcm_zchecker_ev_spawnplyc		= false;
 server bool mcm_zchecker_ev_spawntnt1a0		= false;
+server bool mcm_zchecker_ev_auto_notarget	= false;  // Automatically set a "notarget" cheat when entering an Everything map.
 
 
 // Non-panel CVars:

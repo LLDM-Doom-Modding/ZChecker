@@ -1,5 +1,6 @@
 class ZCheckerCCMDInfo play {
 	Array<String> args;			// Arguments excluding ZC-CCMD name;
+	int argsamount;
 	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on the "FindEventHandler()" calls);
 	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
 
@@ -10,17 +11,15 @@ class ZCheckerCCMDInfo play {
 		e = initEvent;
 		e.Name.Split( args, ZCHECKER_AGRS_SEPARATOR, TOK_SKIPEMPTY );
 
-		// If debug, display maximal amount of arguments (sometimes it saves
-		//about ten minutes of the bughunting...):
-		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
-			int delimetersAmount = 0;
+		argsamount = 0;
 
+		// If debug is enabled, display maximal amount of arguments (sometimes 
+		//it saves about ten minutes of the bughunting...):
+		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
 			int curpos = 0;
 
 			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + 2 ) ) )
-				delimetersAmount++;
-
-			ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::InitFromEvent(). Maximal amount of arguments (excluding name): " .. delimetersAmount );
+				argsamount++;
 		}
 
 		String zcCommandName = "";

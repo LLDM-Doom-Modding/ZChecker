@@ -334,6 +334,18 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		Super.WorldLoaded( e );
 	} // of override void WorldLoaded( WorldEvent e ) {}
 
+	override void PlayerEntered( PlayerEvent e ) {
+		if ( ZCGlobal.IsEverythingLevel() && CVar.GetCVar( "mcm_zchecker_ev_auto_notarget", players[ e.PlayerNumber ] ).GetBool() ) {
+			players[ e.PlayerNumber ].cheats |= CF_NOTARGET;
+
+			if ( e.PlayerNumber == consoleplayer )
+				ZCGlobal.Log( LL_Main, "Auto-notarget enabled." );
+		}
+
+		Super.PlayerEntered( e );
+	} // of override void PlayerEntered( PlayerEvent e ) {}
+
+
 	override void NetworkProcess( ConsoleEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 
@@ -395,15 +407,17 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	} // of override void NetworkProcess( ConsoleEvent e ) {}
 
 	override void WorldTick() {
-		if ( playeringame[ 0 ] && players[ 0 ].mo ) {
-			PlayerPawn pl = players[ 0 ].mo;
-			FLineTraceData lt;
-			pl.LineTrace( pl.angle, pl.radius + 64.0, pl.pitch, TRF_ALLACTORS, pl.player.viewheight, data: lt );
+		for ( int i = 0; i < MAXPLAYERS; i++ ) {
+			if ( playeringame[ i ] && players[ i ].mo && !players[ i ].bot ) {
+				PlayerPawn pl = players[ i ].mo;
+				FLineTraceData lt;
+				pl.LineTrace( pl.angle, pl.radius + 64.0, pl.pitch, TRF_ALLACTORS, pl.player.viewheight, data: lt );
 
-			if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClassName() == "ZCheckerActorInfo" ) {
-				pl.SetInventory( "ZCheckerInfoInventory", 1 );
-				ZCheckerInfoInventory zcii = ZCheckerInfoInventory( pl.FindInventory( "ZCheckerInfoInventory" ) );
-				zcii.Init( ZCheckerActorInfo( lt.HitActor ).GetInfoString() );
+				if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClassName() == "ZCheckerActorInfo" ) {
+					pl.SetInventory( "ZCheckerInfoInventory", 1 );
+					ZCheckerInfoInventory zcii = ZCheckerInfoInventory( pl.FindInventory( "ZCheckerInfoInventory" ) );
+					zcii.Init( ZCheckerActorInfo( lt.HitActor ).GetInfoString() );
+				}
 			}
 		}
 

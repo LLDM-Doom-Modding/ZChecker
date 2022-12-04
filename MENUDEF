@@ -66,10 +66,14 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
 
     StaticText " "
-    StaticText "Mapping", GOLD
+    StaticText "Other", GOLD
+	Option "Autonotarget", "mcm_zchecker_ev_auto_notarget", "YesNo"
+    StaticText "Enable a \"notarget\" cheat automatically", DARKGRAY
+    StaticText "when entering an \"Everything\" map.", DARKGRAY
+    StaticText " "
+	Option "Force use map scripts", "mcm_zchecker_ev_forcemap", "YesNo"
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
     StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
-	Option "Force use map scripts", "mcm_zchecker_ev_forcemap", "YesNo"
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {

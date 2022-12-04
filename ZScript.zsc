@@ -728,6 +728,8 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( ccmdName ~== curCCMD.GetCommand() ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.argsamount );
+
 				if ( curCCMD.HandleArguments() ) {
 					curCCMD.DoCommand();
 				} else {
