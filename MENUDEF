@@ -180,6 +180,7 @@ OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 	Title "ZChecker panel: World positioning"
 	StaticText " "
 
+	Option "Remove roll tilt", "mcm_zchecker_infovar_wposnoroll", "YesNo"
 	Option "Player buttons", "mcm_zchecker_infovar_wposplayerbuttons", "YesNo"
 }
 

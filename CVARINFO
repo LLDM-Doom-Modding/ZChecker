@@ -38,6 +38,7 @@ user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
 
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
 user bool mcm_zchecker_infovar_wposplayerbuttons = false;
+user bool mcm_zchecker_infovar_wposnoroll 	= false;
 user bool mcm_zchecker_info_maininteract	= true;	 // Health, mass, etc.
 
 user bool mcm_zchecker_info_geomsectors		= false; // Sectors linked to the actor.

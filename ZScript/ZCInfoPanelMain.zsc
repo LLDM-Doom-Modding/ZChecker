@@ -76,10 +76,17 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 
-		outStr = "Tilt: (\cUa\c-" .. int( thing.angle ) .. ", \cUp\c-" ..
+		bool skipRollTilt = CVar.GetCVar( "mcm_zchecker_infovar_wposnoroll", players[ consoleplayer ] ).GetBool();
+
+		if ( skipRollTilt ) {
+			outStr = String.Format( "Tilt: (" .. DARKGRAY .. "a\c-%.2f, " .. DARKGRAY .. "p\c-%.2f);\n", thing.angle % 360.0, thing.pitch );
+		} else {
+			outStr = "Tilt: (\cUa\c-" .. int( thing.angle % 360.0 ) .. ", \cUp\c-" ..
 							int( thing.pitch ) .. ", \cUr\c-" ..
-							int( thing.roll ) .. ");\n" .. TEAL ..
-				"Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
+							int( thing.roll ) .. ");\n";
+		}
+
+		outStr = outStr .. TEAL .. "Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
 				String.Format( "Vel: (%.2f, %.2f, %.2f)", thing.vel.x, thing.vel.y, thing.vel.z ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".", thing.radius, thing.height );
 
