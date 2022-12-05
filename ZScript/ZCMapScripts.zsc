@@ -130,7 +130,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "WeaponPiece"
 			||  cur is "SectorAction"
 			||  cur is "SlideshowStarter"
-			||  cur == 'IceChunkHead'
 		);
 	}
 
@@ -194,6 +193,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
 		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
+		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
 		bool spawnPLYC = CVar.FindCVar( "mcm_zchecker_ev_spawnplyc" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
 
@@ -212,6 +212,9 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
 					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
+
+				} else if ( cls is "PlayerChunk" && !spawnPlayerChunks ) {
+					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted due to inheritance from the \"PlayerChunk\"." );
 
 				} else {
 					if ( clsType != S__Nothing ) {
