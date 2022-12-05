@@ -419,7 +419,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			thing.A_RaiseMaster();
 			thing.master = prevMaster;
 		} else {
-			ZCGlobal.Log( LL_Detailed, "Actor " .. thing.GetClassName() .. " reviving " .. TEXTCOLOR_RED .. "blocked\c-." );
+			ZCGlobal.Log( LL_Main, "Actor " .. thing.GetClassName() .. " reviving " .. TEXTCOLOR_RED .. "blocked\c-." );
 		}
 	}
 
@@ -435,7 +435,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				thing.A_Die();
 
 				if ( thing.health > 0 )
-					ZCGlobal.Log( LL_Detailed, "Cannot kill actor " .. thing.GetClassName() );
+					ZCGlobal.Log( LL_Main, "Cannot kill actor " .. thing.GetClassName() );
 				else
 					ZCGlobal.Log( LL_Detailed, "Killed actor " .. thing.GetClassName() );
 				break;
@@ -443,7 +443,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				thing.DamageMobj( thing, thing, 0x7FFFFFF, 'None', DMSS_FOILINVUL | DMSS_NOFACTOR | DMSS_NOPROTECT );
 
 				if ( thing.health > 0 )
-					ZCGlobal.Log( LL_Detailed, "Cannot extremely kill actor " .. thing.GetClassName() );
+					ZCGlobal.Log( LL_Main, "Cannot extremely kill actor " .. thing.GetClassName() );
 				else
 					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thing.GetClassName() );
 				break;

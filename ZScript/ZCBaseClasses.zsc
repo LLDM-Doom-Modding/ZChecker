@@ -610,7 +610,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					classnameParseStatus = CPS_RegexFailed;
 					ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
 				} else {
-					if ( preventiveChoice >= nameCandidatesSize ) {
+					if ( preventiveChoice > nameCandidatesSize ) {
 						ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Selected index " .. TEXTCOLOR_LIGHTBLUE .. preventiveChoice .. TEXTCOLOR_YELLOW .. " is out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
 						preventiveChoice = -1;
 					}

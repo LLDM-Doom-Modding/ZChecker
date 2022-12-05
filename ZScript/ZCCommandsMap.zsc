@@ -148,11 +148,16 @@ class ZCEvmapCommand: ZCConsoleCommand {
 					if ( curActor ) {
 						double newPlayerAngle = ( curActor.master? curActor.AngleTo( curActor.master, true ) : curActor.angle );
 						gotoCCMDPlayerTeleport( curActor.pos, newPlayerAngle );
-						ZCGlobal.Log( LL_Detailed, "found actor " .. curActor.masterClass.GetClassName() .. " at " .. curActor.pos .. "." );
+						ZCGlobal.Log( LL_Detailed, "Found actor " .. curActor.masterClass.GetClassName() .. " at " .. curActor.pos .. "." );
 					} else {
-						ZCGlobal.Log( LL_Normal, "cannot find actor named \"" .. ccmd.args[ 1 ] .. "\"." );
+						class<Actor> actorcls = zcSpecifiedClass;
+
+						if ( actorcls )
+							ZCGlobal.Log( LL_Normal, "Actor \"" .. zcSpecifiedClass .. "\" does not exist on this map." );
+						else
+							ZCGlobal.Log( LL_Normal, "\"" .. ccmd.args[ 1 ] .. "\" is not an Actor class." );
 					}
-				} // of else of if ( ccmd.args[ 2 ] == "start" ) {
+				} // of else of if ( ccmd.args[ 2 ] == "start" ) {}
 				break;
 
 			case CCMDT_Pause:
