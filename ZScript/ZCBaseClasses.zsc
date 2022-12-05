@@ -307,7 +307,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		if ( remoteRay.HitType == TRACE_HitActor ) {
 			outActor = remoteRay.HitActor;
 
-			if ( outActor is "ZCheckerActorInfo" ) {
+			if ( outActor is "ZCheckerActorInfo" && ZCGlobal.SpecialZCActorsHandling() ) {
 				if ( outActor.master ) {
 					outActor = outActor.master;
 				} else {

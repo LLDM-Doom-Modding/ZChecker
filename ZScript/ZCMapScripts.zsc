@@ -35,7 +35,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 		S_Weapon, S_Ammo, S_Health_Armor, S_Powerup, S_Key, S_OtherItem,
 
-		S_SolidDecor, S_SwitchableDecor, S_EtherialDecor, S_NoInteractionDecor,
+		S_SolidDecor, S_SwitchableDecor, S_EtherealDecor, S_NoInteractionDecor,
 
 		S_Player, S_OtherSpecial, // "S_Sound" will not be on level due to its bNOSECTOR nature.
 
@@ -55,6 +55,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	ZCheckerEvSectorSetters evSectors[ S__Quantity ];
 
 	bool canRecreateEverything;
+	bool logSpawnInfo;
 
 	ZCheckerEvMapConfig configuration;
 
@@ -108,7 +109,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			} else if ( cls.bSOLID ) {
 				outValue = S_SolidDecor;
 			} else if ( !( cls.bMISSILE || cls.bNOBLOCKMAP ) ) {
-				outValue = S_EtherialDecor;
+				outValue = S_EtherealDecor;
 			}
 		}
 
@@ -124,7 +125,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "BossEye"
 			||  cur is "SpecialSpot"
 			||  cur is "SpawnShot"
-			||  cur is "ZCheckerSectorSetter"
+			||  cur == 'ZCheckerSectorSetter'
 			||  cur is "ProgLevelEnder"
 			||  cur is "WeaponPiece"
 			||  cur is "SectorAction"
@@ -161,7 +162,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 	private void logCreatingActor( String msg ) {
-		ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "RecreateEverything(): " .. LLCOLOR_MAIN .. msg );
+		if ( logSpawnInfo )
+			ZCGlobal.ClearscopeLog( LL_Main, TEXTCOLOR_DARKGRAY .. "RecreateEverything(): " .. LLCOLOR_MAIN .. msg );
 	}
 
 	// Clears all previous spawned actors excluding forbidden and summons all of them again:
@@ -195,6 +197,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		bool spawnPLYC = CVar.FindCVar( "mcm_zchecker_ev_spawnplyc" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
 
+		logSpawnInfo = CVar.FindCVar( "mcm_zchecker_ev_logspawninfo" ).GetBool();
+
 		// Recreate everything:
 		for ( int i = 0; i < AllActorClasses.Size(); i++ ) {
 			class<Actor> cls = AllActorClasses[ i ];
@@ -216,7 +220,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					}
 				}
 
-			} else if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+			} else if ( logSpawnInfo && ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
 				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(): class \"" .. cls.GetClassName() .. "\" is restricted." );
 			}
 		}
@@ -354,10 +358,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	override void NetworkProcess( ConsoleEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 
-			if ( e.Name ~== "zchecker_recreate_evmap" ) {
+			if ( e.Name ~== "zcheckermap_recreate" ) {
 				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Recreating/reloading map..." );
 				RecreateEverything();
-			} else if ( e.Name ~== "zchecker_pause_level_part" ) {
+			} else if ( e.Name ~== "zcheckermap_pause_level_part" ) {
 				vector2 pauseFrom, pauseTo;
 				bool isPausing = false;
 				String logStr = GetClassName() .. "::NetworkProcess(). ";
@@ -404,7 +408,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					}
 				} // of while ( curActor = Actor( it.Next() ) ) {}
 
-			} // of } else if ( e.Name ~== "zchecker_pause_level_part" ) {}
+			} // of } else if ( e.Name ~== "zcheckermap_pause_level_part" ) {}
 
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 

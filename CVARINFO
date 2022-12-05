@@ -1,6 +1,7 @@
 // Common console variables.
 server int mcm_zchecker_loglevel = 1;
 server bool mcm_zchecker_allowdangerccmds = false;
+server bool mcm_zchecker_internalclasses_nospecialhandling = false;
 
 user int mcm_zchecker_min_sectorslines_tag	= 1;
 user int mcm_zchecker_max_sectorslines_tag	= 700;
@@ -84,6 +85,8 @@ server bool mcm_zchecker_ev_spawninvisible	= true;
 server bool mcm_zchecker_ev_spawnstealth	= true;
 server bool mcm_zchecker_ev_spawnplyc		= false;
 server bool mcm_zchecker_ev_spawntnt1a0		= false;
+
+server bool mcm_zchecker_ev_logspawninfo	= false;  // Log information to console about created (or skipped) actors.
 server bool mcm_zchecker_ev_auto_notarget	= false;  // Automatically set a "notarget" cheat when entering an Everything map.
 
 

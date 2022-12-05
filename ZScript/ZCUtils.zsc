@@ -61,7 +61,7 @@ class ZCInternalActorNameCell {
 
 class ZCGlobal: Thinker {
 	ZCheckerHandler zcHandler;
-	int zcCurLogLevel;
+	EZCheckerLogLevels zcCurLogLevel;
 
 	Array<ZCInternalStringDictionaryCell> internalStrings;
 
@@ -156,6 +156,10 @@ class ZCGlobal: Thinker {
 			ClearscopeLog( LL_Main, TEXTCOLOR_YELLOW .. "Warning: " .. LLCOLOR_MAIN .. desc );
 
 		return isallowed;
+	}
+
+	static clearscope bool SpecialZCActorsHandling( void ) {
+		return !CVar.FindCVar( "mcm_zchecker_internalclasses_nospecialhandling" ).GetBool();
 	}
 
 

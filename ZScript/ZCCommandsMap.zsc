@@ -159,7 +159,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				break;
 
 			case CCMDT_Recreate:
-				EventHandler.SendNetworkEvent( "zchecker_recreate_evmap" );
+				EventHandler.SendNetworkEvent( "zcheckermap_recreate" );
 				break;
 
 			default:

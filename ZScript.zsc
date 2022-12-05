@@ -741,6 +741,9 @@ class ZCheckerHandler: StaticEventHandler {
 			}
 		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {}
 
+		if ( e.name == "zcheckermap_recreate" || e.name == "zcheckermap_pause_level_part" )
+			interceptNeteventsMode = 0;
+
 		if ( interceptNeteventsMode ) {
 			String outstr = "";
 

@@ -27,7 +27,11 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     StaticText "Try to caught a network events information.", DARKGRAY
 	StaticText " "
 	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
-    StaticText "Allows operations which may cause game to crash.", DARKGRAY
+    StaticText "Allow operations that are known to crash the game.", DARKGRAY
+	StaticText " "
+	Option "No ZC-classes special handling", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
+    StaticText "Do not alter handling for the ZChecker", DARKGRAY
+	StaticText "special actors and classes.", DARKGRAY
 	StaticText " "
 	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "Will be updated after up to five world tics.", DARKGRAY
@@ -61,15 +65,19 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 
     StaticText "Spawn options", GOLD
 	Option "Spawn +STEALTH actors:", "mcm_zchecker_ev_spawnstealth", "YesNo"
-	Option "Spawn +INVISIBLE actors: ", "mcm_zchecker_ev_spawninvisible", "YesNo"
-	Option "Spawn actors with sprite \"TNT1A0\": ", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-	Option "Spawn actors with sprite \"PLYC*\": ", "mcm_zchecker_ev_spawnplyc", "YesNo"
+	Option "Spawn +INVISIBLE actors:", "mcm_zchecker_ev_spawninvisible", "YesNo"
+	Option "Spawn actors with sprite \"TNT1A0\":", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+	Option "Spawn actors with sprite \"PLYC*\":", "mcm_zchecker_ev_spawnplyc", "YesNo"
 
     StaticText " "
     StaticText "Other", GOLD
 	Option "Autonotarget", "mcm_zchecker_ev_auto_notarget", "YesNo"
     StaticText "Enable a \"notarget\" cheat automatically", DARKGRAY
     StaticText "when entering an \"Everything\" map.", DARKGRAY
+    StaticText " "
+	Option "Log spawn information", "mcm_zchecker_ev_logspawninfo", "YesNo"
+    StaticText "Log information to console about created (or", DARKGRAY
+    StaticText "skipped) actors on an \"Everything\" map.", DARKGRAY
     StaticText " "
 	Option "Force use map scripts", "mcm_zchecker_ev_forcemap", "YesNo"
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
@@ -81,8 +89,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 
     StaticText " "
     StaticText "[WIP] Some frequently used commands will be here.", DARKGRAY
-    StaticText "All commands may be shown via \"zchelp all\";", DARKGREEN
-    StaticText "Also you may use a \"zchelp <command>\".", DARKGREEN
+    StaticText "All commands may be shown via \"zchelp all\" in", DARKGREEN
+    StaticText "the console; also you may use a \"zchelp <command>\".", DARKGREEN
     StaticText " "
     StaticText " "
 
