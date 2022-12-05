@@ -56,7 +56,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_PanelsPosition" {
 	Slider "Panels interval Y, multiplier", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "
     StaticText "Other", GOLD
-	Option "Font", "mcm_zchecker_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
+	Option "Font", "mcm_zchecker_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
