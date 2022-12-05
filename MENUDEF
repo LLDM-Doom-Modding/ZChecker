@@ -108,8 +108,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
-	1, "1. Main/default"
-	2, "2. Detailed"
+	1, "1. General"
+	2, "2. Detailed (default)"
 	3, "3. Debug mode"
 }
 

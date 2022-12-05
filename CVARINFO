@@ -1,5 +1,5 @@
 // Common console variables.
-server int mcm_zchecker_loglevel = 1;
+server int mcm_zchecker_loglevel = 2;
 server bool mcm_zchecker_allowdangerccmds = false;
 server bool mcm_zchecker_internalclasses_nospecialhandling = false;
 
