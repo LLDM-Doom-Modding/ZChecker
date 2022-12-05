@@ -448,12 +448,14 @@ class ZCActorActionCommand: ZCConsoleCommand {
 					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thing.GetClassName() );
 				break;
 			case AC_Destroy:
-				if ( thing.player && thing.player.mo == thing ) {
+				if ( thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( "destroying live player" ) ) {
 					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKRED .. "It's better not to destroy an acting player " .. ( thing.PlayerNumber() + 1 ) .. LLCOLOR_MAIN .. ". " .. TEXTCOLOR_YELLOW .. "Terminated" .. LLCOLOR_MAIN .. "." );
 				} else {
-					ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. thing.GetClassName() );
+					Name thingName = thing.GetClassName();
 					thing.ClearCounters();
 					thing.Destroy();
+
+					ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. thingName );
 				}
 				break;
 			default:

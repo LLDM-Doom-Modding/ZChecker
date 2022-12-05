@@ -149,6 +149,15 @@ class ZCGlobal: Thinker {
 			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
 	}
 
+	static clearscope bool DangerousCCMDsAllowed( String desc = "executing dangerous command" ) {
+		bool isallowed = CVar.FindCVar( "mcm_zchecker_allowdangerccmds" ).GetBool();
+
+		if ( isallowed && desc != "" )
+			ClearscopeLog( LL_Main, TEXTCOLOR_YELLOW .. "Warning: " .. LLCOLOR_MAIN .. desc );
+
+		return isallowed;
+	}
+
 
 
 	/* === ZChecker operating on the internal and saves-through variables === */

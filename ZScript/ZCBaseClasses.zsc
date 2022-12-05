@@ -311,8 +311,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				if ( outActor.master ) {
 					outActor = outActor.master;
 				} else {
-					outActor = NULL;
 					ZCGlobal.Log( LL_Normal, TEXTCOLOR_DARKGRAY .. "Skipped special class \"" .. outActor.GetClassName() .. "\"." );
+					outActor = NULL;
 				}
 			}
 		} else {
