@@ -657,18 +657,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return false;
 	}
 
-	// Returns help aliases/description string for a class:
-	protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {
-		ZCConsoleCommand temp = ZCConsoleCommand( new( classname ) );
-
-		String outHelpString = desc? temp.GetHelpDescString() : temp.GetHelpNameString();
-
-		temp.Destroy();
-
-		return outHelpString;
-	} // of protected String getHelpByClass( class<ZCConsoleCommand> classname, bool desc = false ) {}
-
-
 	// Returns linked netevent command name (see KEYCONF):
 	clearscope virtual String GetCommand( void ) const {
 		return "";

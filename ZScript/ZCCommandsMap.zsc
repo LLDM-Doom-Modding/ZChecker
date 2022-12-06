@@ -22,6 +22,32 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		return "zc_ev";
 	}
 
+
+	private String getHelpByClass( class<ZCConsoleClass> classname, bool desc = false ) {
+		String outHelpString = "";
+		ZCheckerHandler handler = ccmd.handler;
+
+		int foundid = -1;
+
+		for ( int i = 0; i < handler.zcConsoleHandleClasses.Size(); i++ ) {
+			if ( handler.zcConsoleHandleClasses[ i ].GetClass() == classname ) {
+				foundid = i;
+				break;
+			}
+		}
+
+		if ( foundid >= 0 ) {
+			ZCConsoleCommand foundccmd = ZCConsoleCommand( handler.zcConsoleHandleClasses[ foundid ] );
+
+			if ( foundccmd )
+				outHelpString = ( desc? foundccmd.GetHelpDescString() : foundccmd.GetHelpNameString() );
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::getHelpByClass(). Cannot find class \"" .. classname .. "\"." );
+		}
+
+		return outHelpString;
+	} // of private String getHelpByClass( class<ZCConsoleClass> classname, bool desc = false ) {}
+
 	override String GetHelpNameString() {
 		String outStr = "";
 
