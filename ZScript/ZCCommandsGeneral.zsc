@@ -57,7 +57,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 						} // of for ( int j = 0; j < aliases.Size(); j++ ) {}
 
 					} // of if ( curccmd ) {}
-				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size(); i++ ) {}
+				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {}
 
 				ZCGlobal.Log( LL_Main | LL_NoDot, ( outValue
 						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n"
