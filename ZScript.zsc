@@ -598,7 +598,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 			// Forming a full information panel:
 			Array<String> panelsstr;
+			Array<double> panelsheights;
 			panelsstr.Clear();
+			panelsheights.Clear();
 
 			for ( int j = 0; j < infoPanelParts.Size(); j++ ) {
 				String outStr = "\c-";
@@ -624,11 +626,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 			// Printing infopanels parts:
 			int panelsstrAmount = panelsstr.Size();
+			double endy = y;
 
 			for ( int j = 0; j < panelsstrAmount; j++ ) {
-				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ j ],
-								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
-
 				// Adding an Y-offset for the next panel part:
 				int newlinesAmount = 0;
 				int nextNewlinePos = -1;
@@ -636,13 +636,34 @@ class ZCheckerHandler: StaticEventHandler {
 				while ( -1 != ( nextNewlinePos = panelsstr[ j ].IndexOf( "\n", nextNewlinePos + 1 ) ) )
 					newlinesAmount++;
 
-				y += fontSymbolHeight * ( newlinesAmount + infopanelPartsSpaceY );
+				double panelheight = fontSymbolHeight * ( newlinesAmount + infopanelPartsSpaceY );
+				panelsheights.Push( panelheight );
+				endy += panelheight;
 			}
 
-			/*if ( panelsstrAmount ) {
-				//native static void Dim(Color col, double amount, int x, int y, int w, int h);
-				Screen.Dim( 0x000000, 0.5, int( x ), int( starty ), int( maxStringWidth * CleanXFac ), int( ( y - starty ) * CleanYFac ) );
-			}*/
+			// Dimming background:
+			bool infopanelDimEnabled = CVar.FindCVar( "mcm_zchecker_infopanel_dimenabled" ).GetBool();
+
+			if ( infopanelDimEnabled && panelsstrAmount ) {
+				Color dimColor = Color( CVar.FindCVar( "mcm_zchecker_infopanel_dimcolor" ).GetInt() );
+				double dimAlpha = CVar.FindCVar( "mcm_zchecker_infopanel_dimalpha" ).GetFloat();
+				int dimBorderPixels = CVar.FindCVar( "mcm_zchecker_infopanel_dimborderpx" ).GetInt();
+
+				int dimX = int( x / scale ) - dimBorderPixels;
+				int dimY = int( starty / scale ) - dimBorderPixels;
+				int dimWidth = int( maxStringWidth / scale ) + dimBorderPixels * 2;
+				int dimHeight = int( ( endy - fontSymbolHeight * infopanelPartsSpaceY ) / scale ) - dimY + dimBorderPixels;
+
+				Screen.Dim( dimColor, dimAlpha, dimX, dimY, dimWidth, dimHeight );
+			}
+
+			// Printing out infopanel parts:
+			for ( int j = 0; j < panelsstrAmount; j++ ) {
+				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ j ],
+								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
+
+				y += panelsheights[ j ];
+			}
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
 
 		Super.RenderOverlay( e );
