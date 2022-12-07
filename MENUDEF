@@ -69,7 +69,9 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     Title "ZChecker: \"Everything\" map settings"
     StaticText " "
 
-    StaticText "Unusual actors spawning", GOLD
+    StaticText "Spawning options", GOLD
+	Option "Replaced actors", "mcm_zchecker_ev_spawnreplaced", "YesNo"
+	StaticText " "
 	Option "+STEALTH actors", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "+INVISIBLE actors", "mcm_zchecker_ev_spawninvisible", "YesNo"
 	Option "Inherited from \"PlayerChunk\":", "mcm_zchecker_ev_spawnplrchunks", "YesNo"

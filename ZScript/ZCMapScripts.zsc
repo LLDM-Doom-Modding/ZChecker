@@ -191,6 +191,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			evSectors[ i ].setter.curJumpAmount = 0;
 		}
 
+		bool spawnReplaced = CVar.FindCVar( "mcm_zchecker_ev_spawnreplaced" ).GetBool();
 		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
 		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
@@ -213,18 +214,23 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
 					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
 
-				} else if ( cls is "PlayerChunk" && !spawnPlayerChunks ) {
+				} else if ( !spawnPlayerChunks && cls is "PlayerChunk" ) {
 					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted due to inheritance from the \"PlayerChunk\"." );
+
+				} else if ( !spawnReplaced && Actor.GetReplacement( cls ) != cls ) {
+					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" replaced and thus omitted." );
 
 				} else {
 					if ( clsType != S__Nothing ) {
 						logCreatingActor( TEXTCOLOR_GREEN .. "summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
 						evSectors[ clsType ].setter.DoJump( cls );
+					} else {
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). Cannot determine e-setter class type for \"" .. cls.GetClassName() .. "\"." );
 					}
 				}
 
 			} else if ( logSpawnInfo && ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(): class \"" .. cls.GetClassName() .. "\" is restricted." );
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). class \"" .. cls.GetClassName() .. "\" is restricted." );
 			}
 		}
 	} // of void RecreateEverythingMapLevel( void ) {}
