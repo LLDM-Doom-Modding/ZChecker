@@ -581,7 +581,7 @@ class ZCheckerPlayerLastPos: Actor {
 class ZCheckerActorInfo: Actor {
 	class<Actor> masterClass;
 	String masterInfo;
-	vector3 masterOffset;
+	vector2 masterOffset;
 
 	Default {
 		-SOLID;
@@ -603,8 +603,7 @@ class ZCheckerActorInfo: Actor {
 		}
 
 		if ( master ) {
-			//masterClass = master.GetClassName();
-			masterOffset = pos - master.pos;
+			masterOffset = pos.xy - master.pos.xy;
 
 			masterInfo = master.GetClassName();
 
@@ -626,9 +625,11 @@ class ZCheckerActorInfo: Actor {
 	void SetMasterZ( void ) {
 		if ( master.bSPAWNCEILING ) {
 			master.SetZ( master.ceilingz - master.height );
+			master.ClearInterpolation();
 			floorclip = -64.0;
 		} else if ( master.bNOGRAVITY || master.bNOINTERACTION ) {
-			master.SetOrigin( master.pos + ( 0, 0, 32.0 ), false );
+			master.AddZ( 16.0 );
+			master.ClearInterpolation();
 			floorclip = -22.0;
 		} else {
 			floorclip = -3.5;
@@ -636,9 +637,12 @@ class ZCheckerActorInfo: Actor {
 	}
 
 	override void Activate( Actor other ) {
-		if ( PlayerPawn( other ) && !master ) {
-			master = Spawn( masterClass, pos - masterOffset );
-			ZCGlobal.Log( LL_Detailed, GetClassName() .. "::Activate(). Spawned " .. master.GetClassName() .. "." );
+		if ( !PlayerPawn( other ) )
+			return;
+
+		if ( !master || ( master.bISMONSTER && master.health <= 0 && master.bCORPSE ) ) {
+			master = Spawn( masterClass, ( pos.xy - masterOffset, 0.0 ) );
+			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::Activate(). " .. LLCOLOR_Main .. "Spawned " .. master.GetClassName() .. "." );
 			SetMasterZ();
 		}
 	}
