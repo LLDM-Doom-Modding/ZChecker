@@ -31,25 +31,28 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	enum ESectorStarts {
 		S__Nothing = -1,
 
-		S_Monster = 0, S_LargeMonster, S_Boss,
+		S_Monsters = 0, S_MonstersLarge, S_MonstersHuge,
+		S_Weapons, S_Ammo, S_HealthAndArmor, S_Powerups, S_Keys, S_OtherItems,
 
-		S_Weapon, S_Ammo, S_Health_Armor, S_Powerup, S_Key, S_OtherItem,
+		S_DecorSolid, S_DecorSolidLarge, S_DecorShootable,
+		S_DecorShootableLarge, S_DecorEthereal, S_DecorEtherealLarge,
+		S_DecorNoBlockmap, S_DecorNoInteraction, S_DecorHuge,
 
-		S_SolidDecor, S_SwitchableDecor, S_EtherealDecor, S_NoInteractionDecor,
-
-		S_Player, S_OtherSpecial, // "S_Sound" will not be on level due to its bNOSECTOR nature.
+		S_Missiles, S_Players, S_SpecialActors,
+		// "S_Sound" will not be spawned due to its bNOSECTOR nature.
 
 		S__Quantity
 	};
 
 	static const String ESectorStartAliases[] = { // Case-insensitive.
-		"Monsters", "Large monsters", "Boss monsters",
-
+		"Monsters", "Large monsters", "Huge monsters",
 		"Weapons", "Ammo", "Health and armor", "Powerups", "Keys", "Other items", 
 
-		"Impassible decor", "Switchable decor", "Etherial decor", "Non-interactive decor",
+		"Decor impassible", "Decor impassible large", "Decor shootable", 
+		"Decor shootable large", "Decor ethereal", "Decor ethereal large",
+		"Decor NOBLOCKMAP", "Decor NOINTERACTION", "Decor huge",
 
-		"Players", "Other special"
+		"Missiles", "Players", "Special actors"
 	};
 
 	ZCheckerEvSectorSetters evSectors[ S__Quantity ];
@@ -65,7 +68,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		String outStr = "";
 
 		if ( which <= S__Nothing || which >= S__Quantity )
-			outStr = "(" .. TEXTCOLOR_FIRE .. "unknown\c-)";
+			outStr = "<" .. TEXTCOLOR_FIRE .. "unknown: " .. which .. "\c->";
 		else
 			outStr = ZCheckerEverythingMapHandler.ESectorStartAliases[ which ];
 
@@ -77,39 +80,46 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		ESectorStarts outValue = S__Nothing;
 		readonly<Actor> cls = GetDefaultByType( testcls );
 
-		if ( !cls.bNOSECTOR && !cls.bNOCLIP && !( testcls is 'RandomSpawner' ) ) {
+		if ( !cls.bNOSECTOR && !( testcls is 'RandomSpawner' ) ) {
 			if ( cls.bISMONSTER ) {
-				if ( cls.bBOSS /*|| cls.bBOSSDEATH*/ )
-					outValue = S_Boss;
-				else if ( cls.radius > 32 )
-					outValue = S_LargeMonster;
+				if ( cls.radius > 384 )
+					outValue = S_MonstersHuge;
+				else if ( cls.radius > 31.5 )
+					outValue = S_MonstersLarge;
 				else
-					outValue = S_Monster;
+					outValue = S_Monsters;
 			} else if ( cls.bSPECIAL ) {
 				if ( testcls is 'Weapon' || testcls is 'WeaponPiece' )
-					outValue = S_Weapon;
+					outValue = S_Weapons;
 				else if ( testcls is 'Ammo' || testcls is 'BackpackItem' )
 					outValue = S_Ammo;
 				else if ( testcls is 'Armor' || testcls is 'BasicArmor' || testcls is 'BasicArmorBonus' || testcls is 'Health' )
-					outValue = S_Health_Armor;
+					outValue = S_HealthAndArmor;
 				else if ( testcls is 'PowerupGiver' || testcls is 'Powerup' )
-					outValue = S_Powerup;
+					outValue = S_Powerups;
 				else if ( testcls is 'Key' || testcls is 'OraclePass' )
-					outValue = S_Key;
+					outValue = S_Keys;
 				else
-					outValue = S_OtherItem;
+					outValue = S_OtherItems;
+			} else if ( cls.bMISSILE ) {
+				outValue = S_Missiles;
 			} else if ( testcls is 'PlayerPawn' ) {
-				outValue = S_Player;
-			} else if ( testcls is 'SwitchableDecoration' ) {
-				outValue = S_SwitchableDecor;
-			} else if ( testcls is 'Unknown' || cls.bACTLIKEBRIDGE || testcls is 'MapMarker' || testcls is 'ItemFog' || testcls is 'PickupFlash' || testcls is 'TeleportFog' ) {
-				outValue = S_OtherSpecial;
-			} else if ( cls.bNOINTERACTION ) {
-				outValue = S_NoInteractionDecor;
+				outValue = S_Players;
+			} else if ( testcls is 'Unknown' || cls.bACTLIKEBRIDGE || testcls is 'MapMarker' || testcls is 'ItemFog' || testcls is 'PickupFlash' || testcls is 'TeleportFog' || testcls is 'SecurityCamera' ) {
+				outValue = S_SpecialActors;
+
+			} else if ( cls.bNOBLOCKMAP ) {
+				outValue = S_DecorNoBlockmap;
+			} else if ( cls.bNOINTERACTION || cls.bNOCLIP ) {
+				outValue = S_DecorNoInteraction;
+			} else if ( cls.radius > 256 ) {
+				outValue = S_DecorHuge;
 			} else if ( cls.bSOLID ) {
-				outValue = S_SolidDecor;
-			} else if ( !( cls.bMISSILE || cls.bNOBLOCKMAP ) ) {
-				outValue = S_EtherealDecor;
+				outValue = ( cls.radius > 32? S_DecorSolidLarge : S_DecorSolid );
+			} else if ( cls.bSHOOTABLE ) {
+				outValue = ( cls.radius > 32? S_DecorShootableLarge : S_DecorShootable );
+			} else {
+				outValue = ( cls.radius > 32? S_DecorEtherealLarge : S_DecorEthereal );
 			}
 		}
 
@@ -222,18 +232,18 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				} else {
 					if ( clsType != S__Nothing ) {
-						logCreatingActor( TEXTCOLOR_GREEN .. "summoned class \"" .. cls.GetClassName() .. "\"\c- (sprite \"" .. spawnSprite .. "\")." );
+						logCreatingActor( TEXTCOLOR_DARKGREEN .. "summoned class \"" .. TEXTCOLOR_GREEN .. cls.GetClassName() .. TEXTCOLOR_DARKGREEN .. "\"" .. TEXTCOLOR_DARKGRAY .. " (sprite \"" .. spawnSprite .. "\")." );
 						evSectors[ clsType ].setter.DoJump( cls );
-					} else {
-						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). Cannot determine e-setter class type for \"" .. cls.GetClassName() .. "\"." );
+					} else if ( logSpawnInfo ) {
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" cannot be determined; skipped." );
 					}
 				}
 
-			} else if ( logSpawnInfo && ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). class \"" .. cls.GetClassName() .. "\" is restricted." );
+			} else if ( logSpawnInfo ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
 			}
 		}
-	} // of void RecreateEverythingMapLevel( void ) {}
+	} // of void RecreateEverything( void ) {}
 
 
 	override void OnRegister() {
@@ -267,30 +277,38 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					Sector s = level.Sectors[ i ];
 
 					int typeseg = s.GetUDMFInt( ZCUDMF_TypeSegment );
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). For type \"" .. evSectorType .. "\" found segment index " .. typeseg );
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Found segment #" .. typeseg .. " for \"" .. evSectorType .. "\" (sector " .. i .. ")." );
 
+					// TODO: rewrite this block of code to something decent!
 					if ( typeseg ) {
-						if ( typeseg < 0 || typeseg > 0xFFFF )
-							ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). It's better not to use too small and too large values, seriously (sector #" .. s.Index() .. " has the \"" .. ZCUDMF_TypeSegment .. "\" value of " .. typeseg );
+						if ( typeseg < 0 || typeseg > 0xFF )
+							ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Custom value \"" .. ZCUDMF_TypeSegment .. " = " .. typeseg .. "\" in sector " .. i .. " not in range [0; 255]." );
 
 						if ( typeseg < evSectors[ j ].startSectors.Size() ) {
 							if ( evSectors[ j ].startSectors[ typeseg ] )
-								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Warning\c-: double define of the sector type " .. getESectorName( j ) .. " segment " .. typeseg .. ". Changing from sector #" .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to sector #" .. s.Index() );
+								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Double define for \"" .. getESectorName( j ) .. "\" segment " .. typeseg .. ". \c-Set linked sector from " .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to " .. s.Index() );
 
 							evSectors[ j ].startSectors.Delete( typeseg, 1 );
 						}
 
 						evSectors[ j ].startSectors.Insert( typeseg, s );
 
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). New start sector added to evSectors[ " .. j .. " ]. StartSectors.Size(): " .. evSectors[ j ].startSectors.Size() );
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). " .. TEXTCOLOR_DARKGREEN .. "Added" .. LLCOLOR_DEBUG .. " segment #" .. typeseg .. " to \"" .. getESectorName( j ) .. "\" (sec " .. i .. ", segs.Size() " .. evSectors[ j ].startSectors.Size() .. ")." );
 					} else {
-						evSectors[ j ].startSectors.Insert( 0, s );
+						if ( evSectors[ j ].startSectors.Size() ) {
+							if ( evSectors[ j ].startSectors[ 0 ] )
+								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Double define for \"" .. getESectorName( j ) .. "\" segment 0." .. TEXTCOLOR_WHITE .. " [WIP; TODO]." );
+
+							evSectors[ j ].startSectors[ 0 ] = s;
+						} else {
+							evSectors[ j ].startSectors.Push( s );
+						}
 
 						if ( evSectors[ j ].setter ) {
-							ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Warning\c-: destroying previous e-sector setter for type " .. getESectorName( j ) .. " (sector index " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")" );
+							//ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Cleared setter for \"" .. getESectorName( j ) .. "\"\c- (linked now to sector " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")." );
 							evSectors[ j ].setter.Destroy();
 						}
-					}
+					} // of else of if ( typeseg ) {}
 
 					if ( !evSectors[ j ].setter ) {
 						int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ j ] );
@@ -318,7 +336,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			// Special main location/arena definition:
 			if ( !isSectorTyped && ( evSectorType = level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) ) != "" ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Found special sector definition \"" .. evSectorType .. "\" (sector #" .. level.Sectors[ i ].Index() .. ")." );
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Found special sector definition \"" .. evSectorType .. "\" (sector " .. i .. ")." );
 
 				if ( evSectorType ~== "arena" ) {
 					configuration.arenaCreatePos = level.Sectors[ i ].centerspot;

@@ -197,9 +197,9 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Wrong CCMD type index " .. zcCCMDType .. "." );
 				break;
 		}
-	} // of override void DoCommand( void ) {
+	} // of override void DoCommand( void ) {}
 
-} // of class ZCEvmapCommand: ZCConsoleCommand {
+} // of class ZCEvmapCommand: ZCConsoleCommand {}
 
 
 // Dummy everything map classes:

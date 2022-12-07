@@ -289,11 +289,11 @@ class ZCGlobal: Thinker {
 	}
 
 	static String ObjectName( Object obj ) {
-		return ( obj? obj.GetClassName() .. "" : "" );
+		return ( obj? obj.GetClassName() .. "" : "<NULL>" );
 	}
 
 	static String ClassName( class cls ) {
-		return ( cls? cls.GetClassName() .. "" : "" );
+		return ( cls? cls.GetClassName() .. "" : "<NULL>" );
 	}
 
 	// Remove all first and all last spaces and tabs in the string.
