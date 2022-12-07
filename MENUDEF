@@ -59,7 +59,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_PanelsPosition" {
 	Option "Enabled", "mcm_zchecker_infopanel_dimenabled", "YesNo"
 	ColorPicker "Background color", "mcm_zchecker_infopanel_dimcolor"
 	Slider "Background alpha", "mcm_zchecker_infopanel_dimalpha", 0.0, 1.0, 0.05, 2
-	Slider "Border width, pixels", "mcm_zchecker_infopanel_dimborderpx", 0, 20, 1, 0
+	Slider "Border width", "mcm_zchecker_infopanel_dimborderwidth", 0.0, 2.0, 0.1, 1
     StaticText " "
     StaticText "Other", GOLD
 	Option "Font", "mcm_zchecker_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"

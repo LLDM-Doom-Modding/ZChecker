@@ -647,12 +647,12 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( infopanelDimEnabled && panelsstrAmount ) {
 				Color dimColor = Color( CVar.FindCVar( "mcm_zchecker_infopanel_dimcolor" ).GetInt() );
 				double dimAlpha = CVar.FindCVar( "mcm_zchecker_infopanel_dimalpha" ).GetFloat();
-				int dimBorderPixels = CVar.FindCVar( "mcm_zchecker_infopanel_dimborderpx" ).GetInt();
+				double dimBorderWitdh = CVar.FindCVar( "mcm_zchecker_infopanel_dimborderwidth" ).GetFloat() * fontSymbolHeight;
 
-				int dimX = int( x / scale ) - dimBorderPixels;
-				int dimY = int( starty / scale ) - dimBorderPixels;
-				int dimWidth = int( maxStringWidth / scale ) + dimBorderPixels * 2;
-				int dimHeight = int( ( endy - fontSymbolHeight * infopanelPartsSpaceY ) / scale ) - dimY + dimBorderPixels;
+				int dimX = int( ( x - dimBorderWitdh ) / scale );
+				int dimY = int( ( starty - dimBorderWitdh ) / scale );
+				int dimWidth = int( ( maxStringWidth + dimBorderWitdh * 2 ) / scale );
+				int dimHeight = int( ( endy - dimY + dimBorderWitdh ) / scale );
 
 				Screen.Dim( dimColor, dimAlpha, dimX, dimY, dimWidth, dimHeight );
 			}

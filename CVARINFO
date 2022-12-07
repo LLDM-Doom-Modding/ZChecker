@@ -14,10 +14,10 @@ user float mcm_zchecker_infopanel_scale		= 1.0;
 user float mcm_zchecker_infopanelparts_y_gap= 0.55;
 user int mcm_zchecker_infopanel_fonttype	= 0;
 
-user bool mcm_zchecker_infopanel_dimenabled	= true;
-user int mcm_zchecker_infopanel_dimborderpx	= 7;
-user color mcm_zchecker_infopanel_dimcolor	= "00 00 00";
-user float mcm_zchecker_infopanel_dimalpha	= 0.5;
+user bool mcm_zchecker_infopanel_dimenabled		= true;
+user color mcm_zchecker_infopanel_dimcolor		= "00 00 00";
+user float mcm_zchecker_infopanel_dimalpha		= 0.5;
+user float mcm_zchecker_infopanel_dimborderwidth= 0.5;
 
 // Internal string for the API between ZScript and ACS.
 user noarchive string mcm_zchecker_internal_metastring;
