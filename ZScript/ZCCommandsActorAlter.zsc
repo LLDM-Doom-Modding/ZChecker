@@ -411,21 +411,31 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 
 		if ( !reviveBlocked ) {
-			ZCGlobal.Log( LL_Detailed, "Revived actor " .. thing.GetClassName() );
-
 			// Compatibility with older versions.
 			Actor prevMaster = thing.master;
 			thing.master = thing;
 			thing.A_RaiseMaster();
-			thing.master = prevMaster;
+
+			if ( thing ) {
+				thing.master = prevMaster;
+
+				if ( thing.bCORPSE )
+					ZCGlobal.Log( LL_Main, "Cannot revive actor " .. thing.GetClassName() );
+				else
+					ZCGlobal.Log( LL_Detailed, "Revived actor " .. thing.GetClassName() );
+			} else {
+				ZCGlobal.Log( LL_Main, "Actor " .. thing.GetClassName() .. " revived, but vanished." );
+			}
 		} else {
-			ZCGlobal.Log( LL_Main, "Actor " .. thing.GetClassName() .. " reviving " .. TEXTCOLOR_RED .. "blocked\c-." );
+			ZCGlobal.Log( LL_Main, "Actor " .. thing.GetClassName() .. " reviving " .. TEXTCOLOR_BRICK .. "blocked\c-." );
 		}
 	}
 
 	override void DoCommand( void ) {
 		if ( !thing )
 			return;
+
+		Name thingname = thing.GetClassName();
 
 		switch ( actoraction ) {
 			case AC_Revive:
@@ -436,31 +446,30 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 				// Some actors are instantly destroyed in the "Death:" state sequence.
 				if ( thing && thing.health > 0 )
-					ZCGlobal.Log( LL_Main, "Cannot kill actor " .. thing.GetClassName() );
+					ZCGlobal.Log( LL_Main, "Cannot kill actor " .. thingname );
 				else
-					ZCGlobal.Log( LL_Detailed, "Killed actor " .. thing.GetClassName() );
+					ZCGlobal.Log( LL_Detailed, "Killed actor " .. thingname );
 				break;
 			case AC_XKill:
 				thing.DamageMobj( thing, thing, 0x7FFFFFF, 'None', DMSS_FOILINVUL | DMSS_NOFACTOR | DMSS_NOPROTECT );
 
 				if ( thing && thing.health > 0 )
-					ZCGlobal.Log( LL_Main, "Cannot extremely kill actor " .. thing.GetClassName() );
+					ZCGlobal.Log( LL_Main, "Cannot extremely kill actor " .. thingname );
 				else
-					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thing.GetClassName() );
+					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thingname );
 				break;
 			case AC_Destroy:
 				if ( thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( "destroying live player" ) ) {
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKRED .. "It's better not to destroy an acting player " .. ( thing.PlayerNumber() + 1 ) .. LLCOLOR_MAIN .. ". " .. TEXTCOLOR_YELLOW .. "Terminated" .. LLCOLOR_MAIN .. "." );
+					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKRED .. "It's better not to destroy an acting player " .. ( thing.PlayerNumber() + 1 ) .. LLCOLOR_MAIN .. ". " .. LLCOLOR_WARNING .. "Terminated" .. LLCOLOR_MAIN .. "." );
 				} else {
-					Name thingName = thing.GetClassName();
 					thing.ClearCounters();
 					thing.Destroy();
 
-					ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. thingName );
+					ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. thingname );
 				}
 				break;
 			default:
-				ZCGlobal.Log( LL_Emergency, "Unknown action id \"" .. actoraction .. "\" for thing " .. thing.GetClassName() );
+				ZCGlobal.Log( LL_Emergency, "Unknown action id \"" .. actoraction .. "\" for thing " .. thingname );
 				break;
 		}
 	}
@@ -507,7 +516,7 @@ struct ZCSummonExtraParameters play {
 		double tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpfloat );
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpfloat );
 			value = tmpfloat;
 		}
 	}
@@ -516,7 +525,7 @@ struct ZCSummonExtraParameters play {
 		int tmpint = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpint ) {
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpint );
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpint );
 			value = tmpint;
 		}
 	}
@@ -639,20 +648,20 @@ class ZCSummonCommand: ZCConsoleCommand {
 									if ( argnum >= 0 && argnum < params.SPECARGS_MAX )
 										params.specargs[ argnum ] = paramvalue;
 									else
-										ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
+										ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
 								} else {
-									ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown parameter \"" .. curparam .. "\"." );
+									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown parameter \"" .. curparam .. "\"." );
 								}
 							} else {
-								ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Value \"" .. paramdiv[ 1 ] .. "\" for parameter \"" .. paramdiv[ 0 ] .. "\" isn't a digit." );
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Value \"" .. paramdiv[ 1 ] .. "\" for parameter \"" .. paramdiv[ 0 ] .. "\" isn't a digit." );
 							} // of else of if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue ) ) {}
 
 						} else {
-							ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "No value " .. LLCOLOR_MAIN .. "for parameter \"" .. curparam .. "\"." );
+							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "No value " .. LLCOLOR_MAIN .. "for parameter \"" .. curparam .. "\"." );
 						} // of if ( colonIndex < curparam.Length() ) {}
 
 					} else {
-						ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown flag \"" .. curparam .. "\"." );
+						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown flag \"" .. curparam .. "\"." );
 					}
 
 				} // of for ( int i = 0; i < paramlist.Size(); i++ ) {}

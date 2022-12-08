@@ -343,14 +343,14 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				if ( !( newTestee = ccmd.handler.Testee[ newTesteePosStatus ].mo ) )
 					ZCGlobal.Log( LL_Main, "No actor in position " .. ( newTesteePosStatus + 1 ) );
 			} else {
-				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (must be in range [1.." .. MaxTestee .. "])." );
+				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (must be in range [1.." .. MaxTestee .. "])." );
 				newTesteePosStatus = PPS_WrongPos;
 			}
 		} else if ( arg == "lt" || arg == "linetarget" ) {
 			newTestee = LinetraceActor();
 			newTesteePosStatus = PPS_Linetarget;
 		} else {
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Unknown placeholder \"" .. arg .. "\" in position " .. ( argpos + 1 ) .. TEXTCOLOR_DARKGRAY .. ". Possible values: " .. LLCOLOR_MAIN .. "1.." .. MaxTestee .. ", s[elf], cam[era], lt" .. TEXTCOLOR_DARKGRAY .. "|" .. LLCOLOR_MAIN .. "linetarget" .. TEXTCOLOR_DARKGRAY .. "." );
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. arg .. "\" in position " .. ( argpos + 1 ) .. TEXTCOLOR_DARKGRAY .. ". Possible values: " .. LLCOLOR_MAIN .. "1.." .. MaxTestee .. ", s[elf], cam[era], lt" .. TEXTCOLOR_DARKGRAY .. "|" .. LLCOLOR_MAIN .. "linetarget" .. TEXTCOLOR_DARKGRAY .. "." );
 		}
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getPlaceTestee(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg \"" .. arg .. "\"." );
@@ -389,7 +389,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		if ( classname.Length() > 63 ) {
 			classname.Truncate( 63 );
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::ParseSpecialActorName(). " .. TEXTCOLOR_YELLOW .. "Value truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::ParseSpecialActorName(). " .. LLCOLOR_WARNING .. "Value truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
 		}
 
 		String origValue = classname;
@@ -438,7 +438,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			}
 
 			if ( preventiveChoice < 1 ) {
-				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Selection \"" .. preventiveChoiceStr .. "\" isn't a positive integer." );
+				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Selection \"" .. preventiveChoiceStr .. "\" isn't a positive integer." );
 				preventiveChoice = -1;
 			}
 
@@ -451,13 +451,13 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialActorName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
 
 			if ( classname == "" )
-				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "empty placeholder \"" .. origValue .. "\". You may use \"%%null\" or \"%%none\" to override this." );
+				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Skipped " .. LLCOLOR_MAIN .. "empty placeholder \"" .. origValue .. "\". You may use \"%%null\" or \"%%none\" to override this." );
 		} else if ( classname.CharAt( 0 ) == "$" ) {
 			classnameParseStatus = CPS_Variable;
 			classname = GetInternalZCheckerString( classname );
 
 			if ( classname == "" )
-				ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Skipped " .. LLCOLOR_MAIN .. "unset internal variable \"" .. origValue .. "\"." );
+				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Skipped " .. LLCOLOR_MAIN .. "unset internal variable \"" .. origValue .. "\"." );
 
 			isSpecial = true;
 		} else if ( ccmd && ccmd.handler && ( classname.IndexOf( "*" ) != -1 || classname.IndexOf( "-" ) != -1 ) ) {
@@ -611,7 +611,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
 				} else {
 					if ( preventiveChoice > nameCandidatesSize ) {
-						ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Selected index " .. TEXTCOLOR_LIGHTBLUE .. preventiveChoice .. TEXTCOLOR_YELLOW .. " is out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
+						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Selected index " .. TEXTCOLOR_LIGHTBLUE .. preventiveChoice .. LLCOLOR_WARNING .. " is out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
 						preventiveChoice = -1;
 					}
 
@@ -632,7 +632,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			} // of if ( parts.Size() > 1 ) {}
 
 		} else if ( preventiveChoice != -1 ) {
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Ignoring numerical selection " .. preventiveChoice .. LLCOLOR_MAIN );
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Ignoring numerical selection " .. preventiveChoice .. LLCOLOR_MAIN );
 		}
 
 		return classname;
@@ -644,7 +644,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		if ( zcname.Length() > 63 ) {
 			zcname.Truncate( 63 );
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_YELLOW .. "Variable name truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. zcname .. "\")." );
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Variable name truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. zcname .. "\")." );
 		}
 
 		String newValue;
@@ -728,7 +728,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 class ZCBaseInfoPanelPart abstract {
 	protected bool playScoped;
 
-	const NORMAL	= TEXTCOLOR_NORMAL;
+	const NORMAL	= LLCOLOR_MAIN;
 	const N			= NORMAL;
 	const BRICK		= TEXTCOLOR_BRICK;
 	const TAN		= TEXTCOLOR_TAN;

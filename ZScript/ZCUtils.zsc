@@ -10,6 +10,7 @@ enum ENewlineTypes {
 };
 
 const LLCOLOR_MAIN = "\c-";
+const LLCOLOR_WARNING = TEXTCOLOR_YELLOW;
 const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
 const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
 
@@ -153,7 +154,7 @@ class ZCGlobal: Thinker {
 		bool isallowed = CVar.FindCVar( "mcm_zchecker_allowdangerccmds" ).GetBool();
 
 		if ( isallowed && desc != "" )
-			ClearscopeLog( LL_Main, TEXTCOLOR_YELLOW .. "Warning: " .. LLCOLOR_MAIN .. desc );
+			ClearscopeLog( LL_Main, LLCOLOR_WARNING .. "Warning: " .. LLCOLOR_MAIN .. desc );
 
 		return isallowed;
 	}
@@ -205,7 +206,7 @@ class ZCGlobal: Thinker {
 
 	play bool DeleteZCheckerString( String zcname ) {
 		if ( zcname.CharAt( 0 ) != "$" ) {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). " .. TEXTCOLOR_YELLOW .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). " .. LLCOLOR_WARNING .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
 			return false;
 		}
 
@@ -222,7 +223,7 @@ class ZCGlobal: Thinker {
 		}
 
 		if ( !found ) {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). Internal variable \"" .. zcname .. "\"" .. TEXTCOLOR_YELLOW  .. " not found." );
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). Internal variable \"" .. zcname .. "\"" .. LLCOLOR_WARNING  .. " not found." );
 			return false;
 		}
 
@@ -235,7 +236,7 @@ class ZCGlobal: Thinker {
 
 	play bool SetZCheckerString( String zcname, String zcvalue ) {
 		if ( zcname.CharAt( 0 ) != "$" ) {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::SetZCheckerString(). " .. TEXTCOLOR_YELLOW .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::SetZCheckerString(). " .. LLCOLOR_WARNING .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
 			return false;
 		}
 

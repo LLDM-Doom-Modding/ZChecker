@@ -207,6 +207,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
 		bool spawnPLYC = CVar.FindCVar( "mcm_zchecker_ev_spawnplyc" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
+		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
 
 		logSpawnInfo = CVar.FindCVar( "mcm_zchecker_ev_logspawninfo" ).GetBool();
 
@@ -221,14 +222,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( logSpawnInfo )
 					ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
-			} else {
+
+			} else if ( skipRestrictedReplacements ) {
 				class<Actor> clsReplacee = Actor.GetReplacee( cls );
 
 				if ( clsReplacee != cls && IsClassRestricted( clsReplacee ) ) {
 					skipactor = true;
 
-					if ( logSpawnInfo )
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Replaced class \"" .. clsReplacee.GetClassName() .. "\" (by \"" .. cls.GetClassName() .. "\") is restricted." );
+					logCreatingActor( "replaced by \"" .. cls.GetClassName() .. "\" class \"" .. clsReplacee.GetClassName() .. "\" is restricted." );
 				}
 			}
 
@@ -516,10 +517,10 @@ class ZCheckerSectorSetter: Actor {
 		bool continueFlag = true;
 
 		if ( !floorsector ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" performed outside the map." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" performed outside the map\c-." );
 			continueFlag = false;
 		} else if ( floorsector.GetUDMFString( ZCUDMF_Type ) != ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" now on sector " .. floorsector.Index() .. " type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" now on sector " .. floorsector.Index() .. " type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"\c-." );
 			continueFlag = false;
 		}
 
@@ -579,7 +580,7 @@ class ZCheckerSectorSetter: Actor {
 				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. cls.GetClassName() .. "\", is it abstract?" );
 			}
 		} else {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::DoJump(). Warning: maximal amount of jumps (" .. jumpMaxAmount .. ") was reached, actor \"" .. cls.GetClassName() .. "\" not spawned." );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::DoJump(). " .. LLCOLOR_WARNING .. "Warning" .. LLCOLOR_MAIN .. ": maximal amount of jumps (" .. jumpMaxAmount .. ") was reached, actor \"" .. cls.GetClassName() .. "\" not spawned." );
 		}
 
 	} // of void DoJump( class<Actor> cls ) {}
