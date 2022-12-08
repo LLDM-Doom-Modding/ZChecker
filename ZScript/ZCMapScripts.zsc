@@ -114,10 +114,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				outValue = S_DecorNoInteraction;
 			} else if ( cls.radius > 256 ) {
 				outValue = S_DecorHuge;
-			} else if ( cls.bSOLID ) {
-				outValue = ( cls.radius > 32? S_DecorSolidLarge : S_DecorSolid );
 			} else if ( cls.bSHOOTABLE ) {
 				outValue = ( cls.radius > 32? S_DecorShootableLarge : S_DecorShootable );
+			} else if ( cls.bSOLID ) {
+				outValue = ( cls.radius > 32? S_DecorSolidLarge : S_DecorSolid );
 			} else {
 				outValue = ( cls.radius > 32? S_DecorEtherealLarge : S_DecorEthereal );
 			}
@@ -135,7 +135,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "BossEye"
 			||  cur is "SpecialSpot"
 			||  cur is "SpawnShot"
-			||  cur == 'ZCheckerSectorSetter'
+			||  cur == "ZCheckerSectorSetter"
 			||  cur is "ProgLevelEnder"
 			||  cur is "WeaponPiece"
 			||  cur is "SectorAction"
@@ -214,7 +214,25 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		for ( int i = 0; i < AllActorClasses.Size(); i++ ) {
 			class<Actor> cls = AllActorClasses[ i ];
 
-			if ( !IsClassRestricted( cls ) ) {
+			bool skipactor = false;
+
+			if ( IsClassRestricted( cls ) ) {
+				skipactor = true;
+
+				if ( logSpawnInfo )
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
+			} else {
+				class<Actor> clsReplacee = Actor.GetReplacee( cls );
+
+				if ( clsReplacee != cls && IsClassRestricted( clsReplacee ) ) {
+					skipactor = true;
+
+					if ( logSpawnInfo )
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Replaced class \"" .. clsReplacee.GetClassName() .. "\" (by \"" .. cls.GetClassName() .. "\") is restricted." );
+				}
+			}
+
+			if ( !skipactor ) {
 				ESectorStarts clsType = getSectorStartForClass( cls );
 				String spawnSprite = TexMan.GetName( GetDefaultByType( cls ).SpawnState.GetSpriteTexture( 0 ) );
 
@@ -238,11 +256,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" cannot be determined; skipped." );
 					}
 				}
+			} // of if ( !skipactor ) {}
 
-			} else if ( logSpawnInfo ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
-			}
-		}
+		} // of for ( int i = 0; i < AllActorClasses.Size(); i++ ) {}
+
 	} // of void RecreateEverything( void ) {}
 
 
@@ -583,6 +600,12 @@ class ZCheckerActorInfo: Actor {
 	String masterInfo;
 	vector2 masterOffset;
 
+	enum EInfoactorStatus {
+		IAS_Wrong = 0,
+		IAS_Ready,
+		IAS_MasterDied
+	};
+
 	Default {
 		-SOLID;
 		-SHOOTABLE;
@@ -640,7 +663,10 @@ class ZCheckerActorInfo: Actor {
 		if ( !PlayerPawn( other ) )
 			return;
 
-		if ( !master || ( master.bISMONSTER && master.health <= 0 && master.bCORPSE ) ) {
+		if ( !master || ( master.health <= 0 || master.bCORPSE ) ) {
+			if ( master )
+				master.Destroy();
+
 			master = Spawn( masterClass, ( pos.xy - masterOffset, 0.0 ) );
 			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::Activate(). " .. LLCOLOR_Main .. "Spawned " .. master.GetClassName() .. "." );
 			SetMasterZ();
@@ -651,16 +677,30 @@ class ZCheckerActorInfo: Actor {
 		Activate( other );
 	}
 
+	EInfoactorStatus prevStatus;
+
 	override void Tick() {
 		if ( master is 'Inventory' && Inventory( master ).owner )
 			master = NULL;
 
-		if ( !master || master == self )
-			A_SetTranslation( "mcm_ZChecker_ActorInfoWrongMaster" );
-		else
-			A_SetTranslation( "mcm_ZChecker_ActorInfoReady" );
+		EInfoactorStatus curStatus = IAS_Wrong;
 
-		Super.Tick();
+		if ( master && master != self ) {
+			if ( master.health <= 0 || master.bCORPSE )
+				curStatus = IAS_MasterDied;
+			else
+				curStatus = IAS_Ready;
+		}
+
+		if ( curStatus != prevStatus ) {
+			switch ( curStatus ) {
+				case IAS_Ready: A_SetTranslation( "mcm_ZChecker_ActorInfoReady" ); break;
+				case IAS_MasterDied: A_SetTranslation( "mcm_ZChecker_ActorInfoMasterDied" ); break;
+				default: A_SetTranslation( "mcm_ZChecker_ActorInfoWrongMaster" ); break;
+			}
+		}
+
+		prevStatus = curStatus;
 	}
 
 	String GetInfoString( void ) {

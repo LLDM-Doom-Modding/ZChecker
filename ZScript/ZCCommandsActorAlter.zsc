@@ -434,7 +434,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			case AC_Kill:
 				thing.A_Die();
 
-				if ( thing.health > 0 )
+				// Some actors are instantly destroyed in the "Death:" state sequence.
+				if ( thing && thing.health > 0 )
 					ZCGlobal.Log( LL_Main, "Cannot kill actor " .. thing.GetClassName() );
 				else
 					ZCGlobal.Log( LL_Detailed, "Killed actor " .. thing.GetClassName() );
@@ -442,7 +443,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			case AC_XKill:
 				thing.DamageMobj( thing, thing, 0x7FFFFFF, 'None', DMSS_FOILINVUL | DMSS_NOFACTOR | DMSS_NOPROTECT );
 
-				if ( thing.health > 0 )
+				if ( thing && thing.health > 0 )
 					ZCGlobal.Log( LL_Main, "Cannot extremely kill actor " .. thing.GetClassName() );
 				else
 					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thing.GetClassName() );
