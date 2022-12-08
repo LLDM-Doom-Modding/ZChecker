@@ -64,7 +64,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 
-	static String getESectorName( int which ) {
+	static String GetESectorName( int which ) {
 		String outStr = "";
 
 		if ( which <= S__Nothing || which >= S__Quantity )
@@ -76,7 +76,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	}
 
 	// Main function corresponds to the class directing:
-	virtual ESectorStarts getSectorStartForClass( class<Actor> testcls ) {
+	static ESectorStarts GetSectorStartForClass( class<Actor> testcls ) {
 		ESectorStarts outValue = S__Nothing;
 		readonly<Actor> cls = GetDefaultByType( testcls );
 
@@ -105,9 +105,16 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				outValue = S_Missiles;
 			} else if ( testcls is 'PlayerPawn' ) {
 				outValue = S_Players;
-			} else if ( testcls is 'Unknown' || cls.bACTLIKEBRIDGE || testcls is 'MapMarker' || testcls is 'ItemFog' || testcls is 'PickupFlash' || testcls is 'TeleportFog' || testcls is 'SecurityCamera' ) {
+
+				// Skipped all actors with the +NOSECTOR flag set (well, almost):
+			} else if (    cls.bACTLIKEBRIDGE || testcls is 'Unknown' || testcls is 'MapMarker'
+						|| testcls is 'ItemFog' || testcls is 'PickupFlash' || testcls is 'TeleportFog' 
+						|| testcls is 'SecurityCamera' || testcls is 'PatrolPoint' || testcls is 'PatrolSpecial'
+						|| testcls is 'InterpolationPoint' || testcls is 'SectorFlagSetter' || testcls is 'ColorSetter'
+						|| testcls is 'FadeSetter' || testcls is 'PointPuller' || testcls is 'PointPusher' || testcls is 'PathFollower' ) {
 				outValue = S_SpecialActors;
 
+				// Decorations:
 			} else if ( cls.bNOBLOCKMAP ) {
 				outValue = S_DecorNoBlockmap;
 			} else if ( cls.bNOINTERACTION || cls.bNOCLIP ) {
@@ -124,22 +131,27 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		}
 
 		return outValue;
-	} // of virtual ESectorStarts getSectorStartForClass( class<Actor> cls ) {}
+	} // of static ESectorStarts GetSectorStartForClass( class<Actor> cls ) {}
 
 
 	// Next classes forces the game to crash/end the level/etc:
 	bool IsClassRestricted( class<Actor> cur ) {
-		return (cur is "DynamicLight"
+		return (
+				// Common dangers:
+				cur is "DynamicLight"
 			||  cur is "Decal"
-			||  cur is "BossBrain"
-			||  cur is "BossEye"
 			||  cur is "SpecialSpot"
 			||  cur is "SpawnShot"
-			||  cur == "ZCheckerSectorSetter"
-			||  cur is "ProgLevelEnder"
 			||  cur is "WeaponPiece"
-			||  cur is "SectorAction"
+				// Specific dangers (usually crashing the game):
+			||  cur is "BossBrain"
+			||  cur is "BossEye"
+			||  cur is "ParticleFountain"
+			||  cur == "ZCheckerSectorSetter"
+			||  cur == "Bat"
+			||  cur is "ProgLevelEnder"
 			||  cur is "SlideshowStarter"
+			||  cur is "SpectralLightningBigBall1"
 		);
 	}
 
@@ -228,17 +240,16 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( clsReplacee != cls && IsClassRestricted( clsReplacee ) ) {
 					skipactor = true;
-
 					logCreatingActor( "replaced by \"" .. cls.GetClassName() .. "\" class \"" .. clsReplacee.GetClassName() .. "\" is restricted." );
 				}
 			}
 
 			if ( !skipactor ) {
-				ESectorStarts clsType = getSectorStartForClass( cls );
+				ESectorStarts clsType = GetSectorStartForClass( cls );
 				String spawnSprite = TexMan.GetName( GetDefaultByType( cls ).SpawnState.GetSpriteTexture( 0 ) );
 
 				if ( ( spawnSprite == "TNT1A0" && !spawnTNT1A0 ) || ( spawnSprite.Left( 4 ) == "PLYC" && !spawnPLYC ) ) {
-					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite." );
+					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite \"" .. spawnSprite .. "\"." );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
 					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
@@ -304,18 +315,18 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 						if ( typeseg < evSectors[ j ].startSectors.Size() ) {
 							if ( evSectors[ j ].startSectors[ typeseg ] )
-								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Double define for \"" .. getESectorName( j ) .. "\" segment " .. typeseg .. ". \c-Set linked sector from " .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to " .. s.Index() );
+								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Double define for \"" .. GetESectorName( j ) .. "\" segment " .. typeseg .. ". \c-Set linked sector from " .. evSectors[ j ].startSectors[ typeseg ].Index() .. " to " .. s.Index() );
 
 							evSectors[ j ].startSectors.Delete( typeseg, 1 );
 						}
 
 						evSectors[ j ].startSectors.Insert( typeseg, s );
 
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). " .. TEXTCOLOR_DARKGREEN .. "Added" .. LLCOLOR_DEBUG .. " segment #" .. typeseg .. " to \"" .. getESectorName( j ) .. "\" (sec " .. i .. ", segs.Size() " .. evSectors[ j ].startSectors.Size() .. ")." );
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). " .. TEXTCOLOR_DARKGREEN .. "Added" .. LLCOLOR_DEBUG .. " segment #" .. typeseg .. " to \"" .. GetESectorName( j ) .. "\" (sec " .. i .. ", segs.Size() " .. evSectors[ j ].startSectors.Size() .. ")." );
 					} else {
 						if ( evSectors[ j ].startSectors.Size() ) {
 							if ( evSectors[ j ].startSectors[ 0 ] )
-								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Double define for \"" .. getESectorName( j ) .. "\" segment 0." .. TEXTCOLOR_WHITE .. " [WIP; TODO]." );
+								ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Double define for \"" .. GetESectorName( j ) .. "\" segment 0." .. TEXTCOLOR_WHITE .. " [WIP; TODO]." );
 
 							evSectors[ j ].startSectors[ 0 ] = s;
 						} else {
@@ -323,7 +334,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						}
 
 						if ( evSectors[ j ].setter ) {
-							//ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Cleared setter for \"" .. getESectorName( j ) .. "\"\c- (linked now to sector " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")." );
+							//ZCGlobal.Log( LL_Main, GetClassName() .. "::WorldLoaded(). " .. LLCOLOR_EMERGENCY .. "Cleared setter for \"" .. GetESectorName( j ) .. "\"\c- (linked now to sector " .. evSectors[ j ].startSectors[ 0 ].Index() .. ")." );
 							evSectors[ j ].setter.Destroy();
 						}
 					} // of else of if ( typeseg ) {}
@@ -338,10 +349,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 							evSectors[ j ].setter.evSectorDef = evSectors[ j ];
 							evSectors[ j ].setter.InitFromPos();
 
-							//ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Spawned ev-setter for the sector type \"" .. getESectorName( j ) .. "\"." );
+							//ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Spawned ev-setter for the sector type \"" .. GetESectorName( j ) .. "\"." );
 						} else {
 							canRecreateEverything = false;
-							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Sector type \"" .. getESectorName( j ) .. "\" has no start sectors." );
+							ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Sector type \"" .. GetESectorName( j ) .. "\" has no start sectors." );
 							break;
 						}
 					}
@@ -374,10 +385,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		// Check for existing of each sector:
 		for ( int i = 0; i < S__Quantity; i++ ) {
 			if ( !evSectors[ i ].startSectors.Size() ) {
-				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no e-start " .. getESectorName( i ) );
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no e-start " .. GetESectorName( i ) );
 				canRecreateEverything = false;
 			} else if ( !evSectors[ i ].setter ) {
-				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no sector setter for " .. getESectorName( i ) );
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::WorldLoaded(). Error: no sector setter for " .. GetESectorName( i ) );
 				canRecreateEverything = false;
 			}
 		}
@@ -517,10 +528,10 @@ class ZCheckerSectorSetter: Actor {
 		bool continueFlag = true;
 
 		if ( !floorsector ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" performed outside the map\c-." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.GetESectorName( evSectorDef.evType ) .. "\" performed outside the map\c-." );
 			continueFlag = false;
-		} else if ( floorsector.GetUDMFString( ZCUDMF_Type ) != ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.getESectorName( evSectorDef.evType ) .. "\" now on sector " .. floorsector.Index() .. " type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"\c-." );
+		} else if ( floorsector.GetUDMFString( ZCUDMF_Type ) != ZCheckerEverythingMapHandler.GetESectorName( evSectorDef.evType ) ) {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: sector setter of type \"" .. ZCheckerEverythingMapHandler.GetESectorName( evSectorDef.evType ) .. "\" now on sector " .. floorsector.Index() .. " type \"" .. floorsector.GetUDMFString( ZCUDMF_Type ) .. "\"\c-." );
 			continueFlag = false;
 		}
 

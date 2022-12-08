@@ -77,7 +77,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Option "Inherited from \"PlayerChunk\":", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
 	Option "Actors with sprite \"TNT1A0\":", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
 	Option "Actors with sprite \"PLYC*\":", "mcm_zchecker_ev_spawnplyc", "YesNo"
-	Option "Replacements of restricted actors:", "mcm_zchecker_ev_restrictreplacements", "YesNo"
+	Option "Replacements of restricted actors:", "mcm_zchecker_ev_restrictreplacements", "NoYes"
 
     StaticText " "
     StaticText "Other", GOLD
