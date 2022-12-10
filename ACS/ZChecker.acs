@@ -1,5 +1,7 @@
 // Not all parameters normally accessible via ZScript...
 
+// [McM] Compile(d) via gdcc-acc v0.13.2.
+
 #include "zcommon.acs"
 
 // Log levels enum:
@@ -40,11 +42,16 @@ script "ZChecker_CCMD_SetFlag" ( int setType ) {
 //  Ancient ZScript bug fixing.
 // https://forum.zdoom.org/viewtopic.php?f=2&t=62501
 //  [McM]: suddenly CVar name + CVar value cannot store more than 254 symbols.
-script "ZChecker_SetUserCVar" ( int playernum ) {
+script "ZChecker_SetUserCVarStringMeta" ( int playernum ) {
 	str cvarname = GetUserCVarString( playernum, "mcm_zchecker_internal_metastring" );
 	str data = GetUserCVarString( playernum, cvarname );
 
-	//Log( s:"ACS. Set '", s:cvarname, s:"' to \"", s:data, s:"\"." );
-
     SetUserCVarString( playernum, cvarname, data );
+}
+
+script "ZChecker_SetInfopanelPartCVar" ( int playernum, int infopanelPart ) {
+	str cvarname = StrParam( s:"mcm_zchecker_infopanelsorder_part", i:infopanelPart );
+	str data = GetUserCVarString( playernum, cvarname );
+
+	SetUserCVarString( playernum, cvarname, data );
 }

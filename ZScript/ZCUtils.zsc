@@ -180,15 +180,27 @@ class ZCGlobal: Thinker {
 			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
 		}
 	}*/
-	static clearscope void PrepareSetUserCVarString( String cvarName, String cvarValue ) {
+	static clearscope void PrepareUserCVarMetastring( String cvarName, String cvarValue ) {
 		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
 
 		if ( usercvar ) {
 			CVar metastring = CVar.FindCVar( "mcm_zchecker_internal_metastring" );
 			metastring.SetString( cvarName );
 			usercvar.SetString( cvarValue );
+		} else {
+			DataLog( LL_Emergency, "ZCGlobal.PrepareUserCVarMetastring(). Cannot find CVar \"" .. TEXTCOLOR_RED .. cvarName .. LLCOLOR_EMERGENCY .. "\" (setup value \"" .. cvarValue .. "\")" );
 		}
 	}
+
+	static clearscope void PrepareUserCVarString( String cvarName, String cvarValue ) {
+		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
+
+		if ( usercvar )
+			usercvar.SetString( cvarValue );
+		else
+			DataLog( LL_Emergency, "ZCGlobal.PrepareUserCVarString(). Cannot find CVar \"" .. TEXTCOLOR_RED .. cvarName .. LLCOLOR_EMERGENCY .. "\" (setup value \"" .. cvarValue .. "\")" );
+	}
+
 
 	clearscope String GetZCheckerString( String zcname ) {
 		String outStr = "";

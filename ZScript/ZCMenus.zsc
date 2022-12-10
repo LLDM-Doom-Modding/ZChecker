@@ -59,7 +59,6 @@ class ZCOptionMenuPanels: OptionMenu {
 		}
 
 		handler.panels.panelsstr = curorder;
-		//handler.panels.panelsorderChanged = true;
 		handler.panels.UpdatePanels();
 	}
 

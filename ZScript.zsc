@@ -17,7 +17,7 @@ version "3.3.0"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
-const ZCheckerVersion = "0.69";
+const ZCheckerVersion = "0.70";
 
 
 // AutoAmbient: 0x7FAA0004.
@@ -41,6 +41,7 @@ enum EZCheckerLogLevels {
 	LL_Extended = LL_Detailed,
 	LL_Extra = LL_Detailed,
 	LL_Critical = LL_Emergency,
+	LL_Avary = LL_Emergency,
 
 	LL_FlagsMask	= 0xFFF0,
 	LL_NoDot		= 0x4000,
@@ -58,6 +59,7 @@ const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
 const CCMDCOLOR_DESC = "\c-";
 
 
+
 class ZCInfoPanelNode {
 	ZCBaseInfoPanelPart panel;
 	CVar panelCVar;
@@ -67,7 +69,7 @@ class ZCInfoPanelNode {
 	}
 }
 
-class ZCInfoPanelNodeKeeper {
+class ZCInfoPanelNodesKeeper {
 	Array<ZCInfoPanelNode> nodes;
 	Array<ZCInfoPanelNode> playnodes;
 
@@ -92,37 +94,36 @@ class ZCInfoPanelNodeKeeper {
 		nodes.Clear();
 		playnodes.Clear();
 	}
-} // of class ZCInfoPanelNodeKeeper {}
+} // of class ZCInfoPanelNodesKeeper {}
 
 // Data-scoped panels storage:
 class ZCPanelsStorage {
 	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file ("zchecker.cfg").
-	ZCInfoPanelNodeKeeper curPanels;			// Loaded from the *.ini.
+	ZCInfoPanelNodesKeeper curPanels;			// Loaded from the *.ini.
 
 	transient CVar panelsOrderCVar;
 	bool panelsorderChanged;
 
-	transient CVar fonttypeCVar;
+	private transient CVar fonttypeCVar;
+	private int lastFontType;
 	transient Font infopanelsFont;
-	int lastFontType;
 
 	String panelsstr; // General read/write variable.
 
 	// For the "[Init|Tick]SetPanelsorderCVar()":
-	String newOrderStr;
-	int newOrderSaveTic;
-	int newOrderCurPart;
-	bool newOrderFirstTic;
+	private String newOrderStr;
+	private int newOrderStrPartsAmount;
+	private bool newOrderSaveRequest;
 
 	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
-	const availablePartLen = ( 254 - 36 );
+	const const_availablePartLen = ( 254 - 36 );
 
 
 	static ZCPanelsStorage Create( void ) {
 		ZCPanelsStorage panel = new( 'ZCPanelsStorage' );
 
 		panel.panelsorderChanged = true;
-		panel.curpanels = new( 'ZCInfoPanelNodeKeeper' );
+		panel.curpanels = new( 'ZCInfoPanelNodesKeeper' );
 		panel.lastFontType = -1;
 
 		return panel;
@@ -134,7 +135,7 @@ class ZCPanelsStorage {
 
 		curPanels.Clear();
 
-		String panelsOrderStr = ( fromCVar? GetPanelsorderFromCVar(): panelsstr );
+		String panelsOrderStr = ( fromCVar? GetPanelsorderFromCVars(): panelsstr );
 		int curloglevel = LL_Debug;
 
 		if ( CVar.FindCVar( "mcm_zchecker_loglevel" ) )
@@ -204,45 +205,37 @@ class ZCPanelsStorage {
 			panelsstr = panelsstr .. panelnode.panel.GetClassName() .. ",";
 		}
 
-		InitSetPanelsorderCVar();
-	} // of void UpdatePanels( void ) {}
+		InitSetPanelsorderCVars();
+	} // of void UpdatePanels( bool fromCVar = false ) {}
 
-	void InitSetPanelsorderCVar( String argorder = "" ) {
+	void InitSetPanelsorderCVars( String argorder = "" ) {
 		newOrderStr = ( argorder == ""? panelsstr : argorder );
-
-		newOrderSaveTic = int( ceil( newOrderStr.Length() / double( availablePartLen ) ) ) + 1;
-		newOrderCurPart = 0;
-		newOrderFirstTic = true;
-
-		ZCGlobal.DataLog( LL_Debug, String.Format( GetClassName() .. "::InitSetPanelsorderCVar(). strlen %i / %i, ceil == %i", newOrderStr.Length(), availablePartLen, newOrderSaveTic ) );
+		newOrderSaveRequest = true;
 	}
 
 	// ZScript-ACS API cannot obtain more than one string with maximum of 255 characters.
-	void TickSetPanelsorderCVar( void ) {
-		if ( newOrderSaveTic <= 0 || newOrderCurPart > 9 )
-			return;
+	play void TickSetPanelsorderCVars( void ) {
+		if ( newOrderSaveRequest ) {
+			int orderStrLength = newOrderStr.Length();
+			newOrderStrPartsAmount = int( ceil( orderStrLength / double( const_availablePartLen ) ) );
 
-		if ( !newOrderFirstTic )
-			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
-		else
-			newOrderFirstTic = false;
+			for ( int i = 0; i < newOrderStrPartsAmount; i++ ) {
+				int indexfrom = i * const_availablePartLen;
+				int indexto = min( indexfrom + const_availablePartLen, orderStrLength );
+				String curpart = newOrderStr.Mid( indexfrom, ( indexto - indexfrom ) );
 
-		int indexfrom = newOrderCurPart * availablePartLen;
-		int indexto = min( indexfrom + availablePartLen, newOrderStr.Length() );
+				ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVars(). Part " .. i .. "/" .. ( newOrderStrPartsAmount - 1 ) .. ": \"" .. TEXTCOLOR_GRAY .. curpart .. LLCOLOR_DEBUG .. "\"" );
 
-		String curpart = newOrderStr.Mid( indexfrom, ( indexto - indexfrom ) );
-		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVar(). Tic " .. newOrderSaveTic .. " part " .. newOrderCurPart .. ": \"" .. curpart .. "\"" );
+				ZCGlobal.PrepareUserCVarString( "mcm_zchecker_infopanelsorder_part" .. i, curpart );
+				ACS_ExecuteAlways( -int( 'ZChecker_SetInfopanelPartCVar' ), 0, consoleplayer, i );
+			}
 
-		ZCGlobal.PrepareSetUserCVarString( "mcm_zchecker_infopanelsorder_part" .. newOrderCurPart, curpart );
+			newOrderSaveRequest = false;
+		}
+	} // of void TickSetPanelsorderCVars( void ) {}
 
-		newOrderCurPart++;
-		newOrderSaveTic--;
 
-		//if ( indexto >= newOrderStr.Length() )
-		//	newOrderSaveTic = 0;
-	}
-
-	String GetPanelsorderFromCVar( void ) {
+	String GetPanelsorderFromCVars( void ) {
 		String outstr = "";
 
 		for ( int i = 0; i < 10; i++ ) {
@@ -254,7 +247,7 @@ class ZCPanelsStorage {
 			outstr = outstr .. curpart;
 		}
 
-		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVar(). Concatenated: \"" .. outstr .. "\"" );
+		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVar(). Concatenated: \"" .. TEXTCOLOR_DARKBROWN .. outstr .. LLCOLOR_DEBUG .. "\"" );
 
 		return outstr;
 	}
@@ -682,7 +675,7 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( zcCCMDInfo.args.Size() == 1 ) {
 				panels.panelsstr = zcCCMDInfo.args[ 0 ];
 				panels.UpdatePanels();
-				panels.InitSetPanelsorderCVar( zcCCMDInfo.args[ 0 ] );
+				panels.InitSetPanelsorderCVars( zcCCMDInfo.args[ 0 ] );
 			} else {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Updating panels order netevent has wrong amount of arguments (must be 1, got " .. zcCCMDInfo.args.Size() .. ")." );
 				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
@@ -801,7 +794,7 @@ class ZCheckerHandler: StaticEventHandler {
 			globalclass.UpdateLogLevel();
 
 		// ACS works only in the play scope.
-		panels.TickSetPanelsorderCVar();
+		panels.TickSetPanelsorderCVars();
 
 		for ( int i = 0; i < panels.curPanels.PlayscopedSize(); i++ ) {
 			ZCBaseInfoPanelPart_PlayScope playpanel = ZCBaseInfoPanelPart_PlayScope( panels.curPanels.playnodes[ i ].panel );
