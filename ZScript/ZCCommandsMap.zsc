@@ -60,6 +60,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				break;
 			case CCMDT_Goto:
 				outStr = getHelpByClass( 'ZCEvmapCommand_goto' );
+				zcFlags &= ~CCF_Unreleased;
 				break;
 			case CCMDT_Pause:
 				outStr = getHelpByClass( 'ZCEvmapCommand_pause' );
@@ -84,7 +85,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				break;
 			case CCMDT_Goto:
 				outStr = getHelpByClass( 'ZCEvmapCommand_goto', true );
-				zcFlags |= CCF_Unreleased;
+				zcFlags &= ~CCF_Unreleased;
 				break;
 			case CCMDT_Pause:
 				outStr = getHelpByClass( 'ZCEvmapCommand_pause', true );
@@ -104,33 +105,35 @@ class ZCEvmapCommand: ZCConsoleCommand {
 	override bool HandleArguments() {
 		zcHelpFromUsage = true;
 		zcCCMDType = CCMDT_All;
+
 		bool outValue = false;
 		int argsSize = ccmd.args.Size();
+
+		zcFlags |= CCF_Unreleased;
 
 		if ( !ZCGlobal.IsEverythingLevel() ) {
 			ZCGlobal.Log( LL_Main, "Cannot use command not on Everything map." );
 
 		} else if ( argsSize > 0 ) {
+			String firstchar = ccmd.args[ 0 ].Left( 1 );
 
 			// Add an actor to the arena:
-			if ( ( ccmd.args[ 0 ] == "add" || ccmd.args[ 0 ] == "new" ) && argsSize < 4 ) {
+			if ( ( firstchar == "a" || firstchar == "n" ) && argsSize < 4 ) {
 				zcCCMDType = CCMDT_Add;
-				return false;
 
 			// Pause main area:
-			} else if ( ( ccmd.args[ 0 ] == "pause" || ccmd.args[ 0 ] == "optimize" ) && argsSize == 1 ) {
+			} else if ( ( ccmd.args[ 0 ] == "pause" || ccmd.args[ 0 ].Left( 3 ) == "opt" ) && argsSize == 1 ) {
 				zcCCMDType = CCMDT_Pause;
-				return false;
 
 			// Go to the specified class:
-			} else if ( ccmd.args[ 0 ] == "goto" ) {
+			} else if ( firstchar == "g" ) {
 				zcCCMDType = CCMDT_Goto;
 
 				if ( argsSize == 2 ) {
 					zcSpecifiedClass = ParseSpecialActorName( ccmd.args[ 1 ] );
 					outValue = true;
 				}
-			} else if ( ccmd.args[ 0 ] == "recreate" || ccmd.args[ 0 ] == "reload" ) {
+			} else if ( ccmd.args[ 0 ].Left( 2 ) == "re" ) {
 				zcCCMDType = CCMDT_Recreate;
 				outValue = true;
 			}
@@ -197,6 +200,8 @@ class ZCEvmapCommand: ZCConsoleCommand {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Wrong CCMD type index " .. zcCCMDType .. "." );
 				break;
 		}
+
+		zcCCMDType = CCMDT_All;
 	} // of override void DoCommand( void ) {}
 
 } // of class ZCEvmapCommand: ZCConsoleCommand {}
