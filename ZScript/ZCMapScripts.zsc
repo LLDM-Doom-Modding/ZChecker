@@ -658,18 +658,20 @@ class ZCheckerActorInfo: Actor {
 	}
 
 	void SetMasterZ( void ) {
-		if ( master.bSPAWNCEILING ) {
-			master.SetZ( master.ceilingz - master.height );
-			master.ClearInterpolation();
-			floorclip = -64.0;
-		} else if ( master.bNOGRAVITY || master.bNOINTERACTION ) {
-			master.AddZ( 16.0 );
-			master.ClearInterpolation();
-			floorclip = -22.0;
-		} else {
-			floorclip = -3.5;
+		if ( master ) {
+			if ( master.bSPAWNCEILING ) {
+				master.SetZ( master.ceilingz - master.height );
+				master.ClearInterpolation();
+				floorclip = -64.0;
+			} else if ( master.bNOGRAVITY || master.bNOINTERACTION ) {
+				master.AddZ( 16.0 );
+				master.ClearInterpolation();
+				floorclip = -22.0;
+			} else {
+				floorclip = -3.5;
+			}
 		}
-	}
+	} // of void SetMasterZ( void ) {}
 
 	override void Activate( Actor other ) {
 		if ( !PlayerPawn( other ) )

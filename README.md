@@ -11,6 +11,6 @@ Map: StormCatcher.77.
 
 Alternative font: Dezette.
 
-Bug reporting: Il Str.
+Bug reporting: Il Str, ika707.
 
 Beta-testing: ika707, Il Str, Ron_Dallas, Chameleon_111, Dezette.
