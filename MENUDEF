@@ -123,8 +123,9 @@ OptionValue "mcm_ZCheckerOption_LogLevels" {
 }
 
 OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {
-	0, "Default smallfont"
-	1, "Mono"
+	0, "Smallfont (built-in)"
+	1, "Monospace smallfont"
+	2, "Confont (built-in)"
 }
 
 

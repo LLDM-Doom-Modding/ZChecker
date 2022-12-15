@@ -247,7 +247,7 @@ class ZCPanelsStorage {
 			outstr = outstr .. curpart;
 		}
 
-		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVar(). Concatenated: \"" .. TEXTCOLOR_DARKBROWN .. outstr .. LLCOLOR_DEBUG .. "\"" );
+		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVars(). Concatenated: \"" .. TEXTCOLOR_DARKBROWN .. outstr .. LLCOLOR_DEBUG .. "\"" );
 
 		return outstr;
 	}
@@ -270,6 +270,9 @@ class ZCPanelsStorage {
 					break;
 				case 1:
 					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
+					break;
+				case 2:
+					infopanelsFont = confont;
 					break;
 				default:
 					ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::UpdateFont(). Unknown font type \"" .. fonttype .. "\"." );
