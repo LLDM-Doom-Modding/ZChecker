@@ -35,13 +35,13 @@ enum EZCheckerLogLevels {
 	LL_Detailed,
 	LL_Debug,
 
-	LL_Common = LL_General,
-	LL_Normal = LL_General,
-	LL_Main = LL_General,
+	LL_Common 	= LL_General,
+	LL_Normal 	= LL_General,
+	LL_Main 	= LL_General,
 	LL_Extended = LL_Detailed,
-	LL_Extra = LL_Detailed,
+	LL_Extra 	= LL_Detailed,
 	LL_Critical = LL_Emergency,
-	LL_Avary = LL_Emergency,
+	LL_Avary 	= LL_Emergency,
 
 	LL_FlagsMask	= 0xFFF0,
 	LL_NoDot		= 0x4000,
@@ -671,6 +671,8 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	override void NetworkProcess( ConsoleEvent e ) {
+		bool isDebugLoggingLevel = ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug );
+
 		// ZChecker CCMDs parsing:
 		String ccmdName = zcCCMDInfo.InitFromEvent( e );
 
@@ -720,7 +722,7 @@ class ZCheckerHandler: StaticEventHandler {
 		}
 
 		// Just a debug NetworkProcess() output.
-		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
+		if ( isDebugLoggingLevel ) {
 			String debugstr = GetClassName() .. "::NetworkProcess(). CCMD: \"" .. ccmdName .. "\"";
 
 			if ( zcCCMDInfo.args.Size() != 0 ) {
@@ -734,6 +736,7 @@ class ZCheckerHandler: StaticEventHandler {
 		}
 
 		int interceptNeteventsMode = clamp( CVar.GetCVar( "mcm_zchecker_specinfo_netevents", players[ e.Player ] ).GetInt(), 0, 3 );
+		int nonblockingCommandsAmount = 0;
 
 		// Polling ZChecker CCMD handlers by stored netevent name:
 		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
@@ -745,18 +748,68 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( ccmdName ~== curCCMD.GetCommand() ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.argsamount );
+				if ( nonblockingCommandsAmount == 0 )
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.argsamount );
+
+				if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
+					if ( nonblockingCommandsAmount == 0 )
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_OLIVE .. "Requested a non-blocking execution" .. LLCOLOR_DEBUG .. "." );
+
+					zcCCMDInfo.nonblockingCommands.Push( curCCMD );
+					nonblockingCommandsAmount++;
+				} else {
+					if ( curCCMD.HandleArguments() )
+						curCCMD.DoCommand();
+					else
+						ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage" .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
+
+					interceptNeteventsMode = 0;
+					break;
+				}
+			}
+		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {}
+
+		if ( nonblockingCommandsAmount != zcCCMDInfo.nonblockingCommands.Size() && isDebugLoggingLevel )
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_BRICK .. "Non-blocking commands array size changed" .. LLCOLOR_DEBUG .. ": was " .. nonblockingCommandsAmount .. ", new " .. zcCCMDInfo.nonblockingCommands.Size() );
+
+		nonblockingCommandsAmount = zcCCMDInfo.nonblockingCommands.Size();
+
+		if ( nonblockingCommandsAmount != 0 ) {
+			if ( isDebugLoggingLevel ) {
+				String debugstr = GetClassName() .. "::NetworkProcess(). Non-blocking handling of ";
+
+				for ( int i = 0; i < nonblockingCommandsAmount; i++ )
+					debugstr.AppendFormat( "\"" .. TEXTCOLOR_BLUE .. zcCCMDInfo.nonblockingCommands[ i ].GetClassName() .. LLCOLOR_DEBUG .. "\"; " );
+
+				ZCGlobal.ClearscopeLog( LL_Debug, debugstr .. "with total amount of " .. nonblockingCommandsAmount .. " commands." );
+			}
+
+			bool printUsage = true;
+			int curCCMDIndex = 0;
+
+			zcCCMDInfo.SetUsageMessageNonblockingCCMD( zcCCMDInfo.nonblockingCommands[ 0 ] );
+
+			for ( ; curCCMDIndex < nonblockingCommandsAmount; curCCMDIndex++ ) {
+				ZCConsoleCommand curCCMD = zcCCMDInfo.nonblockingCommands[ curCCMDIndex ];
 
 				if ( curCCMD.HandleArguments() ) {
 					curCCMD.DoCommand();
-				} else {
-					ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage" .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
-				}
+					printUsage = false;
 
-				interceptNeteventsMode = 0;
-				break;
+					if ( !( curCCMD.zcFlags & curCCMD.CCF_NonblockingSuccess ) )
+						break;
+				} else {
+					if ( !( curCCMD.zcFlags & curCCMD.CCF_NonblockingFailure ) )
+						break;
+				}
 			}
-		} // of for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {}
+
+			if ( printUsage && zcCCMDInfo.usageNonblockingCommand )
+				ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage" .. LLCOLOR_MAIN .. ":\n" .. zcCCMDInfo.usageNonblockingCommand.GetHelpString() );
+
+			interceptNeteventsMode = 0;
+			zcCCMDInfo.nonblockingCommands.Clear();
+		}
 
 		if ( e.name == "zcheckermap_recreate" || e.name == "zcheckermap_pause_level_part" )
 			interceptNeteventsMode = 0;

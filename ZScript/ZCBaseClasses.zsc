@@ -4,6 +4,9 @@ class ZCheckerCCMDInfo play {
 	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on the "FindEventHandler()" calls);
 	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
 
+	Array<ZCConsoleCommand> nonblockingCommands;
+	ZCConsoleCommand usageNonblockingCommand;
+
 	// Init or reinit:
 	String InitFromEvent( ConsoleEvent initEvent ) {
 		args.Clear();
@@ -34,7 +37,14 @@ class ZCheckerCCMDInfo play {
 
 		return zcCommandName;
 	}
-} // of class ZCheckerCCMDInfo {}
+
+	void SetUsageMessageNonblockingCCMD( ZCConsoleCommand ccmd ) {
+		usageNonblockingCommand = ccmd;
+	}
+	ZCConsoleCommand GetUsageMessageNonblockingCCMD( void ) const {
+		return usageNonblockingCommand;
+	}
+} // of class ZCheckerCCMDInfo play {}
 
 
 class ZCheckerField {
@@ -110,8 +120,7 @@ class ZCConsoleClass abstract {
 	enum EConsoleClassFlags {
 		CCF_None			= 0,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
-		CCF_Unreleased		= 0x0002,	// CCMD: help will be colored in gray.
-		CCF_NoCacheHelp		= 0x0004	// Help string will not be cached.
+		CCF_NoCacheHelp		= 0x0002	// Help string will not be cached.
 	};
 
 	EConsoleClassFlags zcFlags;
@@ -150,7 +159,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 		return "";
 	}
 
-	override final String GetHelpString( void ) {
+	final override String GetHelpString( void ) {
 		// Attempt to speed up help strings processing:
 		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
 			helpCacheString = "";
@@ -240,6 +249,14 @@ class ZCTooltipClass: ZCConsoleClass {
 
 
 class ZCConsoleCommand: ZCConsoleClass abstract play {
+	enum EConsoleCommandFlags {
+		// <enum EConsoleCommandFlags {}>.
+		CCF_Unreleased			= 0x0004,	// Help will be colored in dark gray.
+
+		CCF_NonblockingFailure	= 0x0008,	// Testing of the subsequent ZChecker CCMDs will not stop when "HandleArguments()" \
+		CCF_NonblockingSuccess	= 0x0010,	//for this netevent returns false for "Failure" and true for "Success".
+	};
+
 	enum EClassnameParseStatus {
 		CPS_Default = 0,
 		CPS_Variable,

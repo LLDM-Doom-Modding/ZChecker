@@ -60,7 +60,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {}
 
 				ZCGlobal.Log( LL_Main | LL_NoDot, ( outValue
-						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n"
+						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n\n"
 						: TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
 					) );
 			}
@@ -80,7 +80,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			if ( infoclass.helpTooltip )
 				console.printf( infoclass.helpTooltip.GetHelpString() );
 
-			console.printf( infoclass.GetHelpString() );
+			console.printf( infoclass.GetHelpString() .. "\n\n" );
 		} else {
 			console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
 
@@ -353,7 +353,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel info [<pos>];zcpanel <pos> info";
+		return "zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]";
 	}
 
 	override String GetHelpDescString() {
