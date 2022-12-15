@@ -718,6 +718,11 @@ class ZCSummonCommand: ZCConsoleCommand {
 		if ( classnameParseStatus == CPS_RegexFailed )
 			return;
 
+		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( "summoning more than 200 actors" ) ) {
+			ZCGlobal.Log( LL_Main, "Trying to summon more than 200 actors in once. " .. TEXTCOLOR_DARKGRAY .. "You may disable this limiting switching the \"Allow dangerous actions\" option." );
+			return;
+		}
+
 		class<Actor> summoneeClass = summonee;
 
 		if ( summoneeClass is 'Actor' ) {

@@ -582,13 +582,14 @@ class ZCheckerSectorSetter: Actor {
 				ZCheckerActorInfo infoActor = ZCheckerActorInfo( Actor.Spawn( "ZCheckerActorInfo", infoActorPos ) );
 				infoActor.master = testeeActor;
 				infoActor.masterClass = cls;
+				infoActor.evSectorDef = evSectorDef;
 
 				infoActor.SetMasterZ();
 
 				SetOrigin( pos + ( jumpLen.x, jumpLen.y, 0 ), false );
 				curJumpAmount++;
 			} else {
-				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. cls.GetClassName() .. "\", is it abstract?" );
+				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. TEXTCOLOR_WHITE .. cls.GetClassName() .. TEXTCOLOR_DARKBROWN .. "\", is it abstract?" );
 			}
 		} else {
 			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::DoJump(). " .. LLCOLOR_WARNING .. "Warning" .. LLCOLOR_MAIN .. ": maximal amount of jumps (" .. jumpMaxAmount .. ") was reached, actor \"" .. cls.GetClassName() .. "\" not spawned." );
@@ -611,12 +612,16 @@ class ZCheckerActorInfo: Actor {
 	class<Actor> masterClass;
 	String masterInfo;
 	vector2 masterOffset;
+	ZCheckerEvSectorSetters evSectorDef;
 
 	enum EInfoactorStatus {
 		IAS_Wrong = 0,
 		IAS_Ready,
 		IAS_MasterDied
 	};
+
+	EInfoactorStatus prevStatus;
+
 
 	Default {
 		-SOLID;
@@ -645,12 +650,14 @@ class ZCheckerActorInfo: Actor {
 			if ( !( master.GetParentClass().GetClassName() == "Actor" ) )
 				masterInfo = masterInfo .. "\cf: \c-" .. master.GetParentClass().GetClassName();
 
-			if ( Actor.GetReplacee( masterClass ) != masterClass )
-				masterInfo = masterInfo .. " \cnreplaces\c- " .. Actor.GetReplacee( masterClass ).GetClassName();
+			class<Actor> replacee = Actor.GetReplacee( masterClass );
+
+			if ( replacee != masterClass )
+				masterInfo = masterInfo .. " \cnreplaces\c- " .. replacee.GetClassName();
 
 			SetZ( floorZ );
 		} else {
-			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. " at " .. ZCGlobal.squeezeVector3( pos ) .. ". Master class \"" .. LLCOLOR_MAIN .. masterClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\" vanishes, destroying self." );
+			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "Removing " .. GetClassName() .. " at " .. ZCGlobal.squeezeVector3( pos ) .. ", class \"" .. LLCOLOR_MAIN .. masterClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\" in \"" .. ZCheckerEverythingMapHandler.GetESectorName( evSectorDef.evType ) .. "\" vanishes." );
 			Destroy();
 		}
 
@@ -690,8 +697,6 @@ class ZCheckerActorInfo: Actor {
 	override void Deactivate( Actor other ) {
 		Activate( other );
 	}
-
-	EInfoactorStatus prevStatus;
 
 	override void Tick() {
 		if ( master is 'Inventory' && Inventory( master ).owner )
