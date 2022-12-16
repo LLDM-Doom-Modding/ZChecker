@@ -557,7 +557,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>); notproj,friend|foe,[no]infi>]";
+		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>). notproj,friend|foe,[no]infi>]";
 	}
 
 	override String GetHelpDescString() {

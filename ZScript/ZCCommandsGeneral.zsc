@@ -35,6 +35,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 
 					if ( curccmd ) {
 						Array<String> aliases;
+						aliases.Clear();
+
 						curccmd.GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
 
 						for ( int j = 0; j < aliases.Size(); j++ ) {
