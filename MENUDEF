@@ -81,8 +81,9 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 
     StaticText " "
     StaticText "Other", GOLD
-	Option "Autonotarget", "mcm_zchecker_ev_auto_notarget", "YesNo"
-    StaticText "Enable a \"notarget\" cheat automatically", DARKGRAY
+	Option "Auto-notarget", "mcm_zchecker_ev_auto_notarget", "YesNo"
+	Option "Auto-godmode", "mcm_zchecker_ev_auto_iddqd", "YesNo"
+    StaticText "Enable specified cheats automatically", DARKGRAY
     StaticText "when entering an \"Everything\" map.", DARKGRAY
     StaticText " "
 	Option "Log spawn information", "mcm_zchecker_ev_logspawninfo", "YesNo"

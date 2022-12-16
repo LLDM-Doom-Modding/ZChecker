@@ -432,11 +432,20 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	} // of override void WorldLoaded( WorldEvent e ) {}
 
 	override void PlayerEntered( PlayerEvent e ) {
-		if ( ZCGlobal.IsEverythingLevel() && CVar.GetCVar( "mcm_zchecker_ev_auto_notarget", players[ e.PlayerNumber ] ).GetBool() ) {
-			players[ e.PlayerNumber ].cheats |= CF_NOTARGET;
+		if ( ZCGlobal.IsEverythingLevel() ) {
+			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_notarget" ).GetBool() ) {
+				players[ e.PlayerNumber ].cheats |= CF_NOTARGET;
 
-			if ( e.PlayerNumber == consoleplayer )
-				ZCGlobal.Log( LL_Main, "Auto-notarget enabled." );
+				if ( e.PlayerNumber == consoleplayer )
+					ZCGlobal.Log( LL_Main, "Auto-notarget enabled." );
+			}
+
+			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_iddqd" ).GetBool() ) {
+				players[ e.PlayerNumber ].cheats |= CF_GODMODE;
+
+				if ( e.PlayerNumber == consoleplayer )
+					ZCGlobal.Log( LL_Main, "Auto-godmode enabled." );
+			}
 		}
 
 		Super.PlayerEntered( e );
