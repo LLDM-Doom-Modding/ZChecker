@@ -107,6 +107,7 @@ class ZCPanelsStorage {
 	private transient CVar fonttypeCVar;
 	private int lastFontType;
 	transient Font infopanelsFont;
+	int infopanelsFontSpaceWidth;
 
 	String panelsstr; // General read/write variable.
 
@@ -261,7 +262,6 @@ class ZCPanelsStorage {
 		fonttype = fonttypeCVar.GetInt();
 
 		if ( fonttype != lastFontType ) {
-			ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::UpdateFont(). Font type changed to " .. fonttype );
 			lastFontType = fonttype;
 
 			switch ( fonttype ) {
@@ -269,15 +269,23 @@ class ZCPanelsStorage {
 					infopanelsFont = smallfont;
 					break;
 				case 1:
-					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
+					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono_shortspace" );
 					break;
 				case 2:
+					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
+					break;
+				case 3:
 					infopanelsFont = confont;
 					break;
 				default:
 					ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::UpdateFont(). Unknown font type \"" .. fonttype .. "\"." );
 					break;
 			}
+
+			if ( infopanelsFont )
+				infopanelsFontSpaceWidth = infopanelsFont.GetCharWidth( 32 );
+
+			ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::UpdateFont(). Font type changed to " .. fonttype .. ", space width is " .. infopanelsFontSpaceWidth .. "." );
 		} // of if ( fonttype != lastFontType ) {}
 
 	} // of void UpdateFont( void ) {}

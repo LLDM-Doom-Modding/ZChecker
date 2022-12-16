@@ -9,7 +9,7 @@ zchecker_smallfont_mono {
 7	msf7
 8	msf8
 9	msf9
-			
+
 A	msfA
 B	msfB
 C	msfC
@@ -23,7 +23,6 @@ J	msfJ
 K	msfK
 L	msfL
 M	msfM
-			
 N	msfN
 O	msfO
 P	msfP
@@ -38,7 +37,7 @@ X	msfX
 Y	msfY
 Z	msfZ
 
-
+" "	msfS00
 ;	msfS01
 '	msfS02
 ,	msfS04
@@ -47,7 +46,6 @@ Z	msfZ
 \	msfS07
 -	msfS08
 =	msfS09
-
 _	msfS10
 +	msfS11
 <	msfS12
@@ -58,7 +56,6 @@ _	msfS10
 !	msfS17
 @	msfS18
 #	msfS19
-
 $	msfS20
 %	msfS21
 ^	msfS22
@@ -68,23 +65,72 @@ $	msfS20
 )	msfS27
 [	msfS26
 ]	msfS27
-
-//╚	msfS28
-//╗	msfS29
-//╔	msfS30
-//╩	msfS31
-//╦	msfS32
-//╝	msfS33
-//╠	msfS34
-//═	msfS35
-//╬	msfS36
-//╣	msfS37
-//║	msfS38
-
-
 }
 
+zchecker_smallfont_mono_shortspace {
+0	msf0
+1	msf1
+2	msf2
+3	msf3
+4	msf4
+5	msf5
+6	msf6
+7	msf7
+8	msf8
+9	msf9
 
+A	msfA
+B	msfB
+C	msfC
+D	msfD
+E	msfE
+F	msfF
+G	msfG
+H	msfH
+I	msfI
+J	msfJ
+K	msfK
+L	msfL
+M	msfM
+N	msfN
+O	msfO
+P	msfP
+Q	msfQ
+R	msfR
+S	msfS
+T	msfT
+U	msfU
+V	msfV
+W	msfW
+X	msfX
+Y	msfY
+Z	msfZ
 
-
-
+;	msfS01
+'	msfS02
+,	msfS04
+.	msfS05
+/	msfS06
+\	msfS07
+-	msfS08
+=	msfS09
+_	msfS10
++	msfS11
+<	msfS12
+>	msfS13
+?	msfS14
+|	msfS15
+:	msfS16
+!	msfS17
+@	msfS18
+#	msfS19
+$	msfS20
+%	msfS21
+^	msfS22
+&	msfS23
+*	msfS24
+(	msfS26
+)	msfS27
+[	msfS26
+]	msfS27
+}
