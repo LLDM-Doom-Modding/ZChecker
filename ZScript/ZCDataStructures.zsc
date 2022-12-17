@@ -1,0 +1,413 @@
+//
+// All what is dedicated to store (and maybe slightly handle) the data.
+//
+
+// Class used to transfer the data between "NetworkProcess()", console commands manager and CCMDs itselfs.
+class ZCheckerCCMDInfo play {
+	Array<String> args;			// Arguments excluding ZC-CCMD name;
+	int argsamount;
+	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on the "FindEventHandler()" calls);
+	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
+
+	Array<ZCConsoleCommand> nonblockingCommands;
+	ZCConsoleCommand usageNonblockingCommand;
+
+	// Init or reinit:
+	String InitFromEvent( ConsoleEvent initEvent ) {
+		args.Clear();
+
+		e = initEvent;
+		e.Name.Split( args, ZCHECKER_AGRS_SEPARATOR, TOK_SKIPEMPTY );
+
+		argsamount = 0;
+
+		// If debug is enabled, display maximal amount of arguments (sometimes 
+		//it saves about ten minutes of the bughunting...):
+		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+			int curpos = 0;
+
+			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + 2 ) ) )
+				argsamount++;
+		}
+
+		String zcCommandName = "";
+
+		if ( args.Size() ) {
+			// Get rid of the event name:
+			zcCommandName = args[ 0 ];
+			args.Delete( 0, 1 );
+		} else {
+			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::InitFromEvent(). Arguments is omitted." );
+		}
+
+		return zcCommandName;
+	}
+
+	void SetUsageMessageNonblockingCCMD( ZCConsoleCommand ccmd ) {
+		usageNonblockingCommand = ccmd;
+	}
+	ZCConsoleCommand GetUsageMessageNonblockingCCMD( void ) const {
+		return usageNonblockingCommand;
+	}
+} // of class ZCheckerCCMDInfo play {}
+
+
+// A panel field storing object in question; right now only for Actors.
+class ZCheckerField {
+	uint fieldPos;
+	Actor mo;				// Testee actor itself.
+	EZCheckerInfoActorType actorType;
+
+	uint asyncwith;			// Warn in multiplayer (0 == synced, 1..8 == player).
+	String hashsync[ MAXPLAYERS ];
+
+
+	static ZCheckerField Create( int testeepos ) {
+		ZCheckerField newfield = new( 'ZCheckerField' );
+
+		newfield.fieldPos = testeepos;
+		newfield.mo = NULL;
+		newfield.actorType = IAT_Normal;
+		newfield.asyncwith = 0;
+
+		for ( int i = 0; i < MAXPLAYERS; i++ )
+			newfield.hashsync[ i ] = "<Field " .. testeepos .. " hash " .. i .. " not initialized>";
+
+		return newfield;
+	}
+
+	private String mixStrings( String a, String b ) {
+		String outstr = "";
+		int alen = a.Length();
+		int blen = b.Length();
+
+		if ( alen == 0 || blen == 0 ) {
+			ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::mixStrings(). Zero length for string a:\"" .. TEXTCOLOR_WHITE .. a .. LLCOLOR_EMERGENCY .. "\" and/or b:\"" .. TEXTCOLOR_WHITE .. b .. LLCOLOR_EMERGENCY .. "\"." );
+			return a;
+		}
+
+		// Adjusting string lengths:
+		while ( alen > blen ) {
+			b = b .. b.Left( min( blen, alen - blen ) );
+			blen = b.Length();
+		}
+		while ( blen > alen ) {
+			a = a .. a.Left( min( alen, blen - alen ) );
+			alen = a.Length();
+		}
+
+		if ( alen != blen ) {
+			ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::mixStrings(). Mismatch ajdusted string lengths: \"" .. TEXTCOLOR_WHITE .. a .. LLCOLOR_EMERGENCY .. "\" (" .. alen .. ") vs \"" .. TEXTCOLOR_WHITE .. b .. LLCOLOR_EMERGENCY .. "\" (" .. blen .. ")." );
+			return a;
+		}
+
+		// Mixing:
+		for ( int i = 0; i < alen; i++ ) {
+			uint nextchar = a.CharCodeAt( i ) ^ b.CharCodeAt( i );
+
+			outstr.AppendFormat( "%c", ( nextchar == 0? 32 : nextchar ) );
+		}
+
+		return outstr;
+	} // of private String mixStrings( String a, String b ) {}
+
+	String GetHash( void ) {
+		if ( !mo )
+			return "<No actor at " .. fieldPos .. ">";
+
+		String outstr = mixStrings( mo.GetClassName(), String.Format( "%i%.2f%.2f%.2f%.2f", mo.tics + fieldPos * 10 + actorType * 100, mo.angle + mo.pitch, mo.pos.x, mo.pos.y, mo.pos.z ) );
+
+		return mixStrings( outstr, ( mo.inv? mo.inv.GetClassName() .. "" : "<No_inventory>" ) );
+	}
+
+	void UpdateHash( int playernum ) {
+		hashsync[ playernum ] = GetHash();
+	}
+} // of class ZCheckerField {}
+
+
+// Auxiliary class linking the panel parts and an associated CVars.
+class ZCInfoPanelNode {
+	ZCBaseInfoPanelPart panel;
+	CVar panelCVar;
+
+	void InitCVar( void ) {
+		panelCVar = CVar.GetCVar( panel.optionCVarName, players[ consoleplayer ] );
+	}
+}
+
+// Convenience wrapper for all cases of presentation options of the panel nodes.
+class ZCInfoPanelNodesKeeper {
+	Array<ZCInfoPanelNode> nodes;
+	Array<ZCInfoPanelNode> playnodes;
+
+	void Push( ZCBaseInfoPanelPart saveepanel ) {
+		ZCInfoPanelNode newnode = new( 'ZCInfoPanelNode' );
+
+		newnode.panel = saveepanel;
+
+		nodes.Push( newnode );
+
+		if ( saveepanel.IsPlayScope() )
+			playnodes.Push( newnode );
+	}
+	int Size( void ) {
+		return nodes.Size();
+	}
+	int PlayscopedSize( void ) {
+		return playnodes.Size();
+	}
+
+	void Clear( void ) {
+		nodes.Clear();
+		playnodes.Clear();
+	}
+} // of class ZCInfoPanelNodesKeeper {}
+
+
+// Data-scoped panels storage and manager.
+class ZCPanelsStorage {
+	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file ("zchecker.cfg").
+	ZCInfoPanelNodesKeeper curPanels;			// Loaded from the *.ini.
+
+	transient CVar panelsOrderCVar;
+	bool panelsorderChanged;
+
+	private transient CVar fonttypeCVar;
+	private int lastFontType;
+	transient Font infopanelsFont;
+	int infopanelsFontSpaceWidth;
+
+	String panelsstr; // General read/write variable.
+
+	// For the "[Init|Tick]SetPanelsorderCVar()":
+	private String newOrderStr;
+	private int newOrderStrPartsAmount;
+	private bool newOrderSaveRequest;
+
+	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
+	const const_availablePartLen = ( 254 - 36 );
+
+
+	static ZCPanelsStorage Create( void ) {
+		ZCPanelsStorage panel = new( 'ZCPanelsStorage' );
+
+		panel.panelsorderChanged = true;
+		panel.curpanels = new( 'ZCInfoPanelNodesKeeper' );
+		panel.lastFontType = -1;
+
+		return panel;
+	}
+
+	void UpdatePanels( bool fromCVar = false ) {
+		uint warningsAmount = 0;
+		panelsorderChanged = false;
+
+		curPanels.Clear();
+
+		String panelsOrderStr = ( fromCVar? GetPanelsorderFromCVars(): panelsstr );
+		int curloglevel = LL_Debug;
+
+		if ( CVar.FindCVar( "mcm_zchecker_loglevel" ) )
+			curloglevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+
+		if ( panelsOrderStr != "" ) {
+			Array<String> neworder;
+
+			if ( curloglevel >= LL_Debug )
+				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). panelsOrderStr: \"" .. TEXTCOLOR_OLIVE .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
+
+			panelsOrderStr.Split( neworder, ",", TOK_SKIPEMPTY );
+
+			for ( int i = 0; i < neworder.Size(); i++ ) {
+    			class<Object> curclass = neworder[ i ];
+
+				if ( curclass is "ZCBaseInfoPanelPart" ) {
+					bool found = false;
+
+					for ( int j = 0; j < defaultPanels.Size(); j++ ) {
+						if ( defaultPanels[ j ].GetClass() == curclass ) {
+							found = true;
+							curPanels.Push( defaultPanels[ j ] );
+
+							if ( curloglevel >= LL_Debug )
+								ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). Added Panel class \"" .. TEXTCOLOR_DARKGREEN .. neworder[ i ] .. LLCOLOR_DEBUG .. "\"." );
+
+							break;
+						}
+    				}
+
+					if ( !found && curloglevel >= LL_Detailed )
+						ZCGlobal.ClearscopeLog( LL_Detailed, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" vanished." );
+    			} else if ( curclass ) {
+					warningsAmount++;
+					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
+				} else {
+					warningsAmount++;
+					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
+				}
+			}
+		} // of if ( panelsOrderCVar.GetString() != "" ) {}
+
+		// Reinitialization (if neccesary):
+		if ( curPanels.Size() == 0 || warningsAmount > 0 ) {
+			curPanels.Clear();
+
+			if ( warningsAmount > 0 )
+				ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
+			else if ( curloglevel >= LL_Debug )
+				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). No panel classes defined. Initialization." );
+
+			for ( int i = 0; i < defaultPanels.Size(); i++ )
+				curPanels.Push( defaultPanels[ i ] );
+		}
+
+		panelsstr = "";
+
+		for ( int i = 0; i < curPanels.Size(); i++ ) {
+			ZCInfoPanelNode panelnode = curPanels.nodes[ i ];
+
+			panelnode.InitCVar();
+
+			if ( !panelnode.panelCVar )
+				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::UpdatePanels(). Panel \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
+
+			panelsstr = panelsstr .. panelnode.panel.GetClassName() .. ",";
+		}
+
+		InitSetPanelsorderCVars();
+	} // of void UpdatePanels( bool fromCVar = false ) {}
+
+	void InitSetPanelsorderCVars( String argorder = "" ) {
+		newOrderStr = ( argorder == ""? panelsstr : argorder );
+		newOrderSaveRequest = true;
+	}
+
+	// ZScript-ACS API cannot obtain more than one string with maximum of 255 characters.
+	play void TickSetPanelsorderCVars( void ) {
+		if ( newOrderSaveRequest ) {
+			int orderStrLength = newOrderStr.Length();
+			newOrderStrPartsAmount = int( ceil( orderStrLength / double( const_availablePartLen ) ) );
+
+			for ( int i = 0; i < newOrderStrPartsAmount; i++ ) {
+				int indexfrom = i * const_availablePartLen;
+				int indexto = min( indexfrom + const_availablePartLen, orderStrLength );
+				String curpart = newOrderStr.Mid( indexfrom, ( indexto - indexfrom ) );
+
+				ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVars(). Part " .. i .. "/" .. ( newOrderStrPartsAmount - 1 ) .. ": \"" .. TEXTCOLOR_GRAY .. curpart .. LLCOLOR_DEBUG .. "\"" );
+
+				ZCGlobal.PrepareUserCVarString( "mcm_zchecker_infopanelsorder_part" .. i, curpart );
+				ACS_ExecuteAlways( -int( 'ZChecker_SetInfopanelPartCVar' ), 0, consoleplayer, i );
+			}
+
+			newOrderSaveRequest = false;
+		}
+	} // of void TickSetPanelsorderCVars( void ) {}
+
+
+	String GetPanelsorderFromCVars( void ) {
+		String outstr = "";
+
+		for ( int i = 0; i < 10; i++ ) {
+			String curpart = CVar.GetCVar( "mcm_zchecker_infopanelsorder_part" .. i, players[ consoleplayer ] ).GetString();
+
+			if ( curpart.Length() == 0 )
+				break;
+
+			outstr = outstr .. curpart;
+		}
+
+		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVars(). Concatenated: \"" .. TEXTCOLOR_DARKBROWN .. outstr .. LLCOLOR_DEBUG .. "\"" );
+
+		return outstr;
+	}
+
+	void UpdateFont( void ) {
+		int fonttype = -1;
+
+		if ( !fonttypeCVar )
+			fonttypeCVar = CVar.GetCVar( "mcm_zchecker_infopanel_fonttype", players[ consoleplayer ] );
+
+		fonttype = fonttypeCVar.GetInt();
+
+		if ( fonttype != lastFontType ) {
+			bool updateLastFontType = true;
+
+			switch ( fonttype ) {
+				case 0:
+					infopanelsFont = smallfont;
+					break;
+				case 1:
+					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono_shortspace" );
+					break;
+				case 2:
+					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
+					break;
+				case 3:
+					infopanelsFont = confont;
+					break;
+				default:
+					updateLastFontType = false;
+					ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::UpdateFont(). Unknown font type \"" .. fonttype .. "\"." );
+					break;
+			}
+
+			if ( infopanelsFont )
+				infopanelsFontSpaceWidth = infopanelsFont.GetCharWidth( 32 );
+
+			ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::UpdateFont(). Font type changed to " .. fonttype .. ", space width is " .. infopanelsFontSpaceWidth .. "." );
+
+			if ( updateLastFontType )
+				lastFontType = fonttype;
+			else
+				fonttype = lastFontType;
+		} // of if ( fonttype != lastFontType ) {}
+
+	} // of void UpdateFont( void ) {}
+
+} // of class ZCPanelsStorage {}
+
+
+// Elementary compatible dictionary cell.
+class ZCInternalStringDictionaryCell {
+	String key;
+	String value;
+}
+
+// Storage cell of the actors names slightly speeding up the names search process.
+// No binary tree or hashmap used because name masks may be used, absolutely removing all pros from specified data structures.
+class ZCInternalActorNameCell {
+	const ARRAY_Quantity = 28;
+
+	int firstchar; // "0" is '_', "1" is 'a', "26" is 'z', "27" is other char (if any...).
+	Array<String> names;		// Lowercased;
+	Array<String> orignames; 	// Original.
+
+	static ZCInternalActorNameCell Create( int initFirstchar ) {
+		ZCInternalActorNameCell newcell = new( 'ZCInternalActorNameCell' );
+		newcell.firstchar = initFirstchar;
+
+		return newcell;
+	}
+
+	// First character. "0" is '_', "1" is 'a', "26" is 'z' and "27" is other char (if any).
+	static clearscope int GetClassnameCellIndex( String clsname ) {
+		int outIndex = 27;
+
+		if ( clsname != "" ) {
+			int firstchar = clsname.CharCodeAt( 0 );
+
+			// Converting to uppercase:
+			if ( firstchar >= LETTER_A_LOWER && firstchar <= LETTER_Z_LOWER )
+				firstchar &= ~0x20;
+
+			if ( firstchar == 0x5F )
+				outIndex = 0; // '_'.
+			else if ( firstchar >= LETTER_A_UPPER && firstchar <= LETTER_Z_UPPER )
+				outIndex = firstchar - LETTER_A_UPPER + 1; // 'A'..'Z'.
+		}
+
+		return outIndex;
+	}
+} // of class ZCInternalActorNameCell {}
+

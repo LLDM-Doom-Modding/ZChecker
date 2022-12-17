@@ -243,7 +243,7 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 
 		return self;
 	}
-}
+} // of class ZCOptionMenuItemInfopanel: OptionMenuItemOption {}
 
 class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	ZCOptionMenuItemInfopanel masterMenuItem;

@@ -1,6 +1,7 @@
 version "3.3.0"
 
 #include "ZScript/ZCUtils.zsc"
+#include "ZScript/ZCDataStructures.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
 #include "ZScript/ZCMenus.zsc"
 #include "ZScript/ZCMapScripts.zsc"
@@ -17,281 +18,16 @@ version "3.3.0"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
-const ZCheckerVersion = "0.70";
+const ZCheckerVersion = "0.71";
 
 
 // AutoAmbient: 0x7FAA0004.
-const ZCheckerHandlerOrder = 0x7FAA0005;
+const ZCheckerHandlerOrder = -0x7FAA0005; // Proposed to call it before (almost) everything else.
 const ZCheckerMapHandlerOrder = 0x7FAA0006;
 
 const MaxTestee = 3; // Will rename someday...
 
 const ZCHECKER_AGRS_SEPARATOR = "@@";
-
-
-enum EZCheckerLogLevels {
-	LL_Emergency = 0,
-	LL_General = 1,
-	LL_Detailed,
-	LL_Debug,
-
-	LL_Common 	= LL_General,
-	LL_Normal 	= LL_General,
-	LL_Main 	= LL_General,
-	LL_Extended = LL_Detailed,
-	LL_Extra 	= LL_Detailed,
-	LL_Critical = LL_Emergency,
-	LL_Avary 	= LL_Emergency,
-
-	LL_FlagsMask	= 0xFFF0,
-	LL_NoDot		= 0x4000,
-	LL_NoPrefix		= 0x8000
-};
-
-enum EZCheckerInfoActorType {
-	IAT_Normal = 0,
-	IAT_StateProvider
-};
-
-const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
-const CCMDCOLOR_TITLEARGS = TEXTCOLOR_GREEN;
-const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
-const CCMDCOLOR_DESC = "\c-";
-
-
-
-class ZCInfoPanelNode {
-	ZCBaseInfoPanelPart panel;
-	CVar panelCVar;
-
-	void InitCVar( void ) {
-		panelCVar = CVar.GetCVar( panel.optionCVarName, players[ consoleplayer ] );
-	}
-}
-
-class ZCInfoPanelNodesKeeper {
-	Array<ZCInfoPanelNode> nodes;
-	Array<ZCInfoPanelNode> playnodes;
-
-	void Push( ZCBaseInfoPanelPart saveepanel ) {
-		ZCInfoPanelNode newnode = new( 'ZCInfoPanelNode' );
-
-		newnode.panel = saveepanel;
-
-		nodes.Push( newnode );
-
-		if ( saveepanel.IsPlayScope() )
-			playnodes.Push( newnode );
-	}
-	int Size( void ) {
-		return nodes.Size();
-	}
-	int PlayscopedSize( void ) {
-		return playnodes.Size();
-	}
-
-	void Clear( void ) {
-		nodes.Clear();
-		playnodes.Clear();
-	}
-} // of class ZCInfoPanelNodesKeeper {}
-
-// Data-scoped panels storage:
-class ZCPanelsStorage {
-	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file ("zchecker.cfg").
-	ZCInfoPanelNodesKeeper curPanels;			// Loaded from the *.ini.
-
-	transient CVar panelsOrderCVar;
-	bool panelsorderChanged;
-
-	private transient CVar fonttypeCVar;
-	private int lastFontType;
-	transient Font infopanelsFont;
-	int infopanelsFontSpaceWidth;
-
-	String panelsstr; // General read/write variable.
-
-	// For the "[Init|Tick]SetPanelsorderCVar()":
-	private String newOrderStr;
-	private int newOrderStrPartsAmount;
-	private bool newOrderSaveRequest;
-
-	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
-	const const_availablePartLen = ( 254 - 36 );
-
-
-	static ZCPanelsStorage Create( void ) {
-		ZCPanelsStorage panel = new( 'ZCPanelsStorage' );
-
-		panel.panelsorderChanged = true;
-		panel.curpanels = new( 'ZCInfoPanelNodesKeeper' );
-		panel.lastFontType = -1;
-
-		return panel;
-	}
-
-	void UpdatePanels( bool fromCVar = false ) {
-		uint warningsAmount = 0;
-		panelsorderChanged = false;
-
-		curPanels.Clear();
-
-		String panelsOrderStr = ( fromCVar? GetPanelsorderFromCVars(): panelsstr );
-		int curloglevel = LL_Debug;
-
-		if ( CVar.FindCVar( "mcm_zchecker_loglevel" ) )
-			curloglevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
-
-		if ( panelsOrderStr != "" ) {
-			Array<String> neworder;
-
-			if ( curloglevel >= LL_Debug )
-				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). panelsOrderStr: \"" .. TEXTCOLOR_OLIVE .. panelsOrderStr .. LLCOLOR_DEBUG .. "\"." );
-
-			panelsOrderStr.Split( neworder, ",", TOK_SKIPEMPTY );
-
-			for ( int i = 0; i < neworder.Size(); i++ ) {
-    			class<Object> curclass = neworder[ i ];
-
-				if ( curclass is "ZCBaseInfoPanelPart" ) {
-					bool found = false;
-
-					for ( int j = 0; j < defaultPanels.Size(); j++ ) {
-						if ( defaultPanels[ j ].GetClass() == curclass ) {
-							found = true;
-							curPanels.Push( defaultPanels[ j ] );
-
-							if ( curloglevel >= LL_Debug )
-								ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). Added Panel class \"" .. TEXTCOLOR_DARKGREEN .. neworder[ i ] .. LLCOLOR_DEBUG .. "\"." );
-
-							break;
-						}
-    				}
-
-					if ( !found && curloglevel >= LL_Detailed )
-						ZCGlobal.ClearscopeLog( LL_Detailed, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" vanished." );
-    			} else if ( curclass ) {
-					warningsAmount++;
-					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
-				} else {
-					warningsAmount++;
-					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
-				}
-			}
-		} // of if ( panelsOrderCVar.GetString() != "" ) {}
-
-		// Reinitialization (if neccesary):
-		if ( curPanels.Size() == 0 || warningsAmount > 0 ) {
-			curPanels.Clear();
-
-			if ( warningsAmount > 0 )
-				ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
-			else if ( curloglevel >= LL_Debug )
-				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). No panel classes defined. Initialization." );
-
-			for ( int i = 0; i < defaultPanels.Size(); i++ )
-				curPanels.Push( defaultPanels[ i ] );
-		}
-
-		panelsstr = "";
-
-		for ( int i = 0; i < curPanels.Size(); i++ ) {
-			ZCInfoPanelNode panelnode = curPanels.nodes[ i ];
-
-			panelnode.InitCVar();
-
-			if ( !panelnode.panelCVar )
-				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::UpdatePanels(). Panel \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
-
-			panelsstr = panelsstr .. panelnode.panel.GetClassName() .. ",";
-		}
-
-		InitSetPanelsorderCVars();
-	} // of void UpdatePanels( bool fromCVar = false ) {}
-
-	void InitSetPanelsorderCVars( String argorder = "" ) {
-		newOrderStr = ( argorder == ""? panelsstr : argorder );
-		newOrderSaveRequest = true;
-	}
-
-	// ZScript-ACS API cannot obtain more than one string with maximum of 255 characters.
-	play void TickSetPanelsorderCVars( void ) {
-		if ( newOrderSaveRequest ) {
-			int orderStrLength = newOrderStr.Length();
-			newOrderStrPartsAmount = int( ceil( orderStrLength / double( const_availablePartLen ) ) );
-
-			for ( int i = 0; i < newOrderStrPartsAmount; i++ ) {
-				int indexfrom = i * const_availablePartLen;
-				int indexto = min( indexfrom + const_availablePartLen, orderStrLength );
-				String curpart = newOrderStr.Mid( indexfrom, ( indexto - indexfrom ) );
-
-				ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVars(). Part " .. i .. "/" .. ( newOrderStrPartsAmount - 1 ) .. ": \"" .. TEXTCOLOR_GRAY .. curpart .. LLCOLOR_DEBUG .. "\"" );
-
-				ZCGlobal.PrepareUserCVarString( "mcm_zchecker_infopanelsorder_part" .. i, curpart );
-				ACS_ExecuteAlways( -int( 'ZChecker_SetInfopanelPartCVar' ), 0, consoleplayer, i );
-			}
-
-			newOrderSaveRequest = false;
-		}
-	} // of void TickSetPanelsorderCVars( void ) {}
-
-
-	String GetPanelsorderFromCVars( void ) {
-		String outstr = "";
-
-		for ( int i = 0; i < 10; i++ ) {
-			String curpart = CVar.GetCVar( "mcm_zchecker_infopanelsorder_part" .. i, players[ consoleplayer ] ).GetString();
-
-			if ( curpart.Length() == 0 )
-				break;
-
-			outstr = outstr .. curpart;
-		}
-
-		ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::GetPanelsorderFromCVars(). Concatenated: \"" .. TEXTCOLOR_DARKBROWN .. outstr .. LLCOLOR_DEBUG .. "\"" );
-
-		return outstr;
-	}
-
-	void UpdateFont( void ) {
-		int fonttype = -1;
-
-		if ( !fonttypeCVar )
-			fonttypeCVar = CVar.GetCVar( "mcm_zchecker_infopanel_fonttype", players[ consoleplayer ] );
-
-		fonttype = fonttypeCVar.GetInt();
-
-		if ( fonttype != lastFontType ) {
-			lastFontType = fonttype;
-
-			switch ( fonttype ) {
-				case 0:
-					infopanelsFont = smallfont;
-					break;
-				case 1:
-					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono_shortspace" );
-					break;
-				case 2:
-					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
-					break;
-				case 3:
-					infopanelsFont = confont;
-					break;
-				default:
-					ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::UpdateFont(). Unknown font type \"" .. fonttype .. "\"." );
-					break;
-			}
-
-			if ( infopanelsFont )
-				infopanelsFontSpaceWidth = infopanelsFont.GetCharWidth( 32 );
-
-			ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::UpdateFont(). Font type changed to " .. fonttype .. ", space width is " .. infopanelsFontSpaceWidth .. "." );
-		} // of if ( fonttype != lastFontType ) {}
-
-	} // of void UpdateFont( void ) {}
-
-} // of class ZCPanelsStorage {}
-
 
 
 
@@ -302,7 +38,6 @@ class ZCheckerHandler: StaticEventHandler {
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
 
 	Array<ZCInternalActorNameCell> allActorNames;
-	//Array<String> lastUsedActorNames; // Cache.
 
 	// It's impossible to avoid unloading actors (and pointers to them) from 
 	//memory on level reloading. Or I just don't know something.

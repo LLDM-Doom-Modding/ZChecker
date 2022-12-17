@@ -1,6 +1,45 @@
-// ZChecker utility classes.
-// 
+//
+// ZChecker utility classes and most of the general constants.
+//
 
+// Logging system constants:
+enum EZCheckerLogLevels {
+	LL_Emergency = 0,
+	LL_General = 1,
+	LL_Detailed,
+	LL_Debug,
+
+	LL_Common 	= LL_General,
+	LL_Normal 	= LL_General,
+	LL_Main 	= LL_General,
+	LL_Extended = LL_Detailed,
+	LL_Extra 	= LL_Detailed,
+	LL_Critical = LL_Emergency,
+	LL_Avary 	= LL_Emergency,
+
+	LL_FlagsMask	= 0xFFF0,
+	LL_NoDot		= 0x4000,
+	LL_NoPrefix		= 0x8000
+};
+
+const LLCOLOR_MAIN = "\c-";
+const LLCOLOR_WARNING = TEXTCOLOR_YELLOW;
+const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
+const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
+
+// Constants used in specific areas of the API:
+enum EZCheckerInfoActorType {
+	IAT_Normal = 0,
+	IAT_StateProvider
+};
+
+const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
+const CCMDCOLOR_TITLEARGS = TEXTCOLOR_GREEN;
+const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
+const CCMDCOLOR_DESC = "\c-";
+
+
+// Internal constants of limited use in API:
 enum ENewlineTypes {
 	ZCNL_Unknown = 0,
 	ZCNL_DOS,			// 0x0D, 0x0A
@@ -9,56 +48,12 @@ enum ENewlineTypes {
 	ZCNL_DOSReversed	// 0x0A, 0x0D
 };
 
-const LLCOLOR_MAIN = "\c-";
-const LLCOLOR_WARNING = TEXTCOLOR_YELLOW;
-const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
-const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
-
 const LETTER_A_UPPER = 65;
 const LETTER_Z_UPPER = 90;
 const LETTER_A_LOWER = 97;
 const LETTER_Z_LOWER = 122;
 
 
-class ZCInternalStringDictionaryCell {
-	String key;
-	String value;
-}
-
-class ZCInternalActorNameCell {
-	const ARRAY_Quantity = 28;
-
-	int firstchar; // "0" is '_', "1" is 'a', "26" is 'z', "27" is other char (if any...).
-	Array<String> names;		// Lowercased;
-	Array<String> orignames; 	// Original.
-
-	static ZCInternalActorNameCell Create( int initFirstchar ) {
-		ZCInternalActorNameCell newcell = new( 'ZCInternalActorNameCell' );
-		newcell.firstchar = initFirstchar;
-
-		return newcell;
-	}
-
-	// First character. "0" is '_', "1" is 'a', "26" is 'z' and "27" is other char (if any).
-	static clearscope int GetClassnameCellIndex( String clsname ) {
-		int outIndex = 27;
-
-		if ( clsname != "" ) {
-			int firstchar = clsname.CharCodeAt( 0 );
-
-			// Converting to uppercase:
-			if ( firstchar >= LETTER_A_LOWER && firstchar <= LETTER_Z_LOWER )
-				firstchar &= ~0x20;
-
-			if ( firstchar == 0x5F )
-				outIndex = 0; // '_'.
-			else if ( firstchar >= LETTER_A_UPPER && firstchar <= LETTER_Z_UPPER )
-				outIndex = firstchar - LETTER_A_UPPER + 1; // 'A'..'Z'.
-		}
-
-		return outIndex;
-	}
-} // of class ZCInternalActorNameCell {}
 
 class ZCGlobal: Thinker {
 	ZCheckerHandler zcHandler;

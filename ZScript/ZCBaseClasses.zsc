@@ -1,121 +1,9 @@
-class ZCheckerCCMDInfo play {
-	Array<String> args;			// Arguments excluding ZC-CCMD name;
-	int argsamount;
-	ZCheckerHandler handler;	// Pointer to EventHandler (some GZDoom versions strangely crashes on the "FindEventHandler()" calls);
-	transient ConsoleEvent e;	// Pointer to the pure and non-altered structure.
+//
+// Base ZChecker API classes: CCMDs, infopanels, tooltips etc.
+//
 
-	Array<ZCConsoleCommand> nonblockingCommands;
-	ZCConsoleCommand usageNonblockingCommand;
-
-	// Init or reinit:
-	String InitFromEvent( ConsoleEvent initEvent ) {
-		args.Clear();
-
-		e = initEvent;
-		e.Name.Split( args, ZCHECKER_AGRS_SEPARATOR, TOK_SKIPEMPTY );
-
-		argsamount = 0;
-
-		// If debug is enabled, display maximal amount of arguments (sometimes 
-		//it saves about ten minutes of the bughunting...):
-		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
-			int curpos = 0;
-
-			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + 2 ) ) )
-				argsamount++;
-		}
-
-		String zcCommandName = "";
-
-		if ( args.Size() ) {
-			// Get rid of the event name:
-			zcCommandName = args[ 0 ];
-			args.Delete( 0, 1 );
-		} else {
-			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::InitFromEvent(). Arguments is omitted." );
-		}
-
-		return zcCommandName;
-	}
-
-	void SetUsageMessageNonblockingCCMD( ZCConsoleCommand ccmd ) {
-		usageNonblockingCommand = ccmd;
-	}
-	ZCConsoleCommand GetUsageMessageNonblockingCCMD( void ) const {
-		return usageNonblockingCommand;
-	}
-} // of class ZCheckerCCMDInfo play {}
-
-
-class ZCheckerField {
-	uint fieldPos;
-	Actor mo;				// Testee actor itself.
-	EZCheckerInfoActorType actorType;
-
-	uint asyncwith;			// Warn in multiplayer (0 == synced, 1..8 == player).
-	String hashsync[ MAXPLAYERS ];
-
-
-	static ZCheckerField Create( int testeepos ) {
-		ZCheckerField newfield = new( 'ZCheckerField' );
-
-		newfield.fieldPos = testeepos;
-		newfield.mo = NULL;
-		newfield.actorType = IAT_Normal;
-		newfield.asyncwith = 0;
-
-		for ( int i = 0; i < MAXPLAYERS; i++ )
-			newfield.hashsync[ i ] = "<Field " .. testeepos .. " hash " .. i .. " not initialized>";
-
-		return newfield;
-	}
-
-	private String mixStrings( String a, String b ) {
-		String outstr = "";
-		int alen = a.Length();
-		int blen = b.Length();
-
-		// Adjusting string lengths:
-		while ( alen > blen ) {
-			b = b .. b.Left( min( blen, alen - blen ) );
-			blen = b.Length();
-		}
-		while ( blen > alen ) {
-			a = a .. a.Left( min( alen, blen - alen ) );
-			alen = a.Length();
-		}
-
-		if ( alen != blen ) {
-			ZCGlobal.DataLog( LL_Emergency, GetClassName() .. "::mixStrings(). Mismatch ajdusted string lengths: \"" .. TEXTCOLOR_WHITE .. a .. LLCOLOR_EMERGENCY .. "\" (" .. alen .. ") vs \"" .. TEXTCOLOR_WHITE .. b .. LLCOLOR_EMERGENCY .. "\" (" .. blen .. ")." );
-			return a;
-		}
-
-		// Mixing:
-		for ( int i = 0; i < alen; i++ ) {
-			uint nextchar = a.CharCodeAt( i ) ^ b.CharCodeAt( i );
-
-			outstr.AppendFormat( "%c", ( nextchar == 0? 32 : nextchar ) );
-		}
-
-		return outstr;
-	} // of private void mixStrings( String a, String b ) {}
-
-	String GetHash( void ) {
-		if ( !mo )
-			return "<No actor at " .. fieldPos .. ">";
-
-		String outstr = mixStrings( mo.GetClassName(), String.Format( "%i%.2f%.2f%.2f%.2f", mo.tics + fieldPos * 10 + actorType * 100, mo.angle + mo.pitch, mo.pos.x, mo.pos.y, mo.pos.z ) );
-
-		return mixStrings( outstr, ( mo.inv? mo.inv.GetClassName() .. "" : "<No_inventory>" ) );
-	}
-
-	void UpdateHash( int playernum ) {
-		hashsync[ playernum ] = GetHash();
-	}
-} // of class ZCheckerField {}
-
-
-// Base ZChecker CCMD class.
+// Class to be handled with the ZChecker console manager.
+// Also inherits a ZChecker CCMDs.
 class ZCConsoleClass abstract {
 	enum EConsoleClassFlags {
 		CCF_None			= 0,
@@ -742,6 +630,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 } // of class ZCConsoleCommand abstract {}
 
 
+// ZChecker informational panel part class (in general is an UI scope).
+// Also inherits a play-scoped infopanel parts.
 class ZCBaseInfoPanelPart abstract {
 	protected bool playScoped;
 
