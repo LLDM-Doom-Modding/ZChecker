@@ -1,5 +1,5 @@
 //
-// All what is dedicated to store (and maybe slightly handle) the data.
+// All what is dedicated to store (and maybe to slightly handle) the data.
 //
 
 // Class used to transfer the data between "NetworkProcess()", console commands manager and CCMDs itselfs.
@@ -410,4 +410,3 @@ class ZCInternalActorNameCell {
 		return outIndex;
 	}
 } // of class ZCInternalActorNameCell {}
-

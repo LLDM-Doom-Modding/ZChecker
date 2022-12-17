@@ -644,5 +644,5 @@ class ZCheckerHandler: StaticEventHandler {
 		Super.WorldLoaded( e );
 	}
 
-} // of class ZCheckerHandler: EventHandler {}
+} // of class ZCheckerHandler: StaticEventHandler {}
 

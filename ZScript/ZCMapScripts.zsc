@@ -8,7 +8,7 @@ struct ZCheckerEvMapConfig {
 	vector2 arenaStart, arenaEnd;
 }
 
-class ZCheckerEvSectorSetters {
+class ZCheckerEvSectorSetter {
 	uint evType;
 
 	Array<Sector> startSectors; // At least one must be presented.
@@ -55,7 +55,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		"Missiles", "Players", "Special actors"
 	};
 
-	ZCheckerEvSectorSetters evSectors[ S__Quantity ];
+	ZCheckerEvSectorSetter evSectors[ S__Quantity ];
 
 	bool canRecreateEverything;
 	bool logSpawnInfo;
@@ -165,7 +165,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	}
 
 	// Really just a wrapper around a some extremely rough algorithm (will be rewritten).
-	static int FindNextExistingSectorIndex( ZCheckerEvSectorSetters evSector, int fromIndex = -1 ) {
+	static int FindNextExistingSectorIndex( ZCheckerEvSectorSetter evSector, int fromIndex = -1 ) {
 		if ( !evSector )
 			return -1;
 
@@ -318,7 +318,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			return;
 
 		for ( int i = 0; i < S__Quantity; i++ ) {
-			evSectors[ i ] = new( 'ZCheckerEvSectorSetters' );
+			evSectors[ i ] = new( 'ZCheckerEvSectorSetter' );
 			evSectors[ i ].evType = i;
 		}
 
@@ -552,7 +552,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 class ZCheckerSectorSetter: Actor {
 	const ZCUDMF_Type = ZCheckerEverythingMapHandler.ZCUDMF_Type;
-	ZCheckerEvSectorSetters evSectorDef;
+	ZCheckerEvSectorSetter evSectorDef;
 
 	vector2 jumpLen;
 	int jumpMaxAmount;
@@ -563,6 +563,7 @@ class ZCheckerSectorSetter: Actor {
 	Default {
 		+NOINTERACTION;
 		+NOBLOCKMAP;
+		FloatBobPhase 0;
 	}
 
 	void InitFromPos( void ) {
@@ -586,15 +587,6 @@ class ZCheckerSectorSetter: Actor {
 		}
 	} // of void InitFromPos( void ) {}
 
-	/*void Init( vector2 initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {
-		jumpLen = initJumpLen;
-		jumpMaxAmount = initJumpMax;
-		infoActorOffset = initInfoActorOffset;
-
-		curJumpAmount = 0;
-		angle = 270.0; // South (bottom).
-	} // of void Init( int initJumpLen, int initJumpMax, vector2 initInfoActorOffset ) {}*/
-
 	protected bool jumpToNextTypeSegment( void ) {
 		bool success = true;
 
@@ -611,7 +603,7 @@ class ZCheckerSectorSetter: Actor {
 		}
 
 		return success;
-	}
+	} // of protected bool jumpToNextTypeSegment( void ) {}
 
 	void DoJump( class<Actor> cls ) {
 		if ( jumpToNextTypeSegment() ) {
@@ -645,6 +637,7 @@ class ZCheckerPlayerLastPos: Actor {
 	Default {
 		+NOINTERACTION;
 		+NOBLOCKMAP;
+		FloatBobPhase 0;
 	}
 }
 
@@ -653,7 +646,7 @@ class ZCheckerActorInfo: Actor {
 	class<Actor> masterClass;
 	String masterInfo;
 	vector2 masterOffset;
-	ZCheckerEvSectorSetters evSectorDef;
+	ZCheckerEvSectorSetter evSectorDef;
 
 	enum EInfoactorStatus {
 		IAS_Wrong = 0,
@@ -669,6 +662,7 @@ class ZCheckerActorInfo: Actor {
 		-SHOOTABLE;
 		+NOGRAVITY;
 		+DONTSPLASH;
+		FloatBobPhase 0;
 		Scale 0.5;
 		Height 64;
 		Radius 30;
@@ -781,6 +775,7 @@ class ZCheckerInfoInventory: Inventory {
 	Default {
 		Inventory.MaxAmount 0x7FFFFFFF;
 		Inventory.Amount 1;
+		FloatBobPhase 0;
 	}
 
 	void Init( String initInfo ) {

@@ -72,30 +72,33 @@ class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
 	}
 } // of class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {}
 
+
 class ZCSoundInfoPanel: ZCBaseInfoPanelPart 
 {
-    override void OnCreate( void ) 
-	{
-        optionCVarName = "mcm_zchecker_sound_info"; // Объявить в CVARINFO.
-        optionLabel = "Sound information"; // Будет выводиться в меню панелей.
-        //optionSubmenuName = "mcm_ZCheckerSubmenu_some"; // Если нужно. Объявлять в MENUDEF.
-    }
+	// [McM] This class is being developed by @Mud, so I decided not to alter it heavily.
 
-    override String GetInfo( Actor thing, ZCheckerField thingfield ) 
+	override void OnCreate( void ) 
 	{
-        String info = "";
+		optionCVarName = "mcm_zchecker_sound_info";
+		optionLabel = "Sound information";
+		//optionSubmenuName = "mcm_ZCheckerSubmenu_some";
+	}
 
-	info = info .. TEXTCOLOR_WHITE .. "Sounds:";
-        info = info .. TEXTCOLOR_RED .. "\n Attack: " .. Thing.AttackSound;
-	info = info .. TEXTCOLOR_RED .. "\n Pain: " .. Thing.PainSound;
-        info = info .. TEXTCOLOR_RED .. "\n Death: " .. Thing.DeathSound;
-        info = info .. TEXTCOLOR_PURPLE .. "\n See: " .. Thing.SeeSound;
-        info = info .. TEXTCOLOR_PURPLE .. "\n Active: " .. Thing.ActiveSound;
-        info = info .. TEXTCOLOR_DARKGRAY .. "\n Use: " .. Thing.UseSound;
-        info = info .. TEXTCOLOR_DARKGRAY .. "\n Bounce: " .. Thing.BounceSound;
-        info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. Thing.WallBounceSound;
-        info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. Thing.CrushPainSound;
-        info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. Thing.HowlSound;
-        return info;
-    }
-} // of class ZC_some_InfoPanel: ZCBaseInfoPanelPart {}
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) 
+	{
+		String info = "";
+
+		info = info .. TEXTCOLOR_WHITE .. "Sounds:";
+		info = info .. TEXTCOLOR_RED .. "\n Attack: " .. Thing.AttackSound;
+		info = info .. TEXTCOLOR_RED .. "\n Pain: " .. Thing.PainSound;
+		info = info .. TEXTCOLOR_RED .. "\n Death: " .. Thing.DeathSound;
+		info = info .. TEXTCOLOR_PURPLE .. "\n See: " .. Thing.SeeSound;
+		info = info .. TEXTCOLOR_PURPLE .. "\n Active: " .. Thing.ActiveSound;
+		info = info .. TEXTCOLOR_DARKGRAY .. "\n Use: " .. Thing.UseSound;
+		info = info .. TEXTCOLOR_DARKGRAY .. "\n Bounce: " .. Thing.BounceSound;
+		info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. Thing.WallBounceSound;
+		info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. Thing.CrushPainSound;
+		info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. Thing.HowlSound;
+		return info;
+	}
+} // of class ZCSoundInfoPanel: ZCBaseInfoPanelPart {}

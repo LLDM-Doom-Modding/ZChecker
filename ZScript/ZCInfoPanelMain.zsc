@@ -120,7 +120,6 @@ spd.strf..t180.scor
 
 
 // Not really done yet...
-
 class ZCInvFieldNode {
 	ZCInvFieldNode next, prev;
 

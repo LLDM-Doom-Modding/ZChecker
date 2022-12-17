@@ -326,7 +326,7 @@ struct TerrainDef native {
 
 		return outinfo;
 	}
-} // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart {}
+} // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {}
 
 class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {
@@ -338,4 +338,4 @@ class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		return BLACK .. "([WIP] Linedefs geometry must be here).";
 	}
-} // of class ZCLinesGeometryPanel: ZCBaseInfoPanelPart {}
+} // of class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {}
