@@ -79,34 +79,72 @@ class ZCTooltipClass: ZCConsoleClass {
 	const HEADER	= TEXTCOLOR_SAPPHIRE;
 	const NORMAL	= TEXTCOLOR_WHITE;
 	const DARKGRAY	= TEXTCOLOR_DARKGRAY;
+	const COMMAND	= TEXTCOLOR_LIGHTBLUE;
 	const HIGHLIGHT1= TEXTCOLOR_GOLD;
 	const HIGHLIGHT2= TEXTCOLOR_DARKGREEN;
 
-	protected String HighlightTextPart( String origstr, String boundPattern, String highlightColor ) {
+	String HighlightText( String origstr ) {
 		String outstr = "";
 		int prevCharIndexStart = 0;
 		int curCharIndex;
-		bool highlight = false;
+		int prevTypeChar = -1;
 
-		while ( ( curCharIndex = origstr.IndexOf( boundPattern, prevCharIndexStart ) ) != -1 ) {
-			highlight = !highlight;
-			outstr = outstr .. origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart ) .. ( highlight? highlightColor : NORMAL );
+		while ( ( curCharIndex = origstr.IndexOf( "`", prevCharIndexStart ) ) != -1 ) {
+			outstr = outstr .. origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart );
+
+			int typechar = origstr.CharCodeAt( curCharIndex + 1 );
+
+			// Converting to uppercase:
+			if ( typechar >= LETTER_A_LOWER && typechar <= LETTER_Z_LOWER )
+				typechar &= ~0x20;
+
+			if ( typechar == prevTypeChar ) {
+				outstr = outstr .. NORMAL;
+				typechar = -1;
+			} else {
+				switch ( typechar ) {
+					// '0', 'N', 'X', '-':
+					case 0x30: case 78: case 88: case 45:
+						outstr = outstr .. NORMAL;
+						break;
+					// 'C', '@':
+					case 67: case 64:
+						outstr = outstr .. COMMAND;
+						break;
+					// '1', 'Y', '!':
+					case 0x31: case 89:
+						outstr = outstr .. HIGHLIGHT1;
+						break;
+					// '2', 'G':
+					case 0x32: case 71:
+						outstr = outstr .. HIGHLIGHT2;
+						break;
+					// '3', 'D':
+					case 0x33: case 68:
+						outstr = outstr .. DARKGRAY;
+						break;
+					// 'A', 'H':
+					case 65: case 72:
+						outstr = outstr .. HEADER;
+						break;
+					// '`':
+					case 96:
+						outstr = outstr .. "`";
+						break;
+					default:
+						typechar = -1;
+						break;
+				}
+			}
+
+			prevTypeChar = typechar;
 
 			prevCharIndexStart = curCharIndex + 2;
-		}
+		} // of while ( ( curCharIndex = origstr.IndexOf( "`", prevCharIndexStart ) ) != -1 ) {}
 
-		if ( !highlight )
-			outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
+		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
 
-		return ( outstr == "" )? origstr : outstr;
-	}
-
-	String HighlightText( String str ) {
-		str = HighlightTextPart( str, "~~", DARKGRAY );
-		str = HighlightTextPart( str, "@@", HIGHLIGHT1 );
-		str = HighlightTextPart( str, "##", HIGHLIGHT2 );
-
-		return str;
+		return outstr;
 	}
 
 	virtual String GetPlaintext( void ) {
@@ -117,7 +155,7 @@ class ZCTooltipClass: ZCConsoleClass {
 	}
 
 	override String GetHelpString( void ) {
-		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
 			String addtext = GetPlaintext();
 
@@ -586,12 +624,13 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			Array<String> aliases;
 			GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
 
+			int aliasesSize = aliases.Size();
 			bool unreleased = !!( zcFlags & CCF_Unreleased );
 
 			String ccmdColorHeader = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
 			String ccmdColorArgs   = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLEARGS );
 
-			for ( int i = 0; i < aliases.Size(); i++ ) {
+			for ( int i = 0; i < aliasesSize; i++ ) {
 				int spaceIndex = aliases[ i ].IndexOf( " " );
 				if ( spaceIndex != -1 )
 					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
@@ -604,11 +643,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			}
 
 			// Extra aliases:
-			for ( int i = 0; i < aliases.Size() - 1; i++ )
+			for ( int i = 0; i < aliasesSize - 1; i++ )
 				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
 
 			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliases.Size() - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. GetHelpDescString();
+			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. GetHelpDescString();
 
 			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
 

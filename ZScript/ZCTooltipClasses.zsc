@@ -3,27 +3,27 @@
 class ZCTooltipSummon: ZCTooltipClass {
 	override String GetPlaintext() {
 		return HighlightText(
-			"For the almost all commands which takes actor name argument (\"##zcsummon##\", \"##zcgive##\", \"##zctake##\", \"##zcev goto##\", ...) you may use a simple regex search:\n" ..
-			"  '@@*@@' for any amount of any characters, including zero; ~~and~~\n" ..
-			"  '@@-@@' for greater than 0 amount of any characters.\n" ..
-			"If there's more than one actor class candidate found, a @@numbered list@@ just will be printed. A value may be selected from it by using ##:N## or ##,N##.\n" ..
+			"For the almost all commands which takes actor name argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\n" ..
+			"  '`2*`2' for any amount of any characters, including zero; `dand`x\n" ..
+			"  '`2-`2' for greater than 0 amount of any characters.\n" ..
+			"If there's more than one actor class candidate found, a `2numbered list`x just will be printed. A value may be selected from it by using `2:N`x or `2,N`x.\n" ..
 			"Also, a class inheriting filter is applied for some commands.\n\n" ..
-			"In general, you may substitute values from @@ZChecker variables@@ ~~(must be started with \"~~@@$@@~~\" or \"~~@@%@@~~\")~~ like:\n" ..
-			"  '@@$1@@', '@@$2@@', '@@$3@@' for the classname in specified panel. They will be kept until the next class overwrites them;\n" ..
-			"  '@@$last@@' for the last class added to any panel;\n" ..
-			"  Any other @@$zchecker_variable@@ defined internally or via \"##zcvarsctl##\".\n"
+			"In general, you may substitute values from `1ZChecker variables`1 `d(must be started with \"`2$`d\" or \"`2%`d\")`x like:\n" ..
+			"  '`1$1`1', '`1$2`1', '`1$3`1' for the classname in specified panel. They will be kept until the next class overwrites them;\n" ..
+			"  '`1$last`1' for the last class added to any panel;\n" ..
+			"  Any other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".\n"
 		);
 	}
 
 	override String GetExamples() {
 		return HighlightText(
-			"  \"##zcsummon z##@@-@@##man 4##\" will create four zombiemans;\n" ..
-			"  \"##zcsummon sta##@@*@@##ff##\" will print a list with elements \"Staff\" and \"Staff~~Pu~~ff\";\n" ..
-			"  \"##zcsummon sta##@@-@@##ff##\" will summon a \"StaffPuff\";\n" ..
-			"  \"##zcsummon sta##@@*@@##ff##@@:1@@\" will also summon a \"StaffPuff\" ~~(by specifying a selection)~~;\n" ..
-			"  \"##zcsummon $2 15##\" will summon fifteen actors of class in the second panel;\n" ..
-			"  \"##zcgive 1 ##@@*@@##card##\" will show a list of all Inventory classes ending with a \"card\" ~~(while trying to give item to the actor in the first panel)~~;\n" ..
-			"  \"##zctake 1 z##@@-@@##man##\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
+			"  \"`Czcsummon z`2-`Cman 4`x\" will create four zombiemans;\n" ..
+			"  \"`Czcsummon sta`2*`Cff`x\" will print a list with elements \"Staff\" and \"Staff`dPu`xff\";\n" ..
+			"  \"`Czcsummon sta`2-`Cff`x\" will summon a \"StaffPuff\";\n" ..
+			"  \"`Czcsummon sta`2*`Cff`2:1`x\" will also summon a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
+			"  \"`Czcsummon $2 15`x\" will summon fifteen actors of class in the second panel;\n" ..
+			"  \"`Czcgive 1 `2*`Ccard`x\" will show a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel)`x;\n" ..
+			"  \"`Czctake 1 z`2-`Cman`x\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
 		);
 	}
 }
@@ -31,17 +31,17 @@ class ZCTooltipSummon: ZCTooltipClass {
 class ZCTooltipEverythingMap: ZCTooltipClass {
 	override String GetPlaintext() {
 		return HighlightText(
-			"A map named \"##Everything##\" is an universal card-index.\n" ..
+			"A map named \"`2Everything`2\" is an universal card-index.\n" ..
 			"Right now there's two maps:\n" ..
-			"  \"##Everything##\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures); ~~and~~\n" ..
-			"  \"##Everything_simpled##\", just a lightweight, but fully functional variant.\n" ..
-			"  @@Warning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments @@~~(maybe not on purpose, actually)~~. The consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
+			"  \"`2Everything`2\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures) and may be out-of-date in ZChecker beta versions; `dand`x\n" ..
+			"  \"`2Everything_simpled`2\", lightweight, but fully functional variant.\n" ..
+			"  `1Warning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`x. The consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
 		);
 	}
 
 	override String GetExamples() {
 		return HighlightText(
-			"\"##map everything_simpled##\" will change the level to the Everything map (simplified version)."
+			"\"`Cmap everything_simpled`C\" will change the level to the Everything map (simplified version)."
 		);
 	}
 }

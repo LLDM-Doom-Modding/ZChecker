@@ -557,7 +557,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>). notproj,friend|foe,[no]infi>]";
+		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>),notproj,friend|foe,[no]infi>]";
 	}
 
 	override String GetHelpDescString() {
@@ -632,14 +632,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.isAngled = true;
 								} else if ( paramdiv[ 0 ] == "tid" ) {
 									params.tid = paramvalue;
+								} else if ( paramdiv[ 0 ] == "hp" || paramdiv[ 0 ] == "health" ) {
+									params.spawnhp = paramvalue;
 								} else if ( paramdiv[ 0 ] == "spec" || paramdiv[ 0 ] == "special" ) {
 									params.special = paramvalue;
 								} else if ( paramdiv[ 0 ] == "z" || paramdiv[ 0 ] == "zofs" || paramdiv[ 0 ] == "zoffset" ) {
 									params.zofs = paramvalue;
 								} else if ( paramdiv[ 0 ] == "fwd" || paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
 									params.forwardofs = paramvalue;
-								} else if ( paramdiv[ 0 ] == "hp" || paramdiv[ 0 ] == "health" ) {
-									params.spawnhp = paramvalue;
 								} else if ( paramdiv[ 0 ].Left( 4 ) == "aggr" ) {
 									params.aggresiveness = paramvalue;
 								} else if ( ( paramnamelen == 2 && paramdiv[ 0 ].Left( 1 ) == "a" ) || ( paramnamelen == 4 && paramdiv[ 0 ].Left( 3 ) == "arg" ) ) {
@@ -658,7 +658,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 
 						} else {
 							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "No value " .. LLCOLOR_MAIN .. "for parameter \"" .. curparam .. "\"." );
-						} // of if ( colonIndex < curparam.Length() ) {}
+						} // of else of if ( colonIndex < curparam.Length() ) {}
 
 					} else {
 						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown flag \"" .. curparam .. "\"." );
