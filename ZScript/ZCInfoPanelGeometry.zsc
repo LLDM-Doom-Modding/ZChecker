@@ -14,24 +14,17 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	}
 
 /*
-	native Sector CurSector;
-	native Sector floorsector;
-	native Sector ceilingsector;
-
-	native double CeilingZ;
-	native double FloorZ;
-	native TextureID floorpic;
-	native TextureID ceilingpic;
-
 	native readonly int WaterLevel;
 	native double FloorClip;
-
 	native Line BlockingLine;
 */
-
 	Sector tempInfoSec;
 	String tempFlagsStr;
 	uint secFlagsAmount;
+
+	static const String PortalTypesNames[] = {
+		"Skybox", "StackThings", "Portal", "Portal", "EE-Plane", "EE-Horizon"
+	};
 
 	protected void addSecFlag( uint flag, String flagname ) {
 		String flagcolor = ( ( ( secFlagsAmount / 5 ) & 1 )
@@ -63,6 +56,49 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 								 BLACK .. "\n    angle " .. DARKBROWN .. "%.2f" .. DARKGRAY, texscale.x, texscale.y, texofs.x, texofs.y, texangle );
 
 		return outstr;
+	}
+
+	protected String getPortalInfo( int plane ) {
+		Sector sec = tempInfoSec;
+		String portalstr = FIRE .. "<unknown>" .. GRAY;
+
+		int portaltype = sec.GetPortalType( sec.FLOOR );
+
+		if ( portaltype >= 0 && portaltype <= SectorPortal.TYPE_HORIZON )
+			portalstr = PortalTypesNames[ portaltype ];
+
+		if ( sec.PortalIsLinked( plane ) )
+			portalstr = "linked " .. portalstr .. DARKGRAY .. ";";
+
+		String blocks = "";
+		if ( sec.PortalBlocksView( plane ) ) {
+			blocks = RED .. "view" .. DARKGRAY;
+		}
+		if ( sec.PortalBlocksSight( plane ) ) {
+			if ( blocks != "" )
+				blocks = ", ";
+
+			blocks = blocks .. RED .. "sight" .. DARKGRAY;
+		}
+		if ( sec.PortalBlocksMovement( plane ) ) {
+			if ( blocks != "" )
+				blocks = ", ";
+
+			blocks = blocks .. RED .. "move" .. DARKGRAY;
+		}
+		if ( sec.PortalBlocksSound( plane ) ) {
+			if ( blocks != "" )
+				blocks = ", ";
+
+			blocks = blocks .. RED .. "sound" .. DARKGRAY;
+		}
+
+		portalstr = portalstr .. "\n  " .. ( blocks != ""? BRICK .. "Blocks " .. blocks : DARKGRAY .. "Blocks nothing" );
+
+		vector3 portalOffsets = ( sec.GetPortalDisplacement( plane ), sec.GetPortalPlaneZ( plane ) );
+		portalstr = portalstr .. ";\n  To grp " .. WHITE .. sec.GetOppositePortalGroup( plane ) .. DARKGRAY .. ": " .. ZCGlobal.squeezeVector3( portalOffsets );
+
+		return portalstr;
 	}
 
 	protected void addSectorInfo( Sector sec, String sectorName = "", bool fromnewline = false ) {
@@ -121,34 +157,6 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 				( sec.damageAmount == 0? DARKGRAY : BRICK ) .. sec.damageAmount .. DARKRED .. " hp/" .. BRICK .. sec.damageInterval .. DARKRED .. " tics, leakydmg " .. sec.leakydamage .. ".";
 		}
 
-
-/*
-SECF_SILENT			= 1,	// actors in sector make no noise
-SECF_NOFALLINGDAMAGE= 2,	// No falling damage in this sector
-SECF_FLOORDROP		= 4,	// all actors standing on this floor will remain on it when it lowers very fast.
-SECF_NORESPAWN		= 8,	// players can not respawn in this sector
-SECF_FRICTION		= 16,	// sector has friction enabled
-SECF_PUSH			= 32,	// pushers enabled
-SECF_SILENTMOVE		= 64,	// Sector movement makes mo sound (Eternity got this so this may be useful for an extended cross-port standard.) 
-SECF_DMGTERRAINFX	= 128,	// spawns terrain splash when inflicting damage
-SECF_ENDGODMODE		= 256,	// getting damaged by this sector ends god mode
-SECF_ENDLEVEL		= 512,	// ends level when health goes below 10
-SECF_HAZARD			= 1024,	// Change to Strife's delayed damage handling.
-//SECF_NOATTACK		= 2048  // [New engine versions flag].
-
-SECF_WASSECRET		= 1 << 30,	// a secret that was discovered
-SECF_SECRET			= 1 << 31,	// a secret sector
-
-SECMF_FAKEFLOORONLY	= 2,	// when used as heightsec in R_FakeFlat, only copies floor
-SECMF_CLIPFAKEPLANES = 4,	// as a heightsec, clip planes to target sector's planes
-SECMF_NOFAKELIGHT	= 8,	// heightsec does not change lighting
-SECMF_IGNOREHEIGHTSEC= 16,	// heightsec is only for triggering sector actions
-SECMF_UNDERWATER		= 32,	// sector is underwater
-SECMF_FORCEDUNDERWATER= 64,	// sector is forced to be underwater
-SECMF_UNDERWATERMASK	= 32+64,
-SECMF_DRAWN			= 128,	// sector has been drawn at least once
-SECMF_HIDDEN			= 256,	// Do not draw on textured automap
-*/
 		tempFlagsStr = "";
 		secFlagsAmount = 0;
 
@@ -211,13 +219,30 @@ SECMF_HIDDEN			= 256,	// Do not draw on textured automap
 			noextrainfo = false;
 		}
 
+		if ( printSecPortal ) {
+			bool floorportal = !!sec.Portals[ sec.FLOOR ];
+			bool ceilportal = !!sec.Portals[ sec.CEILING ];
+
+			info = info .. ICE .. "\n Portal group " .. sec.PortalGroup .. GRAY .. ( floorportal || ceilportal? ",\n" : ".\n" );
+
+			if ( floorportal )
+				info = info .. " Flr" .. DARKGREEN .. ": " .. getPortalInfo( sec.FLOOR ) .. GRAY .. ( ceilportal? ";\n" : ".\n" );
+
+			if ( ceilportal )
+				info = info .. " Ceil" .. TAN .. ": " .. getPortalInfo( sec.CEILING ) .. GRAY .. ".";
+
+			noextrainfo = false;
+		}
+
 		if ( noextrainfo )
 			info.Replace( ":", "." );
 		else
 			RemoveLastNewlineSymbol( info );
 
 		outinfo = outinfo .. info;
-	} // of protected void addSectorInfo( Sector sec, String sectorName = "" ) {}
+	} // of protected void addSectorInfo( Sector sec, String sectorName = "", bool fromnewline = false ) {}
+
+
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
 		if ( thingfield.actorType != IAT_Normal )

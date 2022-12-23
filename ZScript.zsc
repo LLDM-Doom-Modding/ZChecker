@@ -21,7 +21,8 @@ version "3.3.0"
 const ZCheckerVersion = "0.71";
 
 
-// AutoAmbient: 0x7FAA0004.
+// AutoAmbient: 0x7FAA0004;
+// Weathremum:  0x7FAA0007.
 const ZCheckerHandlerOrder = -0x7FAA0005; // Proposed to call it before (almost) everything else.
 const ZCheckerMapHandlerOrder = 0x7FAA0006;
 
