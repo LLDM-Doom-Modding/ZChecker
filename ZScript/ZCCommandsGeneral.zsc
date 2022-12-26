@@ -272,7 +272,7 @@ class ZCRemCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpNameString() {
-		return "zcrem [<pos>]";
+		return "zcrem [<pos>];zcclear [<pos>]";
 	}
 
 	override String GetHelpDescString() {

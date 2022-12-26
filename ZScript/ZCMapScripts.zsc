@@ -519,10 +519,12 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				FLineTraceData lt;
 				pl.LineTrace( pl.angle, pl.radius + 64.0, pl.pitch, TRF_ALLACTORS, pl.player.viewheight, data: lt );
 
-				if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClassName() == "ZCheckerActorInfo" ) {
+				if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClass() == "ZCheckerActorInfo" ) {
+					ZCheckerActorInfo zcactor = ZCheckerActorInfo( lt.HitActor );
+
 					pl.SetInventory( "ZCheckerInfoInventory", 1 );
 					ZCheckerInfoInventory zcii = ZCheckerInfoInventory( pl.FindInventory( "ZCheckerInfoInventory" ) );
-					zcii.Init( ZCheckerActorInfo( lt.HitActor ).GetInfoString() );
+					zcii.Init( zcactor.GetInfoString() );
 				}
 			}
 		}
@@ -649,9 +651,9 @@ class ZCheckerActorInfo: Actor {
 	ZCheckerEvSectorSetter evSectorDef;
 
 	enum EInfoactorStatus {
-		IAS_Wrong = 0,
-		IAS_Ready,
-		IAS_MasterDied
+		IAS_Wrong = 0,	// Frame 'A'.
+		IAS_MasterDied,	// Frame 'B'.
+		IAS_Ready		// Frame 'C'.
 	};
 
 	EInfoactorStatus prevStatus;
@@ -746,13 +748,8 @@ class ZCheckerActorInfo: Actor {
 				curStatus = IAS_Ready;
 		}
 
-		if ( curStatus != prevStatus ) {
-			switch ( curStatus ) {
-				case IAS_Ready: A_SetTranslation( "mcm_ZChecker_ActorInfoReady" ); break;
-				case IAS_MasterDied: A_SetTranslation( "mcm_ZChecker_ActorInfoMasterDied" ); break;
-				default: A_SetTranslation( "mcm_ZChecker_ActorInfoWrongMaster" ); break;
-			}
-		}
+		if ( curStatus != prevStatus )
+			frame = curStatus;
 
 		prevStatus = curStatus;
 	}
@@ -763,7 +760,7 @@ class ZCheckerActorInfo: Actor {
 
 	States {
 	Spawn:
-		BAL1 B -1 Bright;
+		ZCHE A -1 Bright;
 		stop;
 	}
 } // of class ZCheckerActorInfo: Actor {}

@@ -62,7 +62,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	}
 
 	override String GetHelpDescString() {
-		return "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted) to <state label>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+		return "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
 	}
 
 	override bool HandleArguments() {

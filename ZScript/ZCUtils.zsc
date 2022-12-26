@@ -54,6 +54,10 @@ const LETTER_A_LOWER = 97;
 const LETTER_Z_LOWER = 122;
 
 
+// Slows down a ZCheckerActorInfo objects handling and thus now archived.
+//const STAT_ZCHECKER_THINKERS = Thinker.STAT_USER_MAX - 1;
+
+
 
 class ZCGlobal: Thinker {
 	ZCheckerHandler zcHandler;

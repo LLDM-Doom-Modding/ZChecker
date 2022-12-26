@@ -634,6 +634,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				int spaceIndex = aliases[ i ].IndexOf( " " );
 				if ( spaceIndex != -1 )
 					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
+				else
+					aliases[ i ] = ccmdColorHeader .. aliases[ i ];
 
 				aliases[ i ].Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorArgs );
 				aliases[ i ].Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. ccmdColorArgs );
