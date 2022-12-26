@@ -267,41 +267,79 @@ class ZCAddCommand: ZCConsoleCommand {
 class ZCRemCommand: ZCConsoleCommand {
 	int zcPos;
 
+	enum ERemoveSpecial {
+		RMSPC_Error = -3,
+		RMSPC_Skip = -2,
+		RMSPC_All = -1,
+		RMSPC_PosFirst = 0,
+		RMSPC_PosLast = MaxTestee - 1
+	};
+
 	override String GetCommand() {
 		return "zc_rem";
 	}
 
 	override String GetHelpNameString() {
-		return "zcrem [<pos>];zcclear [<pos>]";
+		return "zcrem <pos>|a[ll];zcclear [<pos>]";
 	}
 
 	override String GetHelpDescString() {
-		return "Remove testee(s) from <pos> or from whole list if omitted.";
+		return "Remove testee from <pos>. Removes whole list if keyword \"all\" is presented in the \"zcrem\"; or if argument is omitted in the \"zcclear\".";
 	}
 
 	override bool HandleArguments() {
-		zcPos = -1;
-		bool outValue = ( ccmd.args.Size() == 0 );
+		zcPos = RMSPC_Error;
 
-		if ( ccmd.args.Size() == 1 ) {
-			if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
-				outValue = checkTesteePlace( --zcPos );
-		}
+		if ( ccmd.args.Size() == 0 ) {
+			zcPos = RMSPC_Skip;
 
-		return outValue;
+		} else if ( ccmd.args.Size() == 1 ) {
+			bool zcclearRules = false;
+			String arg0 = ccmd.args[ 0 ];
+			arg0.ToLower();
+
+			// Alias "test == \"\" \"%1\" \"zcrem all\" \"zcrem %1\"" does 
+			//not substitute a "%1". This code is a necessary measure.
+			if ( arg0.Left( 2 ) == "c:" ) {
+				arg0 = arg0.Mid( 2, arg0.Length() - 2 );
+				zcclearRules = true;
+			}
+
+			if ( arg0 == "" ) {
+				if ( zcclearRules )
+					zcPos = RMSPC_All;
+				else
+					zcPos = RMSPC_Skip;
+			} else {
+				if ( arg0 == "a" || arg0 == "all" ) {
+					zcPos = RMSPC_All;
+
+				} else if ( str2int_Ptr( arg0, +zcPos ) ) {
+					if ( !checkTesteePlace( --zcPos ) )
+						zcPos = RMSPC_Error;
+				}
+			}
+		} // of else if ( ccmd.args.Size() == 1 ) {}
+
+		return ( zcPos != RMSPC_Error );
 	}
 
 	override void DoCommand( void ) {
-		if ( zcPos != -1 ) {
+		if ( zcPos == RMSPC_Skip ) {
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "\"zcrem\" is a safe command. Use \"" .. CCMDCOLOR_TITLE .. "zcrem all" .. TEXTCOLOR_DARKGRAY .. "\" or \"" .. CCMDCOLOR_TITLE .. "zcclear" .. TEXTCOLOR_DARKGRAY .. "\" instead." );
+
+		} else if ( zcPos != RMSPC_All ) {
 			Actor testee = ccmd.handler.Testee[ zcPos ].mo;
+
 			if ( testee ) {
-				ZCGlobal.Log( LL_Detailed, "Removed actor \"" .. testee.GetClassName() .. "\" <" .. testee .. "> from position " .. zcPos + 1 .. "." );
+				ZCGlobal.Log( LL_Detailed, "Removed actor \"" .. testee.GetClassName() .. "\" <" .. testee .. "> from position " .. ( zcPos + 1 ) .. "." );
 				ccmd.handler.Testee[ zcPos ].mo = NULL;
 
 				ccmd.handler.UpdateInternalClassnameByField( zcPos );
 			} else {
-				ZCGlobal.Log( LL_Detailed, "Cannot remove, there's no actor in position " .. zcPos + 1 .. "." );
+				ZCGlobal.Log( LL_Detailed, "Cannot remove, there's no actor in position " .. ( zcPos + 1 ) .. "." );
 			}
+
 		} else {
 			for ( int i = 0; i < MaxTestee; i++ )
 				ccmd.handler.Testee[ i ].mo = NULL;

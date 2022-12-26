@@ -11,7 +11,7 @@ alias zcaddf "zcadd force %1"
 alias zcaddforce "zcadd force %1"
 
 alias zcrem "netevent zc_rem@@%1"
-alias zcclear "zcrem %1"
+alias zcclear "zcrem c:%1"
 
 alias zcsetprop "netevent zc_setproperty@@%1@@%2@@%3"
 alias zcsetp "zcsetprop %1 %2 %3"
