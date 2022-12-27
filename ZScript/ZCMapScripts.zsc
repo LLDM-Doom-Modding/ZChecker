@@ -219,6 +219,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
 		bool spawnPLYC = CVar.FindCVar( "mcm_zchecker_ev_spawnplyc" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
+		bool spawnMissedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawnmissingsprites" ).GetBool();
 		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
 
 		int spriteTNT1A0 = Actor.GetSpriteIndex( "TNT1A0" );
@@ -251,6 +252,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				State st = GetDefaultByType( cls ).SpawnState;
 				String stSpriteName = "TNT1A0";
 				String stSpriteName4 = "TNT1";
+				SpriteID stSprite = spriteTNT1A0;
 
 				if ( !spriteCheckSuccess && st ) {
 					int statesCountdown = 0;
@@ -258,6 +260,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					// "st.sprite" returns non-altered sprite.
 					stSpriteName = TexMan.GetName( st.GetSpriteTexture( 0 ) );
 					stSpriteName4 = stSpriteName.Left( 4 );
+					stSprite = st.sprite;
 
 					while ( st.NextState && ( !spawnTNT1A0 && stSpriteName == "TNT1A0" || !spawnPLYC && stSpriteName4 == "PLYC" ) && statesCountdown < 7 ) {
 						st = st.NextState;
@@ -265,21 +268,28 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 						stSpriteName = TexMan.GetName( st.GetSpriteTexture( 0 ) );
 						stSpriteName4 = stSpriteName.Left( 4 );
+						stSprite = st.sprite;
 					}
 
-					spriteCheckSuccess = ( spawnTNT1A0 || stSpriteName != "TNT1A0" );
+					if ( stSpriteName4 == "TNT1" ) {
+						// Empty or missing sprite:
+						if ( stSprite == spriteTNT1A0 )
+							spriteCheckSuccess = spawnTNT1A0;
+						else
+							spriteCheckSuccess = spawnMissedSprites;
 
-					if ( spriteCheckSuccess )
+					} else {
+						// Valid or special-PLYC sprite:
 						spriteCheckSuccess = ( spawnPLYC || ( stSpriteName4 != "PLYC" && stSpriteName != "" ) );
+					}
+
 				}
 
 				if ( !spriteCheckSuccess ) {
-					String nonalteredSpriteName = "" .. SpriteID( st.sprite );
-
-					if ( stSpriteName4 == nonalteredSpriteName )
+					if ( stSprite == spriteTNT1A0 )
 						logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite \"" .. stSpriteName .. "\"." );
 					else
-						logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite \"" .. stSpriteName .. "\" " .. TEXTCOLOR_ORANGE .. "(was " .. nonalteredSpriteName .. ")." );
+						logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite \"" .. stSpriteName .. "\" " .. TEXTCOLOR_ORANGE .. "(was " .. stSprite .. ")." );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
 					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
@@ -297,7 +307,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						logCreatingActor( TEXTCOLOR_DARKGREEN .. "summoned class \"" .. TEXTCOLOR_GREEN .. cls.GetClassName() .. TEXTCOLOR_DARKGREEN .. "\"" .. TEXTCOLOR_DARKGRAY .. " (sprite \"" .. stSpriteName .. "\")." );
 						evSectors[ clsType ].setter.DoJump( cls );
 					} else if ( logSpawnInfo ) {
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" cannot be determined; skipped." );
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" cannot be assigned to any category and thus skipped." );
 					}
 				}
 			} // of if ( !skipactor ) {}

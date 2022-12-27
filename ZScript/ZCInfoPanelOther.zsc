@@ -79,7 +79,7 @@ class ZCSoundInfoPanel: ZCBaseInfoPanelPart
 
 	override void OnCreate( void ) 
 	{
-		optionCVarName = "mcm_zchecker_sound_info";
+		optionCVarName = "mcm_zchecker_info_sound";
 		optionLabel = "Sound information";
 		//optionSubmenuName = "mcm_ZCheckerSubmenu_some";
 	}

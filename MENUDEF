@@ -71,14 +71,17 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText " "
 
     StaticText "Spawning options", GOLD
+	StaticText "- General -", DARKBROWN
 	Option "Replaced actors", "mcm_zchecker_ev_spawnreplaced", "YesNo"
-	StaticText " "
+	Option "Replacements of restricted actors", "mcm_zchecker_ev_restrictreplacements", "NoYes"
+	StaticText "- By empty sprites -", DARKBROWN
+	Option "Actors with missing sprites", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
+	Option "Actors with sprite \"TNT1A0\"", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+	Option "Actors with sprite \"PLYC*\"", "mcm_zchecker_ev_spawnplyc", "YesNo"
+	StaticText "- Code-based -", DARKBROWN
 	Option "+STEALTH actors", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "+INVISIBLE actors", "mcm_zchecker_ev_spawninvisible", "YesNo"
-	Option "Inherited from \"PlayerChunk\":", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
-	Option "Actors with sprite \"TNT1A0\":", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-	Option "Actors with sprite \"PLYC*\":", "mcm_zchecker_ev_spawnplyc", "YesNo"
-	Option "Replacements of restricted actors:", "mcm_zchecker_ev_restrictreplacements", "NoYes"
+	Option "Inherited from \"PlayerChunk\"", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
 
     StaticText " "
     StaticText "Other", GOLD
@@ -94,6 +97,12 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Option "Force use map scripts", "mcm_zchecker_ev_forcemap", "YesNo"
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
     StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
+	StaticText " "
+	Control "Open Everything map menu", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
+	StaticText " "
+	StaticText "Related CCMDs (closes menu)", GOLD
+	Command "Recreate actors: \"zcevre\"", "zcev recreate", 0, 1
+	Command "Teleport to start: \"zcevg start\"", "zcev goto start", 0, 1
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
