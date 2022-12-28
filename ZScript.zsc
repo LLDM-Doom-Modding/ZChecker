@@ -154,32 +154,42 @@ class ZCheckerHandler: StaticEventHandler {
 					break;
 			}
 
-            zcConfigFile.Replace( "\r\n", "\n" ); // Neccesary???
-            zcConfigFile.Split( zcConfigLines, "\n" );
+			zcConfigFile.Split( zcConfigLines, "\n" );
+
+
+			int zcConfigLinesSize = zcConfigLines.Size();
+
+			// Fixing a non-POSIX end-of-file marker:
+			if ( zcConfigLinesSize ) {
+				String lastline = zcConfigLines[ zcConfigLinesSize - 1 ];
+
+				if ( lastline.CharCodeAt( lastline.Length() - 1 ) == 0 )
+					zcConfigLines[ zcConfigLinesSize - 1 ] = lastline.Left( lastline.Length() - 1 );
+			}
 
 			zcConfigCurLineIndex = 1;
 
-            for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {
-                String curLine = zcConfigLines[ i ];
+			for ( int i = 0; i < zcConfigLinesSize; i++, zcConfigCurLineIndex++ ) {
+				String curLine = zcConfigLines[ i ];
 
-                // Comments and extra spaces delete:
-                int IndexOfCommentStart = curLine.IndexOf( "#" );
-                if ( IndexOfCommentStart != -1 )
-                    curLine.Truncate( IndexOfCommentStart );
+				// Comments and extra spaces delete:
+				int IndexOfCommentStart = curLine.IndexOf( "#" );
+				if ( IndexOfCommentStart != -1 )
+					curLine.Truncate( IndexOfCommentStart );
 
 				curLine = ZCGlobal.TruncateStringBySpaces( curLine );
 
-                // Try to unparse current line if it isn't empty or remove it elsewere:
-                if ( curLine != "" ) {
-	                Array<String> curLineWords;
+				// Try to unparse current line if it isn't empty or remove it elsewere:
+				if ( curLine != "" ) {
+					Array<String> curLineWords;
 
 					curLineWords.Clear();
-		            curLine.Replace( "\t", " " );
-		            curLine.Split( curLineWords, " ", TOK_SKIPEMPTY );
+					curLine.Replace( "\t", " " );
+					curLine.Split( curLineWords, " ", TOK_SKIPEMPTY );
 
 					int argsamount = ( curLineWords.Size() - 1 );
 
-                    if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
+					if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
 						if ( argsamount == 1 ) {
 							if ( !addConsoleClass( curLineWords[ 1 ], false ) )
 								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
@@ -193,22 +203,23 @@ class ZCheckerHandler: StaticEventHandler {
 					} else if ( curLineWords[ 0 ] == "ccmdsep" || curLineWords[ 0 ] == "addccmdsep" || curLineWords[ 0 ] == "ccmdseparator" || curLineWords[ 0 ] == "addccmdseparator" ) {
 						addConsoleSeparator( argsamount == 1 && curLineWords[ 1 ] == "important" );
 
-                    } else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
+					} else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
 						if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
 							if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
 								printConfigWarning( "Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"" );
 
-                    } else {
+					} else {
 						printConfigWarning( "Unknown keyword \"" .. curLineWords[ 0 ] .. "\"" );
 					}
 
-                } else {
-                    zcConfigLines.Delete( i, 1 );
-                    i--;
-                } // of else of if ( curLine != "" ) {}
+				} else {
+					zcConfigLines.Delete( i, 1 );
+					zcConfigLinesSize--;
+					i--;
+				} // of else of if ( curLine != "" ) {}
 
-            } // of for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {}
-        } else {
+			} // of for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {}
+		} else {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Cannot find file \"ZChecker.cfg\"." );
 			handlerInitSuccess = false;
 		} // of else of if ( zcConfigFileHandler != -1 ) {}
