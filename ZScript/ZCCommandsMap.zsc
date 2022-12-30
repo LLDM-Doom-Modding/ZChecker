@@ -1,7 +1,7 @@
 // Handling of the "zcev*" commands:
 
 class ZCEvmapCommand: ZCConsoleCommand {
-	protected clearscope void InitEvmapCCMD( String helpheader, String helpdesc, int extraflags = CCF_None, class<ZCTooltipClass> helptooltip = NULL ) {
+	protected void InitEvmapCCMD( String helpheader, String helpdesc, int extraflags = CCF_None, class<ZCTooltipClass> helptooltip = NULL ) {
 		zcFlags = CCF_NonblockingFailure;
 		if ( !!extraflags )
 			zcFlags |= extraflags;

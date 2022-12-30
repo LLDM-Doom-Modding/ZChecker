@@ -79,7 +79,10 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( classname ) {
 			ZCConsoleClass newCCMD = ZCConsoleClass.Create( classname, importantFlag );
 			zcConsoleHandleClasses.Push( newCCMD );
-			newCCMD.PostBeginPlay(); // Calls "OnLoad()".
+
+			bool important = newCCMD.zcFlags & ZCConsoleClass.CCF_Important;
+			newCCMD.OnLoad();
+			newCCMD.zcFlags = ( newCCMD.zcFlags & ~newCCMD.CCF_Important ) | ( newCCMD.CCF_Important * !!important );
 		}
 
 		return !!classname;

@@ -23,17 +23,11 @@ class ZCConsoleClass abstract {
 		return created;
 	}
 
-	// Override to set up flags (excluding CCF_Important) and other special stuff:
-	virtual void OnLoad( void ) {
+	// Override to set up flags (without CCF_Important, which has special 
+	//handling) and other init stuff in all console class inheritances:
+	virtual virtualscope void OnLoad( void ) {
 		zcFlags = CCF_None;
-	}
-
-	virtual void PostBeginPlay() {
 		helpCacheString = "";
-
-		bool important = zcFlags & CCF_Important;
-		OnLoad();
-		zcFlags = important? ( zcFlags | CCF_Important ) : ( zcFlags & ~CCF_Important );
 	}
 
 	// A wrapper which unites aliases and description to one nice string:
@@ -218,17 +212,18 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
-	protected clearscope void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {
+	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {
 		ccmdInterfaceData.neteventName = neteventname;
 		ccmdInterfaceData.helpHeader = helpheader;
 		ccmdInterfaceData.helpDesc = helpdesc;
 
-		if ( tooltip )
+		if ( tooltip ) {
 			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltip ) );
+		}
 	}
 
 	// Call "SetupCCMDInterface()" here:
-	virtual clearscope void InitCCMD( void ) /*abstract*/ {
+	virtual void InitCCMD( void ) /*abstract*/ {
 		/* SetupCCMDInterface(); */
 	}
 
@@ -242,12 +237,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 
 
-
 	private clearscope void printInitMissedWarning( String whatmissed ) {
 		ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::OnLoad(). Missed " .. whatmissed .. " in the " .. TEXTCOLOR_WHITE .. "InitCCMD()" .. LLCOLOR_EMERGENCY .. " overload." );
 	}
 
-	override void OnLoad( void ) {
+	final override void OnLoad( void ) {
 		Super.OnLoad();
 
 		ccmdInterfaceData.neteventName = "";
@@ -667,7 +661,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	}
 
 	// A wrapper which unites aliases and description to one nice string:
-	final override String GetHelpString( void ) {
+	override String GetHelpString( void ) {
 		// Attempt to speed up help strings processing:
 		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
 			helpCacheString = "";
