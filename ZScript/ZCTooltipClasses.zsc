@@ -1,6 +1,10 @@
-// All classes included in the ZChecker configuration file via "plaintext" or "addtext".
+//
+// All default tooltip classes.
+//
 
-class ZCTooltipSummon: ZCTooltipClass {
+// All general classes. Included in the ZChecker configuration file 
+//via "plaintext" or "addtext".
+class ZCTooltipGeneralActorMasks: ZCTooltipClass {
 	override String GetPlaintext() {
 		return HighlightText(
 			"For the almost all commands which takes actor name argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\n" ..
@@ -28,7 +32,7 @@ class ZCTooltipSummon: ZCTooltipClass {
 	}
 }
 
-class ZCTooltipEverythingMap: ZCTooltipClass {
+class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 	override String GetPlaintext() {
 		return HighlightText(
 			"A map named \"`2Everything`2\" is an universal card-index.\n" ..

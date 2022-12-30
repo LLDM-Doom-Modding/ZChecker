@@ -18,7 +18,7 @@ version "3.3.0"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
-const ZCheckerVersion = "0.71";
+const ZCheckerVersion = "0.72";
 
 
 // AutoAmbient: 0x7FAA0004;
@@ -500,7 +500,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 
-			if ( ccmdName ~== curCCMD.GetCommand() ) {
+			if ( ccmdName ~== curCCMD.ccmdInterfaceData.neteventName ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
 				if ( nonblockingCommandsAmount == 0 )

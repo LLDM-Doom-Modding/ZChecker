@@ -160,12 +160,12 @@ class ZCTooltipClass: ZCConsoleClass {
 			String addtext = GetPlaintext();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n| Tips: " .. NORMAL .. addtext .. "\n";
+				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n" .. HEADER .. "| Tips: " .. NORMAL .. addtext .. "\n";
 
 			addtext = GetExamples();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n| Examples:\n" .. NORMAL .. addtext .. "\n";
+				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n" .. HEADER .. "| Examples:\n" .. NORMAL .. addtext .. "\n";
 		}
 
 		return helpCacheString;
@@ -173,6 +173,19 @@ class ZCTooltipClass: ZCConsoleClass {
 } // of class ZCTooltipClass: ZCConsoleClass {}
 
 
+
+struct ZCheckerCCMDInterfaceData {
+	// Linked netevent command name (see KEYCONF):
+	String neteventName;
+
+	// Aliases separated by a semicolon:
+	String helpHeader;
+	// Usage quick help (command description):
+	String helpDesc;
+
+	// A tooltip class (extra information which is being printed via "zchelp <command>"):
+	ZCTooltipClass helpTooltip;
+};
 
 class ZCConsoleCommand: ZCConsoleClass abstract play {
 	enum EConsoleCommandFlags {
@@ -202,8 +215,61 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	EClassnameParseStatus classnameParseStatus;
 
 	ZCheckerCCMDInfo ccmd;
-	ZCTooltipClass helpTooltip;
+	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
+
+	protected clearscope void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {
+		ccmdInterfaceData.neteventName = neteventname;
+		ccmdInterfaceData.helpHeader = helpheader;
+		ccmdInterfaceData.helpDesc = helpdesc;
+
+		if ( tooltip )
+			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltip ) );
+	}
+
+	// Call "SetupCCMDInterface()" here:
+	virtual clearscope void InitCCMD( void ) /*abstract*/ {
+		/* SetupCCMDInterface(); */
+	}
+
+	// Returns "true" if all args provided right, "false" otherwise:
+	virtual bool HandleArguments() {
+		return false;
+	}
+
+	// Command itself:
+	virtual void DoCommand( void ) { }
+
+
+
+
+	private clearscope void printInitMissedWarning( String whatmissed ) {
+		ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::OnLoad(). Missed " .. whatmissed .. " in the " .. TEXTCOLOR_WHITE .. "InitCCMD()" .. LLCOLOR_EMERGENCY .. " overload." );
+	}
+
+	override void OnLoad( void ) {
+		Super.OnLoad();
+
+		ccmdInterfaceData.neteventName = "";
+		ccmdInterfaceData.helpHeader = "";
+		ccmdInterfaceData.helpDesc = "";
+		ccmdInterfaceData.helpTooltip = NULL;
+
+		InitCCMD();
+
+		if ( ccmdInterfaceData.neteventName == "" )
+			printInitMissedWarning( "netevent name" );
+
+		if ( ccmdInterfaceData.helpHeader == "" ) {
+			printInitMissedWarning( "help header" );
+			ccmdInterfaceData.helpHeader = TEXTCOLOR_RED .. GetClassName() .. "::InitCCMD() usage example: \"zcAlias <arg>;zcAlias2;zc-alias [<arg1>] [<arg2>]\"\c-";
+		}
+
+		if ( ccmdInterfaceData.helpDesc == "" ) {
+			printInitMissedWarning( "help description" );
+			ccmdInterfaceData.helpDesc = "No help description provided in the " .. GetClassName() .. "::InitCCMD().";
+		}
+	} // of override void OnLoad( void ) {}
 
 	protected clearscope bool checkTesteePlace( int place ) {
 		return ( place >= 0 && place < MaxTestee );
@@ -600,21 +666,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return false;
 	}
 
-	// Returns linked netevent command name (see KEYCONF):
-	clearscope virtual String GetCommand( void ) const {
-		return "";
-	}
-
-	// Returns aliases separated by a semicolon:
-	virtual String GetHelpNameString( void ) const {
-		return TEXTCOLOR_RED .. GetClassName() .. "::GetHelpNameString() usage example: \"zcAlias <arg>;zcAlias2;zc-alias [<arg1>] [<arg2>]\"\c-";
-	}
-
-	// Returns usage quick help (command description):
-	virtual String GetHelpDescString( void ) const {
-		return GetClassName() .. "::GetHelpDescString(). \"" .. GetCommand() .. " help!\"";
-	}
-
 	// A wrapper which unites aliases and description to one nice string:
 	final override String GetHelpString( void ) {
 		// Attempt to speed up help strings processing:
@@ -622,7 +673,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			helpCacheString = "";
 
 			Array<String> aliases;
-			GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
+			ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
 
 			int aliasesSize = aliases.Size();
 			bool unreleased = !!( zcFlags & CCF_Unreleased );
@@ -649,7 +700,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
 
 			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. GetHelpDescString();
+			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. ccmdInterfaceData.helpDesc;
 
 			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
 
@@ -658,15 +709,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 
 		return helpCacheString;
-	}
-
-	// Returns "true" if all args provided right, "false" otherwise:
-	virtual bool HandleArguments() {
-		return false;
-	}
-
-	// Command itself:
-	virtual void DoCommand( void ) { }
+	} // of final override String GetHelpString( void ) {}
 
 } // of class ZCConsoleCommand abstract {}
 

@@ -53,16 +53,12 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	Actor testee;
 	String newState;
 
-	override String GetCommand() {
-		return "zc_setstate";
-	}
-
-	override String GetHelpNameString() {
-		return "zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>";
-	}
-
-	override String GetHelpDescString() {
-		return "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_setstate",
+			"zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>",
+			"Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -102,16 +98,12 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	String flagName;
 	int flagSetType;
 
-	override String GetCommand() {
-		return "zc_setflag";
-	}
-
-	override String GetHelpNameString() {
-		return "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Set/reset a <flag> for the testee in <pos> (or actor on line of sight if omitted). If <value> is omitted, toggles a <flag>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick.";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_setflag",
+			"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]",
+			"Set/reset a <flag> for the testee in <pos> (or actor on line of sight if omitted). If <value> is omitted, toggles a <flag>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -164,16 +156,12 @@ class ZCBuddhaCommand: ZCConsoleCommand {
 	EPositionParseStatus testeeStatus;
 	int flagSetType;
 
-	override String GetCommand() {
-		return "zc_buddha";
-	}
-
-	override String GetHelpNameString() {
-		return "zcbud [<pos>] [<value>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Optimized shortcut for the \"zcsetflag [<pos>] buddha [<value>]\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it.";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_buddha",
+			"zcbud [<pos>] [<value>]",
+			"Optimized shortcut for the \"zcsetflag [<pos>] buddha [<value>]\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -218,16 +206,12 @@ class ZCGiveCommand: ZCConsoleCommand {
 	String itemName;
 	int itemAmount;
 
-	override String GetCommand() {
-		return "zc_give";
-	}
-
-	override String GetHelpNameString() {
-		return "zcgive [<pos>] <item> [<amount=1>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Give <amount> <item>s to the testee <pos> (or linetarget if omitted)";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_give",
+			"zcgive [<pos>] <item> [<amount=1>]",
+			"Give <amount> <item>s to the testee <pos> (or linetarget if omitted)"
+		);
 	}
 
 	override bool HandleArguments() {
@@ -287,16 +271,12 @@ class ZCGiveCommand: ZCConsoleCommand {
 } // of class ZCGiveCommand: ZCConsoleCommand {}
 
 class ZCTakeCommand: ZCGiveCommand {
-	override String GetCommand() {
-		return "zc_take";
-	}
-
-	override String GetHelpNameString() {
-		return "zctake [<pos>] <item> [<amount=1>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Take <amount> <item>s from the testee <pos> (or linetarget if omitted)";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_take",
+			"zctake [<pos>] <item> [<amount=1>]",
+			"Take <amount> <item>s from the testee <pos> (or linetarget if omitted)"
+		);
 	}
 
 	override void DoCommand( void ) {
@@ -350,16 +330,12 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	EPositionParseStatus testeeStatus;
 	EActorActions actoraction;
 
-	override String GetCommand() {
-		return "zc_actoraction";
-	}
-
-	override String GetHelpNameString() {
-		return "zcact [<pos>] <action>";
-	}
-
-	override String GetHelpDescString() {
-		return "Do special complex action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_actoraction",
+			"zcact [<pos>] <action>",
+			"Do special complex action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\""
+		);
 	}
 
 	override bool HandleArguments() {
@@ -552,16 +528,12 @@ class ZCSummonCommand: ZCConsoleCommand {
 	int summoneeAmount;
 	ZCSummonExtraParameters params;
 
-	override String GetCommand() {
-		return "zc_summon";
-	}
-
-	override String GetHelpNameString() {
-		return "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>),notproj,friend|foe,[no]infi>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, hp|health:<hp>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, aggr[essiveness]:<dflt55>, [no]infi[ght].";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_summon",
+			"zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>),notproj,friend|foe,[no]infi>]",
+			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, hp|health:<hp>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, aggr[essiveness]:<dflt55>, [no]infi[ght]."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -760,21 +732,16 @@ class ZCSummonCommand: ZCConsoleCommand {
 } // of class ZCSummonCommand: ZCConsoleCommand {}
 
 class ZCSetPropertyCommand: ZCConsoleCommand {
-	override void OnLoad( void ) {
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_setproperty",
+			"zcsetprop[erty] [<pos>] <property> <value>;zcsetp [<pos>] <property> <value>;zcwrite [<pos>] <property> <value>;zcw [<pos>] <property> <value>",
+
+			"Sets a <property> to <value> for the actor in position <pos> (or for the linetarget). By default all properties will be simply overwritten, but some of them may has a prefix \"a[dd]\"|\"+\" for adding to current value, or \"r[el[ative]]]\" for setting it relative to caller (player). Possible properties are:\n"
+				.. "  [a|r](pos|warp) <x>,<y>[,<z>]; [a](h[ealth]|hp) <val>; [a]speed <val>; [a|r]ang[le] <val>; [a|r]pitch <val>; [a|r]roll <val>; [a]scale (<both>|<x>,<y>); [a]alpha <val>; [a]radius <val>; [a]height <val>; target|pt <pos>; master|pm <pos>; tracer|pr <pos>; [a]a[rg]0..[a]a[rg]4 <val>; special|action <val>; [a]mass <val>; tid <val>; tidtohate <val>; [a|r]grav[ity] <val>"
+		);
+
 		zcFlags = CCF_Unreleased;
-	}
-
-	override String GetCommand() {
-		return "zc_setproperty";
-	}
-
-	override String GetHelpNameString() {
-		return "zcsetprop[erty] [<pos>] <property> <value>;zcsetp [<pos>] <property> <value>;zcwrite [<pos>] <property> <value>;zcw [<pos>] <property> <value>";
-	}
-
-	override String GetHelpDescString() {
-		return "Sets a <property> to <value> for the actor in position <pos> (or for the linetarget). By default all properties will be simply overwritten, but some of them may has a prefix \"a[dd]\"|\"+\" for adding to current value, or \"r[el[ative]]]\" for setting it relative to caller (player). Possible properties are:\n" ..
-				"  [a|r](pos|warp) <x>,<y>[,<z>]; [a](h[ealth]|hp) <val>; [a]speed <val>; [a|r]ang[le] <val>; [a|r]pitch <val>; [a|r]roll <val>; [a]scale (<both>|<x>,<y>); [a]alpha <val>; [a]radius <val>; [a]height <val>; target|pt <pos>; master|pm <pos>; tracer|pr <pos>; [a]a[rg]0..[a]a[rg]4 <val>; special|action <val>; [a]mass <val>; tid <val>; tidtohate <val>; [a|r]grav[ity] <val>";
 	}
 
 	override bool HandleArguments() {

@@ -6,16 +6,12 @@ class ZCListThinkersCommand: ZCConsoleCommand {
 	String helpListStr;
 	String helpListValuesColor;
 
-	override String GetCommand() {
-		return "zc_listthinkers";
-	}
-
-	override String GetHelpNameString() {
-		return "zclistthinkers <type>|h[elp]|l[ist]";
-	}
-
-	override String GetHelpDescString() {
-		return "List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\", \"list\" or just \"h\" or \"l\".";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_listthinkers",
+			"zclistthinkers <type>|h[elp]|l[ist]",
+			"List all loaded thinkers of type <type>. Possible values will be listed if argument is \"help\", \"list\" or just \"h\" or \"l\"."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -235,16 +231,12 @@ class ZCACSTrackingCommand: ZCConsoleCommand {
 	int zcACSTrackingEnable;
 	ZCACSTrackingThinker tracker;
 
-	override String GetCommand() {
-		return "zc_acstracking";
-	}
-
-	override String GetHelpNameString() {
-		return "zcacstrack <bool: 0/false/reset or 1/true/set>";
-	}
-
-	override String GetHelpDescString() {
-		return "Tracks ACS calls (as much as possible). " .. TEXTCOLOR_RED .. "Turned out to be an unnecessary command because there's only one ACS Thinker for all scripts.";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_acstracking",
+			"zcacstrack <bool: 0/false/reset or 1/true/set>",
+			"Tracks ACS calls (as much as possible). " .. TEXTCOLOR_RED .. "Turned out to be an unnecessary command because there's only one ACS Thinker for all scripts."
+		);
 	}
 
 	override bool HandleArguments() {

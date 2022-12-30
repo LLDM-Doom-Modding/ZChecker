@@ -2,16 +2,12 @@ class ZCHelpCommand: ZCConsoleCommand {
 	bool verboseHelp;
 	ZCConsoleCommand infoclass;
 
-	override String GetCommand() {
-		return "zc_help";
-	}
-
-	override String GetHelpNameString() {
-		return "zchelp [<command> | a[ll]|-a|-v]";
-	}
-
-	override String GetHelpDescString() {
-		return "This help. If <command> is provided, prints out a help for a specific command (in most cases with examples). Else, if <all> output is enabled, displays general complete help.";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_help",
+			"zchelp [<command> | a[ll]|-a|-v]",
+			"This help. If <command> is provided, prints out a help for a specific command (in most cases with examples). Else, if <all> output is enabled, displays general complete help."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -37,7 +33,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 						Array<String> aliases;
 						aliases.Clear();
 
-						curccmd.GetHelpNameString().Split( aliases, ";", TOK_SKIPEMPTY );
+						curccmd.ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
 
 						for ( int j = 0; j < aliases.Size(); j++ ) {
 							String curalias = aliases[ j ];
@@ -61,10 +57,13 @@ class ZCHelpCommand: ZCConsoleCommand {
 					} // of if ( curccmd ) {}
 				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {}
 
-				ZCGlobal.Log( LL_Main | LL_NoDot, ( outValue
-						? TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n\n"
-						: TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
-					) );
+				if ( !outValue )
+					ZCGlobal.Log( LL_Main | LL_NoDot, TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"." );
+
+				/*ZCGlobal.Log( LL_Main | LL_NoDot, TEXTCOLOR_TEAL .. "ZChecker help: " .. ( outValue
+						? TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n\n"
+						: TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
+					) );*/
 			}
 		}
 
@@ -79,10 +78,15 @@ class ZCHelpCommand: ZCConsoleCommand {
 		}
 
 		if ( infoclass ) {
-			if ( infoclass.helpTooltip )
-				console.printf( infoclass.helpTooltip.GetHelpString() );
+			String helpstr = infoclass.GetHelpString();
 
-			console.printf( infoclass.GetHelpString() .. "\n\n" );
+			helpstr.Replace( "\n", TEXTCOLOR_TEAL .. "\n# " .. LLCOLOR_MAIN );
+			console.printf( TEXTCOLOR_TEAL .. "# " .. LLCOLOR_MAIN .. helpstr );
+
+			if ( infoclass.ccmdInterfaceData.helpTooltip )
+				console.printf( infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
+
+			console.printf( TEXTCOLOR_TEAL .. "### of zchelp " .. ccmd.args[ 0 ] .. " ###\n\n" );
 		} else {
 			console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
 
@@ -108,16 +112,12 @@ class ZCAddCommand: ZCConsoleCommand {
 	ESpecialAddTypes zcSpecialAddType;
 	int zcPos;
 
-	override String GetCommand() {
-		return "zc_add";
-	}
-
-	override String GetHelpNameString() {
-		return "zcadd [self|weap[on]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddf [<pos>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_add",
+			"zcadd [self|weap[on]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddf [<pos>]",
+			"Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -275,16 +275,12 @@ class ZCRemCommand: ZCConsoleCommand {
 		RMSPC_PosLast = MaxTestee - 1
 	};
 
-	override String GetCommand() {
-		return "zc_rem";
-	}
-
-	override String GetHelpNameString() {
-		return "zcrem <pos>|a[ll];zcclear [<pos>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Remove testee from <pos>. Removes whole list if keyword \"all\" is presented in the \"zcrem\"; or if argument is omitted in the \"zcclear\".";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_rem",
+			"zcrem <pos>|a[ll];zcclear [<pos>]",
+			"Remove testee from <pos>. Removes whole list if keyword \"all\" is presented in the \"zcrem\"; or if argument is omitted in the \"zcclear\"."
+		);
 	}
 
 	override bool HandleArguments() {
@@ -373,6 +369,14 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 	Array<ZCInfoPanelControlAliasNode> aliases;
 
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_infopanelcontrol",
+			"zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]",
+			"Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>."
+		);
+	}
+
 	private int FindAliasIndex( String aliasname ) {
 		int outValue = -1;
 
@@ -387,18 +391,6 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 		return outValue;
 	} // of private int FindAliasIndex( String aliasname ) {}
-
-	override String GetCommand() {
-		return "zc_infopanelcontrol";
-	}
-
-	override String GetHelpNameString() {
-		return "zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]";
-	}
-
-	override String GetHelpDescString() {
-		return "Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>.";
-	}
 
 	override bool HandleArguments() {
 		zcPos = zcNewPos = -1;
@@ -573,16 +565,12 @@ class ZCVariablesControlCommand: ZCConsoleCommand {
 
 	EVarsControlTypes zcSubcommand;
 
-	override String GetCommand() {
-		return "zc_variablescontrol";
-	}
-
-	override String GetHelpNameString() {
-		return "zcvarsctl set|new <$varname> <string_value_or_placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo] [stdout|porcelain];zcvarsctl loadfrom <included_filename>";
-	}
-
-	override String GetHelpDescString() {
-		return "Perform control on internal ZChecker class variables; identifiers must be started with \"$\" or \"%\".\n  Possible placeholders for the <string value> (first symbol must be \"%%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_variablescontrol",
+			"zcvarsctl set|new <$varname> <string_value_or_placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo] [stdout|porcelain];zcvarsctl loadfrom <included_filename>",
+			"Perform control on internal ZChecker class variables; identifiers must be started with \"$\" or \"%\".\n  Possible placeholders for the <string value> (first symbol must be \"%%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer)."
+		);
 	}
 
 	override bool HandleArguments() {

@@ -1,18 +1,22 @@
 // Handling of the "zcev*" commands:
 
 class ZCEvmapCommand: ZCConsoleCommand {
-	override void OnLoad( void ) {
-		zcFlags = CCF_Unreleased | CCF_NonblockingFailure;
+	protected clearscope void InitEvmapCCMD( String helpheader, String helpdesc, int extraflags = CCF_None, class<ZCTooltipClass> helptooltip = NULL ) {
+		zcFlags = CCF_NonblockingFailure;
+		if ( !!extraflags )
+			zcFlags |= extraflags;
+
+		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, helptooltip );
 	}
-	override String GetCommand() {
-		return "zc_ev";
+
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"zcev add|new|goto|pause|optimize|recreate|reload",
+			"Operates with world on the Everything map.",
+			CCF_Unreleased
+		);
 	}
-	override String GetHelpNameString() {
-		return "zcev add|new|goto|pause|optimize|recreate|reload";
-	}
-	override String GetHelpDescString() {
-		return "Operates with world on the Everything map.";
-	}
+
 
 	protected bool testForEverythingLevel( void ) {
 		bool isEverythingLevel = ZCGlobal.IsEverythingLevel();
@@ -33,7 +37,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		return ( ccmdArgsSize && testForShortArg( strstart )? ccmdArgsSize : 0 );
 	}
 
-	protected final virtual void SetNonblockingUsageMessage( void ) {
+	protected void SetNonblockingUsageMessage( void ) {
 		ccmd.SetUsageMessageNonblockingCCMD( self );
 	}
 } // of class ZCEvmapCommand: ZCConsoleCommand {}
@@ -41,11 +45,6 @@ class ZCEvmapCommand: ZCConsoleCommand {
 
 
 class ZCEvmapCommand_goto: ZCEvmapCommand {
-	override void OnLoad( void ) {
-		Super.OnLoad();
-		zcFlags &= ~CCF_Unreleased;
-	}
-
 	String zcDestinationWord; // Actor class, category or a "start" keyword.
 
 	override bool HandleArguments() {
@@ -107,31 +106,32 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		}
 	} // of override void DoCommand( void ) {}
 
-	override String GetHelpNameString() {
-		return "zcev goto <class>|start;zcevg <class>|start";
-	}
-	override String GetHelpDescString() {
-		return "On the Everything map, go to the specific actor definition/to start";
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"zcev goto <class>|start;zcevg <class>|start",
+			"On the Everything map, go to the specific actor definition/to start"
+		);
 	}
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
 
 
 class ZCEvmapCommand_add: ZCEvmapCommand {
-	override String GetHelpNameString() {
-		return "zcev add [<class=linetarget>] [<amount=1>] [safe];zcev new [<class=linetarget>] [<amount=1>] [safe]";
-	}
-	override String GetHelpDescString() {
-		return "Summon <amount> actors of type <class/linetarget> on the Everything map arena. Keyword \"safe\" means summoning without collision.";
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"zcev add [<class=linetarget>] [<amount=1>] [safe];zcev new [<class=linetarget>] [<amount=1>] [safe]",
+			"Summon <amount> actors of type <class/linetarget> on the Everything map arena. Keyword \"safe\" means summoning without collision.",
+			CCF_Unreleased
+		);
 	}
 } // of class ZCEvmapCommand_add: ZCEvmapCommand {}
 
 
 class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
-	override String GetHelpNameString() {
-		return "zcev recreate|reload;zcevre";
-	}
-	override String GetHelpDescString() {
-		return "Delete and recreate again all actors on the Everything map, like on start";
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"zcev recreate|reload;zcevre",
+			"Delete and recreate again all actors on the Everything map, like on start"
+		);
 	}
 
 	override bool HandleArguments() {
@@ -154,10 +154,11 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 
 
 class ZCEvmapCommand_pause: ZCEvmapCommand {
-	override String GetHelpNameString() {
-		return "zcev pause;zcev optimize";
-	}
-	override String GetHelpDescString() {
-		return "Unload all actors from the main location on the Everything map";
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"zcev pause;zcev optimize",
+			"Unload all actors from the main location on the Everything map",
+			CCF_Unreleased
+		);
 	}
 } // of class ZCEvmapCommand_pause: ZCEvmapCommand {}
