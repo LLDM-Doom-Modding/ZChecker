@@ -31,7 +31,7 @@ alias zcgive "netevent zc_give@@%1@@%2@@%3"
 alias zctake "netevent zc_take@@%1@@%2@@%3"
 
 alias zcsummon "netevent zc_summon@@%1@@%2@@%3"
-alias zcsummonsaved "zcsummon $savedclass %1 %2"
+alias zccopysummon "zcsummon $savedclass %1 %2"
 alias zccopyclass "zcvarsctl set $savedclass $linetarget"
 
 alias zcact "netevent zc_actoraction@@%1@@%2"

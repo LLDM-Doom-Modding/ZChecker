@@ -1,204 +1,6 @@
-// Real commands placed below.
-
-// Auxilary asynchronous classes (in other words, API for ACS):
-
-class ZCSetFlagCommandThinker: Thinker {
-	Array<String> storedStrings;
-
-	override void PostBeginPlay() {
-		ChangeStatNum( STAT_STATIC );
-	}
-
-	String PopString( void ) {
-		String outname = "";
-
-		if ( storedStrings.Size() ) {
-			outname = storedStrings[ storedStrings.Size() - 1 ];
-			storedStrings.Pop();
-		}
-
-		return outname;
-	}
-
-	void AddString( String flagname ) {
-		storedStrings.push( flagname );
-	}
-
-	static ZCSetFlagCommandThinker Get( void ) {
-		ZCSetFlagCommandThinker it = ZCSetFlagCommandThinker( ThinkerIterator.Create( "ZCSetFlagCommandThinker", STAT_STATIC ).Next() );
-
-		if ( !it )
-			it = new( 'ZCSetFlagCommandThinker' );
-
-		return it;
-	}
-}
-
-class ZCSetStateCommandThinker: ZCSetFlagCommandThinker {
-	static ZCSetStateCommandThinker Get( void ) {
-		ZCSetStateCommandThinker it = ZCSetStateCommandThinker( ThinkerIterator.Create( "ZCSetStateCommandThinker", STAT_STATIC ).Next() );
-
-		if ( !it )
-			it = new( 'ZCSetStateCommandThinker' );
-
-		return it;
-	}
-}
-
-
-// Real commands:
-
-class ZCSetStateCommand: ZCConsoleCommand {
-	EPositionParseStatus testeeStatus;
-	Actor testee;
-	String newState;
-
-	override void InitCCMD() {
-		SetupCCMDInterface(
-			"zc_setstate",
-			"zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>",
-			"Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick."
-		);
-	}
-
-	override bool HandleArguments() {
-		testeeStatus = PPS_Error;
-		bool outValue = false;
-
-		if ( ccmd.args.Size() == 1 ) {
-			newState = ccmd.args[ 0 ];
-			outValue = true;
-			testee = LinetraceActor();
-		} else if ( ccmd.args.Size() == 2 && PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
-			newState = ccmd.args[ 1 ];
-			outValue = true;
-		}
-
-		return outValue;
-	}
-
-	// I have no idea how to convert String to StateLabel less crooked...
-	override void DoCommand( void ) {
-		if ( testee ) {
-			ZCSetStateCommandThinker.Get().AddString( newState );
-			// Cannot get ACS asynchronous "SetResultValue()" here.
-			testee.ACS_NamedExecute( "ZChecker_CCMD_SetState", 0 );
-		}
-	}
-
-	static String ACS_GetStateName( Actor activator ) {
-		return ZCSetStateCommandThinker.Get().PopString();
-	}
-} // of class ZCSetStateCommand: ZCConsoleCommand {}
-
-
-class ZCSetFlagCommand: ZCConsoleCommand {
-	Actor testee;
-	EPositionParseStatus testeeStatus;
-	String flagName;
-	int flagSetType;
-
-	override void InitCCMD() {
-		SetupCCMDInterface(
-			"zc_setflag",
-			"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]",
-			"Set/reset a <flag> for the testee in <pos> (or actor on line of sight if omitted). If <value> is omitted, toggles a <flag>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tick."
-		);
-	}
-
-	override bool HandleArguments() {
-		flagSetType = -1;
-		bool outValue = false;
-
-		if ( ccmd.args.Size() == 2 || ccmd.args.Size() == 3 )
-			flagSetType = getBoolArg( ccmd.args.Size() - 1 );
-
-		if ( ccmd.args.Size() == 1 ) {
-			flagName = ccmd.args[ 0 ];
-			outValue = true;
-			testee = LinetraceActor();
-		} else if ( ccmd.args.Size() == 2 ) {
-			if ( flagSetType != -1 ) {
-				flagName = ccmd.args[ 0 ];
-				outValue = true;
-				testee = LinetraceActor();
-			} else if ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
-				flagName = ccmd.args[ 1 ];
-				outValue = true;
-			}
-		} else if ( ( ccmd.args.Size() == 3 ) && ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) ) {
-			flagName = ccmd.args[ 1 ];
-			outValue = ( flagSetType != -1 );
-		}
-
-		//console.printf( TEXTCOLOR_DARKGRAY .. GetClassName() .. "HandleArguments(). zcStatus: " .. testeeStatus .. " (actor " .. ZCGlobal.ObjectName( testee ) .. "), flagName: " .. flagName .. ", flagSetType: " .. flagSetType .. ".  outValue: " .. outValue .. "." );
-
-		return outValue;
-	}
-
-	// I have no idea how to convert String to flag name less crooked, too...
-	override void DoCommand( void ) {
-		if ( testee ) {
-			ZCSetFlagCommandThinker.Get().AddString( flagName );
-			// Cannot get ACS asynchronous "SetResultValue()" here.
-			testee.ACS_NamedExecute( "ZChecker_CCMD_SetFlag", 0, flagSetType );
-		}
-	}
-
-	static String ACS_GetFlagName( Actor activator ) {
-		return ZCSetFlagCommandThinker.Get().PopString();
-	}
-} // of class ZCSetStateCommand: ZCConsoleCommand {}
-
-class ZCBuddhaCommand: ZCConsoleCommand {
-	// Actually a legacy shortcut, but it turned out to be very convenient.
-	Actor testee;
-	EPositionParseStatus testeeStatus;
-	int flagSetType;
-
-	override void InitCCMD() {
-		SetupCCMDInterface(
-			"zc_buddha",
-			"zcbud [<pos>] [<value>]",
-			"Optimized shortcut for the \"zcsetflag [<pos>] buddha [<value>]\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it."
-		);
-	}
-
-	override bool HandleArguments() {
-		testeeStatus = PPS_Error;
-		flagSetType = -1;
-		bool outValue = false;
-
-		// One arg is a position (flag will be toggled), two args are a 
-		//position and a flag value:
-		switch ( ccmd.args.Size() ) {
-			case 1:
-				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) );
-				break;
-			case 2:
-				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) )
-						&& ( ( flagSetType = getBoolArg( 1 ) ) != -1 );
-				break;
-			case 0:
-			default:
-				testee = LinetraceActor();
-				outValue = true;
-				break;
-		}
-
-		return outValue;
-	}
-
-	override void DoCommand( void ) {
-		if ( testee ) {
-			if ( flagSetType == -1 )
-				testee.bBUDDHA ^= true;
-			else
-				testee.bBUDDHA = flagSetType;
-		}
-	}
-} // of class ZCBudCommand: ZCConsoleCommand {}
-
+//
+// All CCMDs which alters or creates an actor.
+//
 
 class ZCGiveCommand: ZCConsoleCommand {
 	Actor testee;
@@ -730,6 +532,163 @@ class ZCSummonCommand: ZCConsoleCommand {
 		}
 	}
 } // of class ZCSummonCommand: ZCConsoleCommand {}
+
+
+class ZCSetFlagCommand: ZCConsoleCommand {
+	Actor testee;
+	EPositionParseStatus testeeStatus;
+	String flagName;
+	int flagSetType;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_setflag",
+			"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]",
+			"Set/reset a <flag> for the testee in <pos> (or actor on line of sight if omitted). If <value> is omitted, toggles a <flag>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic."
+		);
+	}
+
+	override bool HandleArguments() {
+		flagSetType = -1;
+		bool outValue = false;
+
+		if ( ccmd.args.Size() == 2 || ccmd.args.Size() == 3 )
+			flagSetType = getBoolArg( ccmd.args.Size() - 1 );
+
+		if ( ccmd.args.Size() == 1 ) {
+			flagName = ccmd.args[ 0 ];
+			outValue = true;
+			testee = LinetraceActor();
+		} else if ( ccmd.args.Size() == 2 ) {
+			if ( flagSetType != -1 ) {
+				flagName = ccmd.args[ 0 ];
+				outValue = true;
+				testee = LinetraceActor();
+			} else if ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
+				flagName = ccmd.args[ 1 ];
+				outValue = true;
+			}
+		} else if ( ( ccmd.args.Size() == 3 ) && ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) ) {
+			flagName = ccmd.args[ 1 ];
+			outValue = ( flagSetType != -1 );
+		}
+
+		//console.printf( TEXTCOLOR_DARKGRAY .. GetClassName() .. "HandleArguments(). zcStatus: " .. testeeStatus .. " (actor " .. ZCGlobal.ObjectName( testee ) .. "), flagName: " .. flagName .. ", flagSetType: " .. flagSetType .. ".  outValue: " .. outValue .. "." );
+
+		return outValue;
+	}
+
+	// I have no idea how to convert a sequence of Strings to flag names less crooked...
+	override void DoCommand( void ) {
+		if ( testee ) {
+			let storage = ZCZScriptACSStringsAPI.Get();
+			storage.AddString( storage.APIST_Flags, flagName );
+
+			// Cannot get ACS asynchronous "SetResultValue()" here.
+			testee.ACS_NamedExecuteAlways( "ZChecker_CCMD_SetFlag", 0, flagSetType );
+		}
+	}
+
+	static String ACS_GetFlagName( Actor activator ) {
+		return ZCZScriptACSStringsAPI.PopStringStatic( ZCZScriptACSStringsAPI.APIST_Flags );
+	}
+} // of class ZCSetFlagCommand: ZCConsoleCommand {}
+
+class ZCSetStateCommand: ZCConsoleCommand {
+	EPositionParseStatus testeeStatus;
+	Actor testee;
+	String newState;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_setstate",
+			"zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>",
+			"Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic."
+		);
+	}
+
+	override bool HandleArguments() {
+		testeeStatus = PPS_Error;
+		bool outValue = false;
+
+		if ( ccmd.args.Size() == 1 ) {
+			newState = ccmd.args[ 0 ];
+			outValue = true;
+			testee = LinetraceActor();
+		} else if ( ccmd.args.Size() == 2 && PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
+			newState = ccmd.args[ 1 ];
+			outValue = true;
+		}
+
+		return outValue;
+	}
+
+	// I have no idea how to convert a sequence of Strings to StateLabel less crooked, too...
+	override void DoCommand( void ) {
+		if ( testee ) {
+			let storage = ZCZScriptACSStringsAPI.Get();
+			storage.AddString( storage.APIST_States, newState );
+
+			// Cannot get ACS asynchronous "SetResultValue()" here.
+			testee.ACS_NamedExecuteAlways( "ZChecker_CCMD_SetState", 0 );
+		}
+	}
+
+	static String ACS_GetStateName( Actor activator ) {
+		return ZCZScriptACSStringsAPI.PopStringStatic( ZCZScriptACSStringsAPI.APIST_States );
+	}
+} // of class ZCSetStateCommand: ZCConsoleCommand {}
+
+
+class ZCBuddhaCommand: ZCConsoleCommand {
+	// Actually a legacy shortcut, but it turned out to be very convenient.
+	Actor testee;
+	EPositionParseStatus testeeStatus;
+	int flagSetType;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_buddha",
+			"zcbud [<pos>] [<value>]",
+			"Optimized shortcut for the \"zcsetflag [<pos>] buddha [<value>]\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it."
+		);
+	}
+
+	override bool HandleArguments() {
+		testeeStatus = PPS_Error;
+		flagSetType = -1;
+		bool outValue = false;
+
+		// One arg is a position (flag will be toggled), two args are a 
+		//position and a flag value:
+		switch ( ccmd.args.Size() ) {
+			case 1:
+				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) );
+				break;
+			case 2:
+				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) )
+						&& ( ( flagSetType = getBoolArg( 1 ) ) != -1 );
+				break;
+			case 0:
+			default:
+				testee = LinetraceActor();
+				outValue = true;
+				break;
+		}
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		if ( testee ) {
+			if ( flagSetType == -1 )
+				testee.bBUDDHA ^= true;
+			else
+				testee.bBUDDHA = flagSetType;
+		}
+	}
+} // of class ZCBudCommand: ZCConsoleCommand {}
+
 
 class ZCSetPropertyCommand: ZCConsoleCommand {
 	override void InitCCMD() {

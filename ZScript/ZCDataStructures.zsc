@@ -165,6 +165,69 @@ class ZCInfoPanelNodesKeeper {
 } // of class ZCInfoPanelNodesKeeper {}
 
 
+
+// Alternative strings API between ZScript and ACS. World-tick dependence 
+//due to the ACSThinker.
+class ZCZScriptACSStringsNode play {
+	Array<String> strings;
+}
+
+class ZCZScriptACSStringsAPI: Thinker {
+	ZCZScriptACSStringsNode storedTypes[ APIST_Quantity ];
+
+	enum EStringType {
+		APIST_Default = 0,
+		APIST_Flags,
+		APIST_States,
+
+		APIST_Quantity
+	};
+
+	static ZCZScriptACSStringsAPI Get( void ) {
+		ZCZScriptACSStringsAPI it = ZCZScriptACSStringsAPI( ThinkerIterator.Create( 'ZCZScriptACSStringsAPI', STAT_STATIC ).Next() );
+
+		if ( !it ) {
+			it = new( 'ZCZScriptACSStringsAPI' );
+			it.ChangeStatNum( STAT_STATIC );
+
+			for ( int itype = 0; itype < APIST_Quantity; itype++ )
+				it.storedTypes[ itype ] = new( 'ZCZScriptACSStringsNode' );
+		}
+
+		return it;
+	}
+
+	String PopString( EStringType type ) {
+		String outname = "";
+
+		if ( type >= 0 && type < APIST_Quantity ) {
+			let curstorage = storedTypes[ type ];
+			int storedStringsSize = curstorage.strings.Size();
+
+			if ( storedStringsSize ) {
+				outname = curstorage.strings[ storedStringsSize - 1 ];
+				curstorage.strings.Pop();
+			}
+		}
+
+		return outname;
+	} // of String PopString( EStringType type ) {}
+
+	void AddString( EStringType type, String str ) {
+		storedTypes[ type ].strings.Push( str );
+	}
+
+	static String PopStringStatic( EStringType type ) {
+		return Get().PopString( type );
+	}
+
+	static void AddStringStatic( EStringType type, String str ) {
+		Get().AddString( type, str );
+	}
+} // of class ZCZScriptACSStringsAPI: Thinker {}
+
+
+
 // Data-scoped panels storage and manager.
 class ZCPanelsStorage {
 	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file ("zchecker.cfg").
