@@ -406,7 +406,7 @@ class ZCheckerHandler: StaticEventHandler {
 				int dimX = int( ( x - dimBorderWitdh ) / scale );
 				int dimY = int( ( starty - dimBorderWitdh ) / scale );
 				int dimWidth = int( ( maxStringWidth + dimBorderWitdh * 2 ) / scale );
-				int dimHeight = int( ( endy - dimY + dimBorderWitdh ) / scale );
+				int dimHeight = int( ( endy - starty - fontSymbolHeight * infopanelPartsSpaceY + dimBorderWitdh * 2 ) / scale );
 
 				Screen.Dim( dimColor, dimAlpha, dimX, dimY, dimWidth, dimHeight );
 			}

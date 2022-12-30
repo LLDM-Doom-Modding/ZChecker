@@ -7,8 +7,8 @@ user int mcm_zchecker_min_sectorslines_tag	= 1;
 user int mcm_zchecker_max_sectorslines_tag	= 700;
 
 // General information panel variables.
-user float mcm_zchecker_infopanel_startx	= 2.0;
-user float mcm_zchecker_infopanel_starty	= 1.0;
+user float mcm_zchecker_infopanel_startx	= 8.0;
+user float mcm_zchecker_infopanel_starty	= 8.0;
 user float mcm_zchecker_infopanel_offsetx	= 33.0;
 user float mcm_zchecker_infopanel_scale		= 1.0;
 user float mcm_zchecker_infopanelparts_y_gap= 0.55;
@@ -67,8 +67,8 @@ user bool mcm_zchecker_infovar_geomlnportal	= false; //  \_ Line portal info.
 
 user bool mcm_zchecker_info_inventory		= true;
 user int  mcm_zchecker_infovar_invamount	= 40;
-user bool mcm_zchecker_info_states			= false; // States and frames.
-user int  mcm_zchecker_infovar_statesamount	= 7;	 //  \_ Amount of states (unlimited, 1, 2, ..., 15).
+user bool mcm_zchecker_info_states			= true; // States and frames.
+user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states (unlimited, 1, 2, ..., 25).
 user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information;
 user int  mcm_zchecker_infovar_stateextras 	= 0;	 //  \_ Current state extra information (flags, PState X/Y, etc.);
 user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
