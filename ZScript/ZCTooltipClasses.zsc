@@ -5,47 +5,88 @@
 // All general classes. Included in the ZChecker configuration file 
 //via "plaintext" or "addtext".
 class ZCTooltipGeneralActorMasks: ZCTooltipClass {
-	override String GetPlaintext() {
-		return HighlightText(
+	override String GetTips() {
+		return IndentTabList( HighlightText(
 			"For the almost all commands which takes actor name argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\n" ..
-			"  '`2*`2' for any amount of any characters, including zero; `dand`x\n" ..
-			"  '`2-`2' for greater than 0 amount of any characters.\n" ..
+			"	'`2*`2' for any amount of any characters, including zero; `dand`x\n" ..
+			"	'`2-`2' for greater than 0 amount of any characters.\n" ..
 			"If there's more than one actor class candidate found, a `2numbered list`x just will be printed. A value may be selected from it by using `2:N`x or `2,N`x.\n" ..
 			"Also, a class inheriting filter is applied for some commands.\n\n" ..
 			"In general, you may substitute values from `1ZChecker variables`1 `d(must be started with \"`2$`d\" or \"`2%`d\")`x like:\n" ..
-			"  '`1$1`1', '`1$2`1', '`1$3`1' for the classname in specified panel. They will be kept until the next class overwrites them;\n" ..
-			"  '`1$last`1' for the last class added to any panel;\n" ..
-			"  Any other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".\n"
-		);
+			"	'`1$1`1', '`1$2`1', '`1$3`1' for the classname in specified panel. They will be kept until the next class overwrites them;\n" ..
+			"	'`1$last`1' for the last class added to any panel;\n" ..
+			"	Any other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".\n"
+		) );
 	}
 
 	override String GetExamples() {
 		return HighlightText(
-			"  \"`Czcsummon z`2-`Cman 4`x\" will create four zombiemans;\n" ..
-			"  \"`Czcsummon sta`2*`Cff`x\" will print a list with elements \"Staff\" and \"Staff`dPu`xff\";\n" ..
-			"  \"`Czcsummon sta`2-`Cff`x\" will summon a \"StaffPuff\";\n" ..
-			"  \"`Czcsummon sta`2*`Cff`2:1`x\" will also summon a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
-			"  \"`Czcsummon $2 15`x\" will summon fifteen actors of class in the second panel;\n" ..
-			"  \"`Czcgive 1 `2*`Ccard`x\" will show a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel)`x;\n" ..
-			"  \"`Czctake 1 z`2-`Cman`x\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
+			"\"`Czcsummon z`2-`Cman 4`x\" creates four Zombiemen;\n" ..
+			"\"`Czcsummon sta`2*`Cff`x\" will print a list with elements \"Staff\" and \"Staff`dPu`xff\";\n" ..
+			"\"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\n" ..
+			"\"`Czcsummon sta`2*`Cff`2:1`x\" summons also a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
+			"\"`Czcsummon $2 15`x\" summons fifteen actors of class in the second panel;\n" ..
+			"\"`Czcgive 1 `2*`Ccard`x\" will print a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel)`x;\n" ..
+			"\"`Czctake 1 z`2-`Cman`x\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
 		);
 	}
 }
 
 class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 	override String GetPlaintext() {
-		return HighlightText(
+		return IndentTabs( HighlightText(
 			"A map named \"`2Everything`2\" is an universal card-index.\n" ..
 			"Right now there's two maps:\n" ..
-			"  \"`2Everything`2\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures) and may be out-of-date in ZChecker beta versions; `dand`x\n" ..
-			"  \"`2Everything_simpled`2\", lightweight, but fully functional variant.\n" ..
-			"  `1Warning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`x. The consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
-		);
+			LISTPREFIX .. "\"`2Everything`2\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures) and may be out-of-date in ZChecker beta versions; `dand`x\n" ..
+			LISTPREFIX .. "\"`2Everything_simpled`2\", lightweight, but fully functional variant.\n\n" ..
+			"	`1Warning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`x. The consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
+		) );
 	}
 
 	override String GetExamples() {
 		return HighlightText(
-			"\"`Cmap everything_simpled`C\" will change the level to the Everything map (simplified version)."
+			"\"`Cmap everything_simpled`C\" changes the level to the Everything map (simplified version)."
+		);
+	}
+}
+
+class ZCTooltipGiveCommand: ZCTooltipGeneralActorMasks {
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcgive shell 3`x\" gives 3 shells to the linetarget;\n" ..
+			"\"`Czcgive s clip 15`x\" gives 15 clips to `Gs`Yelf`x `d(to the caller player)`x;\n" ..
+			"\"`Czcgive 1 clip`x\" gives one clip to the actor in the `g1st`x panel;\n" ..
+			"\"`Czcgive 1 `2*`Ccard`x\" shows a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel); and\n" ..
+			"\"`Czcgive s `2*`Ccard`2:1 4`x\" gives to `Gs`Yelf`x four items of the first element from the list, in this case a \"BlueCard\"."
+		);
+	}
+}
+
+class ZCTooltipTakeCommand: ZCTooltipGeneralActorMasks {
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czctake shell 3`x\" takes 3 shells from the linetarget;\n" ..
+			"\"`Czctake s clip 15`x\" takes 15 clips from `Gs`Yelf`x `d(to the caller player)`x;\n" ..
+			"\"`Czctake 1 clip`x\" takes one clip from the actor in the `g1st`x panel;\n" ..
+			"\"`Czctake 1 `2*`Ccard`x\" shows a list of all Inventory classes ending with a \"card\" `d(while trying to take item from the actor in the first panel); and\n" ..
+			"\"`Czctake s `2*`Ccard`2:1 4`x\" takes from `Gs`Yelf`x four items of the first element from the list, in this case a \"BlueCard\"."
+		);
+	}
+}
+
+class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcsummon clip`C\" creates a clip actor;\n" ..
+			"\"`Czcsummon clip 12`C\" creates 12 clip actors;\n" ..
+			"\"`Czcsummon r`2-`Claun`2-`x\" creates a R`~ocket`xLaun`~cher`x;\n" ..
+			"\"`Czcsummon z`2*`Cman 4`x\" creates four Zombiemen;\n" ..
+			"\"`Czcsummon $2 15`x\" summons fifteen actors of class in the second panel;\n" ..
+			"\"`Czcsummon `2*`Ccard`x\" will print a list of all classes ending with a \"card\";\n" ..
+			"\"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\n" ..
+			"\"`Czcsummon sta`2*`Cff`2:1`x\" will also summon a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
+			"\"`Czcsummon z`2*`Cman 3 f`x\" or \"`Czcsummon z`2*`Cman 3 friendly`x\" summons three `1friendly`x Zombiemen;\n" ..
+			"\"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" summons one faced from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value."
 		);
 	}
 }

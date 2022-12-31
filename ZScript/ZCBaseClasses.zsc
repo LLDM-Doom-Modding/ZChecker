@@ -8,7 +8,7 @@ class ZCConsoleClass abstract {
 	enum EConsoleClassFlags {
 		CCF_None			= 0,
 		CCF_Important		= 0x0001,	// Will be shown without "zchelp all" argument.
-		CCF_NoCacheHelp		= 0x0002	// Help string will not be cached.
+		CCF_NoCacheHelp		= 0x0002	// Help string will not be cached (handled in the "GetHelpString()".
 	};
 
 	EConsoleClassFlags zcFlags;
@@ -65,7 +65,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 		}
 
 		return helpCacheString;
-	} // of override final String GetHelpString( void ) {}
+	} // of final override String GetHelpString( void ) {}
 
 } // of class ZCConsoleSeparator: ZCConsoleClass {}
 
@@ -76,6 +76,9 @@ class ZCTooltipClass: ZCConsoleClass {
 	const COMMAND	= TEXTCOLOR_LIGHTBLUE;
 	const HIGHLIGHT1= TEXTCOLOR_GOLD;
 	const HIGHLIGHT2= TEXTCOLOR_DARKGREEN;
+
+	const TABSYMBOL	= "	";
+	const LISTPREFIX= " " .. TEXTCOLOR_BLACK .. "-" .. LLCOLOR_MAIN .. " ";
 
 	String HighlightText( String origstr ) {
 		String outstr = "";
@@ -113,8 +116,8 @@ class ZCTooltipClass: ZCConsoleClass {
 					case 0x32: case 71:
 						outstr = outstr .. HIGHLIGHT2;
 						break;
-					// '3', 'D':
-					case 0x33: case 68:
+					// '3', 'D', '~':
+					case 0x33: case 68: case 126:
 						outstr = outstr .. DARKGRAY;
 						break;
 					// 'A', 'H':
@@ -128,8 +131,8 @@ class ZCTooltipClass: ZCConsoleClass {
 					default:
 						typechar = -1;
 						break;
-				}
-			}
+				} // of switch ( typechar ) {}
+			} // of else of if ( typechar == prevTypeChar ) {}
 
 			prevTypeChar = typechar;
 
@@ -139,9 +142,40 @@ class ZCTooltipClass: ZCConsoleClass {
 		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
 
 		return outstr;
+	} // of String HighlightText( String origstr ) {}
+
+	String IndentTabList( String str ) {
+		if ( str.CharCodeAt( 0 ) == 0x09 )
+			str = LISTPREFIX .. str;
+
+		str.Replace( TABSYMBOL, LISTPREFIX );
+
+		return str;
 	}
 
+	String IndentTabs( String str ) {
+		if ( str.CharCodeAt( 0 ) == 0x09 )
+			str = "  " .. str;
+
+		str.Replace( TABSYMBOL, "  " );
+
+		return str;
+	} // of String IndentTabs( String origstr ) {}
+
+	String IndentNewlines( String str ) {
+		if ( str.CharCodeAt( 0 ) != " " )
+			str = "  " .. str;
+
+		str.Replace( "\n", "\n  " );
+
+		return str;
+	} // of String IndentNewlines( String origstr ) {}
+
+
 	virtual String GetPlaintext( void ) {
+		return "";
+	}
+	virtual String GetTips( void ) {
 		return "";
 	}
 	virtual String GetExamples( void ) {
@@ -154,12 +188,17 @@ class ZCTooltipClass: ZCConsoleClass {
 			String addtext = GetPlaintext();
 
 			if ( addtext != "" )
+				helpCacheString = helpCacheString .. HEADER .. "\\-----= =--------/\n" .. NORMAL .. addtext .. "\n";
+
+			addtext = GetTips();
+
+			if ( addtext != "" )
 				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n" .. HEADER .. "| Tips: " .. NORMAL .. addtext .. "\n";
 
 			addtext = GetExamples();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n" .. HEADER .. "| Examples:\n" .. NORMAL .. addtext .. "\n";
+				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n" .. HEADER .. "| Examples:\n" .. NORMAL .. IndentNewlines( addtext ) .. "\n";
 		}
 
 		return helpCacheString;
@@ -212,15 +251,16 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
-	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {
+	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltipClass = NULL ) {
 		ccmdInterfaceData.neteventName = neteventname;
 		ccmdInterfaceData.helpHeader = helpheader;
 		ccmdInterfaceData.helpDesc = helpdesc;
 
-		if ( tooltip ) {
-			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltip ) );
+		if ( tooltipClass ) {
+			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltipClass ) );
+			//ZCTooltipClass( ZCGlobal.Get().zcHandler.LocateZCConsoleClass( tooltipClass ) );
 		}
-	}
+	} // of protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL, bool searchInHandler = false ) {}
 
 	// Call "SetupCCMDInterface()" here:
 	virtual void InitCCMD( void ) /*abstract*/ {
@@ -244,14 +284,14 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	final override void OnLoad( void ) {
 		Super.OnLoad();
 
-		ccmdInterfaceData.neteventName = "";
+		ccmdInterfaceData.neteventName = "-";
 		ccmdInterfaceData.helpHeader = "";
 		ccmdInterfaceData.helpDesc = "";
 		ccmdInterfaceData.helpTooltip = NULL;
 
 		InitCCMD();
 
-		if ( ccmdInterfaceData.neteventName == "" )
+		if ( ccmdInterfaceData.neteventName == "-" )
 			printInitMissedWarning( "netevent name" );
 
 		if ( ccmdInterfaceData.helpHeader == "" ) {
@@ -356,7 +396,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. arg .. "\" in position " .. ( argpos + 1 ) .. TEXTCOLOR_DARKGRAY .. ". Possible values: " .. LLCOLOR_MAIN .. "1.." .. MaxTestee .. ", s[elf], cam[era], lt" .. TEXTCOLOR_DARKGRAY .. "|" .. LLCOLOR_MAIN .. "linetarget" .. TEXTCOLOR_DARKGRAY .. "." );
 		}
 
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getPlaceTestee(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg \"" .. arg .. "\"." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getPlaceTestee(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg[ " .. argpos .. " ] == \"" .. arg .. "\"." );
 
 		return newTesteePosStatus;
 	} // of protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {}
@@ -403,22 +443,27 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		Actor caller = ( ccmd? players[ ccmd.e.Player ].mo : NULL );
 
 		if ( caller ) {
+			Actor found = NULL;
+
 			if ( testSpecialValue == "linetarget" || testSpecialValue == "lt" ) {
 				isSpecial = true;
-				classname = ZCGlobal.ObjectName( LinetraceActor( caller ) );
+				found = LinetraceActor( caller );
 			} else if ( testSpecialValue == "self" ) {
 				isSpecial = true;
-				classname = caller.GetClassName();
+				found = caller;
 			} else if ( testSpecialValue == "target" ) {
 				isSpecial = true;
-				classname = ZCGlobal.ObjectName( caller.target );
+				found = caller.target;
 			} else if ( testSpecialValue == "master" ) {
 				isSpecial = true;
-				classname = ZCGlobal.ObjectName( caller.master );
+				found = caller.master;
 			} else if ( testSpecialValue == "tracer" ) {
 				isSpecial = true;
-				classname = ZCGlobal.ObjectName( caller.tracer );
+				found = caller.tracer;
 			}
+
+			if ( isSpecial )
+				classname = ( found? ZCGlobal.ObjectName( found ) : "" );
 		}
 
 		if ( testSpecialValue == "null" || testSpecialValue == "none" ) {
@@ -654,7 +699,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		newValue = ParseSpecialActorName( value );
 
-		if ( ( classnameParseStatus == CPS_Variable ) || ( newValue != "" ) )
+		// if ( ( classnameParseStatus == CPS_Variable ) || ( newValue != "" ) )
+		if ( newValue != "" )
 			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
 
 		return false;

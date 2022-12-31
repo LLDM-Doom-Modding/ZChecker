@@ -1,17 +1,25 @@
 version "3.3.0"
 
+// For all code files:
+//   Tab size          - 4 spaces.
+//   Indentation style - in general a "one true brace".
+//   Spaces style      - generous/rife.
+
+// General, base, utility and miscellaneous code:
 #include "ZScript/ZCUtils.zsc"
 #include "ZScript/ZCDataStructures.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
 #include "ZScript/ZCMenus.zsc"
 #include "ZScript/ZCMapScripts.zsc"
 
+// Console classes and CCMDs:
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
 #include "ZScript/ZCCommandsInfo.zsc"
 #include "ZScript/ZCCommandsMap.zsc"
 #include "ZScript/ZCTooltipClasses.zsc"
 
+// Information panels classes:
 #include "ZScript/ZCInfoPanelMain.zsc"
 #include "ZScript/ZCInfoPanelPointers.zsc"
 #include "ZScript/ZCInfoPanelGeometry.zsc"
@@ -40,8 +48,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 	Array<ZCInternalActorNameCell> allActorNames;
 
-	// It's impossible to avoid unloading actors (and pointers to them) from 
-	//memory on level reloading. Or I just don't know something.
+	// In current structure it's impossible to avoid unloading pointers to 
+	//actors from memory on level reloading. Found this too late for a 
+	//simple fix.
 	ZCheckerField Testee[ MaxTestee ];
 
 	ZCheckerCCMDInfo zcCCMDInfo;
@@ -61,6 +70,19 @@ class ZCheckerHandler: StaticEventHandler {
 
 		return ccmd;
 	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
+
+	/*ZCConsoleClass LocateZCConsoleClass( class<ZCConsoleClass> cls ) {
+		ZCConsoleClass found = NULL;
+
+		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
+			if ( zcConsoleHandleClasses[ i ].GetClass() == cls ) {
+				found = zcConsoleHandleClasses[ i ];
+				break;
+			}
+		}
+
+		return found;
+	} // of ZCConsoleClass LocateZCConsoleClass( class<ZCConsoleClass> cls ) {}*/
 
 	void UpdateInternalClassnameByField( uint fieldnum ) {
 		if ( fieldnum < MaxTestee ) {
@@ -252,7 +274,7 @@ class ZCheckerHandler: StaticEventHandler {
 				int nameCellSize = nameCell.names.Size();
 
 				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::InitAllActorNames(). " .. String.Format(
-										"allActorNames[ %2i ] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), i, nameCellSize ) );
+										"allActorNames[%2i] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), i, nameCellSize ) );
 			}
 		} // of if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {}
 	} // of void InitAllActorNames( void ) {}
@@ -261,7 +283,6 @@ class ZCheckerHandler: StaticEventHandler {
 
 	override void OnRegister() {
 		handlerInitSuccess = true;
-
 		SetOrder( ZCheckerHandlerOrder );
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
@@ -499,7 +520,7 @@ class ZCheckerHandler: StaticEventHandler {
 		// Polling ZChecker CCMD handlers by stored netevent name:
 		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
 			if ( !( zcConsoleHandleClasses[ i ] is 'ZCConsoleCommand' ) )
-				continue; // Skipping tooltips.
+				continue; // Skipping tooltips and other plaintext classes.
 
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
 

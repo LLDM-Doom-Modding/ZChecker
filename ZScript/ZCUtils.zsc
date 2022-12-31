@@ -167,7 +167,6 @@ class ZCGlobal: Thinker {
 	/* === ZChecker operating on the internal and saves-through variables === */
 
 	// Fixing an ancient ZScript bug...
-	// WARNING: user CVars updates after one tic!!!
 	/*static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
 		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
 
@@ -225,7 +224,7 @@ class ZCGlobal: Thinker {
 
 		for ( int i = 0; i < internalStrings.Size(); i++ ) {
 			if ( internalStrings[ i ].key == zcname ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::DeleteZCheckerString(). Found dict[ \"" .. zcname .. "\" ] (index " .. i .. "/" .. internalStrings.Size() .. ")." );
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::DeleteZCheckerString(). Found dict[\"" .. zcname .. "\"] (index " .. i .. "/" .. internalStrings.Size() .. ")." );
 
 				internalStrings.Delete( i, 1 );
 				found = true;
@@ -269,7 +268,7 @@ class ZCGlobal: Thinker {
 
 		dictcell.value = zcvalue;
 
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::SetZCheckerString(). Dict[ \"" .. zcname .. "\" ] == \"" .. GetZCheckerString( zcname ) .. "\"." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::SetZCheckerString(). Dict[\"" .. zcname .. "\"] == \"" .. GetZCheckerString( zcname ) .. "\"." );
 
 		return true;
 	}
