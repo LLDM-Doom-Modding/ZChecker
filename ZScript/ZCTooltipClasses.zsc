@@ -2,8 +2,10 @@
 // All default tooltip classes.
 //
 
-// All general classes. Included in the ZChecker configuration file 
+
+// General tooltips. Included in the ZChecker configuration file 
 //via "plaintext" or "addtext".
+
 class ZCTooltipGeneralActorMasks: ZCTooltipClass {
 	override String GetTips() {
 		return IndentTabList( HighlightText(
@@ -49,6 +51,44 @@ class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 		);
 	}
 }
+
+
+
+// Common CCMDs tooltips:
+
+class ZCTooltipAddCommand: ZCTooltipClass {
+	override String GetPlaintext() {
+		return HighlightText(
+			"`yNote`x: actors in panels will not be saved after any level reloading. `~Maybe 'll rewrite this system later...`x"
+		);
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcadd 3`x\" adds a linetarget actor to the third panel;\n" ..
+			"\"`Czcadd weap`x\"`d/`x\"`Czcaddweap`x\" adds a currently selected weapon to the first empty panel (if it exists);\n" ..
+			"\"`Czcadd self 1`x\"`d/`x\"`Czcaddself 1`x\" adds a player actor to the first panel."
+		);
+	}
+}
+
+class ZCTooltipPanelsControlCommand: ZCTooltipClass {
+	override String GetPlaintext() {
+		return HighlightText(
+			"`yNote`x: right now aliases system isn't convinience and I suggest not to use it."
+		);
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcpanel 1 m 3`x\" moves actor from the 1st panel to the 3rd panel;\n" ..
+			"\"`Czcpanel info 2`x\", \"`Czcpanel 2 info`x\" or \"`Czcinfo 2`x\" shows some info about specified (2nd) actor."
+		);
+	}
+}
+
+
+// Actors altering CCMDs tooltips:
 
 class ZCTooltipGiveCommand: ZCTooltipGeneralActorMasks {
 	override String GetExamples() {

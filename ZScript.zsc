@@ -156,8 +156,8 @@ class ZCheckerHandler: StaticEventHandler {
 		handlerInitSuccess = false;
 	}
 
-	void IncludeConsoleClasses( void ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::IncludeConsoleClasses(). Creating CCMD handlers and info panel classes..." );
+	protected void ParseConfigFile( void ) {
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::IncludeConsoleClasses(). Parsing a *.cfg file; creating CCMD handlers and info panel classes..." );
 
         int zcConfigFileHandler = Wads.FindLump( "zchecker.cfg" );
 
@@ -249,9 +249,9 @@ class ZCheckerHandler: StaticEventHandler {
 			handlerInitSuccess = false;
 		} // of else of if ( zcConfigFileHandler != -1 ) {}
 
-	} // of void IncludeConsoleClasses( void ) {}
+	} // of protected void ParseConfigFile( void ) {}
 
-	void InitAllActorNames( void ) {
+	protected void InitAllActorNames( void ) {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::InitAllActorNames(). Creating storage cells for actor names..." );
 
 		for ( int i = 0; i < ZCInternalActorNameCell.ARRAY_Quantity; i++ )
@@ -277,7 +277,7 @@ class ZCheckerHandler: StaticEventHandler {
 										"allActorNames[%2i] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), i, nameCellSize ) );
 			}
 		} // of if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {}
-	} // of void InitAllActorNames( void ) {}
+	} // of protected void InitAllActorNames( void ) {}
 
 
 
@@ -295,7 +295,7 @@ class ZCheckerHandler: StaticEventHandler {
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
 
-		IncludeConsoleClasses();
+		ParseConfigFile();
 		InitAllActorNames();
 
 		ZCGlobal.Log( LL_Detailed, String.Format( "ZChecker v%s initialized %s. Total %i console commands, %i info panels.",
@@ -467,7 +467,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 			Super.NetworkProcess( e );
 			return;
-		}
+		} // of if ( ccmdName ~== "zc_update_panels_order" ) {}
 
 		if ( multiplayer && ccmdName ~== "zc_multiplayer_synctest" ) {
 			if ( e.args[ 1 ] != consoleplayer ) {
@@ -498,9 +498,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 			Super.NetworkProcess( e );
 			return;
-		}
+		} // of if ( multiplayer && ccmdName ~== "zc_multiplayer_synctest" ) {}
 
-		// Just a debug NetworkProcess() output.
+		// Just a debug NetworkProcess() output:
 		if ( isDebugLoggingLevel ) {
 			String debugstr = GetClassName() .. "::NetworkProcess(). CCMD: \"" .. ccmdName .. "\"";
 
@@ -561,7 +561,7 @@ class ZCheckerHandler: StaticEventHandler {
 					debugstr.AppendFormat( "\"" .. TEXTCOLOR_BLUE .. zcCCMDInfo.nonblockingCommands[ i ].GetClassName() .. LLCOLOR_DEBUG .. "\"; " );
 
 				ZCGlobal.ClearscopeLog( LL_Debug, debugstr .. "with total amount of " .. nonblockingCommandsAmount .. " commands." );
-			}
+			} // of if ( isDebugLoggingLevel ) {}
 
 			bool printUsage = true;
 			int curCCMDIndex = 0;
@@ -588,7 +588,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 			interceptNeteventsMode = 0;
 			zcCCMDInfo.nonblockingCommands.Clear();
-		}
+		} // of if ( nonblockingCommandsAmount != 0 ) {}
 
 		if ( e.name == "zcheckermap_recreate" || e.name == "zcheckermap_pause_level_part" )
 			interceptNeteventsMode = 0;

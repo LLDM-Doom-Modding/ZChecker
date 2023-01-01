@@ -34,7 +34,7 @@ class ZCConsoleClass abstract {
 	virtual String GetHelpString( void ) {
 		return TEXTCOLOR_RED .. "Wrong inheriting (\"" .. GetClassName() .. "::GetHelpString()\" isn't overrided).";
 	}
-} // of class ZCConsoleClass abstract play {}
+} // of class ZCConsoleClass abstract {}
 
 class ZCConsoleSeparator: ZCConsoleClass {
 	virtual String GetHelpSeparatorName( void ) {
@@ -188,7 +188,7 @@ class ZCTooltipClass: ZCConsoleClass {
 			String addtext = GetPlaintext();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\-----= =--------/\n" .. NORMAL .. addtext .. "\n";
+				helpCacheString = HEADER .. "|\n| " .. NORMAL .. addtext .. "\n";
 
 			addtext = GetTips();
 
@@ -260,7 +260,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltipClass ) );
 			//ZCTooltipClass( ZCGlobal.Get().zcHandler.LocateZCConsoleClass( tooltipClass ) );
 		}
-	} // of protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL, bool searchInHandler = false ) {}
+	} // of protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {}
 
 	// Call "SetupCCMDInterface()" here:
 	virtual void InitCCMD( void ) /*abstract*/ {
@@ -363,7 +363,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 
 		return outActor;
-	} // of protected play Actor LinetraceActor( void ) {}
+	} // of protected play Actor LinetraceActor( Actor from = NULL ) {}
 
 
 	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {
@@ -684,7 +684,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 
 		return classname;
-	} // of protected String ParseSpecialActorName( String classname ) {}
+	} // of protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {}
 
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
@@ -795,19 +795,7 @@ class ZCBaseInfoPanelPart abstract {
 	String optionSubmenuName;
 
 
-	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
-		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
-
-		panel.handler = globalHandler;
-		panel.OnCreate();
-		panel.playScoped = false;
-
-		return panel;
-	}
-
-	bool IsPlayScope( void ) {
-		return playScoped;
-	}
+	/* API section */
 
 	virtual void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_...";
@@ -818,10 +806,6 @@ class ZCBaseInfoPanelPart abstract {
 	ui virtual String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		return GetClassName() .. "::GetInfo(). Not overrided.";
 	}
-
-	/*play virtual String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
-		return GetClassName() .. "::GetInfo_play(). Not overrided.";
-	}*/
 
 	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
 		String label = "Submenu. ";
@@ -855,14 +839,26 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 
+	/* Internal section */
+
+	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
+		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
+
+		panel.handler = globalHandler;
+		panel.OnCreate();
+		panel.playScoped = false;
+
+		return panel;
+	}
+
+	bool IsPlayScope( void ) {
+		return playScoped;
+	}
+
 	protected PlayerPawn getItemPlayerOwner( Inventory item ) {
 		PlayerPawn ownerPlayer = PlayerPawn( item.Owner );
 
 		return ( ( ownerPlayer && ownerPlayer.player && ownerPlayer.player.ReadyWeapon )? ownerPlayer : NULL );
-	}
-
-	protected bool isItemPickedupWeapon( Actor item ) {
-		return !!( item is "StateProvider" && getItemPlayerOwner( Inventory( item ) ) );
 	}
 
 	// Translates a string into multiline text.
@@ -899,6 +895,20 @@ class ZCBaseInfoPanelPart abstract {
 class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
 	Array<String> playscopedInfo;
 
+
+	/* API section */
+
+	play virtual void OnCreate_play( void ) {
+		Super.OnCreate();
+	}
+
+	play virtual String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+		return RED .. GetClassName() .. "::GetInfo_play(). Not overrided.";
+	}
+
+
+	/* Internal section */
+
 	play static ZCBaseInfoPanelPart_PlayScope CreatePlayScope( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
 		ZCBaseInfoPanelPart_PlayScope panel = ZCBaseInfoPanelPart_PlayScope( new( panelclass ) );
 
@@ -912,14 +922,6 @@ class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
 		return panel;
 	}
 
-	play virtual void OnCreate_play( void ) {
-		Super.OnCreate();
-	}
-
-	play virtual String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
-		return RED .. GetClassName() .. "::GetInfo_play(). Not overrided.";
-	}
-
 	clearscope String InternalGetInfo_clearscope( int index ) {
 		return playscopedInfo[ index ];
 	}
@@ -927,4 +929,4 @@ class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
 	final override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		return RED .. GetClassName() .. "::GetInfo(). " .. FIRE .. "Override \"GetInfo_play()\" instead" .. RED .. ".";
 	}
-}
+} // of class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {}

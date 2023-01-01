@@ -116,7 +116,8 @@ class ZCAddCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_add",
 			"zcadd [self|weap[on]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddf [<pos>]",
-			"Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used."
+			"Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.",
+			'ZCTooltipAddCommand'
 		);
 	}
 
@@ -373,7 +374,8 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_infopanelcontrol",
 			"zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]",
-			"Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>."
+			"Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>.",
+			'ZCTooltipPanelsControlCommand'
 		);
 	}
 
@@ -458,7 +460,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 							ZCGlobal.Log( LL_Main, "Alias \"" .. zcAliasName .. "\" already exists and linked to the actor." );
 							continueFlag = false;
 						} else {
-							ZCGlobal.Log( LL_Detailed, "Relinking the \"" .. zcAliasName .. "\" alias (its original actor destroyed)." );
+							ZCGlobal.Log( LL_Detailed, "Relinking the \"" .. zcAliasName .. "\" alias (its original actor was destroyed)." );
 						}
 					} 
 
