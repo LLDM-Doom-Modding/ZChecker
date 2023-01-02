@@ -63,26 +63,19 @@ class ZCTooltipAddCommand: ZCTooltipClass {
 		);
 	}
 
+	override String GetTips() {
+		return HighlightText(
+			"Objects listed via \"`Czcaddlistget`x\" are just designated to the actors set (to the `2StatNum 100`x, actually). Some modifications may not use this rule."
+		);
+	}
+
 	override String GetExamples() {
 		return HighlightText(
 			"\"`Czcadd 3`x\" adds a linetarget actor to the third panel;\n" ..
 			"\"`Czcadd weap`x\"`d/`x\"`Czcaddweap`x\" adds a currently selected weapon to the first empty panel (if it exists);\n" ..
-			"\"`Czcadd self 1`x\"`d/`x\"`Czcaddself 1`x\" adds a player actor to the first panel."
-		);
-	}
-}
-
-class ZCTooltipPanelsControlCommand: ZCTooltipClass {
-	override String GetPlaintext() {
-		return HighlightText(
-			"`yNote`x: right now aliases system isn't convinience and I suggest not to use it."
-		);
-	}
-
-	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcpanel 1 m 3`x\" moves actor from the 1st panel to the 3rd panel;\n" ..
-			"\"`Czcpanel info 2`x\", \"`Czcpanel 2 info`x\" or \"`Czcinfo 2`x\" shows some info about specified (2nd) actor."
+			"\"`Czcadd self 1`x\"`d/`x\"`Czcaddself 1`x\" adds a player actor to the first panel;\n" ..
+			"\"`Czcaddlistget\" prints out a list with all actors on the level;\n"
+			"\"`Czcaddlistget 13 2\" adds a "
 		);
 	}
 }
@@ -127,6 +120,48 @@ class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
 			"\"`Czcsummon sta`2*`Cff`2:1`x\" will also summon a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
 			"\"`Czcsummon z`2*`Cman 3 f`x\" or \"`Czcsummon z`2*`Cman 3 friendly`x\" summons three `1friendly`x Zombiemen;\n" ..
 			"\"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" summons one faced from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value."
+		);
+	}
+}
+
+
+// Miscellaneous controlling CCMDs tooltips:
+
+class ZCTooltipThinkersControlCommand: ZCTooltipClass {
+	override String GetTips() {
+		return HighlightText( IndentNewlines(
+			"Use the \"`Czcthinkers <type> rm`x\" command `yonly if you know what you're doing`x; it can absolutely break levels and whole game up to the engine crash.\n" ..
+			"You may provide a direct StatNum value instead of its string alias.\n" ..
+			"All StatNums are conditional: some modification may use non-standard distribution on sets.\n" ..
+			"Internal thinkers cannot be controlled by name, but may be specified directly by index number.\n" ..
+			"\"`Czcaddlistget`x\" is just a convenience alias which uses current CCMD in question."
+		) );
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcthinkers l`x\"/\"`Czclistthinkers`x\" prints out a help list with all recognizable StatNum types aliases;\n" ..
+			"\"`Czcthinkers a l`x\"/\"`Czclistthinkers actors`x\" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);\n" ..
+			"\"`Czcthinkers 100 l`x\" does the same as a command above: an `2actors`x alias actually converts to the value `y100`x;\n" ..
+			"\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level;\n" ..
+			"\"`Czcthinkers static rm 1`x\" removes a 1st element in the set of the static thinkers (`~STAT_STATIC`~);\n" ..
+			"\"`Czcthinkers a add:2 17`x\" adds a 17th actor from the list to the second informational panel;\n" ..
+			"`~\"`Czcthinkers inv track`~\" and \"`Czcthinkers inv untrack`~\" starts/stops a supervision above the inventory thinkers (don't sure if it will be ever released someday).`x"
+		);
+	}
+}
+
+class ZCTooltipPanelsControlCommand: ZCTooltipClass {
+	override String GetPlaintext() {
+		return HighlightText(
+			"`yNote`x: right now aliases system isn't convinience and I suggest not to use it."
+		);
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcpanel 1 m 3`x\" moves actor from the 1st panel to the 3rd panel;\n" ..
+			"\"`Czcpanel info 2`x\", \"`Czcpanel 2 info`x\" or \"`Czcinfo 2`x\" shows some info about specified (2nd) actor."
 		);
 	}
 }

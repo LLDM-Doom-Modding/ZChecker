@@ -1,0 +1,835 @@
+//
+// Miscellaneous control CCMDs. Internal variables, thinkers, panels etc.
+//
+
+class ZCThinkersControlCommand: ZCConsoleCommand {
+	enum EThinkersControlStatNums {
+		TCSN_Error = -2,
+		TCSN_ListTypes = -1,
+		TCSN_First = 0
+	};
+
+	enum EThinkersControlActions {
+		TCA_Error = 0,
+		TCA_List,
+		TCA_PanelAdd,
+		TCA_RemoveThinker,
+		TCA_Track,
+		TCA_StopTracking
+	};
+
+	int zcStatNumType;
+	EThinkersControlActions zcAction;
+	int zcActionArg;
+	bool zcActionListThinkers;
+
+	int specifiedIndex;
+	class<Thinker> specifiedClass;
+
+	private String helpListStr;
+	private String helpListValuesColor;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_thinkerscontrol",
+			"zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panelpos>] <numindex>;zcthinkers <type> track|untrack;zclistthinkers <type>",
+			"Perform a simple operation on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel etc.",
+			'ZCTooltipThinkersControlCommand'
+		);
+	}
+
+	override bool HandleArguments() {
+		zcStatNumType = TCSN_Error;
+		zcAction = TCA_Error;
+
+		int ccmdArgsSize = ccmd.args.Size();
+
+		// List all of the possible types (help):
+		if ( ccmdArgsSize == 0 ) {
+			zcStatNumType = TCSN_ListTypes;
+			return true;
+		}
+
+		String origarg0 = ccmd.args[ 0 ];
+		origarg0.ToLower();
+
+		if ( ccmdArgsSize == 1 && ( origarg0 == "list" || origarg0 == "l" || origarg0 == "types" || origarg0 == "t" ) ) {
+			zcStatNumType = TCSN_ListTypes;
+			return true;
+		}
+
+
+		// Determining StatNum by string parameter:
+		String arg = origarg0;
+
+		if ( origarg0.Mid( origarg0.Length() - 1, 1 ) == "s" )
+			arg = origarg0.Left( origarg0.Length() - 1 ); // Truncating the "s" plural postfix.
+
+		if ( arg == "default" || arg == "def" || arg == "actor" || arg == "a" )
+			zcStatNumType = Thinker.STAT_DEFAULT;
+		else if ( arg == "decal" || arg == "dec" )
+			zcStatNumType = Thinker.STAT_DECAL;
+		else if ( arg == "autodecal" || arg == "decalsauto" || arg == "decalauto" || arg == "da" || arg == "ad" )
+			zcStatNumType = Thinker.STAT_AUTODECAL;
+		else if ( arg == "corpsepointer" || arg == "hexencorpse" )
+			zcStatNumType = Thinker.STAT_CORPSEPOINTER;
+		else if ( arg == "travelling" || arg == "trinv" )
+			zcStatNumType = Thinker.STAT_TRAVELLING;
+		else if ( arg == "static" || origarg0 == "st" || origarg0 == "s" )
+			zcStatNumType = Thinker.STAT_STATIC;
+		else if ( arg == "info" || arg == "information" )
+			zcStatNumType = Thinker.STAT_INFO;
+		else if ( arg == "scroller" )
+			zcStatNumType = Thinker.STAT_SCROLLER;
+		else if ( arg == "player" || arg == "pl" )
+			zcStatNumType = Thinker.STAT_PLAYER;
+		else if ( arg == "bosstarget" )
+			zcStatNumType = Thinker.STAT_BOSSTARGET;
+		else if ( arg == "lightning" )
+			zcStatNumType = Thinker.STAT_LIGHTNING;
+		else if ( arg == "decalthinker" || arg == "dect" )
+			zcStatNumType = Thinker.STAT_DECALTHINKER;
+		else if ( arg == "inventory" || arg == "inv" || arg == "i" )
+			zcStatNumType = Thinker.STAT_INVENTORY;
+		else if ( arg == "sectorlight" || arg == "seclight" || arg == "sl" )
+			zcStatNumType = Thinker.STAT_LIGHT;
+		else if ( arg == "sectorlighttransfer" || arg == "slt" )
+			zcStatNumType = Thinker.STAT_LIGHTTRANSFER;
+		else if ( arg == "earthquake" || arg == "quake" )
+			zcStatNumType = Thinker.STAT_EARTHQUAKE;
+		else if ( arg == "mapmarker" || arg == "marker" || arg == "automapmarker" || arg == "automap" )
+			zcStatNumType = Thinker.STAT_MAPMARKER;
+		else if ( arg == "dynlight" || arg == "dl" )
+			zcStatNumType = Thinker.STAT_DLIGHT;
+		else if ( arg == "sectoreffect" || arg == "seceffect" || arg == "sectormover" || arg == "secmover" || arg == "secmov" || arg == "se" || arg == "sm" )
+			zcStatNumType = Thinker.STAT_SECTOREFFECT;
+		else if ( arg == "actormover" || arg == "mover" )
+			zcStatNumType = Thinker.STAT_ACTORMOVER;
+		else if ( origarg0 == "acs" || arg == "acsscript" )
+			zcStatNumType = Thinker.STAT_SCRIPTS;
+		else if ( arg == "bot" )
+			zcStatNumType = Thinker.STAT_BOT;
+
+		else if ( str2int_Ptr( ccmd.args[ 0 ], +zcStatNumType ) ) {
+			bool inlimits = ( zcStatNumType >= 0 && zcStatNumType <= Thinker.MAX_STATNUM );
+
+			if ( !inlimits ) {
+				ZCGlobal.Log( LL_Main, "StatNum is out of limits. Must be in range [0; " .. Thinker.MAX_STATNUM .. "]." );
+				zcStatNumType = TCSN_Error;
+			}
+		}
+
+		if ( zcStatNumType == TCSN_Error )
+			return false;
+
+		if ( ccmdArgsSize == 1 ) {
+			zcAction = TCA_List;
+			return true;
+		}
+
+
+		// Action determining:
+		String actstr = ccmd.args[ 1 ];
+		actstr.ToLower();
+
+		specifiedClass = "";
+		specifiedIndex = -1;
+		zcActionArg = -1;
+		zcActionListThinkers = false;
+
+		String actstrLeft3 = actstr.Left( 3 );
+		int actstrLength = actstr.Length();
+
+		if ( ccmdArgsSize == 2 ) {
+			if ( actstr == "l" || actstr == "list" ) {
+				zcAction = TCA_List;
+			} else if ( actstr == "track" ) {
+				zcAction = TCA_Track;
+			} else if ( actstr == "untrack" ) {
+				zcAction = TCA_StopTracking;
+			}
+		}
+
+		if ( actstr == "rm" || actstrLeft3 == "rem" || actstrLeft3 == "del" ) {
+			if ( ccmdArgsSize == 3 ) {
+				arg = ccmd.args[ 2 ];
+
+				if ( !str2int_Ptr( arg, +specifiedIndex ) ) {
+					specifiedIndex = -1;
+					specifiedClass = arg;
+
+					if ( specifiedClass == NULL )
+						specifiedClass = ParseSpecialActorName( arg );
+
+					if ( specifiedClass == NULL )
+						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Cannot determine " .. LLCOLOR_MAIN .. "Thinker class name \"" .. TEXTCOLOR_BRICK .. arg .. LLCOLOR_MAIN .. "\"." );
+					else
+						zcAction = TCA_RemoveThinker;
+
+				} else if ( specifiedIndex <= 0 ) {
+					ZCGlobal.Log( LL_Main, "Index must be a positive integer." );
+				} else {
+					zcAction = TCA_RemoveThinker;
+				}
+			} else {
+				zcAction = TCA_RemoveThinker;
+				zcActionListThinkers = true;
+			}
+
+		} else if ( actstrLeft3 == "add" ) {
+			if ( ccmdArgsSize == 2 ) {
+				// "zcthinkers <type> add".
+				zcAction = TCA_PanelAdd;
+				zcActionListThinkers = true;
+
+			} else {
+				// "zcthinkers <type> add:<panelpos> <index>".
+				if ( actstrLength == 3 ) {
+					zcAction = TCA_PanelAdd;
+					zcActionArg = -1;
+
+				} else {
+					String char4 = actstr.Mid( 3, 1 );
+
+					if ( char4 == ":" || char4 == "=" ) {
+						if ( actstrLength > 4 ) {
+
+							if ( !str2int_Ptr( actstr.Mid( 4, actstrLength - 4 ), +zcActionArg ) ) {
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. actstr.Mid( 4, actstrLength - 4 ) .. "\"." );
+							} else if ( !checkTesteePlace( --zcActionArg ) ) {
+								ZCGlobal.Log( LL_Main, "Panel number " .. LLCOLOR_WARNING .. "must be in range" .. LLCOLOR_MAIN .. " [1.." .. MaxTestee .. "]." );
+							} else {
+								zcAction = TCA_PanelAdd;
+							}
+
+						} else {
+							zcActionArg = -1;
+							zcAction = TCA_PanelAdd;
+						}
+
+					} else {
+						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong \"add\" subcommand" .. LLCOLOR_MAIN .. ". Must be \"add\", \"add=<panelpos>\" or \"add:<panelpos>\"." );
+					}
+				}
+
+				if ( zcAction != TCA_Error ) {
+					if ( !str2int_Ptr( ccmd.args[ 2 ], +specifiedIndex ) || ( specifiedIndex <= 0 ) ) {
+						ZCGlobal.Log( LL_Main, "Index must be a positive integer." );
+						zcAction = TCA_Error;
+					}
+				}
+
+			} // of else of if ( ccmdArgsSize == 2 ) {}
+
+		} else if ( zcAction == TCA_Error ) {
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown action" .. LLCOLOR_MAIN .. " \"" .. actstr .. "\"." );
+		}
+
+		return ( zcAction != TCA_Error );
+	} // of override bool HandleArguments() {}
+
+
+	protected void AddListSection( String sectionname, String nodescolor ) {
+		helpListValuesColor = nodescolor;
+		helpListStr = helpListStr .. "\n" .. nodescolor .. "<" .. sectionname .. ">" .. CCMDCOLOR_DESC .. ": ";
+	}
+
+	protected void AddListValue( String node ) {
+		node.Replace( "|", TEXTCOLOR_DARKGRAY .. "|" .. helpListValuesColor );
+		node.Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. helpListValuesColor );
+		node.Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. helpListValuesColor );
+		helpListStr = helpListStr .. helpListValuesColor .. node .. CCMDCOLOR_DESC .. "; ";
+	}
+
+	private void CommandAddActorToPanel( void ) {
+		ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
+		Thinker curThinker;
+
+		if ( specifiedIndex != -1 ) {
+			do {
+				specifiedIndex--;
+				curThinker = it.Next( false );
+			} while ( curThinker && specifiedIndex > 0 );
+
+			if ( !curThinker ) {
+				ZCGlobal.Log( LL_Main, "Requested index " .. LLCOLOR_WARNING .. "is out-of-bounds" .. LLCOLOR_MAIN .. "." );
+
+			} else if ( curThinker is "Actor" ) {
+				// Find next free testee place ("-1" if not found):
+				if ( zcActionArg == -1 ) {
+					for ( int i = 0; i < MaxTestee && zcActionArg == -1; i++ )
+						if ( ccmd.handler.Testee[ i ].mo == NULL )
+							zcActionArg = i;
+				}
+
+				if ( zcActionArg == -1 ) {
+					ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set actor to list directly via \"zcaddlistget <...> [1.." .. MaxTestee .. "]\"." );
+				} else {
+					ZCheckerField field = ccmd.handler.Testee[ zcActionArg ];
+					field.mo = Actor( curThinker );
+
+					ZCGlobal.Log( LL_Detailed, "Added a world actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
+				} // of else of if ( zcActionArg == -1 ) {}
+
+			} else {
+				ZCGlobal.Log( LL_Main, "Thinker \"" .. curThinker.GetClassName() .. "\" isn't an Actor." );
+			}
+
+		} else {
+			ZCGlobal.Log( LL_Main, "Actor index to add " .. LLCOLOR_WARNING .. "not specified" .. LLCOLOR_MAIN .. "." );
+		}
+	} // of private void CommandAddActorToPanel( void ) {}
+
+	private void CommandRemoveFromWorld( void ) {
+		ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
+		Thinker curThinker;
+
+		if ( specifiedIndex != -1 ) {
+			do {
+				specifiedIndex--;
+				curThinker = it.Next( false );
+			} while ( curThinker && specifiedIndex > 0 );
+
+			if ( !curThinker )
+				ZCGlobal.Log( LL_Main, "Requested index " .. LLCOLOR_WARNING .. "is out-of-bounds" .. LLCOLOR_MAIN .. "." );
+			else
+				RemoveWorldThinker( curThinker );
+
+		} else if ( specifiedClass != NULL ) {
+			int destroyedAmount = 0;
+			curThinker = it.Next( false );
+
+			while ( curThinker ) {
+				if ( curThinker.GetClass() == specifiedClass ) {
+					RemoveWorldThinker( curThinker );
+					destroyedAmount++;
+				}
+
+				curThinker = it.Next( false );
+			}
+
+			ZCGlobal.Log( LL_Main, "Removed " .. destroyedAmount .. " thinkers of type \"" .. specifiedClass.GetClassName() .. "\"." );
+
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Index nor classname not specified." );
+		}
+	} // of private void CommandRemoveFromWorld( void ) {}
+
+
+	override void DoCommand() {
+		if ( zcStatNumType == TCSN_ListTypes ) {
+			helpListStr = helpListValuesColor = "";
+
+			AddListSection( "Actors", TEXTCOLOR_SAPPHIRE );
+			AddListValue( "a[ctors]|def[ault]" );
+			AddListValue( "dynlights|dl" );
+			AddListValue( "i[nv[entory]]" );
+			AddListValue( "mapmarkers|markers|automap[markers]" );
+			AddListValue( "bosstargets" );
+			AddListSection( "Static", TEXTCOLOR_TEAL );
+			AddListValue( "static|s" );
+			AddListValue( "info[rmation]" );
+			AddListValue( "decals|dec" );
+			AddListValue( "autodecals|decalsauto|da|ad" );
+			AddListValue( "corpsepointers|hexencorpses" );
+			AddListValue( "travelling|trinv" );
+			AddListSection( "Sectors", TEXTCOLOR_BRICK );
+			AddListValue( "sec[tor]mov[ers]|sec[tor]effects|sm|se" );
+			AddListValue( "sec[tor]lights|sl" );
+			AddListValue( "sectorlighttransfers|slt" );
+			AddListSection( "Other thinkers", TEXTCOLOR_DARKGREEN );
+			AddListValue( "acs|acsscripts" );
+			AddListValue( "lightnings" );
+			AddListValue( "pl[ayers]" );
+			AddListValue( "bots" );
+			AddListValue( "[actor]movers" );
+			AddListValue( "[earth]quakes" );
+			AddListValue( "scrollers" );
+			AddListValue( "decalthinkers|dect" );
+
+			console.printf( "Possible types (plural is optional): \n" .. helpListStr .. "\nOr a digit for the non-standard StatNums " ..
+							"(for user-defined: " .. TEXTCOLOR_SAPPHIRE .. Thinker.STAT_USER .. CCMDCOLOR_DESC .. ".." .. TEXTCOLOR_SAPPHIRE .. Thinker.STAT_USER_MAX .. CCMDCOLOR_DESC .. ")." );
+
+		} else if ( zcStatNumType >= TCSN_First && zcStatNumType <= Thinker.MAX_STATNUM ) {
+
+			switch ( zcAction ) {
+				case TCA_PanelAdd:
+					CommandAddActorToPanel();
+					break;
+
+				case TCA_RemoveThinker:
+					if ( zcActionListThinkers ) {
+						ZCGlobal.Log( LL_Main, "Actor to remove " .. LLCOLOR_WARNING .. "not specified" .. LLCOLOR_MAIN .. " either by index or by classname." );
+					} else {
+						CommandRemoveFromWorld();
+					}
+					break;
+
+				case TCA_List:
+					zcActionListThinkers = true;
+					break;
+
+				case TCA_Track:
+				case TCA_StopTracking:
+					ZCGlobal.Log( LL_Main, "[Tracking system not released yet]." );
+					break;
+
+				default:
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown action type " .. zcAction );
+					break;
+			}
+
+
+			if ( zcActionListThinkers ) {
+				ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
+				Thinker curThinker = NULL;
+				String curThinkerName = "";
+
+				uint thinkersAmount = 0;
+
+				while ( curThinker = it.Next( false ) ) {
+					thinkersAmount++;
+
+					// Check if Thinker class is accessible via ZScript (== is it internal):
+					curThinkerName = curThinker.GetClassName() .. "";
+					class<Object> accessTestClass = curThinkerName;
+
+					bool isInternalThinker = ( accessTestClass == NULL );
+
+
+					String extrainfo = "";
+
+					if ( curThinker is "Actor" ) {
+						Actor curActor = Actor( curThinker );
+
+						if ( curActor is "Inventory" && Inventory( curActor ).owner ) {
+							Actor invowner = Inventory( curActor ).owner;
+							extrainfo = "inv.owner is " .. LLCOLOR_MAIN .. invowner.GetClassName() ..
+								( invowner.bNOSECTOR? "(+NOSECTOR)" : TEXTCOLOR_DARKGRAY .. " at " .. ZCGlobal.squeezeVector3( invowner.pos ) );
+
+						} else if ( curActor.bNOSECTOR ) {
+							extrainfo = "(+NOSECTOR)";
+						} else {
+							extrainfo = "at " .. ZCGlobal.squeezeVector3( curActor.pos );
+						}
+					} // of if ( curThinker is "Actor" ) {}
+
+					class<Object> parentClass = curThinker.GetParentClass();
+					String parentClassName = parentClass.GetClassName();
+					accessTestClass = parentClassName;
+
+					if ( isInternalThinker )
+						curThinkerName = TEXTCOLOR_BLACK .. "[" .. TEXTCOLOR_TEAL .. curThinkerName .. TEXTCOLOR_BLACK .. "]";
+
+					if ( accessTestClass == NULL )
+						parentClassName = TEXTCOLOR_BLACK .. "[" .. TEXTCOLOR_TEAL .. parentClassName .. TEXTCOLOR_BLACK .. "]";
+
+					console.printf( TEXTCOLOR_DARKGRAY .. "%2i. " .. ( isInternalThinker? TEXTCOLOR_BRICK .. "%-21s" : TEXTCOLOR_WHITE .. "%-15s" )
+										.. TEXTCOLOR_GRAY .. ": %s" .. ( extrainfo != ""? TEXTCOLOR_DARKGRAY .. ", " .. extrainfo : "" ),
+									thinkersAmount, curThinkerName, parentClassName );
+				}
+
+				if ( zcAction == TCA_List )
+					console.printf( "Total " .. thinkersAmount .. " thinkers of enum type " .. zcStatNumType .. "." );
+
+			} // of if ( zcActionListThinkers ) {}
+
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). False StatNum " .. zcStatNumType );
+		}
+	}
+} // of class ZCThinkersControlCommand: ZCConsoleCommand {}
+
+
+class ZCInfoPanelControlAliasNode {
+	String aliasname;
+	Actor thing;
+}
+
+class ZCInfoPanelControlCommand: ZCConsoleCommand {
+	const GRAY = TEXTCOLOR_GRAY;
+	const DARKGRAY = TEXTCOLOR_DARKGRAY;
+
+	enum EPanelControlTypes {
+		PCT_Error = 0,
+		PCT_Save,
+		PCT_Load,
+		PCT_Move,
+		PCT_Copy,
+		PCT_Info
+	};
+
+	EPanelControlTypes zcPanelControlType;
+	int zcPos, zcNewPos;
+	String zcAliasName;
+
+	Array<ZCInfoPanelControlAliasNode> aliases;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_infopanelcontrol",
+			"zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]",
+			"Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>.",
+			'ZCTooltipPanelsControlCommand'
+		);
+	}
+
+	private int FindAliasIndex( String aliasname ) {
+		int outValue = -1;
+
+		if ( aliasname != "" ) {
+			for ( int i = 0; i < aliases.Size(); i++ ) {
+				if ( aliases[ i ].aliasname == aliasname ) {
+					outValue = i;
+					break;
+				}
+			}
+		}
+
+		return outValue;
+	} // of private int FindAliasIndex( String aliasname ) {}
+
+	override bool HandleArguments() {
+		zcPos = zcNewPos = -1;
+		zcAliasName = "";
+		zcPanelControlType = PCT_Error;
+
+		int ccmdArgsSize = ccmd.args.Size();
+		bool outValue = false;
+
+		if ( ccmdArgsSize == 1 && ccmd.args[ 0 ] ~== "info" ) {
+			zcPanelControlType = PCT_Info;
+			outValue = true;
+
+		} else if ( ccmdArgsSize == 2 ) {
+			zcPanelControlType = PCT_Info;
+
+			for ( int i = 0; i < 2; i++ ) {
+				if ( ccmd.args[ i ] ~== "info" && str2int_Ptr( ccmd.args[ i ^ 1 ], +zcPos ) ) {
+					outValue = checkTesteePlace( --zcPos );
+					break;
+				}
+			}
+
+		} else if ( ccmdArgsSize == 3 ) {
+			String argOperation = ccmd.args[ 1 ];
+			argOperation.ToLower();
+			bool parsingError = false;
+			bool parsePosArg = true;
+			bool parsePosNewArg = false;
+
+			if ( argOperation == "save" || argOperation == "store" || argOperation == "load" ) {
+				zcAliasName = ccmd.args[ 2 ];
+				zcPanelControlType = ( argOperation == "load"? PCT_Load : PCT_Save );
+			} else if ( argOperation == "move" || argOperation == "m" || argOperation == "copy" || argOperation == "c" ) {
+				parsePosNewArg = true;
+				zcPanelControlType = ( argOperation.Left( 1 ) == "c"? PCT_Copy : PCT_Move );
+			} else {
+				parsePosArg = false;
+			}
+
+			if ( parsePosArg ) {
+				if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
+					outValue = checkTesteePlace( --zcPos );
+
+				if ( parsePosNewArg && outValue && str2int_Ptr( ccmd.args[ 2 ], +zcNewPos ) )
+					outValue = checkTesteePlace( --zcNewPos );
+			}
+		}
+
+		return outValue;
+	}
+
+	override void DoCommand( void ) {
+		if ( zcPos != -1 ) {
+			ZCheckerHandler handler = ccmd.handler;
+
+			switch ( zcPanelControlType ) {
+			case PCT_Save:
+				if ( handler.Testee[ zcPos ].mo ) {
+					int index = FindAliasIndex( zcAliasName );
+					bool continueFlag = true;
+
+					if ( index != -1 ) {
+						if ( aliases[ index ].thing ) {
+							ZCGlobal.Log( LL_Main, "Alias \"" .. zcAliasName .. "\" already exists and linked to the actor." );
+							continueFlag = false;
+						} else {
+							ZCGlobal.Log( LL_Detailed, "Relinking the \"" .. zcAliasName .. "\" alias (its original actor was destroyed)." );
+						}
+					} 
+
+					if ( continueFlag ) {
+						ZCInfoPanelControlAliasNode aliasnode = ZCInfoPanelControlAliasNode( new( 'ZCInfoPanelControlAliasNode' ) );
+
+						aliasnode.aliasname = zcAliasName;
+						aliasnode.thing = handler.Testee[ zcPos ].mo;
+						aliases.Push( aliasnode );
+
+						ZCGlobal.Log( LL_Detailed, "Saved actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> as \"" .. zcAliasName .. "\"." );
+					}
+				} else {
+					ZCGlobal.Log( LL_Main, "No actor linked to the panel " .. ( zcPos + 1 ) );
+				}
+				break;
+			case PCT_Load:
+				int index = FindAliasIndex( zcAliasName );
+
+				if ( index != -1 ) {
+					if ( aliases[ index ].thing ) {
+						handler.Testee[ zcPos ].mo = aliases[ index ].thing;
+						ccmd.handler.UpdateInternalClassnameByField( zcPos );
+
+						ZCGlobal.Log( LL_Detailed, "Loaded actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> with alias \"" .. zcAliasName .. "\"." );
+					} else {
+						ZCGlobal.Log( LL_Detailed, "Cannot load, actor with alias \"" .. zcAliasName .. "\" destroyed." );
+					}
+				} else {
+					ZCGlobal.Log( LL_Main, "Alias name \"" .. zcAliasName .. "\" does not exist." );
+				}
+				break;
+			case PCT_Move:
+			case PCT_Copy:
+				if ( handler.Testee[ zcPos ].mo ) {
+					if ( zcNewPos != -1 )
+						handler.Testee[ zcNewPos ].mo = handler.Testee[ zcPos ].mo;
+
+					if ( zcPanelControlType == PCT_Move )
+						handler.Testee[ zcPos ].mo = NULL;
+
+					ccmd.handler.UpdateInternalClassnameByField( zcPos );
+					ccmd.handler.UpdateInternalClassnameByField( zcNewPos );
+				} else {
+					ZCGlobal.Log( LL_Main, "No actor in position " .. ( zcPos + 1 ) );
+				}
+				break;
+			case PCT_Info:
+				Actor mo = handler.Testee[ zcPos ].mo;
+
+				if ( mo ) {
+					ZCGlobal.Log( LL_Debug, "ccmd.handler.Testee[ " .. zcPos .. " ]: " .. handler.Testee[ zcPos ] .. "." );
+
+					ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "Actor in position " .. GRAY .. ( zcPos + 1 ) .. DARKGRAY .. " is " .. GRAY .. mo.GetClassName() .. DARKGRAY .. " <" .. mo .. ">" );
+
+					class parentClass = mo.GetParentClass();
+
+					while ( parentClass != NULL ) {
+						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  Inherited from " .. GRAY .. parentClass.GetClassName() .. DARKGRAY .. " <" .. parentClass .. ">" );
+						parentClass = parentClass.GetParentClass();
+					}
+
+				} else {
+					ZCGlobal.ClearscopeLog( LL_Main, "There's no actor in position " .. ( zcPos + 1 ) );
+				}
+				break;
+			default:
+				ZCGlobal.Log( LL_Emergency, "Unknown panel control type " .. zcPanelControlType .. " (with position " .. zcPos .. ")" );
+				break;
+			}
+		} else if ( zcPanelControlType == PCT_Info ) {
+			if ( aliases.Size() == 0 ) {
+				ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "No actors aliases created now" );
+			} else {
+				ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, TEXTCOLOR_SAPPHIRE .. "Actors aliases " .. GRAY .. "(total " .. aliases.Size() .. "): " );
+
+				for ( int i = 0; i < aliases.Size(); i++ ) {
+					if ( aliases[ i ].thing )
+						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" linked to the " .. GRAY .. aliases[ i ].thing.GetClassName() .. DARKGRAY .. " <" .. aliases[ i ].thing .. "> at pos " .. ZCGlobal.squeezeVector3( aliases[ i ].thing.pos ) );
+					else
+						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" is unlinked" );
+				}
+			}
+		} else {
+			ZCGlobal.Log( LL_Emergency, "Unknown panel control type " .. zcPanelControlType .. " (with no defined position)." );
+		}
+	}
+} // of class ZCInfoPanelControlCommand: ZCConsoleCommand {}
+
+
+
+class ZCVariablesControlCommand: ZCConsoleCommand {
+	const GRAY = TEXTCOLOR_GRAY;
+	const DARKGRAY = TEXTCOLOR_DARKGRAY;
+
+	enum EVarsControlTypes {
+		VCT_Error = 0,
+		VCT_Set,
+		VCT_Delete,
+		VCT_Info,
+		VCT_InfoForStdoutFile,
+		VCT_LoadFromFile
+	};
+
+	EVarsControlTypes zcSubcommand;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_variablescontrol",
+			"zcvarsctl set|new <$varname> <string_value_or_placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo] [stdout|porcelain];zcvarsctl loadfrom <included_filename>",
+			"Perform control on internal ZChecker class variables; identifiers must be started with \"$\" or \"%\".\n  Possible placeholders for the <string value> (first symbol must be \"%%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer)."
+		);
+	}
+
+	override bool HandleArguments() {
+		int ccmdArgsSize = ccmd.args.Size();
+		zcSubcommand = VCT_Error;
+
+		if ( ccmdArgsSize == 3 && ( ccmd.args[ 0 ] ~== "set" || ccmd.args[ 0 ] ~== "new" ) ) {
+			zcSubcommand = VCT_Set;
+		} else if ( ccmdArgsSize > 0 && ccmdArgsSize < 3 ) {
+			String argOperation = ccmd.args[ 0 ];
+			argOperation.ToLower();
+
+			if ( ccmdArgsSize > 1 && argOperation == "del" || argOperation == "delete" || argOperation == "rm" || argOperation == "rem" || argOperation == "remove" ) {
+				zcSubcommand = VCT_Delete;
+
+			} else if ( argOperation == "l" || argOperation == "list" || argOperation == "i" || argOperation == "info" ) {
+				if ( ccmdArgsSize == 2 ) {
+					argOperation = ccmd.args[ 1 ];
+					argOperation.ToLower();
+
+					if ( argOperation == "stdout" || argOperation == "porcelain" )
+						zcSubcommand = VCT_InfoForStdoutFile;
+				} else {
+					zcSubcommand = VCT_Info;
+				}
+
+			} else if ( argOperation == "loadfrom" ) {
+				zcSubcommand = VCT_LoadFromFile;
+			}
+		}
+
+		return ( zcSubcommand != VCT_Error );
+	}
+
+	override void DoCommand( void ) {
+		ZCGlobal global = ZCGlobal.Get();
+
+		switch ( zcSubcommand ) {
+			case VCT_Set:
+				String internalVarName = ccmd.args[ 1 ];
+				String newVarValue = ccmd.args[ 2 ];
+
+				if ( SetInternalZCheckerString( internalVarName, newVarValue ) )
+					ZCGlobal.Log( LL_Main, "Internal variable \"" .. TEXTCOLOR_LIGHTBLUE .. internalVarName.Left( 63 ) .. LLCOLOR_MAIN .. "\" is " .. TEXTCOLOR_GREEN .. "set" .. LLCOLOR_MAIN .. " to \"" .. GetInternalZCheckerString( internalVarName ) .. "\"." );
+				break;
+			case VCT_Delete:
+				String arg1 = ccmd.args[ 1 ];
+
+				if ( arg1 ~== "all" )
+					global.ClearAllZCheckerStrings();
+				else
+					global.DeleteZCheckerString( arg1 );
+
+				break;
+			case VCT_Info:
+				ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, TEXTCOLOR_SAPPHIRE .. "Internal variables " .. GRAY .. "(total " .. global.internalStrings.Size() .. "): " );
+
+				for ( int i = 0; i < global.internalStrings.Size(); i++ ) {
+					ZCInternalStringDictionaryCell curcell = global.internalStrings[ i ];
+					ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. curcell.key .. DARKGRAY .. "\" == \"" .. GRAY .. curcell.value .. DARKGRAY .. "\"." );
+				}
+				break;
+			case VCT_InfoForStdoutFile:
+				//String curtime = MSTime() .. "";
+				// It is advisable to use a "SystemTime.Format()".
+
+				console.printf( "\n# Configuration file automatically generated by ZChecker v" .. ZCheckerVersion .. ".\n\n" );
+
+				for ( int i = 0; i < global.internalStrings.Size(); i++ ) {
+					ZCInternalStringDictionaryCell curnode = global.internalStrings[ i ];
+
+					console.printf( curnode.key .. "=" .. curnode.value );
+				}
+
+				console.printf( "\n" );
+				break;
+			case VCT_LoadFromFile:
+				ZCGlobal.Log( LL_Main, DARKGRAY .. "(Load from file command not released yet)." );
+				break;
+			default:
+				ZCGlobal.Log( LL_Emergency, "Unknown control type " .. zcSubcommand .. "." );
+				break;
+		}
+	}
+
+} // of class ZCVariablesControlCommand: ZCConsoleCommand {}
+
+
+/*
+class ZCACSTrackingThinker: Thinker {
+	Array<Thinker> prevTicACS;
+
+	override void PostBeginPlay() {
+		ZCGlobal.Log( LL_Main, GetClassName() .. "::PostBeginPlay(). Warning: unstable and WIP command." );
+
+		//ChangeStatNum( STAT_USER );
+		prevTicACS.Clear();
+
+		ThinkerIterator it = ThinkerIterator.Create( "Thinker", STAT_SCRIPTS );
+		Thinker curThinker;
+
+		while ( curThinker = it.Next( true ) )
+			prevTicACS.Push( curThinker );
+
+		ZCGlobal.Log( LL_Main, GetClassName() .. "::PostBeginPlay(). ACS thinkers amount: " .. prevTicACS.Size() );
+
+		Super.PostBeginPlay();
+	}
+
+	override void Tick() {
+		ThinkerIterator it = ThinkerIterator.Create( "Thinker", STAT_SCRIPTS );
+		Thinker curThinker;
+
+		int startedACSAmount = 0;
+		int finishedACSAmount = 0;
+
+		int prevTicACSIndex = 0;
+
+		while ( curThinker = it.Next( true ) ) {
+			if ( prevTicACSIndex >= prevTicACS.Size() ) {
+				prevTicACS.Push( curThinker );
+				startedACSAmount++;
+			} else if ( curThinker != prevTicACS[ prevTicACSIndex ] ) {
+				prevTicACS.Delete( prevTicACSIndex, 1 );
+				finishedACSAmount++;
+				prevTicACSIndex--;
+			}
+
+			prevTicACSIndex++;
+		}
+
+		if ( startedACSAmount != 0 || finishedACSAmount != 0 )
+			ZCGlobal.Log( LL_Main, "ACS tracker. Started " .. startedACSAmount .. ", finished " .. finishedACSAmount );
+
+		Super.Tick();
+	}
+}
+
+class ZCACSTrackingCommand: ZCConsoleCommand {
+	int zcACSTrackingEnable;
+	ZCACSTrackingThinker tracker;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_acstracking",
+			"zcacstrack <bool: 0/false/reset or 1/true/set>",
+			"Tracks ACS calls (as much as possible). " .. TEXTCOLOR_RED .. "Turned out to be an unnecessary command because there's only one ACS Thinker for all scripts."
+		);
+	}
+
+	override bool HandleArguments() {
+		return ( initCCMD.args.Size() == 1 ) && ( -1 != ( zcACSTrackingEnable = getBoolArg( 0 ) ) );
+	}
+
+	override void DoCommand() {
+		//ZCACSTrackingThinker( ThinkerIterator.Create( "ZCACSTrackingThinker", STAT_SCRIPTS ).Next() );
+
+		if ( zcACSTrackingEnable == 0 && tracker ) {
+			tracker.Destroy();
+		} else if ( zcACSTrackingEnable == 1 && !tracker ) {
+			tracker = new( "ZCACSTrackingThinker" );
+		}
+	}
+} // of class ZCACSTrackingCommand: ZCConsoleCommand {}
+*/

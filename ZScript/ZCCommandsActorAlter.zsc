@@ -239,14 +239,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thingname );
 				break;
 			case AC_Destroy:
-				if ( thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( "destroying live player" ) ) {
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKRED .. "It's better not to destroy an acting player " .. ( thing.PlayerNumber() + 1 ) .. LLCOLOR_MAIN .. ". " .. LLCOLOR_WARNING .. "Terminated" .. LLCOLOR_MAIN .. "." );
-				} else {
-					thing.ClearCounters();
-					thing.Destroy();
-
+				if ( RemoveWorldThinker( thing ) )
 					ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. thingname );
-				}
 				break;
 			default:
 				ZCGlobal.Log( LL_Emergency, "Unknown action id \"" .. actoraction .. "\" for thing " .. thingname );

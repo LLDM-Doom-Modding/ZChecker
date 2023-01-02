@@ -6,9 +6,9 @@ alias zchelp "netevent zc_help@@%1"
 alias zcadd "netevent zc_add@@%1@@%2"
 alias zcaddself "zcadd self %1"
 alias zcaddweap "zcadd weapon %1"
-alias zcaddweapon "zcadd weapon %1"
 alias zcaddf "zcadd force %1"
 alias zcaddforce "zcadd force %1"
+alias zcaddlistget "zcthinkers actors add:%2 %1"
 
 alias zcrem "netevent zc_rem@@%1"
 alias zcclear "zcrem c:%1"
@@ -30,19 +30,21 @@ alias zcbud "netevent zc_buddha@@%1@@%2"
 alias zcgive "netevent zc_give@@%1@@%2@@%3"
 alias zctake "netevent zc_take@@%1@@%2@@%3"
 
-alias zcsummon "netevent zc_summon@@%1@@%2@@%3"
-alias zccopysummon "zcsummon $savedclass %1 %2"
-alias zccopyclass "zcvarsctl set $savedclass $linetarget"
-
 alias zcact "netevent zc_actoraction@@%1@@%2"
 
+alias zcsummon "netevent zc_summon@@%1@@%2@@%3"
 
-// ZChecker information and internal control:
+alias zccopyclass "zcvarsctl set $savedclass $linetarget"
+alias zccopysummon "zcsummon $savedclass %1 %2"
+
+
+// ZChecker information, internal and global control:
 alias zcpanel "netevent zc_infopanelcontrol@@%1@@%2@@%3"
-alias zcinfo "zcpanel info %1"
 alias zcvarsctl "netevent zc_variablescontrol@@%1@@%2@@%3"
-alias zclistthinkers "netevent zc_listthinkers@@%1"
-//alias zcacstrack "netevent zc_acstracking@@%1"
+alias zcthinkers "netevent zc_thinkerscontrol@@%1@@%2@@%3"
+
+alias zcinfo "zcpanel info %1"
+alias zclistthinkers "zcthinkers %1 list"
 
 
 // The Everything map aliases:
@@ -52,6 +54,9 @@ alias zcem "zcev %1 %2 %3 %4"
 alias zcevre "zcev recreate"
 alias zcevg "zcev goto %1"
 
+
+// Deprecated/experimental/etc.:
+//alias zcacstrack "netevent zc_acstracking@@%1"
 //alias zcarena "netevent zc_arena@@%1@@%2@@%3@@%4"
 //alias zcar "zcarena %1 %2 %3 %4"
 

@@ -686,6 +686,25 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return classname;
 	} // of protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {}
 
+	// Less or greater safe wrapper around a "Thinker::Destroy()":
+	protected bool RemoveWorldThinker( Thinker th ) {
+		String thinkerName = th.GetClassName();
+
+		Actor thing = Actor( th );
+
+		if ( thing && thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( "destroying live player" ) ) {
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKRED .. "It's better not to destroy a live player " .. ( thing.PlayerNumber() + 1 ) .. LLCOLOR_MAIN .. ". " .. LLCOLOR_WARNING .. "Terminated" .. LLCOLOR_MAIN .. "." );
+		} else {
+			if ( thing )
+				thing.ClearCounters();
+
+			th.Destroy();
+			return true;
+		}
+
+		return false;
+	} // of protected void RemoveWorldThinker( Thinker th ) {}
+
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
 			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );

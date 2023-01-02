@@ -15,8 +15,8 @@ version "3.3.0"
 // Console classes and CCMDs:
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
-#include "ZScript/ZCCommandsInfo.zsc"
 #include "ZScript/ZCCommandsMap.zsc"
+#include "ZScript/ZCCommandsMiscControl.zsc"
 #include "ZScript/ZCTooltipClasses.zsc"
 
 // Information panels classes:

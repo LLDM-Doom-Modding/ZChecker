@@ -1,4 +1,6 @@
+//
 // Handling of the "zcev*" commands:
+//
 
 class ZCEvmapCommand: ZCConsoleCommand {
 	protected void InitEvmapCCMD( String helpheader, String helpdesc, int extraflags = CCF_None, class<ZCTooltipClass> helptooltip = NULL ) {
