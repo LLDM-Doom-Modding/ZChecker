@@ -277,16 +277,23 @@ class ZCGlobal: Thinker {
 	/* === General (other) utils === */
 
     static clearscope String squeezeVector2( vector2 vec ) {
-        return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ")";
+		return String.Format( "(%i, %i)", int( vec.x ), int( vec.y ) );
     }
 
-	static clearscope String squeezeVector2dec2( vector2 vec ) {
-		return String.Format( "(%.2f, %.2f)", vec.x, vec.y );
+	static clearscope String squeezeVector2dec( vector2 vec, int decimals = 2 ) {
+		String formatted = String.Format( "(%%.%if, %%.%if)", decimals, decimals );
+		return String.Format( formatted, vec.x, vec.y );
 	}
 
     static clearscope String squeezeVector3( vector3 vec ) {
-        return "(" .. int( vec.x ) .. ", " .. int( vec.y ) .. ", " .. int( vec.z ) .. ")";
+		return String.Format( "(%i, %i, %i)", int( vec.x ), int( vec.y ), int( vec.z ) );
     }
+
+	static clearscope String squeezeVector3dec( vector3 vec, int decimals = 2 ) {
+		String formatted = String.Format( "(%%.%if, %%.%if, %%.%if)", decimals, decimals, decimals );
+		return String.Format( formatted, vec.x, vec.y, vec.z );
+	}
+
 
 	static double, double vector3ToAnglePitch( vector3 vec ) {
 		return atan2( vec.y, vec.x ), -90.0 * sin( vec.z );
@@ -318,7 +325,8 @@ class ZCGlobal: Thinker {
 
 		uint len = str.Length() - 1;
 		code = str.CharCodeAt( len );
-		while ( ( code == 9 || code == 11 || code == 32 ) /* && ( len + 1 ) */ ) {
+
+		while ( ( code == 9 || code == 11 || code == 32 ) ) {
 			str = str.Left( len );
 			len = str.Length() - 1;
 			code = str.CharCodeAt( len );

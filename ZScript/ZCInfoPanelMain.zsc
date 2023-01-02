@@ -87,7 +87,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 		outStr = outStr .. TEAL .. "Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
-				String.Format( "Vel: (%.2f, %.2f, %.2f)", thing.vel.x, thing.vel.y, thing.vel.z ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
+				"Vel: " .. ZCGlobal.squeezeVector3dec( thing.vel, 2 ) .. ";\n  (len " .. thing.vel.length() .. ");\n" .. TEAL ..
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".", thing.radius, thing.height );
 
 
@@ -564,7 +564,7 @@ class ZCSpritesInfoPanel: ZCBaseInfoPanelPart {
 		outStr.AppendFormat( DARKGRAY .. "Scale " .. DARKGREEN .. "(%+2.3f, %+2.3f)\n" .. DARKGRAY, thing.scale.x, thing.scale.y );
 		outStr.AppendFormat( DARKGRAY .. "Size (" .. GRAY .. "%2.3f" .. BLUE .. "x" .. GRAY .. "%2.3f" .. DARKGRAY .. "); \nReal " .. textureRealSizeX .. BLUE .. "x" .. DARKGRAY .. textureRealSizeY .. " pixels.\n", textureSize.x, textureSize.y );
 		outStr.AppendFormat( GRAY .. ( textureName.Mid( 5, 1 ) == "0"? "Faced" : "Rotor" ) .. DARKGRAY .. " ID %i, TranslID %i;\n", int( thing.sprite ), thing.Translation );
-		outStr.AppendFormat( DARKGRAY .. "Txtr ofs " .. ZCGlobal.squeezeVector2dec2( textureOffset ) .. ";\nbool %i vec2 " .. ZCGlobal.squeezeVector2dec2( textureVec2 ) .. ".", textureBool );
+		outStr.AppendFormat( DARKGRAY .. "Txtr ofs " .. ZCGlobal.squeezeVector2dec( textureOffset, 2 ) .. ";\nbool %i vec2 " .. ZCGlobal.squeezeVector2dec( textureVec2, 2 ) .. ".", textureBool );
 
 		return outStr;
 	}

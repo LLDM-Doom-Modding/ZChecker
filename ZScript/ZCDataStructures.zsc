@@ -76,6 +76,9 @@ class ZCheckerField {
 		return newfield;
 	}
 
+
+	/* Multiplayer-related section */
+
 	private String mixStrings( String a, String b ) {
 		String outstr = "";
 		int alen = a.Length();
@@ -151,6 +154,7 @@ class ZCInfoPanelNodesKeeper {
 		if ( saveepanel.IsPlayScope() )
 			playnodes.Push( newnode );
 	}
+
 	int Size( void ) {
 		return nodes.Size();
 	}

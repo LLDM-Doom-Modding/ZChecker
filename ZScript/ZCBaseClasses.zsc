@@ -30,13 +30,16 @@ class ZCConsoleClass abstract {
 		helpCacheString = "";
 	}
 
-	// A wrapper which unites aliases and description to one nice string:
+	// A wrapper which unites anything related to quick help to the one nice
+	//string. In most cases already overrided in inherited default classes.
 	virtual String GetHelpString( void ) {
 		return TEXTCOLOR_RED .. "Wrong inheriting (\"" .. GetClassName() .. "::GetHelpString()\" isn't overrided).";
 	}
 } // of class ZCConsoleClass abstract {}
 
 class ZCConsoleSeparator: ZCConsoleClass {
+	// In fact it doesn't make sense to inherit from this class right now;
+	//internally only a base "ZCConsoleSeparator" class is used.
 	virtual String GetHelpSeparatorName( void ) {
 		return "";
 	}
@@ -80,6 +83,15 @@ class ZCTooltipClass: ZCConsoleClass {
 	const TABSYMBOL	= "	";
 	const LISTPREFIX= " " .. TEXTCOLOR_BLACK .. "-" .. LLCOLOR_MAIN .. " ";
 
+	// Returns a string with all valid special constructions replaced to the 
+	//corresponding colors. Same argument may be used twice to cancel a color.
+	//Lettercase doesn't matter.
+	//  "`0", "`n", "`x", "`-": normal color;
+	//  "`c", "`@": command highlight color;
+	//  "`1", "`y", "`!": paramount (yellow) highlighting;
+	//  "`2", "`g": secondary (green) highlighting;
+	//  "`3", "`d", "`~": shadowing (dark text);
+	//  "`a", "`h`": header highlighting.
 	String HighlightText( String origstr ) {
 		String outstr = "";
 		int prevCharIndexStart = 0;
@@ -144,6 +156,7 @@ class ZCTooltipClass: ZCConsoleClass {
 		return outstr;
 	} // of String HighlightText( String origstr ) {}
 
+	// Returns a string with tabs replaced to the list prefixes.
 	String IndentTabList( String str ) {
 		if ( str.CharCodeAt( 0 ) == 0x09 )
 			str = LISTPREFIX .. str;
@@ -153,6 +166,7 @@ class ZCTooltipClass: ZCConsoleClass {
 		return str;
 	}
 
+	// Returns a string with tabs replaced to the spaces.
 	String IndentTabs( String str ) {
 		if ( str.CharCodeAt( 0 ) == 0x09 )
 			str = "  " .. str;
@@ -160,8 +174,9 @@ class ZCTooltipClass: ZCConsoleClass {
 		str.Replace( TABSYMBOL, "  " );
 
 		return str;
-	} // of String IndentTabs( String origstr ) {}
+	}
 
+	// Returns a string with an indentation after newlines.
 	String IndentNewlines( String str ) {
 		if ( str.CharCodeAt( 0 ) != " " )
 			str = "  " .. str;
@@ -169,9 +184,10 @@ class ZCTooltipClass: ZCConsoleClass {
 		str.Replace( "\n", "\n  " );
 
 		return str;
-	} // of String IndentNewlines( String origstr ) {}
+	}
 
 
+	// Main virtual methods:
 	virtual String GetPlaintext( void ) {
 		return "";
 	}
@@ -182,6 +198,7 @@ class ZCTooltipClass: ZCConsoleClass {
 		return "";
 	}
 
+	// Default help string generator:
 	override String GetHelpString( void ) {
 		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
@@ -220,6 +237,7 @@ struct ZCheckerCCMDInterfaceData {
 	ZCTooltipClass helpTooltip;
 };
 
+// Main CCMD base class.
 class ZCConsoleCommand: ZCConsoleClass abstract play {
 	enum EConsoleCommandFlags {
 		// <enum EConsoleCommandFlags {}>.
@@ -247,7 +265,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	EClassnameParseStatus classnameParseStatus;
 
+	// Main internal interface. Unparsed arguments etc. are stored here.
 	ZCheckerCCMDInfo ccmd;
+
+	// External interface. ZChecker handler works in general only with this structure:
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
@@ -303,8 +324,9 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			printInitMissedWarning( "help description" );
 			ccmdInterfaceData.helpDesc = "No help description provided in the " .. GetClassName() .. "::InitCCMD().";
 		}
-	} // of override void OnLoad( void ) {}
+	} // of final override void OnLoad( void ) {}
 
+	// Returns "true" if an arg is in the range [0..MaxTestee]:
 	protected clearscope bool checkTesteePlace( int place ) {
 		return ( place >= 0 && place < MaxTestee );
 	}
@@ -335,7 +357,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return isInteger;
 	}
 
-	// Gets a linetarget actor:
+	// Returns a linetarget actor (if one exists):
 	protected play Actor LinetraceActor( Actor from = NULL ) {
 		Actor outActor = NULL;
         FLineTraceData remoteRay;
@@ -366,6 +388,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	} // of protected play Actor LinetraceActor( Actor from = NULL ) {}
 
 
+	// Returns a position parse status depending of the string argument provided:
 	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {
 		EPositionParseStatus newTesteePosStatus = PPS_Error;
 		newTestee = NULL;
@@ -418,12 +441,20 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 
 		return argxtype;
-	}
+	} // of protected int getBoolArg( uint argnum ) {}
 
 	protected String GetInternalZCheckerString( String zcname ) {
 		return ZCGlobal.Get().GetZCheckerString( zcname );
 	}
 
+	// Extremely long auxiliary method which tries to parse an arg string as:
+	//  1) Internal variable ("$last", ...);
+	//	2) Placeholder ("%target", ...);
+	//	3) Actor mask ("z*man", ...; <parentfilter> may be applied).
+	//
+	// Right now it saves result status into the "classnameParseStatus" field. 
+	//Potentially will be moved somewhere else and rewritten for wider 
+	//functionality.
 	protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {
 		classnameParseStatus = CPS_Default;
 
@@ -686,6 +717,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return classname;
 	} // of protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {}
 
+
 	// Less or greater safe wrapper around a "Thinker::Destroy()":
 	protected bool RemoveWorldThinker( Thinker th ) {
 		String thinkerName = th.GetClassName();
@@ -858,27 +890,7 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 
-	/* Internal section */
-
-	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
-		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
-
-		panel.handler = globalHandler;
-		panel.OnCreate();
-		panel.playScoped = false;
-
-		return panel;
-	}
-
-	bool IsPlayScope( void ) {
-		return playScoped;
-	}
-
-	protected PlayerPawn getItemPlayerOwner( Inventory item ) {
-		PlayerPawn ownerPlayer = PlayerPawn( item.Owner );
-
-		return ( ( ownerPlayer && ownerPlayer.player && ownerPlayer.player.ReadyWeapon )? ownerPlayer : NULL );
-	}
+	/* API utils section */
 
 	// Translates a string into multiline text.
 	protected String BreakPanelLines( String instr, String prefix = "  ", uint textwidth = -1 ) {
@@ -908,6 +920,29 @@ class ZCBaseInfoPanelPart abstract {
 
 		if ( lastchar == "\n" )
 			str = str.Left( str.Length() - 1 );
+	}
+
+
+	/* Internal section */
+
+	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
+		ZCBaseInfoPanelPart panel = ZCBaseInfoPanelPart( new( panelclass ) );
+
+		panel.handler = globalHandler;
+		panel.OnCreate();
+		panel.playScoped = false;
+
+		return panel;
+	}
+
+	bool IsPlayScope( void ) {
+		return playScoped;
+	}
+
+	protected PlayerPawn getItemPlayerOwner( Inventory item ) {
+		PlayerPawn ownerPlayer = PlayerPawn( item.Owner );
+
+		return ( ( ownerPlayer && ownerPlayer.player && ownerPlayer.player.ReadyWeapon )? ownerPlayer : NULL );
 	}
 } // of class ZCBaseInfoPanelPart abstract {}
 
@@ -946,6 +981,8 @@ class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {
 	}
 
 	final override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::GetInfo() called instead of \"GetInfo_play()\"." );
+
 		return RED .. GetClassName() .. "::GetInfo(). " .. FIRE .. "Override \"GetInfo_play()\" instead" .. RED .. ".";
 	}
 } // of class ZCBaseInfoPanelPart_PlayScope: ZCBaseInfoPanelPart abstract play {}
