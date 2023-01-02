@@ -74,8 +74,8 @@ class ZCTooltipAddCommand: ZCTooltipClass {
 			"\"`Czcadd 3`x\" adds a linetarget actor to the third panel;\n" ..
 			"\"`Czcadd weap`x\"`d/`x\"`Czcaddweap`x\" adds a currently selected weapon to the first empty panel (if it exists);\n" ..
 			"\"`Czcadd self 1`x\"`d/`x\"`Czcaddself 1`x\" adds a player actor to the first panel;\n" ..
-			"\"`Czcaddlistget\" prints out a list with all actors on the level;\n"
-			"\"`Czcaddlistget 13 2\" adds a "
+			"\"`Czcaddlistget`x\" prints out a list with all actors on the level;\n" ..
+			"\"`Czcaddlistget 13 2`x\" adds a 13th element from the list to the second informational panel."
 		);
 	}
 }
@@ -133,8 +133,8 @@ class ZCTooltipThinkersControlCommand: ZCTooltipClass {
 			"Use the \"`Czcthinkers <type> rm`x\" command `yonly if you know what you're doing`x; it can absolutely break levels and whole game up to the engine crash.\n" ..
 			"You may provide a direct StatNum value instead of its string alias.\n" ..
 			"All StatNums are conditional: some modification may use non-standard distribution on sets.\n" ..
-			"Internal thinkers cannot be controlled by name, but may be specified directly by index number.\n" ..
-			"\"`Czcaddlistget`x\" is just a convenience alias which uses current CCMD in question."
+			"\"`Czcaddlistget`x\" is just a convenience alias which uses current CCMD in question;\n" ..
+			"Internal thinkers may be controlled by name if an argument \"rm:internal\" or its analogue is provided. But they may be freely specified in default \"rm\" by their index number in list."
 		) );
 	}
 
@@ -145,8 +145,8 @@ class ZCTooltipThinkersControlCommand: ZCTooltipClass {
 			"\"`Czcthinkers 100 l`x\" does the same as a command above: an `2actors`x alias actually converts to the value `y100`x;\n" ..
 			"\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level;\n" ..
 			"\"`Czcthinkers static rm 1`x\" removes a 1st element in the set of the static thinkers (`~STAT_STATIC`~);\n" ..
-			"\"`Czcthinkers a add:2 17`x\" adds a 17th actor from the list to the second informational panel;\n" ..
-			"`~\"`Czcthinkers inv track`~\" and \"`Czcthinkers inv untrack`~\" starts/stops a supervision above the inventory thinkers (don't sure if it will be ever released someday).`x"
+			"\"`Czcthinkers a add`g:2`C 17`x\" adds a 17th actor from the list to the second informational panel;\n" ..
+			"\"`Czcthinkers sl rm`2:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~)."
 		);
 	}
 }

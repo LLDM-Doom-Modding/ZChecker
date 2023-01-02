@@ -84,7 +84,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			console.printf( TEXTCOLOR_SAPPHIRE .. "| " .. LLCOLOR_MAIN .. helpstr );
 
 			if ( infoclass.ccmdInterfaceData.helpTooltip ) {
-				console.printf( infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
+				console.printf( TEXTCOLOR_SAPPHIRE .. "|\n| ".. infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
 				console.printf( TEXTCOLOR_SAPPHIRE .. "\\-= =-------------\n| " .. LLCOLOR_MAIN .. helpstr .. TEXTCOLOR_SAPPHIRE .. "\n/--=--=--=--=--=--\n\n" );
 			}
 		} else {

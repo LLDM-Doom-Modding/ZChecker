@@ -44,7 +44,7 @@ alias zcvarsctl "netevent zc_variablescontrol@@%1@@%2@@%3"
 alias zcthinkers "netevent zc_thinkerscontrol@@%1@@%2@@%3"
 
 alias zcinfo "zcpanel info %1"
-alias zclistthinkers "zcthinkers %1 list"
+alias zclistthinkers "zcthinkers %1"
 
 
 // The Everything map aliases:

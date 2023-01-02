@@ -14,6 +14,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		TCA_List,
 		TCA_PanelAdd,
 		TCA_RemoveThinker,
+		TCA_RemoveThinkerRawName,
 		TCA_Track,
 		TCA_StopTracking
 	};
@@ -25,6 +26,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 	int specifiedIndex;
 	class<Thinker> specifiedClass;
+	String specifiedClassRawString;
 
 	private String helpListStr;
 	private String helpListValuesColor;
@@ -133,12 +135,10 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		actstr.ToLower();
 
 		specifiedClass = "";
+		specifiedClassRawString = "";
 		specifiedIndex = -1;
 		zcActionArg = -1;
 		zcActionListThinkers = false;
-
-		String actstrLeft3 = actstr.Left( 3 );
-		int actstrLength = actstr.Length();
 
 		if ( ccmdArgsSize == 2 ) {
 			if ( actstr == "l" || actstr == "list" ) {
@@ -150,66 +150,84 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 			}
 		}
 
+		int colonIndex = actstr.IndexOf( ":" );
+
+		if ( colonIndex == -1 )
+			colonIndex = actstr.IndexOf( "=" );
+
+		if ( colonIndex != -1 ) {
+			arg = actstr.Mid( colonIndex + 1, actstr.Length() - colonIndex - 1 );
+			actstr.Truncate( colonIndex );
+		} else {
+			arg = "";
+		}
+
+		String actstrLeft3 = actstr.Left( 3 );
+
+
 		if ( actstr == "rm" || actstrLeft3 == "rem" || actstrLeft3 == "del" ) {
 			if ( ccmdArgsSize == 3 ) {
+				// Command: "zcthinkers <type> rem:i <index|class>".
+				if ( arg == "i" || arg.Left( 3 ) == "int" || arg == "r" || arg == "raw" )
+					zcActionArg = 1;
+
 				arg = ccmd.args[ 2 ];
 
 				if ( !str2int_Ptr( arg, +specifiedIndex ) ) {
+					// Removing thinker by classname:
 					specifiedIndex = -1;
-					specifiedClass = arg;
 
-					if ( specifiedClass == NULL )
-						specifiedClass = ParseSpecialActorName( arg );
+					if ( zcActionArg != 1 ) {
+						specifiedClass = arg;
 
-					if ( specifiedClass == NULL )
-						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Cannot determine " .. LLCOLOR_MAIN .. "Thinker class name \"" .. TEXTCOLOR_BRICK .. arg .. LLCOLOR_MAIN .. "\"." );
-					else
-						zcAction = TCA_RemoveThinker;
+						if ( specifiedClass == NULL )
+							specifiedClass = ParseSpecialActorName( arg );
+
+						if ( specifiedClass == NULL )
+							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Cannot determine " .. LLCOLOR_MAIN .. "Thinker class name \"" .. TEXTCOLOR_BRICK .. arg .. LLCOLOR_MAIN .. "\"." );
+						else
+							zcAction = TCA_RemoveThinker;
+					} else {
+						specifiedClassRawString = arg;
+						zcAction = TCA_RemoveThinkerRawName;
+					}
 
 				} else if ( specifiedIndex <= 0 ) {
+					// Wrong index specified:
 					ZCGlobal.Log( LL_Main, "Index must be a positive integer." );
+
 				} else {
+					// Removing thinker by index:
 					zcAction = TCA_RemoveThinker;
 				}
+
 			} else {
 				zcAction = TCA_RemoveThinker;
 				zcActionListThinkers = true;
 			}
 
-		} else if ( actstrLeft3 == "add" ) {
+		} else if ( actstr == "add" ) {
 			if ( ccmdArgsSize == 2 ) {
 				// "zcthinkers <type> add".
 				zcAction = TCA_PanelAdd;
 				zcActionListThinkers = true;
 
 			} else {
-				// "zcthinkers <type> add:<panelpos> <index>".
-				if ( actstrLength == 3 ) {
+				if ( arg == "" ) {
+					// "zcthinkers <type> add <index>" or "zcthinkers <type> add: <index>".
 					zcAction = TCA_PanelAdd;
 					zcActionArg = -1;
 
 				} else {
-					String char4 = actstr.Mid( 3, 1 );
-
-					if ( char4 == ":" || char4 == "=" ) {
-						if ( actstrLength > 4 ) {
-
-							if ( !str2int_Ptr( actstr.Mid( 4, actstrLength - 4 ), +zcActionArg ) ) {
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. actstr.Mid( 4, actstrLength - 4 ) .. "\"." );
-							} else if ( !checkTesteePlace( --zcActionArg ) ) {
-								ZCGlobal.Log( LL_Main, "Panel number " .. LLCOLOR_WARNING .. "must be in range" .. LLCOLOR_MAIN .. " [1.." .. MaxTestee .. "]." );
-							} else {
-								zcAction = TCA_PanelAdd;
-							}
-
-						} else {
-							zcActionArg = -1;
-							zcAction = TCA_PanelAdd;
-						}
-
+					// "zcthinkers <type> add:<panelpos> <index>".
+					if ( !str2int_Ptr( arg, +zcActionArg ) ) {
+						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. arg .. "\"." );
+					} else if ( !checkTesteePlace( --zcActionArg ) ) {
+						ZCGlobal.Log( LL_Main, "Panel number " .. LLCOLOR_WARNING .. "must be in range" .. LLCOLOR_MAIN .. " [1.." .. MaxTestee .. "]." );
 					} else {
-						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong \"add\" subcommand" .. LLCOLOR_MAIN .. ". Must be \"add\", \"add=<panelpos>\" or \"add:<panelpos>\"." );
+						zcAction = TCA_PanelAdd;
 					}
+
 				}
 
 				if ( zcAction != TCA_Error ) {
@@ -285,6 +303,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		Thinker curThinker;
 
 		if ( specifiedIndex != -1 ) {
+			// Removing by index:
+
 			do {
 				specifiedIndex--;
 				curThinker = it.Next( false );
@@ -296,13 +316,14 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				RemoveWorldThinker( curThinker );
 
 		} else if ( specifiedClass != NULL ) {
+			// Removing by class<Thinker>:
 			int destroyedAmount = 0;
 			curThinker = it.Next( false );
 
 			while ( curThinker ) {
 				if ( curThinker.GetClass() == specifiedClass ) {
-					RemoveWorldThinker( curThinker );
-					destroyedAmount++;
+					if ( RemoveWorldThinker( curThinker ) )
+						destroyedAmount++;
 				}
 
 				curThinker = it.Next( false );
@@ -310,8 +331,24 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 			ZCGlobal.Log( LL_Main, "Removed " .. destroyedAmount .. " thinkers of type \"" .. specifiedClass.GetClassName() .. "\"." );
 
+		} else if ( specifiedClassRawString != "" ) {
+			// Removing by raw classname:
+			int destroyedAmount = 0;
+			curThinker = it.Next( false );
+
+			while ( curThinker ) {
+				if ( ( curThinker.GetClassName() .. "" ) ~== specifiedClassRawString ) {
+					if ( RemoveWorldThinker( curThinker ) )
+						destroyedAmount++;
+				}
+
+				curThinker = it.Next( false );
+			}
+
+			ZCGlobal.Log( LL_Main, "Removed " .. destroyedAmount .. " thinkers of arbitrary type \"" .. specifiedClassRawString .. "\"." );
+
 		} else {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Index nor classname not specified." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Index nor classname nor raw classname not specified." );
 		}
 	} // of private void CommandRemoveFromWorld( void ) {}
 
@@ -358,6 +395,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 					break;
 
 				case TCA_RemoveThinker:
+				case TCA_RemoveThinkerRawName:
 					if ( zcActionListThinkers ) {
 						ZCGlobal.Log( LL_Main, "Actor to remove " .. LLCOLOR_WARNING .. "not specified" .. LLCOLOR_MAIN .. " either by index or by classname." );
 					} else {
@@ -427,7 +465,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 					console.printf( TEXTCOLOR_DARKGRAY .. "%2i. " .. ( isInternalThinker? TEXTCOLOR_BRICK .. "%-21s" : TEXTCOLOR_WHITE .. "%-15s" )
 										.. TEXTCOLOR_GRAY .. ": %s" .. ( extrainfo != ""? TEXTCOLOR_DARKGRAY .. ", " .. extrainfo : "" ),
 									thinkersAmount, curThinkerName, parentClassName );
-				}
+
+				} // of while ( curThinker = it.Next( false ) ) {}
 
 				if ( zcAction == TCA_List )
 					console.printf( "Total " .. thinkersAmount .. " thinkers of enum type " .. zcStatNumType .. "." );

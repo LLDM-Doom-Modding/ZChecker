@@ -188,12 +188,12 @@ class ZCTooltipClass: ZCConsoleClass {
 			String addtext = GetPlaintext();
 
 			if ( addtext != "" )
-				helpCacheString = HEADER .. "|\n| " .. NORMAL .. addtext .. "\n";
+				helpCacheString = NORMAL .. addtext .. "\n";
 
 			addtext = GetTips();
 
 			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n" .. HEADER .. "| Tips: " .. NORMAL .. addtext .. "\n";
+				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n" .. HEADER .. "| Tips:\n" .. NORMAL .. addtext .. "\n";
 
 			addtext = GetExamples();
 
