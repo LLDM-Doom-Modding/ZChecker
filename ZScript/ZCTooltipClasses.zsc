@@ -165,3 +165,27 @@ class ZCTooltipPanelsControlCommand: ZCTooltipClass {
 		);
 	}
 }
+
+class ZCTooltipSetFlagCommand: ZCTooltipClass {
+	override String GetPlaintext() {
+		return IndentTabList( HighlightText(
+			"Some flags by default changes immediately. These include:\n" ..
+			"	`2Physics`x: SOLID, SHOOTABLE, NONSHOOTABLE, NOGRAVITY, NOINTERACTION, NOBLOCKMAP, NOSECTOR;\n" ..
+			"	`2Behaviour`x: FRIENDLY, FLOAT, NOTARGET, FORCEINFIGHTING, NOINFIGHTING;\n" ..
+			"	`2Defences`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x\n" ..
+			"	`2Other`x: BRIGHT.\n" ..
+			"You may disable their special handling by providing a \"ns\", \"nospec\", \"raw\" or \"acs\" keyword in the last argument (comma- or colon-separated if you want not to toggle a flag)."
+		) );
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"\"`Czcsetflag friendly`x\", \"`Czcsetf friendly`x\" or \"`Czcsf friendly`x\" toggles the `2+FRIENDLY`x flag for the linetarget;\n" ..
+			"\"`Czcsetf 1 solid t`x\" or \"`Czcsetf 1 solid 1`x\" sets to \"true\" a `2+SOLID`x flag for the actor in 1st infopanel;\n" ..
+			"\"`Czcsetf s touchy`x\" sets a `2+TOUCHY`x flag to `1s`2elf`x, making player to die at the slightest touch. Note that this flag isn't in the quick access;\n" ..
+			"\"`Czcsetf solid raw`x\" toggles a flag with a one-delay tic, forcibly using an ACS machine;\n" ..
+			"\"`Czcsetf solid 1,nospec`x\", \"`Czcsetf solid acs:1`x\" sets a specified flag to \"true\", also forcibly using an ACS machine."
+		);
+	}
+}
+

@@ -155,6 +155,9 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		if ( colonIndex == -1 )
 			colonIndex = actstr.IndexOf( "=" );
 
+		if ( colonIndex == -1 )
+			colonIndex = actstr.IndexOf( "," );
+
 		if ( colonIndex != -1 ) {
 			arg = actstr.Mid( colonIndex + 1, actstr.Length() - colonIndex - 1 );
 			actstr.Truncate( colonIndex );

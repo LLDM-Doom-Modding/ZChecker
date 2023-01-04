@@ -412,7 +412,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (must be in range [1.." .. MaxTestee .. "])." );
 				newTesteePosStatus = PPS_WrongPos;
 			}
-		} else if ( arg == "lt" || arg == "linetarget" ) {
+		} else if ( arg == "lt" || arg.Left( 5 ) == "linet" ) {
 			newTestee = LinetraceActor();
 			newTesteePosStatus = PPS_Linetarget;
 		} else {
@@ -426,22 +426,29 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 
 	// Returns "-1" if argument cannot be resolved as boolean, and "0"/"1" otherwise:
+	protected int getBoolFromStr( String argx ) {
+		int boolstatus = -1;
+		argx.ToLower();
+
+		if ( argx == "0" || argx == "false" || argx == "f" || argx == "reset" )
+			boolstatus = 0;
+		else if ( argx == "1" || argx == "true" || argx == "t" || argx == "set" )
+			boolstatus = 1;
+
+		return boolstatus;
+	}
+
 	protected int getBoolArg( uint argnum ) {
 		int argxtype = -1;
 
-		if ( argnum < ccmd.args.Size() ) {
-			String argx = ccmd.args[ argnum ];
-
-			if ( argx == "0" || argx ~== "false" || argx ~== "f" || argx ~== "reset" )
-				argxtype = 0;
-			else if ( argx == "1" || argx ~== "true" || argx ~== "t" || argx ~== "set" )
-				argxtype = 1;
-		} else {
+		if ( argnum < ccmd.args.Size() )
+			argxtype = getBoolFromStr( ccmd.args[ argnum ] );
+		else
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::getBoolArg(). Argument index " .. argnum .. " is out of bounds (max " .. ccmd.args.Size() .. ")." );
-		}
 
 		return argxtype;
 	} // of protected int getBoolArg( uint argnum ) {}
+
 
 	protected String GetInternalZCheckerString( String zcname ) {
 		return ZCGlobal.Get().GetZCheckerString( zcname );

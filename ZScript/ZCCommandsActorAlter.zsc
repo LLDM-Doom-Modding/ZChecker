@@ -546,28 +546,64 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	EPositionParseStatus testeeStatus;
 	String flagName;
 	int flagSetType;
-
+	bool skipKnownFlags;
+	bool callACSSetFlag;
+ 
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setflag",
-			"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>];zcsetf [<pos>] <flag name> [<value>];zcsf [<pos>] <flag name> [<value>]",
-			"Set/reset a <flag> for the testee in <pos> (or actor on line of sight if omitted). If <value> is omitted, toggles a <flag>. Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic."
+			"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]",
+			"Set/reset a <flag> for the testee in <pos> (or linetarget actor if omitted). If no <value> provided, toggles a <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution result in singleplayer for the most of the flags will be delayed for one tic.",
+			'ZCTooltipSetFlagCommand'
 		);
 	}
 
 	override bool HandleArguments() {
 		flagSetType = -1;
+		skipKnownFlags = false;
+//zcsetflag [<pos>] <flagname> [<type>][,nospec[ecial]|raw]
 		bool outValue = false;
 
-		if ( ccmd.args.Size() == 2 || ccmd.args.Size() == 3 )
-			flagSetType = getBoolArg( ccmd.args.Size() - 1 );
+		int ccmdArgsSize = ccmd.args.Size();
 
-		if ( ccmd.args.Size() == 1 ) {
+		if ( ccmdArgsSize == 2 || ccmdArgsSize == 3 ) {
+			String optionstr[ 2 ];
+			optionstr[ 0 ] = ccmd.args[ ccmdArgsSize - 1 ];
+			optionstr[ 0 ].ToLower();
+
+			int delimIndex = optionstr[ 0 ].IndexOf( "," );
+
+			if ( delimIndex == -1 )
+				delimIndex = optionstr[ 0 ].IndexOf( "=" );
+
+			if ( delimIndex == -1 )
+				delimIndex = optionstr[ 0 ].IndexOf( ":" );
+
+			if ( delimIndex != -1 ) {
+				optionstr[ 1 ] = optionstr[ 0 ].Mid( delimIndex + 1, optionstr[ 0 ].Length() - delimIndex - 1 );
+				optionstr[ 0 ].Truncate( delimIndex );
+			} else {
+				optionstr[ 1 ] = "";
+			}
+
+			for ( int i = 0; i < 2; i++ ) {
+				if ( optionstr[ i ] == "" )
+					continue;
+
+				if ( optionstr[ i ] == "raw" || optionstr[ i ] == "ns" || optionstr[ i ].Left( 6 ) == "nospec" || optionstr[ i ] == "acs" )
+					skipKnownFlags = true;
+				else
+					flagSetType = getBoolFromStr( optionstr[ i ] );
+			}
+		} // of if ( ccmdArgsSize == 2 || ccmdArgsSize == 3 ) {}
+
+		if ( ccmdArgsSize == 1 ) {
 			flagName = ccmd.args[ 0 ];
 			outValue = true;
 			testee = LinetraceActor();
-		} else if ( ccmd.args.Size() == 2 ) {
-			if ( flagSetType != -1 ) {
+
+		} else if ( ccmdArgsSize == 2 ) {
+			if ( flagSetType != -1 || skipKnownFlags ) {
 				flagName = ccmd.args[ 0 ];
 				outValue = true;
 				testee = LinetraceActor();
@@ -575,9 +611,10 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 				flagName = ccmd.args[ 1 ];
 				outValue = true;
 			}
-		} else if ( ( ccmd.args.Size() == 3 ) && ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) ) {
+
+		} else if ( ( ccmdArgsSize == 3 ) && ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) ) {
 			flagName = ccmd.args[ 1 ];
-			outValue = ( flagSetType != -1 );
+			outValue = ( flagSetType != -1 ) || skipKnownFlags;
 		}
 
 		//console.printf( TEXTCOLOR_DARKGRAY .. GetClassName() .. "HandleArguments(). zcStatus: " .. testeeStatus .. " (actor " .. ZCGlobal.ObjectName( testee ) .. "), flagName: " .. flagName .. ", flagSetType: " .. flagSetType .. ".  outValue: " .. outValue .. "." );
@@ -585,16 +622,73 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 		return outValue;
 	}
 
+	private bool setFlag( bool origflag ) {
+		callACSSetFlag = false;
+
+		if ( flagSetType == -1 )
+			flagSetType = !origflag;
+
+		return flagSetType;
+	}
+
 	// I have no idea how to convert a sequence of Strings to flag names less crooked...
 	override void DoCommand( void ) {
-		if ( testee ) {
+		if ( !testee )
+			return;
+
+		callACSSetFlag = true;
+
+		if ( !skipKnownFlags ) {
+			flagName.ToUpper();
+
+			if ( flagName == "BUDDHA" )
+				testee.bBUDDHA = setFlag( testee.bBUDDHA );
+			else if ( flagName == "NODAMAGE" )
+				testee.bNODAMAGE = setFlag( testee.bNODAMAGE );
+			else if ( flagName == "NOINTERACTION" )
+				testee.bNOINTERACTION = setFlag( testee.bNOINTERACTION );
+			else if ( flagName == "SOLID" )
+				testee.bSOLID = setFlag( testee.bSOLID );
+			else if ( flagName == "SHOOTABLE" )
+				testee.bSHOOTABLE = setFlag( testee.bSHOOTABLE );
+			else if ( flagName == "FLOAT" )
+				testee.bFLOAT = setFlag( testee.bFLOAT );
+			else if ( flagName == "NOGRAVITY" )
+				testee.bNOGRAVITY = setFlag( testee.bNOGRAVITY );
+			else if ( flagName == "FRIENDLY" )
+				testee.bFRIENDLY = setFlag( testee.bFRIENDLY );
+			else if ( flagName == "DORMANT" )
+				testee.bDORMANT = setFlag( testee.bDORMANT );
+			else if ( flagName == "NOTARGET" )
+				testee.bNOTARGET = setFlag( testee.bNOTARGET );
+			else if ( flagName == "FORCEINFIGHTING" )
+				testee.bFORCEINFIGHTING = setFlag( testee.bFORCEINFIGHTING );
+			else if ( flagName == "NOINFIGHTING" )
+				testee.bNOINFIGHTING = setFlag( testee.bNOINFIGHTING );
+			else if ( flagName == "INVULNERABLE" )
+				testee.bINVULNERABLE = setFlag( testee.bINVULNERABLE );
+			else if ( flagName == "BRIGHT" )
+				testee.bBRIGHT = setFlag( testee.bBRIGHT );
+			else if ( flagName == "NONSHOOTABLE" )
+				testee.bNONSHOOTABLE = setFlag( testee.bNONSHOOTABLE );
+			else if ( flagName == "NOBLOCKMAP" )
+				testee.A_ChangeLinkFlags( blockmap: setFlag( testee.bNOBLOCKMAP ) );
+			else if ( flagName == "NOSECTOR" )
+				testee.A_ChangeLinkFlags( sector: setFlag( testee.bNOSECTOR ) );
+
+			if ( !callACSSetFlag )
+				ZCGlobal.Log( LL_Detailed, "Flag \"" .. flagName .. "\" for actor " .. testee.GetClassName() .. " is succesfully set to " .. flagSetType );
+		} // of if ( !skipKnownFlags ) {}
+
+
+		if ( callACSSetFlag ) {
 			let storage = ZCZScriptACSStringsAPI.Get();
 			storage.AddString( storage.APIST_Flags, flagName );
 
 			// Cannot get ACS asynchronous "SetResultValue()" here.
 			testee.ACS_NamedExecuteAlways( "ZChecker_CCMD_SetFlag", 0, flagSetType );
 		}
-	}
+	} // of override void DoCommand( void ) {}
 
 	static String ACS_GetFlagName( Actor activator ) {
 		return ZCZScriptACSStringsAPI.PopStringStatic( ZCZScriptACSStringsAPI.APIST_Flags );
@@ -645,56 +739,6 @@ class ZCSetStateCommand: ZCConsoleCommand {
 		return ZCZScriptACSStringsAPI.PopStringStatic( ZCZScriptACSStringsAPI.APIST_States );
 	}
 } // of class ZCSetStateCommand: ZCConsoleCommand {}
-
-
-class ZCBuddhaCommand: ZCConsoleCommand {
-	// Actually a legacy shortcut, but it turned out to be very convenient.
-	Actor testee;
-	EPositionParseStatus testeeStatus;
-	int flagSetType;
-
-	override void InitCCMD() {
-		SetupCCMDInterface(
-			"zc_buddha",
-			"zcbud [<pos>] [<value>]",
-			"Optimized shortcut for the \"zcsetflag [<pos>] buddha [<value>]\". Operate on the BUDDHA flag at <pos> or linetarget, if omitted. If there's no <value>, toggles it."
-		);
-	}
-
-	override bool HandleArguments() {
-		testeeStatus = PPS_Error;
-		flagSetType = -1;
-		bool outValue = false;
-
-		// One arg is a position (flag will be toggled), two args are a 
-		//position and a flag value:
-		switch ( ccmd.args.Size() ) {
-			case 1:
-				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) );
-				break;
-			case 2:
-				outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) )
-						&& ( ( flagSetType = getBoolArg( 1 ) ) != -1 );
-				break;
-			case 0:
-			default:
-				testee = LinetraceActor();
-				outValue = true;
-				break;
-		}
-
-		return outValue;
-	}
-
-	override void DoCommand( void ) {
-		if ( testee ) {
-			if ( flagSetType == -1 )
-				testee.bBUDDHA ^= true;
-			else
-				testee.bBUDDHA = flagSetType;
-		}
-	}
-} // of class ZCBudCommand: ZCConsoleCommand {}
 
 
 class ZCSetPropertyCommand: ZCConsoleCommand {
