@@ -55,7 +55,7 @@ user bool mcm_zchecker_infovar_geomsectex	= false; //  \_ Sector textures.
 user bool mcm_zchecker_infovar_geomsecdamage= false; //  \_ Sector damage (also for terrain).
 user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (water level, gravity, ...).
 user bool mcm_zchecker_infovar_geomsecportal= false; //  \_ Sector portal info.
-user bool mcm_zchecker_infovar_geomsecterrain= false;//  \_ Shows floorsector terrain, if any.
+user bool mcm_zchecker_infovar_geomsecterrain = false;// \_ Shows floorsector terrain, if any.
 // Something about sector normals?
 
 user bool mcm_zchecker_info_geomlines		= false; // Lines linked to the actor.
@@ -65,9 +65,11 @@ user bool mcm_zchecker_infovar_geomlntex	= true;	 //  \_ Line textures.
 user int  mcm_zchecker_infovar_geomlnaction	= 1;	 //  \_ Line action info: "Disabled", "Action & TID", "Action, args & TID", "Everything".
 user bool mcm_zchecker_infovar_geomlnportal	= false; //  \_ Line portal info.
 
-user bool mcm_zchecker_info_inventory		= true;
-user int  mcm_zchecker_infovar_invamount	= 40;
-user bool mcm_zchecker_info_states			= true; // States and frames.
+user bool mcm_zchecker_info_inventory		= true;  // Inventory.
+user int  mcm_zchecker_infovar_invamount	= 40;    //  \_ Maximal amount of elements in output.
+user int  mcm_zchecker_infovar_invsorttype	= 0;	 //  \_ Sorting type: "Unsorted", "By names", "By amount".
+user bool mcm_zchecker_infovar_invsortascend= false; //  \_ Descending (false) or ascending (true) order.
+user bool mcm_zchecker_info_states			= true;	 // States and frames.
 user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states (unlimited, 1, 2, ..., 25).
 user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information;
 user int  mcm_zchecker_infovar_stateextras 	= 0;	 //  \_ Current state extra information (flags, PState X/Y, etc.);

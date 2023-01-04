@@ -357,3 +357,101 @@ class ZCGlobal: Thinker {
 	} // of static ENewlineTypes GetTextNewlinesType( String text ) {}
 
 } // of class ZCGlobal: Thinker {}
+
+
+
+// Thanks to Sir Robin for his ZScript Quicksort library.
+// Original topic and code: https://forum.zdoom.org/viewtopic.php?f=105&t=75757.
+
+class ZCInventoryQuicksort {
+	Array<Inventory> arr;
+
+	enum EQuicksortTypes {
+		QST_None = 0,
+		QST_Names,
+		QST_Amount,
+		QST_MaxAmount
+	};
+
+	void Sort( void ) {
+		if ( arr.Size() < 2 )
+			return;
+
+		Quicksort( 0, arr.Size() - 1 );
+	}
+
+	void Reverse( void ) {
+		int iMax = arr.Size() - 1;
+		int iHalf = arr.Size() / 2;
+
+		for ( int i = 0; i < iHalf; i++ )
+			SwapElements( i, iMax - i );
+	}
+
+
+	protected virtual void QuicksortPartition( in out int i, int low, int high ) {
+		String pivot = arr[ high ].GetClassName();
+
+		for ( int j = low; j <= high - 1; j++ ) {
+			if ( ( arr[ j ].GetClassName() .. "" ) < pivot ) {
+				i++;
+				SwapElements( i, j );
+			}
+		}
+	} // of protected virtual void QuicksortPartition( in out int i, int low, int high ) {}
+
+
+	/* Internal section */
+
+	protected void SwapElements( int index1, int index2 ) {
+		Inventory temp = arr[ index1 ];
+
+		arr[ index1 ] = arr[ index2 ];
+		arr[ index2 ] = temp;
+	}
+
+	protected void Quicksort( int low, int high ) {
+		if ( low < high ) {
+			int pi = QuicksortPartitionWrapper( low, high );
+
+			Quicksort( low, pi - 1 );
+			Quicksort( pi + 1, high );
+		}
+	}
+
+	protected int QuicksortPartitionWrapper( int low, int high ) {
+		int i = ( low - 1 );
+
+		QuicksortPartition( i, low, high );
+
+		SwapElements( i + 1, high );
+
+		return ( i + 1 );
+	}
+} // of class ZCInventoryQuicksort {}
+
+class ZCInventoryAmountQuicksort: ZCInventoryQuicksort {
+	override void QuicksortPartition( in out int i, int low, int high ) {
+		int pivot = arr[ high ].Amount;
+
+		for ( int j = low; j <= high - 1; j++ ) {
+			if ( arr[ j ].Amount < pivot ) {
+				i++;
+				SwapElements( i, j );
+			}
+		}
+	}
+} // of class ZCInventoryAmountQuicksort: ZCInventoryQuicksort {}
+
+class ZCInventoryMaxAmountQuicksort: ZCInventoryQuicksort {
+	override void QuicksortPartition( in out int i, int low, int high ) {
+		int pivot = arr[ high ].MaxAmount;
+
+		for ( int j = low; j <= high - 1; j++ ) {
+			if ( arr[ j ].MaxAmount < pivot ) {
+				i++;
+				SwapElements( i, j );
+			}
+		}
+	}
+} // of class ZCInventoryMaxAmountQuicksort: ZCInventoryQuicksort {}

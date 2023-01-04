@@ -164,68 +164,127 @@ class ZCInvFieldData {
 
 class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	Array<ZCInvFieldData> prevInvs;
+	ZCInventoryQuicksort qsort;
+	int sortPrevTypeOption;
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_inventory";
 		optionLabel = "Inventory";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_inventory";
+
+		sortPrevTypeOption = -1;
 
 		for ( int i = 0; i < MaxTestee; i++ )
 			prevInvs.Push( new( 'ZCInvFieldData' ) );
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		String outStr = DARKGRAY .. "Inventory\c-: " .. GRAY;
+		String outstr = DARKGRAY .. "Inventory\c-: " .. GRAY;
 
 		if ( thing is "Inventory" )
-			return outStr .. "(Inventory itself).\n";
+			return outstr .. "(Inventory itself).\n";
 
 		Inventory item = thing.Inv;
 		//ZCInvFieldData previnv = prevInvs[ thingfield.fieldPos ];
 
-		uint cellsAmount = CVar.GetCVar( "mcm_zchecker_infovar_invamount", players[ consoleplayer ] ).GetInt();
-		uint curAmount = 0;
+		if ( !item )
+			return outstr .. "none.";
 
-		if ( item ) {
-			//ZCheckerInvField cmpItem = Testee[ i ].inv;
-			//ZCheckerInvField nextItem = cmpItem.Next;
+		//uint curCellsAmount = 0;
 
-			while ( item && curAmount < cellsAmount ) {
-				//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
-				/*	ZCheckerInvField cmpNextItem = nextItem;
-					bool found = false;
-					while ( ( cmpNextItem = cmpNextItem.Next ) && !found ) {
-						if ( cmpNextItem.type == item.Inv.GetClassName() )
-							found = true;
-					}
-					if ( !found ) {}
+		//ZCheckerInvField cmpItem = Testee[ i ].inv;
+		//ZCheckerInvField nextItem = cmpItem.Next;
+
+		/*while ( item && curCellsAmount < cellsAmountOption ) {
+			//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
+			/ *	ZCheckerInvField cmpNextItem = nextItem;
+				bool found = false;
+				while ( ( cmpNextItem = cmpNextItem.Next ) && !found ) {
+					if ( cmpNextItem.type == item.Inv.GetClassName() )
+						found = true;
 				}
-                */
-				outStr = outStr .. "\n* " .. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
-				item = item.Inv;
+				if ( !found ) {}
+			}
+            * /
+			outStr = outStr .. "\n* " .. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
+			item = item.Inv;
 
-				/*if ( cmpItem.visualTicks > 0 )
-					--cmpItem.visualTicks;
-				else if ( cmpItem.visualTicks < 0 )
-					++cmpItem.visualTicks;
+			/ *if ( cmpItem.visualTicks > 0 )
+				--cmpItem.visualTicks;
+			else if ( cmpItem.visualTicks < 0 )
+				++cmpItem.visualTicks;
 
-				outStr = outStr .. "\n* " .. "\c[" .. ( cmpItem.visualTicks > 0? "Green" : ( cmpItem.visualTicks < 0? "Red" : "Gray" ) ) .. "]"
-						.. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
+			outStr = outStr .. "\n* " .. "\c[" .. ( cmpItem.visualTicks > 0? "Green" : ( cmpItem.visualTicks < 0? "Red" : "Gray" ) ) .. "]"
+					.. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
 
-				item = item.Inv;
-				cmpItem = nextItem;
-				nextItem = nextItem.Next;*/
+			item = item.Inv;
+			cmpItem = nextItem;
+			nextItem = nextItem.Next;* /
 
-				curAmount++;
-			} // of while ( item && curAmount < cellsAmount ) {}
+			curCellsAmount++;
+		} // of while ( item && curCellsAmount < cellsAmountOption ) {}
 
-			if ( item && curAmount >= cellsAmount )
-				outStr = outStr .. TEXTCOLOR_DARKGRAY .. " (...more)";
+		if ( item && curCellsAmount >= cellsAmountOption )
+			outStr = outStr .. TEXTCOLOR_DARKGRAY .. " (...more)";
+		*/
 
-		} else {
-			outStr = outStr .. "none";
+
+		uint cellsAmountOption = CVar.GetCVar( "mcm_zchecker_infovar_invamount", players[ consoleplayer ] ).GetInt();
+		uint sortTypeOption = CVar.GetCVar( "mcm_zchecker_infovar_invsorttype", players[ consoleplayer ] ).GetInt();
+		bool sortReverseOption = CVar.GetCVar( "mcm_zchecker_infovar_invsortascend", players[ consoleplayer ] ).GetBool();
+
+		// Reiniting a quicksort keeper:
+		if ( !qsort || ( sortPrevTypeOption != sortTypeOption && sortTypeOption != ZCInventoryQuicksort.QST_None ) ) {
+			switch ( sortTypeOption ) {
+				case ZCInventoryQuicksort.QST_Amount:
+					qsort = new( 'ZCInventoryAmountQuicksort' );
+					break;
+				case ZCInventoryQuicksort.QST_MaxAmount:
+					qsort = new( 'ZCInventoryMaxAmountQuicksort' );
+					break;
+				case ZCInventoryQuicksort.QST_Names:
+				default:
+					qsort = new( 'ZCInventoryQuicksort' );
+					break;
+			}
 		}
 
-		return outStr .. ".";
+		// Old versions of the engine has some troubles with the correct 
+		//arrays initialization.
+		qsort.arr.Clear();
+
+		while ( item ) {
+			qsort.arr.Push( item );
+			item = item.Inv;
+		}
+
+		// Applying a sorting:
+		if ( sortTypeOption != ZCInventoryQuicksort.QST_None )
+			qsort.Sort();
+
+		if ( sortReverseOption )
+			qsort.Reverse();
+
+		// Output generating:
+		int qsortArraySize = qsort.arr.Size();
+
+		for ( int i = 0; i < min( qsortArraySize, cellsAmountOption ); i++ ) {
+			item = qsort.arr[ i ];
+			int curAmount = item.Amount;
+			int maxAmount = item.MaxAmount;
+
+			String elemstr = ( curAmount == 0? DARKGRAY : GRAY ) .. "\n* " .. item.GetClassName();
+
+			if ( maxAmount != 1 )
+				elemstr = elemstr .. ( curAmount == maxAmount? DARKGREEN : DARKGRAY ) .. " x" .. curAmount;
+
+			outstr = outstr .. elemstr .. GRAY .. ";";
+		}
+
+		if ( qsortArraySize > cellsAmountOption )
+			outstr = outstr .. TEXTCOLOR_DARKGRAY .. "\n  (..." .. ( qsortArraySize - cellsAmountOption ) .. " more)";
+
+		return outstr;
 	}
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
 
