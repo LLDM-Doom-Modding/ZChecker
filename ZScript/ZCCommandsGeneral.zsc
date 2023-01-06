@@ -2,6 +2,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 	bool verboseHelp;
 	ZCConsoleCommand infoclass;
 
+	const HEADER = TEXTCOLOR_BLUE;
+
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_help",
@@ -73,8 +75,9 @@ class ZCHelpCommand: ZCConsoleCommand {
 	override void DoCommand( void ) {
 		// Description and credits:
 		if ( verboseHelp ) {
-			console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion
-					.. "\c- by " .. TEXTCOLOR_WHITE .. "JSO_x\c- a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare\c-.\n\n" );
+			console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADER .. ".\n" ..
+					"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADER .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADER .. ";\n" ..
+					"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADER .. " team" .. ".\n\n" );
 		}
 
 		if ( infoclass ) {
@@ -86,7 +89,10 @@ class ZCHelpCommand: ZCConsoleCommand {
 			if ( infoclass.ccmdInterfaceData.helpTooltip ) {
 				console.printf( TEXTCOLOR_SAPPHIRE .. "|\n| ".. infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
 				console.printf( TEXTCOLOR_SAPPHIRE .. "\\-= =-------------\n| " .. LLCOLOR_MAIN .. helpstr .. TEXTCOLOR_SAPPHIRE .. "\n/--=--=--=--=--=--\n\n" );
+			} else {
+				console.printf( "\n" );
 			}
+
 		} else {
 			console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
 

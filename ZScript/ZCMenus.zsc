@@ -315,9 +315,9 @@ class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
 
 			panels.panelsstr = "";
 			panels.UpdatePanels( false );
-			zcparentmenu.ReinitMenuItems( zcparentmenu.mDesc );
 
-			zcparentmenu.mDesc.mSelectedItem = zcparentmenu.lastPanelItemPos + 1;
+			zcparentmenu.ReinitMenuItems( zcparentmenu.mDesc );
+			zcparentmenu.mDesc.mSelectedItem = zcparentmenu.lastPanelItemPos + 2;
 
 			Menu.MenuSound( "menu/activate" );
 

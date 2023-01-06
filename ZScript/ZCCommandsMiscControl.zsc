@@ -34,7 +34,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_thinkerscontrol",
-			"zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panelpos>] <numindex>;zcthinkers <type> track|untrack;zclistthinkers <type>",
+			"zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panelpos>] <numindex>;zcthinkers <type> track|untrack;zclistthinkers <type>;zcaddlistget [<index>] [<pos>]",
 			"Perform a simple operation on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel etc.",
 			'ZCTooltipThinkersControlCommand'
 		);
@@ -288,6 +288,11 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				} else {
 					ZCheckerField field = ccmd.handler.Testee[ zcActionArg ];
 					field.mo = Actor( curThinker );
+
+					SetInternalZCheckerString( "$last", field.mo.GetClassName() );
+					ccmd.handler.UpdateInternalClassnameByField( zcActionArg );
+
+					field.UpdateHash( ccmd.e.Player );
 
 					ZCGlobal.Log( LL_Detailed, "Added a world actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
 				} // of else of if ( zcActionArg == -1 ) {}

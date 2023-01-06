@@ -265,7 +265,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	EClassnameParseStatus classnameParseStatus;
 
-	// Main internal interface. Unparsed arguments etc. are stored here.
+	// Main internal interface. Parsed arguments etc. are stored here.
 	ZCheckerCCMDInfo ccmd;
 
 	// External interface. ZChecker handler works in general only with this structure:
