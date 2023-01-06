@@ -46,12 +46,14 @@ Adds some `zcev`-prefixed commands:
 
 - ...And some other CCMDs.
 
+Note: map "`Everything`" may be outdated in the beta versions of the project. It's better to use "`map everything_simpled`" instead.
+
 
 ## Some remarks
 
 Wildcards in actor names are symbols "`*`" (an asterisk) and "`-`" (a hyphen). First of them may be replaced with any amount (including zero) of any characters; second symbol works same, but will have at least one character. Wildcards may be used anywhere and more than one times in the mask, so string "`a-a-a-a`" will be unparsed to the "ArachnotronPlasma", and string "`*card`" will list all actors which ends with a "card". To specify some classname from the list, you may use a "`:<index>`" or similar "`,<index>`" postfixes. For example, "`shot*:2`" will be unparsed to "Shotgun" (because first element in a list is a "ShotgunGuy" and second is a "Shotgun").
 
-Due to internal netevent realization restrictions in the engine you are not able to provide arbitrary number of space-separated ("` `") arguments for CCMDs. So, if you want to summon facing away from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value, you're must specify all of the extra parameters in the comma-separated ("`,`") list: "`zcsummon shotgunguy noinfight,relang:180,tid:4,hp:99999`".
+Due to internal netevent realization restrictions in the engine you are not able to provide arbitrary number of space-separated ("` `") arguments for CCMDs. So, if you want to summon facing away from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value, you must specify all of the extra parameters in the comma-separated ("`,`") list: "`zcsummon shotgunguy noinfight,relang:180,tid:4,hp:99999`".
 
 
 
