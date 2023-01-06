@@ -1,5 +1,13 @@
-struct ZCheckerEvMapConfig {
-	ZCheckerPlayerLastPos posMain, posArena;
+
+struct ZCheckerEverythingMapHandlerConfig {
+	// Data-scoped variables. May be changed under both UI and play:
+	transient CVar infostrXCenterCVar, infostrYCenterCVar, infostrScaleCVar;
+	String currentConsoleplayerInfostr;
+	ZCPanelsStorage zcHandlerPanels;
+
+
+	// All next variables are unused because arena isn't created yet:
+	vector3 lastPosMain, lastPosArena;
 
 	bool mainlocPaused, arenaPaused;
 
@@ -8,7 +16,7 @@ struct ZCheckerEvMapConfig {
 	vector2 arenaStart, arenaEnd;
 }
 
-class ZCheckerEvSectorSetter {
+class ZCheckerSectorSetterData play {
 	uint evType;
 
 	Array<Sector> startSectors; // At least one must be presented.
@@ -18,7 +26,7 @@ class ZCheckerEvSectorSetter {
 
 class ZCheckerEverythingMapHandler: EventHandler {
 	const ZCUDMF_Type = "user_zcsector_type";	// Category.
-	const ZCUDMF_TypeSegment = "user_zcsector_typesegment";	// Next segment in the category.
+	const ZCUDMF_TypeSegment = "user_zcsector_typesegment";	// Current segment index in the category.
 
 	const ZCUDMF_JumpX = "user_zcsector_jump_x";
 	const ZCUDMF_JumpY = "user_zcsector_jump_y";
@@ -55,13 +63,12 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		"Missiles", "Players", "Special actors"
 	};
 
-	ZCheckerEvSectorSetter evSectors[ S__Quantity ];
+	ZCheckerSectorSetterData evSectors[ S__Quantity ];
 
 	bool canRecreateEverything;
 	bool logSpawnInfo;
 
-	ZCheckerEvMapConfig configuration;
-
+	ZCheckerEverythingMapHandlerConfig configuration;
 
 
 	static String GetESectorName( int which ) {
@@ -165,7 +172,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	}
 
 	// Really just a wrapper around a some extremely rough algorithm (will be rewritten).
-	static int FindNextExistingSectorIndex( ZCheckerEvSectorSetter evSector, int fromIndex = -1 ) {
+	static int FindNextExistingSectorIndex( ZCheckerSectorSetterData evSector, int fromIndex = -1 ) {
 		if ( !evSector )
 			return -1;
 
@@ -279,7 +286,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 							spriteCheckSuccess = spawnMissedSprites;
 
 					} else {
-						// Valid or special-PLYC sprite:
+						// Valid or a "PLYC" sprite:
 						spriteCheckSuccess = ( spawnPLYC || ( stSpriteName4 != "PLYC" && stSpriteName != "" ) );
 					}
 
@@ -324,11 +331,15 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 	// Loads an Everything map:
 	override void WorldLoaded( WorldEvent e ) {
-		if ( !ZCGlobal.IsEverythingLevel() )
+		if ( !ZCGlobal.IsEverythingLevel() ) {
+			Super.WorldLoaded( e );
+
+			Destroy();
 			return;
+		}
 
 		for ( int i = 0; i < S__Quantity; i++ ) {
-			evSectors[ i ] = new( 'ZCheckerEvSectorSetter' );
+			evSectors[ i ] = new( 'ZCheckerSectorSetterData' );
 			evSectors[ i ].evType = i;
 		}
 
@@ -443,20 +454,22 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 	override void PlayerEntered( PlayerEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() ) {
-			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_notarget" ).GetBool() ) {
-				players[ e.PlayerNumber ].cheats |= CF_NOTARGET;
+			PlayerInfo pl = players[ e.PlayerNumber ];
+
+			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_notarget", pl ).GetBool() ) {
+				pl.cheats |= CF_NOTARGET;
 
 				if ( e.PlayerNumber == consoleplayer )
 					ZCGlobal.Log( LL_Main, "Auto-notarget enabled." );
 			}
 
-			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_iddqd" ).GetBool() ) {
-				players[ e.PlayerNumber ].cheats |= CF_GODMODE;
+			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_iddqd", pl ).GetBool() ) {
+				pl.cheats |= CF_GODMODE;
 
 				if ( e.PlayerNumber == consoleplayer )
 					ZCGlobal.Log( LL_Main, "Auto-godmode enabled." );
 			}
-		}
+		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 
 		Super.PlayerEntered( e );
 	} // of override void PlayerEntered( PlayerEvent e ) {}
@@ -468,6 +481,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			if ( e.Name ~== "zcheckermap_recreate" ) {
 				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Recreating/reloading map..." );
 				RecreateEverything();
+
 			} else if ( e.Name ~== "zcheckermap_pause_level_part" ) {
 				vector2 pauseFrom, pauseTo;
 				bool isPausing = false;
@@ -500,14 +514,15 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				// Load/unload all from selected level part:
 				while ( curActor = Actor( it.Next() ) ) {
-					if ( !IsActorRestricted( curActor ) && curActor.pos.x >= pauseFrom.x && curActor.pos.y <= pauseFrom.y && curActor.pos.x <= pauseTo.x && curActor.pos.y >= pauseTo.y ) {
+					if ( curActor.pos.x >= pauseFrom.x && curActor.pos.y <= pauseFrom.y && curActor.pos.x <= pauseTo.x && curActor.pos.y >= pauseTo.y
+							&& !IsActorRestricted( curActor ) ) {
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Handling actor " .. curActor.GetClassName() );
 
 						// This line has no check for the already setted INVISIBLE flag:
 						curActor.bNOINTERACTION = curActor.bINVISIBLE = curActor.bDORMANT = !isPausing;
 						curActor.A_ChangeLinkFlags( !isPausing, !isPausing );
 
-						// Crashes:
+						// It crashes...
 						//if ( isPausing ) 
 						//	curActor.UnlinkFromWorld();
 						//else
@@ -515,7 +530,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					}
 				} // of while ( curActor = Actor( it.Next() ) ) {}
 
-			} // of } else if ( e.Name ~== "zcheckermap_pause_level_part" ) {}
+			} // of else if ( e.Name ~== "zcheckermap_pause_level_part" ) {}
 
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 
@@ -529,32 +544,59 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				FLineTraceData lt;
 				pl.LineTrace( pl.angle, pl.radius + 64.0, pl.pitch, TRF_ALLACTORS, pl.player.viewheight, data: lt );
 
-				if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClass() == "ZCheckerActorInfo" ) {
-					ZCheckerActorInfo zcactor = ZCheckerActorInfo( lt.HitActor );
-
-					pl.SetInventory( "ZCheckerInfoInventory", 1 );
-					ZCheckerInfoInventory zcii = ZCheckerInfoInventory( pl.FindInventory( "ZCheckerInfoInventory" ) );
-					zcii.Init( zcactor.GetInfoString() );
-				}
+				if ( lt.HitType == TRACE_HitActor && lt.HitActor.GetClass() == "ZCheckerActorInfo" )
+					configuration.currentConsoleplayerInfostr = ZCheckerActorInfo( lt.HitActor ).GetInfoString();
+				else
+					configuration.currentConsoleplayerInfostr = "";
 			}
-		}
+		} // of for ( int i = 0; i < MAXPLAYERS; i++ ) {}
 
 		Super.WorldTick();
 	} // of override void WorldTick() {}
 
 	override void RenderOverlay( RenderEvent e ) {
-		if ( ZCGlobal.IsEverythingLevel() && PlayerPawn( e.Camera ) ) {
-			ZCheckerInfoInventory zcii = ZCheckerInfoInventory( e.Camera.FindInventory( "ZCheckerInfoInventory" ) );
+		if ( !PlayerPawn( e.Camera ) )
+			return;
 
-			if ( zcii ) {
-				String actorInfo = zcii.info;
+		String actorInfostr = configuration.currentConsoleplayerInfostr;
 
-				Font rfont = Font.FindFont( "smallfont" );
+		if ( actorInfostr == "" )
+			return;
 
-				Screen.DrawText( rfont, Font.CR_GRAY, 320 - actorInfo.Length() / 2 * rfont.GetCharWidth( "A" ), 60, 
-						actorInfo, DTA_VirtualWidth, 640, DTA_VirtualHeight, 480 );
-			}
+		if ( !configuration.infostrScaleCVar ) {
+			configuration.infostrXCenterCVar = CVar.GetCVar( "mcm_zchecker_ev_infostr_centerx", players[ consoleplayer ] );
+			configuration.infostrYCenterCVar = CVar.GetCVar( "mcm_zchecker_ev_infostr_centery", players[ consoleplayer ] );
+			configuration.infostrScaleCVar = CVar.GetCVar( "mcm_zchecker_ev_infostr_scale", players[ consoleplayer ] );
 		}
+
+		double infostrXCenter = configuration.infostrXCenterCVar.GetFloat() / 100.0;
+		double infostrYCenter = configuration.infostrYCenterCVar.GetFloat() / 100.0;
+		double infostrScale = 1.0 / configuration.infostrScaleCVar.GetFloat();
+
+		if ( !configuration.zcHandlerPanels ) {
+			ZCGlobal global = ZCGlobal.ClearscopeGet();
+
+			if ( global && global.zcHandler && global.zcHandler.panels )
+				configuration.zcHandlerPanels = global.zcHandler.panels;
+		}
+
+		Font rfont = ( configuration.zcHandlerPanels? configuration.zcHandlerPanels.infopanelsFont : smallfont );
+
+		int height = int( infostrScale * Screen.GetHeight() );
+		int width = int( infostrScale * Screen.GetWidth() );
+		double stringWidth = rfont.StringWidth( actorInfostr );
+
+		double x = infostrXCenter * width - stringWidth / 2.0;
+		double y = infostrYCenter * height;
+
+		// Push the text out from the borders:
+		if ( x < 0.0 )
+			x = 0.0;
+		else if ( x > width - stringWidth )
+			x = width - stringWidth;
+
+		Screen.DrawText( rfont, Font.CR_GRAY, x, y, actorInfostr,
+				DTA_KeepRatio, true, DTA_VirtualHeight, height, DTA_VirtualWidth, width );
 
 		Super.RenderOverlay( e );
 	} // of override void RenderOverlay( RenderEvent e ) {}
@@ -564,7 +606,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 class ZCheckerSectorSetter: Actor {
 	const ZCUDMF_Type = ZCheckerEverythingMapHandler.ZCUDMF_Type;
-	ZCheckerEvSectorSetter evSectorDef;
+	ZCheckerSectorSetterData evSectorDef;
 
 	vector2 jumpLen;
 	int jumpMaxAmount;
@@ -598,6 +640,8 @@ class ZCheckerSectorSetter: Actor {
 			curJumpAmount = 0;
 		}
 	} // of void InitFromPos( void ) {}
+
+	override void Tick() {}
 
 	protected bool jumpToNextTypeSegment( void ) {
 		bool success = true;
@@ -645,20 +689,12 @@ class ZCheckerSectorSetter: Actor {
 } // of class ZCheckerSectorSetter: Actor {}
 
 
-class ZCheckerPlayerLastPos: Actor {
-	Default {
-		+NOINTERACTION;
-		+NOBLOCKMAP;
-		FloatBobPhase 0;
-	}
-}
-
 
 class ZCheckerActorInfo: Actor {
 	class<Actor> masterClass;
 	String masterInfo;
 	vector2 masterOffset;
-	ZCheckerEvSectorSetter evSectorDef;
+	ZCheckerSectorSetterData evSectorDef;
 
 	enum EInfoactorStatus {
 		IAS_Wrong = 0,	// Frame 'A'.
@@ -736,7 +772,7 @@ class ZCheckerActorInfo: Actor {
 				master.Destroy();
 
 			master = Spawn( masterClass, ( pos.xy - masterOffset, 0.0 ) );
-			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::Activate(). " .. LLCOLOR_Main .. "Spawned " .. master.GetClassName() .. "." );
+			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::Activate(). " .. LLCOLOR_MAIN .. "Spawned " .. master.GetClassName() .. "." );
 			SetMasterZ();
 		}
 	}
@@ -774,26 +810,3 @@ class ZCheckerActorInfo: Actor {
 		stop;
 	}
 } // of class ZCheckerActorInfo: Actor {}
-
-class ZCheckerInfoInventory: Inventory {
-	String info;
-	int ticks;
-
-	Default {
-		Inventory.MaxAmount 0x7FFFFFFF;
-		Inventory.Amount 1;
-		FloatBobPhase 0;
-	}
-
-	void Init( String initInfo ) {
-		info = initInfo;
-		ticks = 0;
-	}
-
-	override void Tick() {
-		Super.Tick();
-
-		if ( ticks++ > 2 )
-			Destroy();
-	}
-} // of class ZCheckerInfoInventory: Inventory {}

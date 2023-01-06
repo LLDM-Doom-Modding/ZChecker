@@ -34,7 +34,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		desc.mItems.Push( AddStaticText( GOLD .. "Information panels settings:" ) );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ";" ) );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "', '" .. GRAY .. "-" .. DARKGRAY .. "', " .. GRAY .. "<KP+>" .. DARKGRAY .. " or " .. GRAY .. "<KP->" .. DARKGRAY .. "." ) );
-		desc.mItems.Push( AddStaticText( DARKGRAY .. "Note: order will be saved in several play tics." ) );
+		desc.mItems.Push( AddStaticText( DARKGRAY .. "Note: order will be saved after one play tic." ) );
 		desc.mItems.Push( AddStaticText() );
 	}
 

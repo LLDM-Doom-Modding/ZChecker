@@ -19,6 +19,12 @@ user color mcm_zchecker_infopanel_dimcolor		= "00 00 00";
 user float mcm_zchecker_infopanel_dimalpha		= 0.5;
 user float mcm_zchecker_infopanel_dimborderwidth= 0.5;
 
+// The Everything map actor information string CVars.
+user float mcm_zchecker_ev_infostr_centerx	= 50.0;
+user float mcm_zchecker_ev_infostr_centery	= 5.0;
+user float mcm_zchecker_ev_infostr_scale	= 1.0;
+
+
 // Internal string for the API between ZScript and ACS.
 user noarchive string mcm_zchecker_internal_metastring;
 

@@ -71,8 +71,12 @@ class ZCGlobal: Thinker {
 		zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
 	}
 
+	static clearscope ZCGlobal ClearscopeGet( void ) {
+		return ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
+	}
+
 	static play ZCGlobal Get( void ) {
-		ZCGlobal it = ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
+		ZCGlobal it = ClearscopeGet();
 
 		if ( !it ) {
 			// Creating and initializating a singleton global object:
