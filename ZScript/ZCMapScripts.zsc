@@ -2,8 +2,10 @@
 struct ZCheckerEverythingMapHandlerConfig {
 	// Data-scoped variables. May be changed under both UI and play:
 	transient CVar infostrXCenterCVar, infostrYCenterCVar, infostrScaleCVar;
+	transient ZCPanelsStorage zcHandlerPanels;
+	transient bool isNoFontWarningShown;
+
 	String currentConsoleplayerInfostr;
-	ZCPanelsStorage zcHandlerPanels;
 
 
 	// All next variables are unused because arena isn't created yet:
@@ -67,6 +69,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 	bool canRecreateEverything;
 	bool logSpawnInfo;
+	transient bool isNoFontWarningShown;
 
 	ZCheckerEverythingMapHandlerConfig configuration;
 
@@ -151,14 +154,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "SpawnShot"
 			||  cur is "WeaponPiece"
 				// Specific dangers (usually crashing the game):
-			||  cur is "BossBrain"
-			||  cur is "BossEye"
-			||  cur is "ParticleFountain"
-			||  cur == "ZCheckerSectorSetter"
-			||  cur == "Bat"
-			||  cur is "ProgLevelEnder"
-			||  cur is "SlideshowStarter"
-			||  cur is "SpectralLightningBigBall1"
+			||  cur is "ParticleFountain"	// Crashes the game on first tic.
+			||  cur is "BossBrain"			// Spawns next to the "ExplosiveBarrel"...
+			||  cur == "Bat" 				// Tries to use a NULL "target" field.
+			||  cur is "ProgLevelEnder" 	// Just end the level almost immediately.
+			||  cur is "SlideshowStarter" 	// Calls a "level.StartSlideshow()".
+			||  cur is "SpectralLightningBigBall1" 	// "Tried to read from address zero. Called from Actor.SpawnSubMissile(); called from SpectralLightningBigBall1.A_SpectralBigBallLightning()".
+			||  cur is "LittleFly" 			// Recursive thing search on neighbour sectors.
 		);
 	}
 
@@ -167,6 +169,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		return cur && (
 			  ( cur is "Inventory" && Inventory( cur ).owner )
 			||( cur is "PlayerPawn" && cur.player )
+			||( cur.GetClass() == "ZCheckerSectorSetter" )
 			||  IsClassRestricted( cur.GetClass() )
 		);
 	}
@@ -574,13 +577,31 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		double infostrScale = 1.0 / configuration.infostrScaleCVar.GetFloat();
 
 		if ( !configuration.zcHandlerPanels ) {
-			ZCGlobal global = ZCGlobal.ClearscopeGet();
+			ZCGlobal tempglobal = ZCGlobal.ClearscopeGet();
 
-			if ( global && global.zcHandler && global.zcHandler.panels )
-				configuration.zcHandlerPanels = global.zcHandler.panels;
+			if ( tempglobal && tempglobal.zcHandler && tempglobal.zcHandler.panels )
+				configuration.zcHandlerPanels = tempglobal.zcHandler.panels;
 		}
 
-		Font rfont = ( configuration.zcHandlerPanels? configuration.zcHandlerPanels.infopanelsFont : smallfont );
+		Font rfont = smallfont;
+
+		if ( configuration.zcHandlerPanels ) {
+			rfont = configuration.zcHandlerPanels.infopanelsFont;
+
+		} else if ( !configuration.isNoFontWarningShown ) {
+			configuration.isNoFontWarningShown = true;
+			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::RenderOverlay(). Unable to access the ZChecker handler panels." );
+
+			ZCGlobal tempglobal = ZCGlobal.ClearscopeGet();
+			ZCheckerHandler temphandler = ( tempglobal? tempglobal.zcHandler : NULL );
+			ZCPanelsStorage temppanels = ( temphandler? temphandler.panels : NULL );
+			String DARK  = TEXTCOLOR_DARKGRAY;
+			String WHITE = TEXTCOLOR_WHITE;
+
+			ZCGlobal.ClearscopeLog( LL_Main, DARK .. "Data-flow backtrace. (ZCGlobal *)" .. WHITE .. tempglobal .. DARK .. "->(ZCHandler *)" .. WHITE .. temphandler
+										  .. DARK .. "->(ZCPanelsStorage *)" .. WHITE .. temppanels .. DARK .. "->(NativeStruct<Font> *)" .. WHITE .. (temppanels? temppanels.infopanelsFont : NULL) .. DARK );
+		}
+
 
 		int height = int( infostrScale * Screen.GetHeight() );
 		int width = int( infostrScale * Screen.GetWidth() );

@@ -138,7 +138,7 @@ class ZCGlobal: Thinker {
 	static clearscope void DataLog( EZCheckerLogLevels loglevel, String text ) {
 		CVar curloglevel = CVar.FindCVar( "mcm_zchecker_loglevel" );
 
-		if ( curloglevel && ( curloglevel.GetInt() >= ( loglevel & ~LL_FlagsMask ) ) )
+		if ( curloglevel.GetInt() >= ( loglevel & ~LL_FlagsMask ) )
 			ClearscopeLog( loglevel, text );
 	}
 
