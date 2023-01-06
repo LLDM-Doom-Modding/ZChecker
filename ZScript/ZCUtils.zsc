@@ -439,7 +439,7 @@ class ZCInventoryAmountQuicksort: ZCInventoryQuicksort {
 		int pivot = arr[ high ].Amount;
 
 		for ( int j = low; j <= high - 1; j++ ) {
-			if ( arr[ j ].Amount < pivot ) {
+			if ( arr[ j ].Amount > pivot ) {
 				i++;
 				SwapElements( i, j );
 			}
@@ -452,7 +452,7 @@ class ZCInventoryMaxAmountQuicksort: ZCInventoryQuicksort {
 		int pivot = arr[ high ].MaxAmount;
 
 		for ( int j = low; j <= high - 1; j++ ) {
-			if ( arr[ j ].MaxAmount < pivot ) {
+			if ( arr[ j ].MaxAmount > pivot ) {
 				i++;
 				SwapElements( i, j );
 			}

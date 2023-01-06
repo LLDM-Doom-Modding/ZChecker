@@ -273,10 +273,18 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 			int curAmount = item.Amount;
 			int maxAmount = item.MaxAmount;
 
-			String elemstr = ( curAmount == 0? DARKGRAY : GRAY ) .. "\n* " .. item.GetClassName();
+			String elemstr = "\n* ";
 
-			if ( maxAmount != 1 )
-				elemstr = elemstr .. ( curAmount == maxAmount? DARKGREEN : DARKGRAY ) .. " x" .. curAmount;
+			if ( curAmount > 0 ) {
+				String amountColor = ( curAmount == maxAmount? DARKGREEN : DARKGRAY );
+
+				elemstr = amountColor .. elemstr .. GRAY .. item.GetClassName();
+
+				if ( curAmount != 1 )
+					elemstr = elemstr .. amountColor .. " x" .. curAmount;
+			} else {
+				elemstr = BLACK .. elemstr .. item.GetClassName() .. " x0";
+			}
 
 			outstr = outstr .. elemstr .. GRAY .. ";";
 		}
