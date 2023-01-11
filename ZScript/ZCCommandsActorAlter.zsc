@@ -502,26 +502,32 @@ class ZCSummonCommand: ZCConsoleCommand {
 
 			if ( player ) {
 				readonly<Actor> summoneeDef = GetDefaultByType( summoneeClass );
+				Actor summoned = NULL;
 
 				if ( !params.notProjectileRules && summoneeDef.bMISSILE ) {
 					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius + params.forwardofs, player.angle, 8.0 + params.zofs );
 
 					for ( int i = 0; i < summoneeAmount; i++ ) {
-						Actor summoned = player.SpawnPlayerMissile( summoneeClass );
+						summoned = player.SpawnPlayerMissile( summoneeClass );
 
-						vector2 dirFromPlayer = player.Vec2To( summoned );
-						summoned.SetOrigin( summoned.pos + ( dirFromPlayer / dirFromPlayer.Length() * params.forwardofs, params.zofs ), false );
+						if ( summoned ) {
+							vector2 dirFromPlayer = player.Vec2To( summoned );
+							summoned.SetOrigin( summoned.pos + ( dirFromPlayer / dirFromPlayer.Length() * params.forwardofs, params.zofs ), false );
 
-						PostActorSummon( summoned, player );
+							PostActorSummon( summoned, player );
+						}
 					}
 				} else {
 					vector3 spawnpos = player.Vec3Angle( summoneeDef.radius * 2 + player.radius + params.forwardofs, player.angle, 8.0 + params.zofs );
 
 					for ( int i = 0; i < summoneeAmount; i++ )
-						PostActorSummon( Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE ), player );
+						PostActorSummon( summoned = Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE ), player );
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
-				ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. "of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
+				if ( summoned )
+					ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. "of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
+				else
+					ZCGlobal.Log( LL_Main, TEXTCOLOR_BRICK .. "Cannot summon actor class" .. ( summoneeAmount > 1? "es " : " " ) .. TEXTCOLOR_DARKGRAY .. "\"" .. TEXTCOLOR_GRAY .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
 			} // of if ( player ) {}
 
 		} else {
