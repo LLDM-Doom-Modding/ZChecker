@@ -699,7 +699,7 @@ class ZCheckerSectorSetter: Actor {
 				SetOrigin( pos + ( jumpLen.x, jumpLen.y, 0 ), false );
 				curJumpAmount++;
 			} else {
-				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. TEXTCOLOR_WHITE .. cls.GetClassName() .. TEXTCOLOR_DARKBROWN .. "\", is it abstract?" );
+				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. TEXTCOLOR_WHITE .. cls.GetClassName() .. TEXTCOLOR_DARKBROWN .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
 			}
 		} else {
 			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::DoJump(). " .. LLCOLOR_WARNING .. "Warning" .. LLCOLOR_MAIN .. ": maximal amount of jumps (" .. jumpMaxAmount .. ") was reached, actor \"" .. cls.GetClassName() .. "\" not spawned." );

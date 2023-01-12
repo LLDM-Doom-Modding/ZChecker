@@ -285,8 +285,8 @@ class ZCRemCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_rem",
-			"zcrem <pos>|a[ll];zcclear [<pos>]",
-			"Remove testee from <pos>. Removes whole list if keyword \"all\" is presented in the \"zcrem\"; or if argument is omitted in the \"zcclear\"."
+			"zcrem [<pos>];zcclear [<pos>]",
+			"Remove testee from <pos>; removes the whole list if no argument provided."
 		);
 	}
 
