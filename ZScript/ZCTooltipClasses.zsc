@@ -110,8 +110,7 @@ class ZCTooltipTakeCommand: ZCTooltipGeneralActorMasks {
 class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
 	override String GetExamples() {
 		return HighlightText(
-			"\"`Czcsummon clip`C\" creates a clip actor;\n" ..
-			"\"`Czcsummon clip 12`C\" creates 12 clip actors;\n" ..
+			"\"`Czcsummon clip`C\" creates a Clip actor;\n" ..
 			"\"`Czcsummon r`2-`Claun`2-`x\" creates a R`~ocket`xLaun`~cher`x;\n" ..
 			"\"`Czcsummon z`2*`Cman 4`x\" creates four Zombiemen;\n" ..
 			"\"`Czcsummon $2 15`x\" summons fifteen actors of class in the second panel;\n" ..
@@ -119,6 +118,7 @@ class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
 			"\"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\n" ..
 			"\"`Czcsummon sta`2*`Cff`2:1`x\" will also summon a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
 			"\"`Czcsummon z`2*`Cman 3 f`x\" or \"`Czcsummon z`2*`Cman 3 friendly`x\" summons three `1friendly`x Zombiemen;\n" ..
+			"\"`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x\" summons `1friendly`x Zombieman and adds it to the `g3`xrd `gpanel position`x;\n" ..
 			"\"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" summons one faced from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value."
 		);
 	}

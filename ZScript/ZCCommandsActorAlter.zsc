@@ -252,6 +252,10 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 struct ZCSummonExtraParameters play {
 	const SPECARGS_MAX = 5;
+	const INFOPANEL_IGNORE = -2;
+	const INFOPANEL_NOFREE = -1;
+
+	int infopanelPos;
 
 	double faceangle;
 	bool isAngled;
@@ -271,6 +275,8 @@ struct ZCSummonExtraParameters play {
 	bool cannotInfight;
 
 	void Clear( void ) {
+		infopanelPos = INFOPANEL_IGNORE;
+
 		isAngled = false;
 		isFaceangleRelative = false;
 		faceangle = 0.0;
@@ -329,8 +335,8 @@ class ZCSummonCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_summon",
-			"zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,arg0-4,zofs,fofs,hp,aggr (...:<value>),notproj,friend|foe,[no]infi>]",
-			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, hp|health:<hp>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, aggr[essiveness]:<dflt55>, [no]infi[ght].",
+			"zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,panel|add,arg0-4,zofs,fofs,hp,aggr (...:<value>), notproj,friend|foe,[no]infi>]",
+			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, panel|add[:<pos>], tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, hp|health:<hp>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, aggr[essiveness]:<dflt55>, [no]infi[ght].",
 			'ZCTooltipSummonCommand'
 		);
 	}
@@ -382,6 +388,20 @@ class ZCSummonCommand: ZCConsoleCommand {
 					} else if ( curparam.Left( 6 ) == "noinfi" ) {
 						params.forceInfight = false;
 						params.cannotInfight = true;
+
+					// Arguments:
+					} else if ( curparam.Left( 3 ) == "add" || curparam.Left( 5 ) == "panel" ) {
+						if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
+							String panelposStr = curparam.Mid( colonIndex + 1, curparam.Length() - colonIndex - 1 );
+							int panelposNum = params.INFOPANEL_IGNORE;
+
+							if ( str2int_Ptr( panelposStr, +panelposNum ) && checkTesteePlace( --panelposNum ) )
+								params.infopanelPos = panelposNum;
+							else
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. panelposStr .. "\"." );
+						} else {
+							params.infopanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
+						}
 
 					} else if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
 						if ( colonIndex < curparam.Length() ) {
@@ -490,13 +510,13 @@ class ZCSummonCommand: ZCConsoleCommand {
 			return;
 
 		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( "summoning more than 200 actors" ) ) {
-			ZCGlobal.Log( LL_Main, "Trying to summon more than 200 actors in once. " .. TEXTCOLOR_DARKGRAY .. "You may disable this limiting switching the \"Allow dangerous actions\" option." );
+			ZCGlobal.Log( LL_Main, "Trying to summon more than 200 actors in once. " .. TEXTCOLOR_DARKGRAY .. "You may disable this limit switching the \"Allow dangerous actions\" option." );
 			return;
 		}
 
 		class<Actor> summoneeClass = summonee;
 
-		if ( summoneeClass is 'Actor' ) {
+		if ( summoneeClass ) {
 			// See GZDoom source code -> "src/d_net.cpp" -> "Net_DoCommand()".
 			Actor player = players[ ccmd.e.Player ].mo;
 
@@ -524,10 +544,23 @@ class ZCSummonCommand: ZCConsoleCommand {
 						PostActorSummon( summoned = Actor.Spawn( summoneeClass, spawnpos, ALLOW_REPLACE ), player );
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
-				if ( summoned )
+				if ( summoned ) {
 					ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. "of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
-				else
+
+					if ( params.infopanelPos == params.INFOPANEL_NOFREE ) {
+						ZCGlobal.Log( LL_Main, "Cannot add actor to list, insufficient place. Try set target to list directly via parameter \"panel:1\"..\"panel:" .. MaxTestee .. "\"." );
+					} else if ( params.infopanelPos != params.INFOPANEL_IGNORE ) {
+						ZCheckerField field = ccmd.handler.Testee[ params.infopanelPos ];
+
+						field.mo = summoned;
+						field.UpdateMetainformationOnAdd( ccmd );
+
+						if ( summoneeAmount > 1 )
+							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Only last summoned actor added to the list." );
+					}
+				} else {
 					ZCGlobal.Log( LL_Main, TEXTCOLOR_BRICK .. "Cannot summon actor class" .. ( summoneeAmount > 1? "es " : " " ) .. TEXTCOLOR_DARKGRAY .. "\"" .. TEXTCOLOR_GRAY .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
+				}
 			} // of if ( player ) {}
 
 		} else {
