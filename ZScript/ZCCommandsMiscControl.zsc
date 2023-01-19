@@ -277,22 +277,15 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 			} else if ( curThinker is "Actor" ) {
 				// Find next free testee place ("-1" if not found):
-				if ( zcActionArg == -1 ) {
-					for ( int i = 0; i < MaxTestee && zcActionArg == -1; i++ )
-						if ( ccmd.handler.Testee[ i ].mo == NULL )
-							zcActionArg = i;
-				}
+				if ( zcActionArg == -1 )
+					zcActionArg = ZCAddCommand.FindFreeTesteePlace( ccmd );
 
 				if ( zcActionArg == -1 ) {
 					ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set actor to list directly via \"zcaddlistget <...> [1.." .. MaxTestee .. "]\"." );
 				} else {
 					ZCheckerField field = ccmd.handler.Testee[ zcActionArg ];
 					field.mo = Actor( curThinker );
-
-					SetInternalZCheckerString( "$last", field.mo.GetClassName() );
-					ccmd.handler.UpdateInternalClassnameByField( zcActionArg );
-
-					field.UpdateHash( ccmd.e.Player );
+					field.UpdateMetainformationOnAdd( ccmd );
 
 					ZCGlobal.Log( LL_Detailed, "Added a world actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
 				} // of else of if ( zcActionArg == -1 ) {}

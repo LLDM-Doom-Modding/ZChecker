@@ -6,7 +6,7 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
-		String info = ( thingfield.fieldPos + 1 ) .. ". ";
+		String info = ( thingfield.GetFieldPos() + 1 ) .. ". ";
 
 		if ( thingfield.actorType == IAT_Normal )
 			info = info .. GREEN .. thing.GetClassName();
@@ -335,13 +335,14 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				curState = st = weapOwner.player.psprites.CurState;
 		}
 
-		State prevlogst = prevLogStates[ thingfield.fieldPos ].st;
+		int fieldPos = thingfield.GetFieldPos();
+		State prevlogst = prevLogStates[ fieldPos ].st;
 
 		if ( prevlogst && prevlogst != st ) {
-			String logstr = ( thingfield.fieldPos + 1 ) .. ". " .. DecoratedState( st );
+			String logstr = ( fieldPos + 1 ) .. ". " .. DecoratedState( st );
 
 			/*String logstr = String.Format( "%i. \c-" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-",
-							( thingfield.fieldPos + 1 ),
+							( fieldPos + 1 ),
 							( isWeapon? "" .. weapOwner.player.psprites.sprite : "" .. thing.Sprite ),
 							st.Frame + 65, st.Tics );*/
 
@@ -374,7 +375,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, logstr );
 		}
 
-		prevLogStates[ thingfield.fieldPos ].st = st;
+		prevLogStates[ fieldPos ].st = st;
 		prevLogStateTics = thing.Tics;
 	} // of protected void DoStatesLogging( Actor thing, ZCheckerField thingfield ) {}
 

@@ -41,7 +41,7 @@ class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 			"Right now there's two maps:\n" ..
 			LISTPREFIX .. "\"`2Everything`2\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures) and may be out-of-date in ZChecker beta versions; `dand`x\n" ..
 			LISTPREFIX .. "\"`2Everything_simpled`2\", lightweight, but fully functional variant.\n\n" ..
-			"	`1Warning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`x. The consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
+			"	`gWarning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`g. `xThe consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
 		) );
 	}
 
@@ -143,7 +143,7 @@ class ZCTooltipThinkersControlCommand: ZCTooltipClass {
 			"\"`Czcthinkers l`x\"/\"`Czclistthinkers`x\" prints out a help list with all recognizable StatNum types aliases;\n" ..
 			"\"`Czcthinkers a l`x\"/\"`Czclistthinkers actors`x\" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);\n" ..
 			"\"`Czcthinkers 100 l`x\" does the same as a command above: an `2actors`x alias actually converts to the value `y100`x;\n" ..
-			"\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level;\n" ..
+			"\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level `d(same action as in the \"`Cremove zombieman`d\");\n" ..
 			"\"`Czcthinkers static rm 1`x\" removes a 1st element in the set of the static thinkers (`~STAT_STATIC`~);\n" ..
 			"\"`Czcthinkers a add`g:2`C 17`x\" adds a 17th actor from the list to the second informational panel;\n" ..
 			"\"`Czcthinkers sl rm`2:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~)."
@@ -169,7 +169,10 @@ class ZCTooltipPanelsControlCommand: ZCTooltipClass {
 class ZCTooltipSetFlagCommand: ZCTooltipClass {
 	override String GetPlaintext() {
 		return IndentTabList( HighlightText(
-			"Some flags by default changes immediately. These include:\n" ..
+			"You may use next aliases as a target value:\n" ..
+			"	`g1`x, `gt`x, `gtrue`d or `gset`x: to set the flag;\n" ..
+			"	`g0`x, `gf`x, `gfalse`d or `greset`x: to clear the flag.\n" ..
+			"Note that only a few frequently used flags by default changes immediately. These include:\n" ..
 			"	`2Physics`x: SOLID, SHOOTABLE, NONSHOOTABLE, NOGRAVITY, NOINTERACTION, NOBLOCKMAP, NOSECTOR;\n" ..
 			"	`2Behaviour`x: FRIENDLY, FLOAT, NOTARGET, FORCEINFIGHTING, NOINFIGHTING;\n" ..
 			"	`2Defences`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x\n" ..

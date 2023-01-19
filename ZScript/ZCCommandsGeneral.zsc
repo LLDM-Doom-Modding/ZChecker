@@ -165,17 +165,27 @@ class ZCAddCommand: ZCConsoleCommand {
 			}
 		} // of if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
 
-		// Find next free testee place ("-1" if not found):
-		if ( outValue && zcPos == -1 ) {
-			for ( int i = 0; i < MaxTestee && zcPos == -1; i++ )
-				if ( ccmd.handler.Testee[ i ].mo == NULL )
-					zcPos = i;
-		}
-
 		return outValue;
 	}
 
+	// Finds next free testee place ("-1" if not found):
+	static int FindFreeTesteePlace( ZCheckerCCMDInfo fccmd ) {
+		int outpos = -1;
+
+		for ( int i = 0; i < MaxTestee; i++ ) {
+			if ( fccmd.handler.Testee[ i ].mo == NULL ) {
+				outpos = i;
+				break;
+			}
+		}
+
+		return outpos;
+	} // of static int FindFreeTesteePlace( ZCheckerCCMDInfo fccmd ) {}
+
 	override void DoCommand( void ) {
+		if ( zcPos == -1 )
+			zcPos = FindFreeTesteePlace( ccmd );
+
 		if ( zcPos != -1 ) {
 			PlayerInfo player = players[ ccmd.e.Player ];
 
@@ -258,12 +268,7 @@ class ZCAddCommand: ZCConsoleCommand {
 					break;
 			}
 
-			if ( field.mo ) {
-				SetInternalZCheckerString( "$last", field.mo.GetClassName() );
-				ccmd.handler.UpdateInternalClassnameByField( zcPos );
-
-				field.UpdateHash( ccmd.e.Player );
-			}
+			field.UpdateMetainformationOnAdd( ccmd );
 
 		} else {
 			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd [1.." .. MaxTestee .. "]\"." );

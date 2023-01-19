@@ -14,18 +14,19 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Submenu "Panels visual settings", "mcm_ZChecker_ControlMenu_PanelsVisual"
 	Control "Open panels order menu", "openmenu mcm_ZChecker_ControlMenu_Panels"
 	Control "Open visual settings menu", "openmenu mcm_ZChecker_ControlMenu_PanelsVisual"
-
 	StaticText " "
 	StaticText "Console commands menu [WIP]", GOLD
 	Submenu "Call console command", "mcm_ZChecker_ControlMenu_CallCCMD"
 	Control "Open CCMD call menu", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
+	StaticText " "
+	StaticText "\"Everything\" map", GOLD
+	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
+	Control "Open map settings", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
 
 	StaticText " "
-	StaticText "Other options", GOLD
-	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
-	StaticText " "
+	StaticText "Other settings", GOLD
 	Option "Netevents info intercepting", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_specinfo_netevents"
-    StaticText "Try to caught a network events information.", DARKGRAY
+    StaticText "Tries to catch a network events information.", DARKGRAY
 	StaticText " "
 	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
     StaticText "Allow operations that are known to crash the game.", DARKGRAY
@@ -33,6 +34,8 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Option "No ZC-classes special handling", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
     StaticText "Do not alter handling for the ZChecker", DARKGRAY
 	StaticText "special actors and classes.", DARKGRAY
+	StaticText " "
+	Control "Open current menu", "openmenu mcm_ZChecker_ControlMenu"
 	StaticText " "
 	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "Will be updated after up to five world tics.", DARKGRAY
@@ -50,8 +53,11 @@ OptionMenu "mcm_ZChecker_ControlMenu_PanelsVisual" {
     StaticText " "
 
     StaticText "Positioning", GOLD
-	Slider "Screen start X, %", "mcm_zchecker_infopanel_startx", 0.0, 100.0, 1.0, 0
-	Slider "Screen start Y, %", "mcm_zchecker_infopanel_starty", 0.0, 99.0, 1.0, 0
+	Slider "Screen start X, %",    "mcm_zchecker_infopanel_startx", 0.0, 99.0, 1.0, 0
+	Slider "Screen start X, x10%", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
+	Slider "Screen start Y, %",    "mcm_zchecker_infopanel_starty", 0.0, 99.0, 1.0, 0
+	Slider "Screen start Y, x10%", "mcm_zchecker_infopanel_starty", 0.0, 99.0, 10.0, 0
+    StaticText " "
 	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "Screen scale", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
 	Slider "Panels interval Y, multiplier", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
@@ -98,11 +104,9 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
     StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
 	StaticText " "
-	Control "Open Everything map menu", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
-	StaticText " "
-	Slider "Actor info string X, %", "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 1.0, 0
+	Slider "Actor info string X, %",    "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 1.0, 0
 	Slider "Actor info string X, x10%", "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 10.0, 0
-	Slider "Actor info string Y, %", "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 1.0, 0
+	Slider "Actor info string Y, %",    "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 1.0, 0
 	Slider "Actor info string Y, x10%", "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 10.0, 0
 	Slider "Actor info string scale", "mcm_zchecker_ev_infostr_scale", 0.5, 4.0, 0.1, 1
 	Option "General ZChecker font", "mcm_zchecker_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
@@ -214,7 +218,7 @@ OptionMenu "mcm_ZCheckerSubmenu_inventory" {
 
 	Slider "Amount of elements", "mcm_zchecker_infovar_invamount", 8, 80, 2, 0
 	Option "Sort output by", "mcm_zchecker_infovar_invsorttype", "mcm_ZCheckerOption_panelinv_sorttypes"
-	Option "Ascending (reverse) output", "mcm_zchecker_infovar_invsortascend", "YesNo"
+	Option "Ascending (reversed) output", "mcm_zchecker_infovar_invsortascend", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_states" {

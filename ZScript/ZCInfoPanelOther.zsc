@@ -56,9 +56,11 @@ class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
 
 			outStr = outStr .. ( ( !foundTeammates )? DARKGRAY .. "none" : "\c-" ) .. ";\n  Teammate testees: " .. GRAY;
 
+			int curFieldPos = thingfield.GetFieldPos();
 			foundTeammates = false;
+
 			for ( int i = 0; i < MaxTestee; i++ )
-				if ( thingfield.fieldPos != i && handler.Testee[ i ].mo && handler.Testee[ i ].mo.DesignatedTeam ) {
+				if ( curFieldPos != i && handler.Testee[ i ].mo && handler.Testee[ i ].mo.DesignatedTeam ) {
 					outStr = i .. " ";
 					foundTeammates = true;
 				}

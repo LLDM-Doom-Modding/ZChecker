@@ -54,12 +54,26 @@ class ZCheckerCCMDInfo play {
 
 // A panel field storing object in question; right now only for Actors.
 class ZCheckerField {
-	uint fieldPos;
+	private uint fieldPos;
 	Actor mo;				// Testee actor itself.
 	EZCheckerInfoActorType actorType;
 
 	uint asyncwith;			// Warn in multiplayer (0 == synced, 1..8 == player).
 	String hashsync[ MAXPLAYERS ];
+
+
+	play void UpdateMetainformationOnAdd( ZCheckerCCMDInfo fccmd ) {
+		if ( !mo )
+			return;
+
+		ZCGlobal.Get().SetZCheckerString( "$last", mo.GetClassName() );
+		fccmd.handler.UpdateInternalClassnameByField( fieldPos );
+		UpdateHash( fccmd.e.Player );
+	}
+
+	int GetFieldPos( void ) {
+		return fieldPos;
+	}
 
 
 	static ZCheckerField Create( int testeepos ) {
