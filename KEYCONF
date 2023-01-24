@@ -19,6 +19,7 @@ alias zcwrite "zcsetprop %1 %2 %3"
 alias zcw "zcsetprop %1 %2 %3"
 
 alias zcsetstate "netevent zc_setstate@@%1@@%2"
+alias zcsetst "zcsetstate %1 %2"
 alias zcsets "zcsetstate %1 %2"
 alias zcst "zcsetstate %1 %2"
 

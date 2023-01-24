@@ -742,7 +742,7 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setstate",
-			"zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcst [<pos>] <state label>",
+			"zcsetstate [<pos>] <state label>;zcsets[t] [<pos>] <state label>;zcst [<pos>] <state label>",
 			"Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic."
 		);
 	}

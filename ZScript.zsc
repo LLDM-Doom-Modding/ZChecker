@@ -348,7 +348,7 @@ class ZCheckerHandler: StaticEventHandler {
 		double infopanelOffsetX = CVar.FindCVar( "mcm_zchecker_infopanel_offsetx" ).GetFloat();
 		double infopanelPartsSpaceY = CVar.FindCVar( "mcm_zchecker_infopanelparts_y_gap" ).GetFloat();
 
-		// Thanks to m8f for the "drawTextCenter()" function code from its "Hellscape Navigator".
+		// Thanks to m8f for the "drawTextCenter()" function code from his "Hellscape Navigator".
 		double bordersXMargin = 4.0;
 		double scale = 1.0 / infopanelScale;
 
@@ -472,8 +472,8 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( multiplayer && ccmdName ~== "zc_multiplayer_synctest" ) {
 			if ( e.args[ 1 ] != consoleplayer ) {
 				if ( zcCCMDInfo.args.Size() == 1 ) {
-					uint testeePos = e.args[ 0 ];
-					uint srcPlayer = e.args[ 1 ];
+					uint testeePos = uint( e.args[ 0 ] );
+					uint srcPlayer = uint( e.args[ 1 ] );
 
 					bool argerror = false;
 
@@ -491,7 +491,7 @@ class ZCheckerHandler: StaticEventHandler {
 						Testee[ testeePos ].asyncwith = ( ( Testee[ testeePos ].hashsync[ srcPlayer ] == zcCCMDInfo.args[ 0 ] )? 0 : srcPlayer + 1 );
 
 				} else {
-					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent has wrong amount of arguments (must be 3, got " .. zcCCMDInfo.args.Size() .. ")." );
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). Multiplayer sync netevent has wrong amount of arguments (must be 1, got " .. zcCCMDInfo.args.Size() .. ")." );
 					ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Name: \"" .. TEXTCOLOR_TAN .. e.Name .. "\c-\"." );
 				}
 			}

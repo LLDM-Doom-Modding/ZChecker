@@ -9,13 +9,13 @@ enum EZCheckerLogLevels {
 	LL_Detailed,
 	LL_Debug,
 
+	LL_Critical = LL_Emergency,
+	LL_Avary 	= LL_Emergency,
 	LL_Common 	= LL_General,
 	LL_Normal 	= LL_General,
 	LL_Main 	= LL_General,
 	LL_Extended = LL_Detailed,
 	LL_Extra 	= LL_Detailed,
-	LL_Critical = LL_Emergency,
-	LL_Avary 	= LL_Emergency,
 
 	LL_FlagsMask	= 0xFFF0,
 	LL_NoDot		= 0x4000,

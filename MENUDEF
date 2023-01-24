@@ -7,21 +7,18 @@ AddOptionMenu "OptionsMenu" {
 
 OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "ZChecker control"
-	StaticText " "
 
-	StaticText "Information panels", GOLD
-	Submenu "Panels control", "mcm_ZChecker_ControlMenu_Panels"
-	Submenu "Panels visual settings", "mcm_ZChecker_ControlMenu_PanelsVisual"
-	Control "Open panels order menu", "openmenu mcm_ZChecker_ControlMenu_Panels"
-	Control "Open visual settings menu", "openmenu mcm_ZChecker_ControlMenu_PanelsVisual"
 	StaticText " "
-	StaticText "Console commands menu [WIP]", GOLD
-	Submenu "Call console command", "mcm_ZChecker_ControlMenu_CallCCMD"
-	Control "Open CCMD call menu", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
-	StaticText " "
-	StaticText "\"Everything\" map", GOLD
+	StaticText "General categories", GOLD
+	Submenu "Informational panels control", "mcm_ZChecker_ControlMenu_Panels"
+	Submenu "Call console command [WIP]", "mcm_ZChecker_ControlMenu_CallCCMD"
 	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
-	Control "Open map settings", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
+	Submenu "HUD & visual settings", "mcm_ZChecker_ControlMenu_VisualSettings"
+	StaticText " "
+	Control "Open infopanels menu key", "openmenu mcm_ZChecker_ControlMenu_Panels"
+	Control "Open CCMD call menu key", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
+	Control "Open \"Everything\" map settings key", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
+	Control "Open visual settings menu key", "openmenu mcm_ZChecker_ControlMenu_VisualSettings"
 
 	StaticText " "
 	StaticText "Other settings", GOLD
@@ -35,7 +32,7 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     StaticText "Do not alter handling for the ZChecker", DARKGRAY
 	StaticText "special actors and classes.", DARKGRAY
 	StaticText " "
-	Control "Open current menu", "openmenu mcm_ZChecker_ControlMenu"
+	Control "Open this controls menu key", "openmenu mcm_ZChecker_ControlMenu"
 	StaticText " "
 	Option "Log level", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "Will be updated after up to five world tics.", DARKGRAY
@@ -48,25 +45,31 @@ OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {
     class "ZCOptionMenuPanels"
 }
 
-OptionMenu "mcm_ZChecker_ControlMenu_PanelsVisual" {
-    Title "ZChecker: Panels visual settings"
+OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
+    Title "ZChecker: HUD and visual settings"
     StaticText " "
 
-    StaticText "Positioning", GOLD
-	Slider "Screen start X, %",    "mcm_zchecker_infopanel_startx", 0.0, 99.0, 1.0, 0
-	Slider "Screen start X, x10%", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
-	Slider "Screen start Y, %",    "mcm_zchecker_infopanel_starty", 0.0, 99.0, 1.0, 0
-	Slider "Screen start Y, x10%", "mcm_zchecker_infopanel_starty", 0.0, 99.0, 10.0, 0
-    StaticText " "
-	Slider "Screen offset X, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
-	Slider "Screen scale", "mcm_zchecker_infopanel_scale", 0.5, 4.0, 0.1, 1
+    StaticText "Panels positioning", GOLD
+	Slider "Panels start X, %",    "mcm_zchecker_infopanel_startx", 0.0, 99.0, 1.0, 0
+	Slider "Panels start X, x10%", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
+	Slider "Panels start Y, %",    "mcm_zchecker_infopanel_starty", 0.0, 99.0, 1.0, 0
+	Slider "Panels start Y, x10%", "mcm_zchecker_infopanel_starty", 0.0, 99.0, 10.0, 0
+	Slider "Next panels X offset, %", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
+	Slider "Panels scale", "mcm_zchecker_infopanel_scale", 0.5, 8.0, 0.1, 1
 	Slider "Panels interval Y, multiplier", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "
-    StaticText "Background", GOLD
+    StaticText "Panels background", GOLD
 	Option "Enabled", "mcm_zchecker_infopanel_dimenabled", "YesNo"
 	ColorPicker "Background color", "mcm_zchecker_infopanel_dimcolor"
 	Slider "Background alpha", "mcm_zchecker_infopanel_dimalpha", 0.0, 1.0, 0.05, 2
 	Slider "Border width", "mcm_zchecker_infopanel_dimborderwidth", 0.0, 2.0, 0.1, 1
+    StaticText " "
+    StaticText "\"Everything\" map actor info", GOLD
+	Slider "Actor info string X, %",    "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 1.0, 0
+	Slider "Actor info string X, x10%", "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 10.0, 0
+	Slider "Actor info string Y, %",    "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 1.0, 0
+	Slider "Actor info string Y, x10%", "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 10.0, 0
+	Slider "Actor info string scale", "mcm_zchecker_ev_infostr_scale", 0.5, 8.0, 0.1, 1
     StaticText " "
     StaticText "Other", GOLD
 	Option "General font", "mcm_zchecker_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
@@ -104,13 +107,6 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
     StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
 	StaticText " "
-	Slider "Actor info string X, %",    "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 1.0, 0
-	Slider "Actor info string X, x10%", "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 10.0, 0
-	Slider "Actor info string Y, %",    "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 1.0, 0
-	Slider "Actor info string Y, x10%", "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 10.0, 0
-	Slider "Actor info string scale", "mcm_zchecker_ev_infostr_scale", 0.5, 4.0, 0.1, 1
-	Option "General ZChecker font", "mcm_zchecker_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
-	StaticText " "
 	StaticText "Related CCMDs (closes menu)", GOLD
 	Command "Recreate actors: \"zcevre\"", "zcev recreate", 0, 1
 	Command "Teleport to start: \"zcevg start\"", "zcev goto start", 0, 1
@@ -134,7 +130,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 	Command "\"zcrem\": Clear all panels", "zcrem"
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
-	//class "ZCOptionMenuCallCCMD"
+	//class "ZCOptionMenuCallCCMD" // [WIP]: not written yet.
 }
 
 
