@@ -31,7 +31,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( AddStaticText() );
-		desc.mItems.Push( AddStaticText( GOLD .. "Information panels settings:" ) );
+		desc.mItems.Push( AddStaticText( GOLD .. "Informational panels settings:" ) );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ";" ) );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "', '" .. GRAY .. "-" .. DARKGRAY .. "', " .. GRAY .. "<KP+>" .. DARKGRAY .. " or " .. GRAY .. "<KP->" .. DARKGRAY .. "." ) );
 		desc.mItems.Push( AddStaticText( DARKGRAY .. "Note: order will be saved after one play tic." ) );
@@ -41,7 +41,7 @@ class ZCOptionMenuPanels: OptionMenu {
 	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( AddStaticText() );
 		desc.mItems.Push( AddStaticText( TEXTCOLOR_GOLD .. "Panels order reset" ) );
-		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset information panels order", self ) );
+		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset informational panels order", self ) );
 		desc.mItems.Push( AddStaticText() );
 	}
 
@@ -321,7 +321,7 @@ class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
 
 			Menu.MenuSound( "menu/activate" );
 
-			ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The information panels order has been reset." );
+			ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The informational panels order has been reset." );
 		}
 
 		return true;

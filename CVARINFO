@@ -46,6 +46,7 @@ user string mcm_zchecker_infopanelsorder_part9;
 user bool mcm_zchecker_info_main			= true;	 // Classname, pointer.
 user int  mcm_zchecker_infovar_maintags		= 2;	 //  \_ "Never", "If different from classname", "Always"
 user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
+user bool mcm_zchecker_infovar_mainplayers	= false; //  \_ Player information.
 
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
 user bool mcm_zchecker_infovar_wposplayerbuttons = false;

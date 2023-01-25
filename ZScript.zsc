@@ -19,7 +19,7 @@ version "3.3.0"
 #include "ZScript/ZCCommandsMiscControl.zsc"
 #include "ZScript/ZCTooltipClasses.zsc"
 
-// Information panels classes:
+// Informational panels classes:
 #include "ZScript/ZCInfoPanelMain.zsc"
 #include "ZScript/ZCInfoPanelPointers.zsc"
 #include "ZScript/ZCInfoPanelGeometry.zsc"
@@ -285,7 +285,7 @@ class ZCheckerHandler: StaticEventHandler {
 		handlerInitSuccess = true;
 		SetOrder( ZCheckerHandlerOrder );
 
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker initializes..." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker v" .. ZCheckerVersion .. " initializes..." );
 
 		panels = ZCPanelsStorage.Create();
 
@@ -371,7 +371,7 @@ class ZCheckerHandler: StaticEventHandler {
 			double maxStringWidth = 0.0;
 
 
-			// Forming a full information panel:
+			// Forming a full informational panel:
 			Array<String> panelsstr;
 			Array<double> panelsheights;
 			panelsstr.Clear();

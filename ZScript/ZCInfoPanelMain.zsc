@@ -15,9 +15,19 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 		int displayTagsMode = CVar.GetCVar( "mcm_zchecker_infovar_maintags", players[ consoleplayer ] ).GetInt();
 		bool displaySelfPointerMode = CVar.GetCVar( "mcm_zchecker_infovar_mainselfptr", players[ consoleplayer ] ).GetBool();
+		bool displayPlayersInfo = CVar.GetCVar( "mcm_zchecker_infovar_mainplayers", players[ consoleplayer ] ).GetBool();
 
 		if ( displayTagsMode == 2 || ( displayTagsMode == 1 && thing.GetTag() != thing.GetClassName() ) )
 			info = info .. "\n" .. ORANGE .. "Tag" .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
+
+		if ( displayPlayersInfo && thing.player ) {
+			int playernum = thing.PlayerNumber() + 1;
+
+			if ( thing.player.bot )
+				info = info .. "\n" .. DARKBROWN .. "Bot player " .. playernum .. ".";
+			else
+				info = info .. "\n" .. DARKBROWN .. "Player " .. playernum .. " name " .. GRAY .. thing.player.GetUserName() .. DARKBROWN .. ".";
+		}
 
 		if ( displaySelfPointerMode )
 			info = info .. "\n" .. BLACK .. "&self: " .. DARKGRAY .. thing;

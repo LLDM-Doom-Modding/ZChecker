@@ -196,8 +196,9 @@ OptionMenu "mcm_ZCheckerSubmenu_main" {
 	Title "ZChecker panel: General info"
 	StaticText " "
 
-	Option "Actor tags", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
+	Option "Actor tags, player info", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
 	Option "Self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
+	Option "Player information", "mcm_zchecker_infovar_mainplayers", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_worldpos" {

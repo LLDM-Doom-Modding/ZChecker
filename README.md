@@ -75,6 +75,10 @@ Due to internal netevent realization restrictions in the engine you are not able
 
 - **Dezette** a.k.a. **MyNameIs** for the alternative monospaced smallfont;
 
+- **Agent_Ash**, for the translation check and interface advices;
+
 - **Sir Robin**, for his [ZScript quicksort library](https://forum.zdoom.org/viewtopic.php?f=105&t=75757);
 
-- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Chameleon_111**, **Il Str**, **Dezette**.
+- **m8f**, for the GUI code from his [Hellscape Navigator](https://forum.zdoom.org/viewtopic.php?t=61643);
+
+- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Chameleon_111**, **Il Str**, **Dezette**, **Agent_Ash**.
