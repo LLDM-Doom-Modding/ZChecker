@@ -217,8 +217,13 @@ OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 	Title "ZChecker panel: World positioning"
 	StaticText " "
 
-	Option "Remove roll tilt", "mcm_zchecker_infovar_wposnoroll", "YesNo"
-	Option "Player buttons", "mcm_zchecker_infovar_wposplayerbuttons", "YesNo"
+	StaticText "Tilts", GOLD
+	Slider "Amount of decimals", "mcm_zchecker_infovar_wpostiltdcma", 0, 5, 1, 0
+	Option "Remove roll", "mcm_zchecker_infovar_wposnoroll", "YesNo"
+
+	StaticText " "
+	StaticText "Other", GOLD
+	Option "Player buttons", "mcm_zchecker_infovar_wposplbuttons", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_inventory" {

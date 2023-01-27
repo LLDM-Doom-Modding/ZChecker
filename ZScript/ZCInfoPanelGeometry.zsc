@@ -163,7 +163,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		switch ( printSecFlagsMode ) {
 			case 1: // Short flag names.
 				addSecFlag( Sector.SECF_SILENT, "qit" );
-				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "-fld" );
+				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "-fald" );
 				addSecFlag( Sector.SECF_FLOORDROP, "lftd" );
 				addSecFlag( Sector.SECF_NORESPAWN, "-rspw" );
 				addSecFlag( Sector.SECF_FRICTION, "fric" );
@@ -199,7 +199,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 				addSecFlag( Sector.SECF_HAZARD, "strifehzrd" );
 				addSecFlag( Sector.SECF_WASSECRET, "wassecr" );
 				addSecFlag( Sector.SECF_SECRET, "newsecr" );
-				addSecFlag( 2048, "-monatk" ); // Not found in GZDoom 3.3.0.
+				addSecFlag( 2048, "-monsatk" ); // Not found in GZDoom 3.3.0.
 				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fakeflr" );
 				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "clipfakeplns" );
 				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "-fakelit" );
@@ -352,6 +352,8 @@ struct TerrainDef native {
 		return outinfo;
 	}
 } // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {}
+
+
 
 class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {

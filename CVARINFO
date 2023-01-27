@@ -52,8 +52,10 @@ user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
 user bool mcm_zchecker_infovar_mainplayers	= false; //  \_ Player information.
 
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
-user bool mcm_zchecker_infovar_wposplayerbuttons = false;
-user bool mcm_zchecker_infovar_wposnoroll 	= false;
+user int  mcm_zchecker_infovar_wpostiltdcma	= 2;	 //  \_ Tilts decimals amount.
+user bool mcm_zchecker_infovar_wposnoroll 	= false; //  \_ Remove roll tilt displaying.
+user bool mcm_zchecker_infovar_wposplbuttons = false;//  \_ Show player buttons.
+
 user bool mcm_zchecker_info_maininteract	= true;	 // Health, mass, etc.
 
 user bool mcm_zchecker_info_geomsectors		= false; // Sectors linked to the actor.
@@ -79,11 +81,13 @@ user bool mcm_zchecker_info_inventory		= true;  // Inventory.
 user int  mcm_zchecker_infovar_invamount	= 40;    //  \_ Maximal amount of elements in output.
 user int  mcm_zchecker_infovar_invsorttype	= 0;	 //  \_ Sorting type: "Unsorted", "By names", "By amount".
 user bool mcm_zchecker_infovar_invsortascend= false; //  \_ Descending (false) or ascending (true) order.
+
 user bool mcm_zchecker_info_states			= true;	 // States and frames.
 user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states (unlimited, 1, 2, ..., 25).
 user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information;
 user int  mcm_zchecker_infovar_stateextras 	= 0;	 //  \_ Current state extra information (flags, PState X/Y, etc.);
 user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
+
 user bool mcm_zchecker_info_visual			= false; // Sprite, alpha, RenderStyle, etc.
 
 user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
@@ -95,7 +99,7 @@ user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
 //user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
-user bool mcm_zchecker_info_sound			= false;
+user bool mcm_zchecker_info_sounddefs		= false;
 
 // The "Everything" map console variables.
 server bool mcm_zchecker_ev_forcemap		= false; // Skip the Everything map check (use the code attached to it on any map).

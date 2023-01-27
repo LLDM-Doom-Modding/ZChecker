@@ -87,13 +87,19 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		String outStr = "";
 
 		bool skipRollTilt = CVar.GetCVar( "mcm_zchecker_infovar_wposnoroll", players[ consoleplayer ] ).GetBool();
+		int decimalsAmount = CVar.GetCVar( "mcm_zchecker_infovar_wpostiltdcma", players[ consoleplayer ] ).GetInt();
+
+		String decimalsfmt = ( decimalsAmount == 0? "%i" : "%." .. decimalsAmount .. "f" );
 
 		if ( skipRollTilt ) {
-			outStr = String.Format( "Tilt: (" .. DARKGRAY .. "a\c-%.2f, " .. DARKGRAY .. "p\c-%.2f);\n", thing.angle % 360.0, thing.pitch );
+			outStr = String.Format( "Tilt: (" .. DARKGRAY
+							.. "a\c-" .. decimalsfmt .. ", " .. DARKGRAY
+							.. "p\c-" .. decimalsfmt .. ");\n", thing.angle % 360.0, thing.pitch );
 		} else {
-			outStr = "Tilt: (\cUa\c-" .. int( thing.angle % 360.0 ) .. ", \cUp\c-" ..
-							int( thing.pitch ) .. ", \cUr\c-" ..
-							int( thing.roll ) .. ");\n";
+			outStr = String.Format( "Tilt: (" .. DARKGRAY
+							.. "a\c-" .. decimalsfmt .. ", " .. DARKGRAY
+							.. "p\c-" .. decimalsfmt .. ", " .. DARKGRAY
+							.. "r\c-" .. decimalsfmt .. ");\n", thing.angle % 360.0, thing.pitch, thing.roll );
 		}
 
 		outStr = outStr .. TEAL .. "Pos: " .. ZCGlobal.squeezeVector3( thing.pos ) .. ";\n\c-" ..
@@ -101,28 +107,50 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".", thing.radius, thing.height );
 
 
-		bool showPlayerButtons = CVar.GetCVar( "mcm_zchecker_infovar_wposplayerbuttons", players[ consoleplayer ] ).GetBool();
+		bool showPlayerButtons = CVar.GetCVar( "mcm_zchecker_infovar_wposplbuttons", players[ consoleplayer ] ).GetBool();
 
 		if ( thing is "PlayerPawn" && thing.player && showPlayerButtons ) {
 			outStr.AppendFormat( DARKGRAY .. "\nKeys 0x" .. GRAY .. "%08x\n", thing.player.cmd.buttons );
 			curPlayerButtons = thing.player.cmd.buttons;
+
+			// Alas, default "smallfont" is not monospace. Moreover, its characters width differs in various IWADs/PWADs.
+			if ( handler.panels.infopanelsFont == smallfont ) {
+				outStr.AppendFormat(
+					"%suse %st   %s^    %su   %sfr %saf\n" ..
+					"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
+					"%scrh                " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
+					"%sspd %sstrf %st180 %sscor",
+					Col( USE ) , Col( MOVU ), Col( MOVF ), Col( TRNU ), Col( FIRE ), Col( ALTF ),
+					Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
+					Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
+					Col( SPD ) , Col( STRF ), Col( T180 ), Col( SCOR )
+				);
+
+			} else {
 /*
 use.t..^...u..fr.af
 jmp.b.<v>.ldr.rl.zm
 crh...........u1234
 spd.strf..t180.scor
 */
-			outStr.AppendFormat(
-				"%suse %st   %s^    %su   %sfr %saf\n" ..
-				"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
-				"%scrh                " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
-				"%sspd %sstrf %st180 %sscor",
-				Col( USE ) , Col( MOVU ), Col( MOVF ), Col( TRNU ), Col( FIRE ), Col( ALTF ),
-				Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
-				Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
-				Col( SPD ) , Col( STRF ), Col( T180 ), Col( SCOR )
-			);
-		}
+				String buttonPaneStr = String.Format(
+					"%suse %st  %s^   %su  %sfr %saf\n" ..
+					"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
+					"%scrh           " .. TEXTCOLOR_DARKGRAY .. "u%s1%s2%s3%s4\n" ..
+					"%sspd %sstrf  %st180 %sscor",
+					Col( USE ) , Col( MOVU ), Col( MOVF ), Col( TRNU ), Col( FIRE ), Col( ALTF ),
+					Col( JUMP ), Col( MOVD ), Col( MOVL ), Col( MOVB ), Col( MOVR ), Col( TRNL ), Col( TRND ), Col( TRNR ), Col( RELD ), Col( ZOOM ),
+					Col( CRCH ), Col( USR1 ), Col( USR2 ), Col( USR3 ), Col( USR4 ),
+					Col( SPD ) , Col( STRF ), Col( T180 ), Col( SCOR )
+				);
+
+				if ( handler.panels.infopanelsFontSpaceWidth < 5 )
+					buttonPaneStr.Replace( " ", "  " );
+
+				outStr = outStr .. buttonPaneStr;
+			}
+
+		} // of if ( thing is "PlayerPawn" && thing.player && showPlayerButtons ) {}
 
 		return outStr;
 	}
@@ -425,6 +453,10 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		if ( statesLogging ) {
 			outStr = outStr .. DARKGRAY .. " [" .. LIGHTBLUE .. "logging" .. DARKGRAY .. "]";
 			DoStatesLogging( thing, thingfield );
+
+		} else if ( prevLogStates[ 0 ].st ) {
+			for ( int i = 0; i < MaxTestee; i++ )
+				prevLogStates[ i ].st = NULL;
 		}
 
 		outStr = outStr .. NORMAL .. ":\n";
@@ -525,8 +557,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					addFlag( st.bSlow, "slw" );
 					addFlag( st.bFullbright, "lit" );
 					addFlag( st.bNoDelay, "-dly" );
-					addFlag( st.bSameFrame, "frcpy" );
-					addFlag( st.bCanRaise, "raise" );
+					addFlag( st.bSameFrame, "frcp" );
+					addFlag( st.bCanRaise, "rais" );
 					addFlag( st.bDehacked, "deh" );
 					outStr = outStr .. "\n" .. BreakPanelLines( tempFlagsStr );
 					break;

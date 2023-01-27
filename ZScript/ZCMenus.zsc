@@ -6,6 +6,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		PMAT_EnterSubmenu	= 0,
 		PMAT_MoveItemUp,
 		PMAT_MoveItemDown,
+		PMAT_SwitchOption,
 
 		PMAT_Quantity
 	};
@@ -149,6 +150,8 @@ class ZCOptionMenuPanels: OptionMenu {
 				actiontype = PMAT_MoveItemUp;
 			else if ( key == 0x2B )
 				actiontype = PMAT_MoveItemDown;
+			else if ( key == 0x20 )
+				actiontype = PMAT_SwitchOption;
 
 		} else if ( e.Type == e.Type_WheelUp ) {
 			actiontype = PMAT_MoveItemUp;
@@ -227,10 +230,15 @@ class ZCOptionMenuPanels: OptionMenu {
 				}
 
 			} else if ( actiontype == PMAT_EnterSubmenu ) {
-				// Tab, F4, 'e', 'E' and Space opens a submenu (if any).
+				// Tab, F4, 'e', 'E', 's' and 'S' opens a submenu (if any).
 				curitem.OpenSubmenu();
-
 				return true;
+
+			} else if ( actiontype == PMAT_SwitchOption ) {
+				// Space switches the value, same as Enter or L/R arrows.
+				Menu.GetCurrentMenu().MenuEvent( MKEY_Enter, false );
+				return true;
+
 			}
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
 
