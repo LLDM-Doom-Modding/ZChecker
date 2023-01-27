@@ -21,28 +21,24 @@ class ZCOptionMenuPanels: OptionMenu {
 	transient CVar panelsOrderCVar;
 
 
-	private OptionMenuItemStaticText AddStaticText( String label = " " ) {
+	private OptionMenuItemStaticText NewStaticText( String label = " " ) {
 		return new( "OptionMenuItemStaticText" ).Init( label );
 	}
 
-	private OptionMenuItemOption AddOption( String label, Name command, Name values ) {
-		return new( "OptionMenuItemOption" ).Init( label, command, values );
-	}
-
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
-		desc.mItems.Push( AddStaticText() );
-		desc.mItems.Push( AddStaticText( GOLD .. "Informational panels settings:" ) );
-		desc.mItems.Push( AddStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<space>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "' or " .. GRAY .. "<tab>" .. DARKGRAY .. ";" ) );
-		desc.mItems.Push( AddStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "', '" .. GRAY .. "-" .. DARKGRAY .. "', " .. GRAY .. "<KP+>" .. DARKGRAY .. " or " .. GRAY .. "<KP->" .. DARKGRAY .. "." ) );
-		desc.mItems.Push( AddStaticText( DARKGRAY .. "Note: order will be saved after one play tic." ) );
-		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( NewStaticText() );
+		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings:" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "', '" .. GRAY .. "S" .. DARKGRAY .. "', " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "'/" .. GRAY .. "<KP+>" .. DARKGRAY .. ", '" .. GRAY .. "-" .. DARKGRAY .. "'/" .. GRAY .. "<KP->" .. DARKGRAY .. " and " .. GRAY .. "mouse wheel" .. DARKGRAY .. "." ) );
+		desc.mItems.Push( NewStaticText( DARKGRAY .. "Note: order will be saved after one play tic." ) );
+		desc.mItems.Push( NewStaticText() );
 	}
 
 	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
-		desc.mItems.Push( AddStaticText() );
-		desc.mItems.Push( AddStaticText( TEXTCOLOR_GOLD .. "Panels order reset" ) );
+		desc.mItems.Push( NewStaticText() );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_GOLD .. "Panels order reset" ) );
 		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset informational panels order", self ) );
-		desc.mItems.Push( AddStaticText() );
+		desc.mItems.Push( NewStaticText() );
 	}
 
 	void SetPanelOptionsOrder( OptionMenuDescriptor desc ) {
@@ -70,7 +66,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		if ( panel.optionSubmenuName ) {
 			submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
-			submenuItem.Init( item, panel );
+			submenuItem.Init( self, item, panel );
 
 			desc.mItems.Push( submenuItem );
 			return 2; // Items offset (+2, option and its submenu);
@@ -93,7 +89,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		}
 
 		lastPanelItemPos += addedItemsAmount;
-	}
+	} // of protected void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {}
 
 	void ReinitMenuItems( OptionMenuDescriptor desc ) {
         desc.mItems.Clear();
@@ -103,13 +99,14 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		if ( !handler ) {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
-			desc.mItems.Push( AddStaticText( TEXTCOLOR_FIRE .. "Cannot locate ZChecker static event handler." ) );
+			desc.mItems.Push( NewStaticText( TEXTCOLOR_FIRE .. "Cannot locate ZChecker static event handler." ) );
 		} else {
 			ReinitMenuPanels( desc, handler );
 		}
 
 		ReinitMenuLastPart( desc );
-	}
+	} // of void ReinitMenuItems( OptionMenuDescriptor desc ) {}
+
 
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
@@ -124,31 +121,52 @@ class ZCOptionMenuPanels: OptionMenu {
 		int curpos = mDesc.mSelectedItem;
 		ZCOptionMenuItemInfopanel curitem = NULL;
 
-		if ( curpos > 0 )
-			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
-
 		EPanelMenuActionTypes actiontype = PMAT_None;
 		int key = e.KeyChar;
 
 		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
 		//console.printf( "curitem " .. curitem .. ", actiontype " .. actiontype .. "; pos " .. firstPanelItemPos .. " <= " .. curpos .. " < " .. lastPanelItemPos );
 
-		if ( e.Type == e.Type_KeyDown ) {
+
+		// Click-safe mouse pointing:
+		if ( e.type == e.Type_RButtonDown ) {
+			SetCapture( true );
+			MouseEvent( MOUSE_Move, e.MouseX, e.MouseY );
+
+		} else if ( e.type == e.Type_RButtonUp ) {
+			SetCapture( false );
+
+		// Specific infopanels menu keys:
+		} else if ( e.Type == e.Type_KeyDown ) {
 			if ( key == e.Key_F3 || key == e.Key_F4 || key == e.Key_Tab )
 				actiontype = PMAT_EnterSubmenu;
 
 		} else if ( e.Type == e.Type_Char ) {
-			if ( key == 0x45 || key == 0x65 || key == 0x20 )
+			// 'E'/'e', 'S'/'s':
+			if ( key == 0x45 || key == 0x65 || key == 0x53 || key == 0x73 )
 				actiontype = PMAT_EnterSubmenu;
 			else if ( key == 0x2D )
 				actiontype = PMAT_MoveItemUp;
 			else if ( key == 0x2B )
 				actiontype = PMAT_MoveItemDown;
+
 		} else if ( e.Type == e.Type_WheelUp ) {
 			actiontype = PMAT_MoveItemUp;
+
 		} else if ( e.Type == e.Type_WheelDown ) {
 			actiontype = PMAT_MoveItemDown;
+
+		} else if ( e.Type == e.Type_MButtonDown ) {
+			MouseEvent( MOUSE_Move, e.MouseX, e.MouseY );
+			curpos = mDesc.mSelectedItem;
+			actiontype = PMAT_EnterSubmenu;
+
 		}
+
+
+		if ( curpos > 0 )
+			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
+
 
 		if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {
 			int moveOffset = ( curitem.mSubmenu? 2 : 1 );
@@ -210,12 +228,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 			} else if ( actiontype == PMAT_EnterSubmenu ) {
 				// Tab, F4, 'e', 'E' and Space opens a submenu (if any).
-				if ( curitem.mSubmenu ) {
-					Menu.MenuSound( "menu/choose" );
-					Menu.SetMenu( curitem.mSubmenu );
-				} else {
-					Menu.MenuSound( "menu/invalid" );
-				}
+				curitem.OpenSubmenu();
 
 				return true;
 			}
@@ -223,6 +236,35 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		return Super.OnUIEvent( e );
 	} // of override bool OnUIEvent( UIEvent e ) {}
+
+	override bool MouseEvent( int type, int x, int y ) {
+		y = ( y / CleanYfac_1 ) - mDesc.mDrawTop;
+
+		if ( mFocusControl ) {
+			mFocusControl.MouseEvent( type, x, y );
+			return true;
+		}
+
+		int yline = ( y / OptionMenuSettings.mLinespacing );
+
+		if ( yline >= mDesc.mScrollTop )
+			yline += mDesc.mScrollPos;
+
+		if ( yline >= 0 && yline < mDesc.mItems.Size() && ( mDesc.mItems[ yline ].Selectable() || mDesc.mItems[ yline ] is "ZCOptionMenuItemInfopanelSubmenu" ) ) {
+			mDesc.mSelectedItem = yline;
+			mDesc.mItems[ yline ].MouseEvent( type, x, y );
+			return true;
+		}
+
+		mDesc.mSelectedItem = -1;
+
+		return true;
+	} // of override bool MouseEvent( int type, int x, int y ) {}
+
+	override void OnReturn() {
+		SetCapture( false );
+	}
+
 
 } // of class ZCOptionMenuPanels: OptionMenu {}
 
@@ -243,21 +285,30 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 
 		return self;
 	}
+
+	void OpenSubmenu( void ) {
+		if ( mSubmenu ) {
+			Menu.MenuSound( "menu/choose" );
+			Menu.SetMenu( mSubmenu );
+		} else {
+			Menu.MenuSound( "menu/invalid" );
+		}
+	}
 } // of class ZCOptionMenuItemInfopanel: OptionMenuItemOption {}
 
 class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
+	ZCOptionMenuPanels masterMenu;
 	ZCOptionMenuItemInfopanel masterMenuItem;
 	ZCBaseInfoPanelPart masterInfoPanel;
-	ZCOptionMenuPanels masterMenu;
 
 	OptionMenuDescriptor subdesc;
 
-	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
+	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuPanels curmenu, ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
+		masterMenu = curmenu;
 		masterMenuItem = masteritem;
 		masterInfoPanel = infopanel;
 		mLabel = "";
 
-		masterMenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
 		subdesc = OptionMenuDescriptor( MenuDescriptor.GetDescriptor( infopanel.optionSubmenuName ) );	
 
 		return self;
@@ -266,9 +317,13 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
 		bool masterItemSelected = false;
 
-		if ( desc && desc.mSelectedItem > 0 ) {
-			mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, subdesc );
-			masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
+		if ( desc ) {
+			if ( desc.mSelectedItem > 0 ) {
+				mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, subdesc );
+				masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
+			}
+		} else {
+			mLabel = GetClassName() .. "::Draw(). No OptionMenuDescriptor.";
 		}
 
 		drawLabel( indent, y, ( masterItemSelected? OptionMenuSettings.mFontColorSelection : Font.CR_DARKGRAY ) );
@@ -276,20 +331,25 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 		return indent;
 	}
 
-	/*override bool MouseEvent( int type, int x, int y ) {
-		if ( type == Menu.MOUSE_Click && masterMenu ) {
-			for ( int i = masterMenu.firstInfoPanelPos; i < masterMenu.lastInfoPanelPos; i++ ) {
-				if ( desc.mItems[ i ] == masterMenuItem ) {
-					desc.mSelectedItem = i;
+	override bool MouseEvent( int type, int x, int y ) {
+		if ( masterMenu && masterMenuItem ) {
+			// Highlight the master item position instead of submenu item:
+			for ( int i = 0; i < masterMenu.mDesc.mItems.Size(); i++ ) {
+				if ( masterMenu.mDesc.mItems[ i ] == masterMenuItem ) {
+					masterMenu.mDesc.mSelectedItem = i;
 					break;
 				}
 			}
 
-			return Menu.GetCurrentMenu().MenuEvent( Menu.MKEY_Enter, true );
+			// Open the submenu (currently called after the UIEvent.Type_LButtonUp):
+			if ( type == Menu.MOUSE_Release )
+				masterMenuItem.OpenSubmenu();
+		} else {
+			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::MouseEvent(). No masterMenu (" .. masterMenu .. ") or masterMenuItem (" .. masterMenuItem .. "). Mouse event type " .. type .. "." );
 		}
 
 		return true;
-	}*/
+	}
 
 } // of class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {}
 
