@@ -62,7 +62,7 @@ class ZCheckerField {
 	String hashsync[ MAXPLAYERS ];
 
 
-	play void UpdateMetainformationOnAdd( ZCheckerCCMDInfo fccmd ) {
+	play void UpdateActorMetainformation( ZCheckerCCMDInfo fccmd ) {
 		if ( !mo )
 			return;
 

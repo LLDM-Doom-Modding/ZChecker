@@ -22,11 +22,15 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 
 	StaticText " "
 	StaticText "Other settings", GOLD
-	Option "Netevents info intercepting", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_specinfo_netevents"
+	Option "Netevents info intercepting", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
     StaticText "Tries to catch a network events information.", DARKGRAY
 	StaticText " "
 	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
     StaticText "Allow operations that are known to crash the game.", DARKGRAY
+	StaticText " "
+	Option "Adding actor twice behaviour", "mcm_zchecker_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
+    StaticText "Behaviour when using \"zcadd\" on actor which is", DARKGRAY
+	StaticText "already in the informational panels list.", DARKGRAY
 	StaticText " "
 	Option "No ZC-classes special handling", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
     StaticText "Do not alter handling for the ZChecker", DARKGRAY
@@ -147,6 +151,20 @@ OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {
 	3, "Built-in confont"
 }
 
+OptionValue "mcm_ZCheckerOption_NeteventsInfo" {
+	0, "Disabled"
+	1, "Names and args"
+	2, "Names, args and maptime"
+	3, "Full information"
+}
+
+OptionValue "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour" {
+	0, "Silently move"
+	1, "Silently copy"
+	2, "Move and warn (default)"
+	3, "Copy and warn"
+}
+
 
 // Submenu options:
 
@@ -181,12 +199,6 @@ OptionValue "mcm_ZCheckerOption_panelgeom_lineaction" {
 	1, "Action and tag"
 	2, "Action, args and tag"
 	3, "Everything"
-}
-OptionValue "mcm_ZCheckerOption_specinfo_netevents" {
-	0, "Disabled"
-	1, "Names and args"
-	2, "Names, args and maptime"
-	3, "Full information"
 }
 
 

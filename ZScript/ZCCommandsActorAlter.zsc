@@ -549,11 +549,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 
 					if ( params.infopanelPos == params.INFOPANEL_NOFREE ) {
 						ZCGlobal.Log( LL_Main, "Cannot add actor to list, insufficient place. Try set target to list directly via parameter \"panel:1\"..\"panel:" .. MaxTestee .. "\"." );
+
 					} else if ( params.infopanelPos != params.INFOPANEL_IGNORE ) {
+						// No duplicate fields check when summoning new actors, of course.
+
 						ZCheckerField field = ccmd.handler.Testee[ params.infopanelPos ];
 
 						field.mo = summoned;
-						field.UpdateMetainformationOnAdd( ccmd );
+						field.UpdateActorMetainformation( ccmd );
 
 						if ( summoneeAmount > 1 )
 							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Only last summoned actor added to the list." );

@@ -127,6 +127,54 @@ class ZCAddCommand: ZCConsoleCommand {
 		);
 	}
 
+	// Finds next free testee place ("-1" if not found):
+	static int FindFreeTesteePlace( ZCheckerCCMDInfo fccmd ) {
+		int outpos = -1;
+
+		for ( int i = 0; i < MaxTestee; i++ ) {
+			if ( fccmd.handler.Testee[ i ].mo == NULL ) {
+				outpos = i;
+				break;
+			}
+		}
+
+		return outpos;
+	} // of static int FindFreeTesteePlace( ZCheckerCCMDInfo fccmd ) {}
+
+
+	// Handles (removes/warns about) all of the duplicates of the specified 
+	//actor.
+	//
+	// Returns new place (panel position):
+	// - If all is OK, in range [0; (MaxTestee - 1)];
+	// - Returns "newSupposedPlace" if no duplicates found.
+	static int HandleDuplicateActorFields( ZCheckerCCMDInfo fccmd, Actor testthing, int newSupposedPlace ) {
+		int newplace = newSupposedPlace;
+		int sameActorBehaviourSetting = CVar.GetCVar( "mcm_zchecker_zcadd_sameactor_behaviour" ).GetInt();
+
+		// Search for duplicates if behaviour is not a "silent copying":
+		for ( int i = 0; i < MaxTestee; i++ ) {
+			ZCheckerField field = fccmd.handler.Testee[ i ];
+
+			if ( field.mo == testthing && i != newSupposedPlace ) {
+				// Warn cases (2 and 3):
+				if ( sameActorBehaviourSetting >= 2 )
+					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Found " .. LLCOLOR_WARNING .. "duplicate link" .. TEXTCOLOR_DARKGRAY .. " for actor " .. LLCOLOR_MAIN .. testthing.GetClassName() .. TEXTCOLOR_DARKGRAY .. " in panel " .. ( i + 1 ) .. "." );
+
+				// Move (preserve unique pointer) cases (0 and 2):
+				if ( !( sameActorBehaviourSetting & 1 ) ) {
+					field.mo = NULL;
+					field.UpdateActorMetainformation( fccmd );
+
+					newplace = i;
+				}
+			}
+		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
+
+		return newplace;
+	} // of static int HandleDuplicateActorFields( ZCheckerCCMDInfo fccmd, Actor testthing, int newSupposedPlace ) {}
+
+
 	override bool HandleArguments() {
 		zcSpecialAddType = SAT_Normal;
 
@@ -137,14 +185,15 @@ class ZCAddCommand: ZCConsoleCommand {
 		// Next lines ("if {}" block) are hard to understand, but they're right.
 		if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
 			String arg0 = ccmd.args[ 0 ];
+			arg0.ToLower();
 
 			zcSpecialAddType = SAT_Error;
 
-			if ( arg0 ~== "self" )
+			if ( arg0 == "self" || arg0 == "s" )
 				zcSpecialAddType = SAT_Self;
-			else if ( arg0 ~== "weap" || arg0 ~== "weapon" )
+			else if ( arg0 == "weap" || arg0 == "weapon" )
 				zcSpecialAddType = SAT_Weapon;
-			else if ( arg0 ~== "force" )
+			else if ( arg0 == "force" )
 				zcSpecialAddType = SAT_Force;
 
 			if ( zcSpecialAddType != SAT_Error ) {
@@ -168,112 +217,129 @@ class ZCAddCommand: ZCConsoleCommand {
 		return outValue;
 	}
 
-	// Finds next free testee place ("-1" if not found):
-	static int FindFreeTesteePlace( ZCheckerCCMDInfo fccmd ) {
-		int outpos = -1;
+	override void DoCommand( void ) {
+		bool explicitPanelPos = ( zcPos != -1 );
 
-		for ( int i = 0; i < MaxTestee; i++ ) {
-			if ( fccmd.handler.Testee[ i ].mo == NULL ) {
-				outpos = i;
-				break;
+		if ( !explicitPanelPos ) {
+			zcPos = FindFreeTesteePlace( ccmd );
+
+			if ( zcPos == -1 ) {
+				ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd [1.." .. MaxTestee .. "]\"." );
+				return;
 			}
 		}
 
-		return outpos;
-	} // of static int FindFreeTesteePlace( ZCheckerCCMDInfo fccmd ) {}
+		PlayerInfo player = players[ ccmd.e.Player ];
+		Actor newtestee = NULL;
 
-	override void DoCommand( void ) {
-		if ( zcPos == -1 )
-			zcPos = FindFreeTesteePlace( ccmd );
+		switch ( zcSpecialAddType ) {
+			case SAT_Normal:
+				Actor linetracedActor = LinetraceActor( player.mo );
 
-		if ( zcPos != -1 ) {
-			PlayerInfo player = players[ ccmd.e.Player ];
+                if ( linetracedActor )
+					newtestee = linetracedActor;
+				break;
 
-			ZCheckerField field = ccmd.handler.Testee[ zcPos ];
+			case SAT_Self:
+				newtestee = player.mo;
+				break;
+
+			case SAT_Weapon:
+				if ( player.ReadyWeapon )
+					newtestee = player.ReadyWeapon;
+				else
+					ZCGlobal.Log( LL_Main, "No weapon, cannot add." );
+				break;
+
+			case SAT_Force:
+				ZCGlobal.Log( LL_Main, "[Work-in-progress command, may behave strangely]." );
+
+				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
+				Actor locatedActor = NULL, cur = NULL;
+
+				while ( ( cur = Actor( it.Next() ) ) ) {
+					// Skip next actor if it:
+					//1) A caller (player) himself;
+					//2) Is not in the player field of view; and
+					//3) Is an item in someone's inventory.
+					if ( cur == player.mo || ( abs( player.mo.AngleTo( cur ) - player.mo.angle ) >= 45.0 ) || ( Inventory( cur ) && Inventory( cur ).owner ) )
+						continue;
+
+					// Grab the potential testee actor if the line of 
+					//sight intersects or touches its radius (circle).
+					// Funny, but right now I haven't written the 
+					//Z-exclusion despite of the realisation easiness.
+					vector2 plpos = player.mo.pos.xy;
+					vector2 curpos = cur.pos.xy;
+					double k = tan( player.mo.angle );
+					double r = cur.radius;
+
+					double kk = k * k;
+					double rr = r * r;
+					vector2 plpos2 = ( plpos.x * plpos.x, plpos.y * plpos.y );
+					vector2 curpos2 = ( curpos.x * curpos.x, curpos.y * curpos.y );
+
+					//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
+					double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
+
+					if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
+						ZCGlobal.Log( LL_Debug, "Cur " .. TEXTCOLOR_OLIVE .. cur.GetClassName() .. LLCOLOR_DEBUG .. ": " ..
+								String.Format( "plr.pos %s, cur.pos %s, plr.angle %.3f, k %.3f, cur.radius %.3f;  = sqrt( " .. TEXTCOLOR_GRAY .. "%+.3f" .. LLCOLOR_DEBUG .. " ), prev& " .. locatedActor,
+								ZCGlobal.squeezeVector2( plpos ), ZCGlobal.squeezeVector2( curpos ), player.mo.angle, k, r, underSqrt )
+							);
+					}
+
+					if ( underSqrt >= 0 && ( !locatedActor || ( cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) ) ) {
+						locatedActor = cur;
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
+					}
+				}
+
+                if ( locatedActor )
+					newtestee = locatedActor;
+				else
+					ZCGlobal.Log( LL_Detailed, "Cannot find any suitable actors." );
+
+				break;
+
+			default:
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\" (no actor identifier)." );
+				break;
+		}
+
+		if ( newtestee ) {
+			int newPanelPos = HandleDuplicateActorFields( ccmd, newtestee, zcPos );
+
+			if ( explicitPanelPos || newPanelPos == -1 )
+				newPanelPos = zcPos;
+
+			ZCheckerField field = ccmd.handler.Testee[ newPanelPos ];
+
+			field.mo = newtestee;
+			field.UpdateActorMetainformation( ccmd );
+
+			String testeeIdentifier = newtestee.GetClassName() .. " <" .. newtestee .. ">";
 
 			switch ( zcSpecialAddType ) {
 				case SAT_Normal:
-					Actor linetracedActor = LinetraceActor( player.mo );
-
-	                if ( linetracedActor ) {
-						field.mo = linetracedActor;
-						ZCGlobal.Log( LL_Detailed, "Added actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
-					}
+					ZCGlobal.Log( LL_Detailed, "Added actor " .. testeeIdentifier );
 					break;
 				case SAT_Self:
-					field.mo = player.mo;
-					ZCGlobal.Log( LL_Detailed, "Added PlayerPawn actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
+					ZCGlobal.Log( LL_Detailed, "Added a PlayerPawn actor " .. testeeIdentifier );
 					break;
 				case SAT_Weapon:
-					if ( player.ReadyWeapon ) {
-						field.mo = player.ReadyWeapon;
-						ZCGlobal.Log( LL_Detailed, "Added StateProvider actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
-					} else {
-						ZCGlobal.Log( LL_Main, "No weapon, cannot add." );
-					}
+					ZCGlobal.Log( LL_Detailed, "Added a StateProvider actor " .. testeeIdentifier );
 					break;
 				case SAT_Force:
-					ZCGlobal.Log( LL_Main, "[Work-in-progress command, may behave strangely]." );
-
-					ThinkerIterator it = ThinkerIterator.Create( "Actor" );
-					Actor locatedActor = NULL, cur = NULL;
-
-					while ( ( cur = Actor( it.Next() ) ) ) {
-						// Skip next actor if it:
-						//1) A caller (player) himself;
-						//2) Is not in the player field of view; and
-						//3) Is an item in someone's inventory.
-						if ( cur == player.mo || ( abs( player.mo.AngleTo( cur ) - player.mo.angle ) >= 45.0 ) || ( Inventory( cur ) && Inventory( cur ).owner ) )
-							continue;
-
-						// Grab the potential testee actor if the line of 
-						//sight intersects or touches its radius (circle).
-						// Funny, but right now I haven't written the 
-						//Z-exclusion despite of the realisation easiness.
-						vector2 plpos = player.mo.pos.xy;
-						vector2 curpos = cur.pos.xy;
-						double k = tan( player.mo.angle );
-						double r = cur.radius;
-
-						double kk = k * k;
-						double rr = r * r;
-						vector2 plpos2 = ( plpos.x * plpos.x, plpos.y * plpos.y );
-						vector2 curpos2 = ( curpos.x * curpos.x, curpos.y * curpos.y );
-
-						//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
-						double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
-
-						if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
-							ZCGlobal.Log( LL_Debug, "Cur " .. TEXTCOLOR_OLIVE .. cur.GetClassName() .. LLCOLOR_DEBUG .. ": " ..
-									String.Format( "plr.pos %s, cur.pos %s, plr.angle %.3f, k %.3f, cur.radius %.3f;  = sqrt( " .. TEXTCOLOR_GRAY .. "%+.3f" .. LLCOLOR_DEBUG .. " ), prev& " .. locatedActor,
-									ZCGlobal.squeezeVector2( plpos ), ZCGlobal.squeezeVector2( curpos ), player.mo.angle, k, r, underSqrt )
-								);
-						}
-
-						if ( underSqrt >= 0 && ( !locatedActor || ( cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) ) ) {
-							locatedActor = cur;
-							ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
-						}
-					}
-
-	                if ( locatedActor ) {
-						field.mo = locatedActor;
-						ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
-					} else {
-						ZCGlobal.Log( LL_Detailed, "Cannot find any suitable actors." );
-					}
+					ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. testeeIdentifier );
 					break;
 				default:
-					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\"." );
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\". Identifier \"" .. testeeIdentifier .. "\"" );
 					break;
 			}
+		} // of if ( newtestee ) {}
+	} // of override void DoCommand( void ) {}
 
-			field.UpdateMetainformationOnAdd( ccmd );
-
-		} else {
-			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd [1.." .. MaxTestee .. "]\"." );
-		} // of else of if ( zcPos != -1 ) {}
-	}
 } // of class ZCAddCommand: ZCConsoleCommand {}
 
 class ZCRemCommand: ZCConsoleCommand {
