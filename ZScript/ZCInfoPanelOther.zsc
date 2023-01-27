@@ -75,14 +75,14 @@ class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
 } // of class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {}
 
 
-class ZCSoundInfoPanel: ZCBaseInfoPanelPart 
+class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart 
 {
 	// [McM] This class is being developed by @Mud, so I decided not to alter it heavily.
 
 	override void OnCreate( void ) 
 	{
 		optionCVarName = "mcm_zchecker_info_sound";
-		optionLabel = "Sound information";
+		optionLabel = "Sound definitions";
 		//optionSubmenuName = "mcm_ZCheckerSubmenu_some";
 	}
 
@@ -101,6 +101,7 @@ class ZCSoundInfoPanel: ZCBaseInfoPanelPart
 		info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. Thing.WallBounceSound;
 		info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. Thing.CrushPainSound;
 		info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. Thing.HowlSound;
+
 		return info;
 	}
-} // of class ZCSoundInfoPanel: ZCBaseInfoPanelPart {}
+} // of class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart {}
