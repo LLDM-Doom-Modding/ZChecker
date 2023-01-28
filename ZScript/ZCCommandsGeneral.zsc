@@ -143,7 +143,7 @@ class ZCAddCommand: ZCConsoleCommand {
 
 
 	// Handles (removes/warns about) all of the duplicates of the specified 
-	//actor.
+	//actor, excluding the "newSupposedPlace" position.
 	//
 	// Returns new place (panel position):
 	// - If all is OK, in range [0; (MaxTestee - 1)];
@@ -152,7 +152,9 @@ class ZCAddCommand: ZCConsoleCommand {
 		int newplace = newSupposedPlace;
 		int sameActorBehaviourSetting = CVar.GetCVar( "mcm_zchecker_zcadd_sameactor_behaviour" ).GetInt();
 
-		// Search for duplicates if behaviour is not a "silent copying":
+		bool isFirstDup = false;
+
+		// Search for duplicates:
 		for ( int i = 0; i < MaxTestee; i++ ) {
 			ZCheckerField field = fccmd.handler.Testee[ i ];
 
@@ -163,10 +165,13 @@ class ZCAddCommand: ZCConsoleCommand {
 
 				// Move (preserve unique pointer) cases (0 and 2):
 				if ( !( sameActorBehaviourSetting & 1 ) ) {
-					field.mo = NULL;
-					field.UpdateActorMetainformation( fccmd );
-
-					newplace = i;
+					if ( newSupposedPlace != -1 || isFirstDup ) {
+						field.mo = NULL;
+						field.UpdateActorMetainformation( fccmd );
+					} else {
+						newplace = i;
+						isFirstDup = true;
+					}
 				}
 			}
 		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
@@ -218,15 +223,9 @@ class ZCAddCommand: ZCConsoleCommand {
 	}
 
 	override void DoCommand( void ) {
-		bool explicitPanelPos = ( zcPos != -1 );
-
-		if ( !explicitPanelPos ) {
-			zcPos = FindFreeTesteePlace( ccmd );
-
-			if ( zcPos == -1 ) {
-				ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd [1.." .. MaxTestee .. "]\"." );
-				return;
-			}
+		if ( -1 == zcPos && -1 == FindFreeTesteePlace( ccmd ) ) {
+			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd [1.." .. MaxTestee .. "]\"." );
+			return;
 		}
 
 		PlayerInfo player = players[ ccmd.e.Player ];
@@ -310,33 +309,38 @@ class ZCAddCommand: ZCConsoleCommand {
 		if ( newtestee ) {
 			int newPanelPos = HandleDuplicateActorFields( ccmd, newtestee, zcPos );
 
-			if ( explicitPanelPos || newPanelPos == -1 )
-				newPanelPos = zcPos;
+			if ( newPanelPos == -1 )
+				newPanelPos = FindFreeTesteePlace( ccmd );
 
 			ZCheckerField field = ccmd.handler.Testee[ newPanelPos ];
 
-			field.mo = newtestee;
-			field.UpdateActorMetainformation( ccmd );
-
 			String testeeIdentifier = newtestee.GetClassName() .. " <" .. newtestee .. ">";
 
-			switch ( zcSpecialAddType ) {
-				case SAT_Normal:
-					ZCGlobal.Log( LL_Detailed, "Added actor " .. testeeIdentifier );
-					break;
-				case SAT_Self:
-					ZCGlobal.Log( LL_Detailed, "Added a PlayerPawn actor " .. testeeIdentifier );
-					break;
-				case SAT_Weapon:
-					ZCGlobal.Log( LL_Detailed, "Added a StateProvider actor " .. testeeIdentifier );
-					break;
-				case SAT_Force:
-					ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. testeeIdentifier );
-					break;
-				default:
-					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\". Identifier \"" .. testeeIdentifier .. "\"" );
-					break;
+			if ( field.mo != newtestee ) {
+				field.mo = newtestee;
+				field.UpdateActorMetainformation( ccmd );
+
+				switch ( zcSpecialAddType ) {
+					case SAT_Normal:
+						ZCGlobal.Log( LL_Detailed, "Added actor " .. testeeIdentifier );
+						break;
+					case SAT_Self:
+						ZCGlobal.Log( LL_Detailed, "Added a PlayerPawn actor " .. testeeIdentifier );
+						break;
+					case SAT_Weapon:
+						ZCGlobal.Log( LL_Detailed, "Added a StateProvider actor " .. testeeIdentifier );
+						break;
+					case SAT_Force:
+						ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. testeeIdentifier );
+						break;
+					default:
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\". Identifier \"" .. testeeIdentifier .. "\"" );
+						break;
+				}
+			} else {
+				ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "Using previous link in panel " .. TEXTCOLOR_WHITE .. ( newPanelPos + 1 ) .. TEXTCOLOR_DARKGRAY .. " for actor " .. TEXTCOLOR_GRAY .. testeeIdentifier .. TEXTCOLOR_DARKGRAY );
 			}
+
 		} // of if ( newtestee ) {}
 	} // of override void DoCommand( void ) {}
 

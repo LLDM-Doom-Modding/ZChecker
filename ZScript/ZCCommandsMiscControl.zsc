@@ -276,32 +276,25 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				ZCGlobal.Log( LL_Main, "Requested index " .. LLCOLOR_WARNING .. "is out-of-bounds" .. LLCOLOR_MAIN .. "." );
 
 			} else if ( curThinker is "Actor" ) {
-				bool explicitPanelPos = ( zcActionArg != -1 );
 
 				// Find next free testee place ("-1" if not found):
-				if ( !explicitPanelPos )
-					zcActionArg = ZCAddCommand.FindFreeTesteePlace( ccmd );
-
-				if ( zcActionArg == -1 ) {
+				if ( -1 == zcActionArg && -1 == ZCAddCommand.FindFreeTesteePlace( ccmd ) ) {
 					ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set actor to list directly via \"zcaddlistget <...> [1.." .. MaxTestee .. "]\"." );
+
 				} else {
 					int newPanelPos = ZCAddCommand.HandleDuplicateActorFields( ccmd, Actor( curThinker ), zcActionArg );
 
-					if ( explicitPanelPos || newPanelPos == -1 )
-						newPanelPos = zcActionArg;
+					if ( newPanelPos == -1 )
+						newPanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
 
 					ZCheckerField field = ccmd.handler.Testee[ newPanelPos ];
 
 					field.mo = Actor( curThinker );
 					field.UpdateActorMetainformation( ccmd );
 
-					// Pre:
-					/*ZCheckerField field = ccmd.handler.Testee[ zcActionArg ];
-					field.mo = Actor( curThinker );
-					field.UpdateActorMetainformation( ccmd );*/
-
 					ZCGlobal.Log( LL_Detailed, "Added a world actor " .. field.mo.GetClassName() .. " <" .. field.mo .. ">." );
-				} // of else of if ( zcActionArg == -1 ) {}
+
+				} // of else of if ( -1 == zcActionArg && -1 == ZCAddCommand.FindFreeTesteePlace( ccmd ) ) {}
 
 			} else {
 				ZCGlobal.Log( LL_Main, "Thinker \"" .. curThinker.GetClassName() .. "\" isn't an Actor." );

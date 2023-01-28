@@ -378,14 +378,14 @@ class ZCheckerHandler: StaticEventHandler {
 			panelsheights.Clear();
 
 			for ( int j = 0; j < infoPanelParts.Size(); j++ ) {
-				String outStr = "\c-";
+				String outStr;
 
 				if ( infoPanelParts[ j ].IsPlayScope() )
-					outStr = outStr .. ZCBaseInfoPanelPart_PlayScope( infoPanelParts[ j ] ).InternalGetInfo_clearscope( i ) .. "\n";
+					outStr = ZCBaseInfoPanelPart_PlayScope( infoPanelParts[ j ] ).InternalGetInfo_clearscope( i );
 				else
-					outStr = outStr .. infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] ) .. "\n";
+					outStr = infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] );
 
-				panelsstr.Push( outstr );
+				panelsstr.Push( "\c-" .. outstr .. "\n" );
 
 				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
 
@@ -651,7 +651,8 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( playernum == consoleplayer ) {
 				for ( int i = 0; i < MaxTestee; i++ ) {
 					// Warning! Hash may generate a format specifier ("%s" etc). Do not use any "printf()" output!
-					EventHandler.SendNetworkEvent( "zc_multiplayer_synctest" .. ZCHECKER_AGRS_SEPARATOR .. Testee[ i ].GetHash(), i, consoleplayer );
+					String hash = Testee[ i ].GetHash();
+					EventHandler.SendNetworkEvent( "zc_multiplayer_synctest" .. ZCHECKER_AGRS_SEPARATOR .. hash, i, consoleplayer );
 				}
 			} else {
 				for ( int i = 0; i < MaxTestee; i++ )
