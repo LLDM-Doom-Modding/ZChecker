@@ -494,3 +494,16 @@ class ZCInternalActorNameCell {
 		return outIndex;
 	}
 } // of class ZCInternalActorNameCell {}
+
+struct ZCheckerHandlerDatascopeVariables {
+	transient CVar infopanelStartXCVar, infopanelStartYCVar;
+	transient CVar infopanelScaleCVar;
+	transient CVar infopanelOffsetXCVar, infopanelPartsSpaceYCVar;
+
+	transient CVar infopanelDimEnabledCVar;
+	transient CVar infopanelDimColorCVar;
+	transient CVar infopanelDimAlphaCVar;
+	transient CVar infopanelDimBorderWidthCVar;
+
+} // of struct ZCheckerHandlerDatascopeVariables {}
+

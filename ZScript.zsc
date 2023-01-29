@@ -26,7 +26,7 @@ version "3.3.0"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
-const ZCheckerVersion = "0.72";
+const ZCheckerVersion = "0.74";
 
 
 // AutoAmbient: 0x7FAA0004;
@@ -43,6 +43,7 @@ const ZCHECKER_AGRS_SEPARATOR = "@@";
 class ZCheckerHandler: StaticEventHandler {
 	ZCGlobal globalclass;
 	ZCPanelsStorage panels;
+	ZCheckerHandlerDatascopeVariables datascoped;
 
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
 
@@ -328,8 +329,8 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	override void RenderOverlay( RenderEvent e ) {
-		// User CVars locating uses a relatively long algorithm. After a 
-		//while I'll optimize them and move somewhere.
+		// Pointers to the all of the used CVars are pre-cached in this method.
+
 		Array<ZCBaseInfoPanelPart> infoPanelParts;
 		PlayerInfo pl = players[ consoleplayer ];
 
@@ -342,11 +343,26 @@ class ZCheckerHandler: StaticEventHandler {
 				infoPanelParts.Push( panelnode.panel );
 		}
 
-		double infopanelStartX = CVar.FindCVar( "mcm_zchecker_infopanel_startx" ).GetFloat();
-		double infopanelStartY = CVar.FindCVar( "mcm_zchecker_infopanel_starty" ).GetFloat();
-		double infopanelScale = CVar.FindCVar( "mcm_zchecker_infopanel_scale" ).GetFloat();
-		double infopanelOffsetX = CVar.FindCVar( "mcm_zchecker_infopanel_offsetx" ).GetFloat();
-		double infopanelPartsSpaceY = CVar.FindCVar( "mcm_zchecker_infopanelparts_y_gap" ).GetFloat();
+		if ( !datascoped.infopanelStartXCVar ) {
+			PlayerInfo pl = players[ consoleplayer ];
+
+			datascoped.infopanelStartXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_startx", pl );
+			datascoped.infopanelStartYCVar = CVar.GetCVar( "mcm_zchecker_infopanel_starty", pl );
+			datascoped.infopanelScaleCVar = CVar.GetCVar( "mcm_zchecker_infopanel_scale", pl );
+			datascoped.infopanelOffsetXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_offsetx", pl );
+			datascoped.infopanelPartsSpaceYCVar = CVar.GetCVar( "mcm_zchecker_infopanelparts_y_gap", pl );
+
+			datascoped.infopanelDimEnabledCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimenabled", pl );
+			datascoped.infopanelDimColorCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimcolor", pl );
+			datascoped.infopanelDimAlphaCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimalpha", pl );
+			datascoped.infopanelDimBorderWidthCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimborderwidth", pl );
+		}
+
+		double infopanelStartX = datascoped.infopanelStartXCVar.GetFloat();
+		double infopanelStartY = datascoped.infopanelStartYCVar.GetFloat();
+		double infopanelScale = datascoped.infopanelScaleCVar.GetFloat();
+		double infopanelOffsetX = datascoped.infopanelOffsetXCVar.GetFloat();
+		double infopanelPartsSpaceY = datascoped.infopanelPartsSpaceYCVar.GetFloat();
 
 		// Thanks to m8f for the "drawTextCenter()" function code from his "Hellscape Navigator".
 		double bordersXMargin = 4.0;
@@ -417,12 +433,12 @@ class ZCheckerHandler: StaticEventHandler {
 			}
 
 			// Dimming background:
-			bool infopanelDimEnabled = CVar.FindCVar( "mcm_zchecker_infopanel_dimenabled" ).GetBool();
+			bool infopanelDimEnabled = datascoped.infopanelDimEnabledCVar.GetBool();
 
 			if ( infopanelDimEnabled && panelsstrAmount ) {
-				Color dimColor = Color( CVar.FindCVar( "mcm_zchecker_infopanel_dimcolor" ).GetInt() );
-				double dimAlpha = CVar.FindCVar( "mcm_zchecker_infopanel_dimalpha" ).GetFloat();
-				double dimBorderWitdh = CVar.FindCVar( "mcm_zchecker_infopanel_dimborderwidth" ).GetFloat() * fontSymbolHeight;
+				Color dimColor = Color( datascoped.infopanelDimColorCVar.GetInt() );
+				double dimAlpha = datascoped.infopanelDimAlphaCVar.GetFloat();
+				double dimBorderWitdh = datascoped.infopanelDimBorderWidthCVar.GetFloat() * fontSymbolHeight;
 
 				int dimX = int( ( x - dimBorderWitdh ) / scale );
 				int dimY = int( ( starty - dimBorderWitdh ) / scale );
