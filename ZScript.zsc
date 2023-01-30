@@ -401,7 +401,11 @@ class ZCheckerHandler: StaticEventHandler {
 				else
 					outStr = infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] );
 
-				panelsstr.Push( "\c-" .. outstr .. "\n" );
+				if ( outStr == "" )
+					continue;
+
+
+				panelsstr.Push( "\c-" .. outStr .. "\n" );
 
 				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
 
@@ -610,29 +614,29 @@ class ZCheckerHandler: StaticEventHandler {
 			interceptNeteventsMode = 0;
 
 		if ( interceptNeteventsMode ) {
-			String outstr = "";
+			String outStr = "";
 
 			if ( interceptNeteventsMode == 3 )
-				outstr = TEXTCOLOR_GRAY .. ( e.IsManual? "Manual" : "System" ) .. TEXTCOLOR_DARKGRAY .. " netevent ";
+				outStr = TEXTCOLOR_GRAY .. ( e.IsManual? "Manual" : "System" ) .. TEXTCOLOR_DARKGRAY .. " netevent ";
 			else
-				outstr = TEXTCOLOR_DARKGRAY .. "Netevent ";
+				outStr = TEXTCOLOR_DARKGRAY .. "Netevent ";
 
 			// Compatibility between all *ZDoom versions:
 			int compatTicRate = max( Thinker.Tics2Seconds( 350000 ), 1 );
 			compatTicRate = int( 350000 / compatTicRate );
 
 			if ( interceptNeteventsMode >= 2 )
-				outstr.AppendFormat( "at %s.%02i ", level.TimeFormatted(), int( floor( ( level.time % compatTicRate ) / double( compatTicRate ) * 100.0 ) ) );
+				outStr.AppendFormat( "at %s.%02i ", level.TimeFormatted(), int( floor( ( level.time % compatTicRate ) / double( compatTicRate ) * 100.0 ) ) );
 
 			String ARGSSEP = TEXTCOLOR_DARKGRAY .. "/" .. TEXTCOLOR_CREAM;
 
-			outstr.AppendFormat( "\"" .. TEXTCOLOR_LIGHTBLUE .. e.Name .. " " .. TEXTCOLOR_CREAM .. "%s%s%s%s%s" .. TEXTCOLOR_DARKGRAY .. "\"",
+			outStr.AppendFormat( "\"" .. TEXTCOLOR_LIGHTBLUE .. e.Name .. " " .. TEXTCOLOR_CREAM .. "%s%s%s%s%s" .. TEXTCOLOR_DARKGRAY .. "\"",
 								neteventArgColored( e.args[ 0 ] ), ARGSSEP, neteventArgColored( e.args[ 1 ] ), ARGSSEP, neteventArgColored( e.args[ 2 ] ) );
 
 			if ( interceptNeteventsMode == 3 )
-				outstr = outstr .. " from player #" .. TEXTCOLOR_WHITE .. e.Player;
+				outStr = outStr .. " from player #" .. TEXTCOLOR_WHITE .. e.Player;
 
-			ZCGlobal.Log( LL_Normal, outstr );
+			ZCGlobal.Log( LL_Normal, outStr );
 		} // of if ( interceptNeteventsMode ) {}
 
 
