@@ -2,7 +2,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	String outinfo;
 	Actor infothing;
 
-	bool printSecLights, printSecTextures, printSecDamage, printSecOther, printSecPortal, printSecTerrain;
+	bool printSecLights, printSecTextures, printSecDamage, printSecPortal, printSecTerrain, printSecInteraction, printSecOther;
 	int printSecFlagsMode, printSecHeightsMode;
 
 	override void OnCreate_play( void ) {
@@ -234,6 +234,14 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 			noextrainfo = false;
 		}
 
+		if ( printSecInteraction ) {
+			info.AppendFormat( DARKGRAY .. "\n Gravity %s%.4f%s;\n Frict %s%.2f%s, movefctr %s%.2f%s.",
+							GRAY, sec.gravity, DARKGRAY,
+							GRAY, sec.friction, DARKGRAY, GRAY, sec.movefactor, DARKGRAY );
+
+			noextrainfo = false;
+		}
+
 		if ( noextrainfo )
 			info.Replace( ":", "." );
 		else
@@ -258,9 +266,10 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		printSecFlagsMode = CVar.GetCVar( "mcm_zchecker_infovar_geomsecflags", players[ consoleplayer ] ).GetInt();
 		printSecTextures = CVar.GetCVar( "mcm_zchecker_infovar_geomsectex", players[ consoleplayer ] ).GetBool();
 		printSecDamage = CVar.GetCVar( "mcm_zchecker_infovar_geomsecdamage", players[ consoleplayer ] ).GetBool();
-		printSecOther = CVar.GetCVar( "mcm_zchecker_infovar_geomsecother", players[ consoleplayer ] ).GetBool();
 		printSecPortal = CVar.GetCVar( "mcm_zchecker_infovar_geomsecportal", players[ consoleplayer ] ).GetBool();
+		printSecInteraction = CVar.GetCVar( "mcm_zchecker_infovar_geomsecphysics", players[ consoleplayer ] ).GetBool();
 		printSecTerrain = CVar.GetCVar( "mcm_zchecker_infovar_geomsecterrain", players[ consoleplayer ] ).GetBool();
+		printSecOther = CVar.GetCVar( "mcm_zchecker_infovar_geomsecother", players[ consoleplayer ] ).GetBool();
 
 		if ( differFloorCeilSectors ) {
 			if ( thing.cursector != thing.floorsector && thing.cursector != thing.ceilingsector ) {
@@ -296,29 +305,6 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 			addSectorInfo( thing.cursector, "actual" .. cursecname );
 		} // of else, of if ( differFloorCeilSectors ) {}
 
-/*
-	native int floorterrain;
-	native TerrainDef GetFloorTerrain();
-
-struct TerrainDef native {
-	native Name TerrainName;
-	native bool IsLiquid;
-	native int Splash;
-	native double FootClip;
-	native double Friction;
-	native double MoveFactor;
-
-	native float StepVolume;
-	native int WalkStepTics;
-	native int RunStepTics;
-	native Sound LeftStepSound;
-	native Sound RightStepSound;
-
-	native int DamageAmount;
-	native Name DamageMOD;
-	native int DamageTimeMask;
-	native bool AllowProtection;
-};*/
 
 		if ( printSecTerrain ) {
 			TerrainDef ter = thing.GetFloorTerrain();

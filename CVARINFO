@@ -65,9 +65,10 @@ user int  mcm_zchecker_infovar_geomsecflags	= 0;	 //  \_ Sector flags: "Disabled
 user int  mcm_zchecker_infovar_geomsecheights = 1;	 //  \_ "Off", "Heights", "Heights & delta to player".
 user bool mcm_zchecker_infovar_geomsectex	= false; //  \_ Sector textures.
 user bool mcm_zchecker_infovar_geomsecdamage= false; //  \_ Sector damage (also for terrain).
-user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (water level, gravity, ...).
+user bool mcm_zchecker_infovar_geomsecphysics = false;// \_ Sector interactions: friction, movefactor, gravity.
 user bool mcm_zchecker_infovar_geomsecportal= false; //  \_ Sector portal info.
 user bool mcm_zchecker_infovar_geomsecterrain = false;// \_ Shows floorsector terrain, if any.
+user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (special, ...).
 // Something about sector normals?
 
 user bool mcm_zchecker_info_geomlines		= false; // Lines linked to the actor.

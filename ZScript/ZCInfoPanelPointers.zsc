@@ -41,7 +41,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 		return str;
-	} // of static clearscope String decoratePointerString( Actor ptr, String desc, String ptrcolor ) {}
+	} // of static clearscope String DecoratePointerString( Actor testee, ZCheckerHandler zchandler, Actor ptr, String desc, String ptrcolor = WHITE ) {}
 
 	protected ui String decoratePointerStringUI( Actor ptr, String desc, String ptrcolor = WHITE ) {
 		return DecoratePointerString( testeething, handler, ptr, desc, ptrcolor );
