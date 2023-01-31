@@ -38,7 +38,7 @@ Y	msfY
 Z	msfZ
 
 " "	msfS00
-;	msfS01
+";"	msfS01
 '	msfS02
 ,	msfS04
 .	msfS05
@@ -65,6 +65,7 @@ $	msfS20
 )	msfS27
 [	msfS26
 ]	msfS27
+
 }
 
 zchecker_smallfont_mono_shortspace {
@@ -106,7 +107,7 @@ X	msfX
 Y	msfY
 Z	msfZ
 
-;	msfS01
+";"	msfS01
 '	msfS02
 ,	msfS04
 .	msfS05
@@ -133,4 +134,5 @@ $	msfS20
 )	msfS27
 [	msfS26
 ]	msfS27
+
 }
