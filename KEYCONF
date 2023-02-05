@@ -47,6 +47,9 @@ alias zcthinkers "netevent zc_thinkerscontrol@@%1@@%2@@%3"
 alias zcinfo "zcpanel info %1"
 alias zclistthinkers "zcthinkers %1"
 
+alias zcinterface "netevent zc_external_interface@@%1@@%2@@%3; wait 1"
+alias zcif "zcinterface %1 %2 %3"
+
 
 // The Everything map aliases:
 alias zcev "netevent zc_ev@@%1@@%2@@%3@@%4" // add|new, goto, recreate, optimize|pause

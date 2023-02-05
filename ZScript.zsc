@@ -696,8 +696,6 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( panels.panelsorderChanged )
 			panels.UpdatePanels( true );
 
-		//ACS_Execute( -int( 'ZChecker_Create_ACS_Thinker' ), 0 );
-
 		Super.WorldLoaded( e );
 	}
 
