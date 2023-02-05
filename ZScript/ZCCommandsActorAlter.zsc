@@ -393,12 +393,17 @@ class ZCSummonCommand: ZCConsoleCommand {
 					} else if ( curparam.Left( 3 ) == "add" || curparam.Left( 5 ) == "panel" ) {
 						if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
 							String panelposStr = curparam.Mid( colonIndex + 1, curparam.Length() - colonIndex - 1 );
-							int panelposNum = params.INFOPANEL_IGNORE;
 
-							if ( str2int_Ptr( panelposStr, +panelposNum ) && checkTesteePlace( --panelposNum ) )
-								params.infopanelPos = panelposNum;
-							else
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. panelposStr .. "\"." );
+							if ( panelposStr == "" ) {
+								params.infopanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
+							} else {
+								int panelposNum;
+
+								if ( str2int_Ptr( panelposStr, +panelposNum ) && checkTesteePlace( --panelposNum ) )
+									params.infopanelPos = panelposNum;
+								else
+									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. panelposStr .. "\"." );
+							}
 						} else {
 							params.infopanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
 						}
@@ -562,7 +567,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Only last summoned actor added to the list." );
 					}
 				} else {
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_BRICK .. "Cannot summon actor class" .. ( summoneeAmount > 1? "es " : " " ) .. TEXTCOLOR_DARKGRAY .. "\"" .. TEXTCOLOR_GRAY .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
+					ZCGlobal.Log( LL_Main, TEXTCOLOR_BRICK .. "Cannot summon actor class " .. TEXTCOLOR_DARKGRAY .. "\"" .. TEXTCOLOR_GRAY .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
 				}
 			} // of if ( player ) {}
 
