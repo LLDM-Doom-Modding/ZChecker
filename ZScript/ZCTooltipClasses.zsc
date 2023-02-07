@@ -192,3 +192,30 @@ class ZCTooltipSetFlagCommand: ZCTooltipClass {
 	}
 }
 
+
+class ZCTooltipExternalInterfaceCommand: ZCTooltipClass {
+	override String GetPlaintext() {
+		return HighlightText(
+			"`yCommand is mostly useful for the automation via the `x\"`Calias`x\"`y command`x and may be almost useless in other cases."
+		);
+	}
+
+	override String GetTips() {
+		return HighlightText( IndentNewlines(
+			"Command \"`Czcif`x\" is actually an abbreviation of the \"`Czcinterface`x\" and so not independent.\n"
+			"This command returns its integer result to the console variable \"`g" .. ZCExternalInterfaceCommand.const_interfaceCVarName .. "`x\". You may check it via built-in \"`Ctest`x\" command, see section \"`HExamples`x\" below.\n"
+			"Note that command result assigning will be delayed for one world tic to prevent desynchronizations in multiplayer. Built-in command \"`Cwait`x\" will be helpful."
+		) );
+	}
+
+	override String GetExamples() {
+		return HighlightText(
+			"This alias will `yonly`x summon one specified actor (`g%%1`g) and add it to the first infopanel `yif this panel not yet linked`x:\n" ..
+			LISTPREFIX .. "`Calias zcsa1 `x\"`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \\\"zcsummon $tmp 1 add:1\\\"; zcvarsctl rm $tmp`x\";\n\n" ..
+			"The next alias will check if the last added to the panel is a DoomImp `~(via classname saved in the variable `1$last`~)`x:\n" ..
+			LISTPREFIX .. "`Calias testforimp3 `x\"`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\\"echo Imp.\\\" \\\"echo Not an Imp.\\\"`x\".\n\n" ..
+			"This alias will indefinitely check if the `1self`x pointer equals to the `1self.player.camera`x pointer:\n" ..
+			LISTPREFIX .. "`Calias isselfcamera `x\"`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \\\"echo Player camera view was changed from default.\\\"`~; `2wait 1`~; `2isselfcamera`x\".\n"
+		);
+	}
+}

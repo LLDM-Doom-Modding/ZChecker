@@ -757,7 +757,7 @@ class ZCVariablesControlCommand: ZCConsoleCommand {
 				String newVarValue = ccmd.args[ 2 ];
 
 				if ( SetInternalZCheckerString( internalVarName, newVarValue ) )
-					ZCGlobal.Log( LL_Main, "Internal variable \"" .. TEXTCOLOR_LIGHTBLUE .. internalVarName.Left( 63 ) .. LLCOLOR_MAIN .. "\" is " .. TEXTCOLOR_GREEN .. "set" .. LLCOLOR_MAIN .. " to \"" .. GetInternalZCheckerString( internalVarName ) .. "\"." );
+					ZCGlobal.Log( LL_Detailed, "Internal variable \"" .. TEXTCOLOR_LIGHTBLUE .. internalVarName.Left( 63 ) .. LLCOLOR_MAIN .. "\" is " .. TEXTCOLOR_GREEN .. "set" .. LLCOLOR_MAIN .. " to \"" .. GetInternalZCheckerString( internalVarName ) .. "\"." );
 				break;
 			case VCT_Delete:
 				String arg1 = ccmd.args[ 1 ];
@@ -803,6 +803,7 @@ class ZCVariablesControlCommand: ZCConsoleCommand {
 
 class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	transient CVar interfaceCVar;
+	const const_interfaceCVarName = "mcm_zchecker_var_interface";
 
 	enum EInterfaceControlTypes {
 		ICT_Error = 0,
@@ -829,7 +830,8 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_external_interface",
 			"zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree",
-			"Provide an external interface for the user-defined aliases and same other stuff."
+			"Provide an external interface for the user-defined aliases and same other stuff. On return sets an integer console variable \"" .. const_interfaceCVarName .. "\".",
+			'ZCTooltipExternalInterfaceCommand'
 		);
 	}
 
@@ -917,7 +919,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 
 	override void DoCommand() {
 		if ( !interfaceCVar )
-			interfaceCVar = CVar.FindCVar( "mcm_zchecker_var_interface" );
+			interfaceCVar = CVar.GetCVar( const_interfaceCVarName, players[ ccmd.e.Player ] );
 
 		int outval = 0;
 		ZCheckerHandler zchandler = ccmd.handler;
@@ -927,7 +929,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 			case ICT_InternalVar:
 				if ( ccmd.args[ 0 ].Left( 2 ) == "ev" ) {
 					outval = ZCGlobal.IsEverythingLevel();
-					InterfaceDebugLog( "Is current level everything: " .. outval );
+					InterfaceDebugLog( "Is current level Everything: " .. outval );
 				} else {
 					outval = ZCGlobal.DangerousCCMDsAllowed( "" );
 					InterfaceDebugLog( "Is dangerous CCMDs allowed: " .. outval );
@@ -1019,9 +1021,11 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				break;
 		}
 
+		// [McM]: Backward *ZDoom compatibility... In newer verisons it's better to use the "nosave" CVar scope.
 		interfaceCVar.SetInt( outval );
+		ACS_ExecuteAlways( -int( 'ZChecker_SetExternalInterfaceCVar' ), 0, consoleplayer );
 
-		InterfaceDebugLog( "CVar is set to " .. TEXTCOLOR_BLUE .. outval .. LLCOLOR_MAIN .. "." );
+		InterfaceDebugLog( "CVar will be set to " .. TEXTCOLOR_BLUE .. outval .. LLCOLOR_MAIN .. " in next tic" .. LLCOLOR_DEBUG );
 	} // of override void DoCommand() {}
 
 } // of class ZCExternalInterfaceCommand: ZCConsoleCommand {}

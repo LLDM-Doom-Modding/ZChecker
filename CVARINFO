@@ -9,7 +9,7 @@ user   int mcm_zchecker_specinfo_netevents	= 0; // "Disabled", "Name and args", 
 
 
 // Interfaces.
-server noarchive int mcm_zchecker_var_interface; // External interface, for the user aliases.
+user noarchive int mcm_zchecker_var_interface; // External interface, for the user aliases. Will be in the "nosave" scope in a non-compatible ZChecker version.
 
 user noarchive string mcm_zchecker_internal_metastring; // Internal string for the API between ZScript and ACS.
 

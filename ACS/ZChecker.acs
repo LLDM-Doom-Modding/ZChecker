@@ -51,3 +51,10 @@ script "ZChecker_SetInfopanelPartCVar" ( int playernum, int infopanelPart ) {
 
 	SetUserCVarString( playernum, cvarname, data );
 }
+
+script "ZChecker_SetExternalInterfaceCVar" ( int playernum ) {
+	str cvarname = "mcm_zchecker_var_interface";
+	int data = GetUserCVar( playernum, cvarname );
+
+	SetUserCVar( playernum, cvarname, data );
+}
