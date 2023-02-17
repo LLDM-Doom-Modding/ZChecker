@@ -64,21 +64,26 @@ Due to internal netevent realization restrictions in the engine you are not able
 
 ### LLDM crew
 
-- **JSO_x** a.k.a. **Morthimer McMare**: idea, most of the code, map "Everything_simpled";
+- **JSO_x** a.k.a. **Morthimer McMare**: idea, almost all code, map "Everything_simpled";
 
 - **StormCatcher.77**: map "Everything";
 
 - **ika707**: beta-testing, bugs reporting.
 
 
+### Work with resources
+
+- **Agent_Ash** a.k.a. **Jekyll Grim Payne**: translation check and interface advices;
+
+- **Dezette** a.k.a. **MyNameIs**: alternative monospaced smallfont;
+
+- **Mud** a.k.a. **Serious_MOod**: textures for the Everything maps.
+
+
 ### Special thanks to
-
-- **Dezette** a.k.a. **MyNameIs** for the alternative monospaced smallfont;
-
-- **Agent_Ash**, for the translation check and interface advices;
 
 - **Sir Robin**, for his [ZScript quicksort library](https://forum.zdoom.org/viewtopic.php?f=105&t=75757);
 
 - **m8f**, for the GUI code from his [Hellscape Navigator](https://forum.zdoom.org/viewtopic.php?t=61643);
 
-- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Chameleon_111**, **Il Str**, **Dezette**, **Agent_Ash**.
+- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Agent_Ash**, **Chameleon_111**, **Il Str**, **Dezette**.
