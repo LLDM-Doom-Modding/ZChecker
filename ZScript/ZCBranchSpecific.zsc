@@ -3,4 +3,4 @@
 // Also see a ".gitattributes".
 //
 
-const ZCheckerVersionBranch = "master";
+const ZCheckerVersionBranch = "requests";
