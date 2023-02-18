@@ -2,6 +2,19 @@
 // ZChecker utility classes and most of the general constants.
 //
 
+// Main constants:
+const ZCHECKER_AGRS_SEPARATOR = "@@";
+
+// [McM] Rezerved handler orders in other projects:
+//   AutoAmbient:    0x7FAA0004;
+//   Weathremum:     0x7FAA0007;
+//   A.C., global:   0x7FAA0008;
+//   A.C., packs:    0x7FAA0009.
+const ZCheckerHandlerOrder   = -0x7FAA0005; // Proposed to call it before (almost) everything else.
+const ZCheckerMapHandlerOrder = 0x7FAA0006;
+
+
+
 // Logging system constants:
 enum EZCheckerLogLevels {
 	LL_Emergency = 0,

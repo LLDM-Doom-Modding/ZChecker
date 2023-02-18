@@ -1,12 +1,27 @@
 version "3.3.0"
 
+// ZChecker, an universal debugger for *ZDoom-family ports written on ZScript.
+//
+// Main repository:
+//    https://github.com/LLDM-Doom-Modding/ZChecker
+//
+// (c) Morthimer McMare a.k.a. JSO_x,  2018-2023.
+// (c) LLDM Doom Modding team,         2022-2023.
+
+
 // For all code files:
 //   Tab size          - 4 spaces.
 //   Indentation style - in general a "one true brace".
 //   Spaces style      - generous/rife.
+//
+// If you want to change something in the project core, please try to use this 
+//style. Modules like infopanels and console commands are formally free from 
+//this rule...
 
-// General, base, utility and miscellaneous code:
+
+// General, base, utility and miscellaneous code; constants are in "ZCUtils.zsc":
 #include "ZScript/ZCUtils.zsc"
+#include "ZScript/ZCBranchSpecific.zsc"
 #include "ZScript/ZCDataStructures.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
 #include "ZScript/ZCMenus.zsc"
@@ -26,19 +41,15 @@ version "3.3.0"
 #include "ZScript/ZCInfoPanelOther.zsc"
 
 
-const ZCheckerVersion = "0.74";
+const ZCheckerVersionNumber = "0.80";
+
+const ZCheckerVersion = ZCheckerVersionNumber .. ", branch \"" .. ZCheckerVersionBranch .. "\"";
+
+const MaxTestee = 3; // [McM] A legacy constant from 2018. Will rename someday...
 
 
-// AutoAmbient: 0x7FAA0004;
-// Weathremum:  0x7FAA0007.
-const ZCheckerHandlerOrder = -0x7FAA0005; // Proposed to call it before (almost) everything else.
-const ZCheckerMapHandlerOrder = 0x7FAA0006;
 
-const MaxTestee = 3; // Will rename someday...
-
-const ZCHECKER_AGRS_SEPARATOR = "@@";
-
-
+// Internal core of the project.
 
 class ZCheckerHandler: StaticEventHandler {
 	ZCGlobal globalclass;
@@ -72,19 +83,6 @@ class ZCheckerHandler: StaticEventHandler {
 		return ccmd;
 	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
 
-	/*ZCConsoleClass LocateZCConsoleClass( class<ZCConsoleClass> cls ) {
-		ZCConsoleClass found = NULL;
-
-		for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
-			if ( zcConsoleHandleClasses[ i ].GetClass() == cls ) {
-				found = zcConsoleHandleClasses[ i ];
-				break;
-			}
-		}
-
-		return found;
-	} // of ZCConsoleClass LocateZCConsoleClass( class<ZCConsoleClass> cls ) {}*/
-
 	void UpdateInternalClassnameByField( uint fieldnum ) {
 		if ( fieldnum < MaxTestee ) {
 			String newClassname = "";
@@ -94,7 +92,8 @@ class ZCheckerHandler: StaticEventHandler {
 
 			globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
 		}
-	}
+	} // of void UpdateInternalClassnameByField( uint fieldnum ) {}
+
 
 	private bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
@@ -287,6 +286,8 @@ class ZCheckerHandler: StaticEventHandler {
 		SetOrder( ZCheckerHandlerOrder );
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker v" .. ZCheckerVersion .. " initializes..." );
+		ZCGlobal.Log( LL_Debug, String.Format( "%s::OnRegister(). EGameType 0x%03x, EGameAction %i, multiplayer %i, dm %i.",
+							GetClassName(), gameinfo.gametype, gameaction, multiplayer, deathmatch ) );
 
 		panels = ZCPanelsStorage.Create();
 
@@ -300,7 +301,7 @@ class ZCheckerHandler: StaticEventHandler {
 		InitAllActorNames();
 
 		ZCGlobal.Log( LL_Detailed, String.Format( "ZChecker v%s initialized %s. Total %i console commands, %i info panels.",
-									ZCheckerVersion, ( handlerInitSuccess? "successfully" : TEXTCOLOR_RED .. "with warnings" .. LLCOLOR_MAIN ),
+									ZCheckerVersionNumber, ( handlerInitSuccess? "successfully" : TEXTCOLOR_RED .. "with warnings" .. LLCOLOR_MAIN ),
 									zcConsoleHandleClasses.Size(), panels.defaultPanels.Size() ) );
 
 		Super.OnRegister();

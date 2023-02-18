@@ -1,0 +1,6 @@
+//
+// Branch-asynchronous ZScript file.
+// Also see a ".gitattributes".
+//
+
+const ZCheckerVersionBranch = "master";
