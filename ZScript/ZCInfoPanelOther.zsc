@@ -117,31 +117,31 @@ class ZCCheatsDefinitionsInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 		if (thing.player){
-			
+
 			static const String cheatcodes_1[] = {
-				"No clipping", "Godmode", "No velocity", "No Target", "", 
-				"Chasecam", "Frozen", "Revertplease", "", "Stepleft", "Frightening", 
+				"No clipping", "Godmode", "No velocity", "No Target", "",
+				"Chasecam", "Frozen", "Revertplease", "", "Stepleft", "Frightening",
 				"Instant Weapon Switch", "Totally Frozen", "Predicting",  "Interpview"
 			};
 			static const String cheatcodes_2[] = {
 				"Buddha 2", "Godmode 2", "", "Buddha", "", "", "No clipping 2"
 			}; // array of string descriptions with the corresponding indexes
-			
-			outStr = outStr .. TEXTCOLOR_WHITE .. "Cheats:";
-			outStr.AppendFormat(TEXTCOLOR_CYAN .. "\n  cheats mask = " .. TEXTCOLOR_WHITE .. "%X", thing.player.cheats);
+
+			outStr = outStr .. WHITE .. "Cheats:";
+			outStr.AppendFormat(CYAN .. "\n  cheats mask = " .. WHITE .. "%X", thing.player.cheats);
 			for ( int i = 0; i < cheatcodes_1.Size(); i++) {
     			
 				if (thing.player.cheats & (1 << i)){
-					outStr.AppendFormat(TEXTCOLOR_RED .. "\n  " .. cheatcodes_1[i] .. ": " .. TEXTCOLOR_DARKGRAY .. "(1 << %d)", i);
+					outStr.AppendFormat(RED .. "\n  " .. cheatcodes_1[i] .. ": " .. DARKGRAY .. "(1 << %d)", i);
 				}
 			}
 			for ( int i = 0; i < cheatcodes_2.Size(); i++) {
 				if (thing.player.cheats & (1 << i+24)){
-					outStr.AppendFormat(TEXTCOLOR_RED .. "\n  " .. cheatcodes_2[i] .. ": " .. TEXTCOLOR_DARKGRAY .. "(1 << %d)", i+24);
+					outStr.AppendFormat(RED .. "\n  " .. cheatcodes_2[i] .. ": " .. DARKGRAY .. "(1 << %d)", i+24);
 				}
 			}
 			if (thing.bFLYCHEAT){
-				outStr.AppendFormat(TEXTCOLOR_RED .. "\n  Fly: " .. TEXTCOLOR_DARKGRAY .. "(%X)", thing.bFLYCHEAT);
+				outStr.AppendFormat(RED .. "\n  Fly: " .. DARKGRAY .. "(+FLYCHEAT)" );
 			}
 		}
 		return outStr;
