@@ -107,7 +107,7 @@ user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, 
 
 //user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
 user bool mcm_zchecker_info_sounddefs		= false;
-
+user bool mcm_zchecker_info_cheatsdefs      = false;
 
 
 // The "Everything" map console variables.
