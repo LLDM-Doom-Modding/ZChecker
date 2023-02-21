@@ -35,10 +35,11 @@ version "3.3.0"
 #include "ZScript/ZCTooltipClasses.zsc"
 
 // Informational panels classes:
-#include "ZScript/ZCInfoPanelMain.zsc"
-#include "ZScript/ZCInfoPanelPointers.zsc"
-#include "ZScript/ZCInfoPanelGeometry.zsc"
-#include "ZScript/ZCInfoPanelOther.zsc"
+#include "ZScript/ZCInfopanelsGeneral.zsc"
+#include "ZScript/ZCInfopanelsSubsystems.zsc"
+#include "ZScript/ZCInfopanelsPointers.zsc"
+#include "ZScript/ZCInfopanelsGeometry.zsc"
+#include "ZScript/ZCInfopanelsOther.zsc"
 
 
 const ZCheckerVersionNumber = "0.80";
