@@ -190,20 +190,23 @@ class ZCPanelsStorage {
 	Array<ZCBaseInfoPanelPart> defaultPanels;	// Loaded from the ZChecker configuration file ("zchecker.cfg").
 	ZCInfoPanelNodesKeeper curPanels;			// Loaded from the *.ini.
 
-	transient CVar panelsOrderCVar;
-	bool panelsorderChanged;
+	// Panels order data:
+	String panelsstr; 			// General I/O variable.
+	bool panelsorderChanged; 	// Set it to "true" if a panels order must be saved.
 
-	private transient CVar fonttypeCVar;
-	private int lastFontType;
+	// Fonts data:
 	transient Font infopanelsFont;
 	int infopanelsFontSpaceWidth;
 
-	String panelsstr; // General read/write variable.
-
 	// For the "[Init|Tick]SetPanelsorderCVar()":
+	private transient CVar panelsOrderCVar;
 	private String newOrderStr;
 	private int newOrderStrPartsAmount;
 	private bool newOrderSaveRequest;
+
+	// For the "UpdateFont()":
+	private transient CVar fonttypeCVar;
+	private int lastFontType;
 
 	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
 	const const_availablePartLen = ( 254 - 36 );
@@ -218,6 +221,7 @@ class ZCPanelsStorage {
 
 		return panel;
 	}
+
 
 	void UpdatePanels( bool fromCVar = false ) {
 		uint warningsAmount = 0;

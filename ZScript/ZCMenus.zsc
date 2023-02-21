@@ -19,8 +19,6 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	ZCheckerHandler handler;
 
-	transient CVar panelsOrderCVar;
-
 
 	private OptionMenuItemStaticText NewStaticText( String label = " " ) {
 		return new( "OptionMenuItemStaticText" ).Init( label );
@@ -44,7 +42,6 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	void SetPanelOptionsOrder( OptionMenuDescriptor desc ) {
 		String curorder = "";
-		panelsOrderCVar = handler.panels.panelsOrderCVar;
 
 		for ( int i = firstPanelItemPos; i < lastPanelItemPos; i++ ) {
 			ZCOptionMenuItemInfopanel paneloption = ZCOptionMenuItemInfopanel( desc.mItems[ i ] );
