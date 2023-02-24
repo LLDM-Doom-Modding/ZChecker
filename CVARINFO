@@ -14,7 +14,7 @@ user noarchive int mcm_zchecker_var_interface; // External interface, for the us
 user noarchive string mcm_zchecker_internal_metastring; // Internal string for the API between ZScript and ACS.
 
 
-// Common variables not used right now.
+// Common variables which is not used right now.
 //user int mcm_zchecker_min_sectorslines_tag	= 1;
 //user int mcm_zchecker_max_sectorslines_tag	= 700;
 
@@ -32,12 +32,14 @@ user color mcm_zchecker_infopanel_dimcolor		= "00 00 00";
 user float mcm_zchecker_infopanel_dimalpha		= 0.5;
 user float mcm_zchecker_infopanel_dimborderwidth= 0.5;
 
-// The Everything map actor information string CVars.
+// The Everything map actor infostring CVars.
 user float mcm_zchecker_ev_infostr_centerx	= 50.0;
 user float mcm_zchecker_ev_infostr_centery	= 5.0;
 user float mcm_zchecker_ev_infostr_scale	= 1.0;
 
-// Awful decision, but string CVar cannot contain more than 255 characters...
+// Awful decision, but user-scoped string CVar cannot contain more than 255 
+//characters... Scope must be changed to "nosave" in non-compatible branch, 
+//because nosave-CVars may store strings of unlimited length.
 user string mcm_zchecker_infopanelsorder_part0;
 user string mcm_zchecker_infopanelsorder_part1;
 user string mcm_zchecker_infopanelsorder_part2;
@@ -60,7 +62,7 @@ user bool mcm_zchecker_infovar_mainplayers	= false; //  \_ Player information.
 user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
 user int  mcm_zchecker_infovar_wpostiltdcma	= 2;	 //  \_ Tilts decimals amount.
 user bool mcm_zchecker_infovar_wposnoroll 	= false; //  \_ Remove roll tilt displaying.
-user bool mcm_zchecker_infovar_wposplbuttons = false;//  \_ Show player buttons.
+user bool mcm_zchecker_infovar_wposplbuttons= false; //  \_ Show player buttons.
 
 user bool mcm_zchecker_info_maininteract	= true;	 // Health, mass, etc.
 
@@ -68,7 +70,7 @@ user bool mcm_zchecker_info_geomsectors		= false; // Sectors linked to the actor
 user bool mcm_zchecker_infovar_geomsecdiffers = false;// \_ Show "floorsector"/"ceilingsector" only if they differs from the "cursector".
 user bool mcm_zchecker_infovar_geomseclight	= true;	 //  \_ Sector light level.
 user int  mcm_zchecker_infovar_geomsecflags	= 0;	 //  \_ Sector flags: "Disabled", "Short names", "Long names".
-user int  mcm_zchecker_infovar_geomsecheights = 1;	 //  \_ "Off", "Heights", "Heights & delta to player".
+user int  mcm_zchecker_infovar_geomsecheights = 1;	 //  \_ "Off", "Heights", "Heights & delta to actor".
 user bool mcm_zchecker_infovar_geomsectex	= false; //  \_ Sector textures.
 user bool mcm_zchecker_infovar_geomsecdamage= false; //  \_ Sector damage (also for terrain).
 user bool mcm_zchecker_infovar_geomsecphysics = false;// \_ Sector interactions: friction, movefactor, gravity.
@@ -81,18 +83,21 @@ user bool mcm_zchecker_info_geomlines		= false; // Lines linked to the actor.
 user int  mcm_zchecker_infovar_geomlinetype	= 1;	 //  \_ "On line of sight", "Blocking line", "Both" (a mask).
 user int  mcm_zchecker_infovar_geomlnmain	= 0;	 //  \_ Length and flags: "Disabled", "Short names", "Long names".
 user bool mcm_zchecker_infovar_geomlntex	= true;	 //  \_ Line textures.
-user int  mcm_zchecker_infovar_geomlnaction	= 1;	 //  \_ Line action info: "Disabled", "Action & TID", "Action, args & TID", "Everything".
+user int  mcm_zchecker_infovar_geomlnaction	= 1;	 //  \_ Line action info: "Disabled", "Action & tag", "Action, args & tag", "Everything".
 user bool mcm_zchecker_infovar_geomlnportal	= false; //  \_ Line portal info.
 
 user bool mcm_zchecker_info_inventory		= true;  // Inventory.
 user int  mcm_zchecker_infovar_invamount	= 40;    //  \_ Maximal amount of elements in output.
-user int  mcm_zchecker_infovar_invsorttype	= 0;	 //  \_ Sorting type: "Unsorted", "By names", "By amount".
+user int  mcm_zchecker_infovar_invsorttype	= 0;	 //  \_ Sorting type: "Unsorted", "By names", "By amount", "By max amount".
 user bool mcm_zchecker_infovar_invsortascend= false; //  \_ Descending (false) or ascending (true) order.
 
 user bool mcm_zchecker_info_states			= true;	 // States and frames.
-user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states (unlimited, 1, 2, ..., 25).
+user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states: "Unlimited", 1, 2, ..., 25.
 user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information;
-user int  mcm_zchecker_infovar_stateextras 	= 0;	 //  \_ Current state extra information (flags, PState X/Y, etc.);
+user int  mcm_zchecker_infovar_stateflags 	= 0;	 //  \_ Current state flags: "Disabled", "Short names", "Long names";
+user bool mcm_zchecker_infovar_stateextras 	= false; //  \_ Current state extra information (TicRange, state scope, PSprite X/Y, etc.);
+user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays";
+user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer;
 user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
 
 user bool mcm_zchecker_info_visual			= false; // Sprite, alpha, RenderStyle, etc.

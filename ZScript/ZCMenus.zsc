@@ -392,3 +392,73 @@ class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
 		return true;
 	}
 } // of class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {}
+
+
+// For the PSprite overlay ID choice:
+
+class OptionMenuItemZCPSpriteInputField: OptionMenuItemTextField {
+	OptionMenuItemZCPSpriteInputField Init( String label, Name command, CVar graycheck = null ) {
+		Super.Init( label, command, graycheck );
+		return self;
+	}
+
+	override bool MenuEvent( int mkey, bool fromcontroller ) {
+		if ( mkey == Menu.MKEY_Enter ) {
+			String basestr = String.Format( "%i", GetCVarString().ToInt() );
+
+			Menu.MenuSound( "menu/choose" );
+			mEnter = TextEnterMenu.Open( Menu.GetCurrentMenu(), basestr, -1, 2, fromcontroller );
+			mEnter.ActivateMenu();
+			return true;
+
+		} else if ( mkey == Menu.MKEY_Input ) {
+			int setval;
+			String setstr = mEnter.GetText();
+			setstr.ToLower();
+
+			if ( setstr == "flash" || setstr == "fire" ) {
+				setval = PSprite.FLASH;
+
+			} else {
+				setval = setstr.ToInt();
+
+				if ( setval == 0 )
+					setval = PSprite.WEAPON;
+			}
+
+			setstr = String.Format( "%i", setval );
+
+			switch ( setval ) {
+				case PSprite.WEAPON:
+					setstr = setstr .. " (weapon/main)";
+					break;
+				case PSprite.FLASH:
+					setstr = setstr .. " (flash)";
+					break;
+				case PSprite.STRIFEHANDS:
+					setstr = setstr .. " (Strife hands)";
+					break;
+				case PSprite.TARGETCENTER:
+					setstr = setstr .. " (PowerTargeter center)";
+					break;
+				case PSprite.TARGETLEFT:
+					setstr = setstr .. " (PowerTargeter left)";
+					break;
+				case PSprite.TARGETRIGHT:
+					setstr = setstr .. " (PowerTargeter right)";
+					break;
+				default:
+					break;
+			}
+
+			if ( mCVar )
+				mCVar.SetString( setstr );
+
+			mEnter = NULL;
+			return true;
+		}
+
+		return Super.MenuEvent( mkey, fromcontroller );
+	}
+
+} // of class OptionMenuItemZCNumberTextField: OptionMenuItemTextField {}

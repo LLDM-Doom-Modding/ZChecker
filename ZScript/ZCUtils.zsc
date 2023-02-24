@@ -5,7 +5,7 @@
 // Main constants:
 const ZCHECKER_AGRS_SEPARATOR = "@@";
 
-// [McM] Rezerved handler orders in other projects:
+// [McM] Reserved handler orders in other projects:
 //   AutoAmbient:    0x7FAA0004;
 //   Weathremum:     0x7FAA0007;
 //   A.C., global:   0x7FAA0008;
