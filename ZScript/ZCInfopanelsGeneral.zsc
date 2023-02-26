@@ -1,4 +1,6 @@
 class ZCMainInfoPanel: ZCBaseInfoPanelPart {
+	transient CVar displayTagsModeCVar, displaySelfPointerCVar, displayPlayersInfoCVar;
+
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_main";
 		optionLabel = "General info (name, pointer, ...)";
@@ -8,19 +10,27 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String info = ( thingfield.GetFieldPos() + 1 ) .. ". ";
 
+		// Caching CVars:
+		if ( !displayTagsModeCVar ) {
+			displayTagsModeCVar = CVar.GetCVar( "mcm_zchecker_infovar_maintags", players[ consoleplayer ] );
+			displaySelfPointerCVar = CVar.GetCVar( "mcm_zchecker_infovar_mainselfptr", players[ consoleplayer ] );
+			displayPlayersInfoCVar = CVar.GetCVar( "mcm_zchecker_infovar_mainplayers", players[ consoleplayer ] );
+		}
+
+		// Classname printing:
 		if ( thingfield.actorType == IAT_Normal )
 			info = info .. GREEN .. thing.GetClassName();
 		else if ( thingfield.actorType == IAT_StateProvider )
 			info = info .. DARKGREEN .. "Inv\c-: " .. GREEN .. thing.GetClassName();
 
-		int displayTagsMode = CVar.GetCVar( "mcm_zchecker_infovar_maintags", players[ consoleplayer ] ).GetInt();
-		bool displaySelfPointerMode = CVar.GetCVar( "mcm_zchecker_infovar_mainselfptr", players[ consoleplayer ] ).GetBool();
-		bool displayPlayersInfo = CVar.GetCVar( "mcm_zchecker_infovar_mainplayers", players[ consoleplayer ] ).GetBool();
+		// Tag printing:
+		int displayTagsMode = displayTagsModeCVar.GetInt();
 
 		if ( displayTagsMode == 2 || ( displayTagsMode == 1 && thing.GetTag() != thing.GetClassName() ) )
 			info = info .. "\n" .. ORANGE .. "Tag" .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
 
-		if ( displayPlayersInfo && thing.player ) {
+		// Player info printing (maybe will be in some other infopanel):
+		if ( displayPlayersInfoCVar.GetBool() && thing.player ) {
 			int playernum = thing.PlayerNumber() + 1;
 
 			if ( thing.player.bot )
@@ -29,9 +39,11 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 				info = info .. "\n" .. DARKBROWN .. "Player " .. playernum .. " name " .. GRAY .. thing.player.GetUserName() .. DARKBROWN .. ".";
 		}
 
-		if ( displaySelfPointerMode )
+		// Self pointer printing:
+		if ( displaySelfPointerCVar.GetBool() )
 			info = info .. "\n" .. BLACK .. "&self: " .. DARKGRAY .. thing;
 
+		// Multiplayer synchronization test printing:
 		if ( thingfield.asyncwith && playeringame[ thingfield.asyncwith ] )
 			info = info .. "\n" .. ( level.time & 16? ORANGE : FIRE ) .. "Async" .. RED .. " with player " .. thingfield.asyncwith .. "/" ..MAXPLAYERS .. "!";
 
@@ -127,12 +139,11 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 				);
 
 			} else {
-/*
-use.t..^...u..fr.af
-jmp.b.<v>.ldr.rl.zm
-crh...........u1234
-spd.strf..t180.scor
-*/
+				/*	use.t..^...u..fr.af
+					jmp.b.<v>.ldr.rl.zm
+					crh...........u1234
+					spd.strf..t180.scor  */
+
 				String buttonPaneStr = String.Format(
 					"%suse %st  %s^   %su  %sfr %saf\n" ..
 					"%sjmp %sb %s<%sv%s> %sl%sd%sr %srl %szm\n" ..
@@ -167,8 +178,9 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 		String info = "";
 
 		if ( thingfield.actorType == IAT_Normal ) {
+			int thingSpawnHealth = thing.GetSpawnHealth();
 			info.AppendFormat( DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(" .. RED .. "%.2f%%",
-					thing.health, thing.GetSpawnHealth(), ( thing.GetSpawnHealth()? 100.0 * thing.health / double( thing.GetSpawnHealth() ) : 0.0 ) );
+					thing.health, thingSpawnHealth, ( thingSpawnHealth? 100.0 * thing.health / double( thingSpawnHealth ) : 0.0 ) );
 
 			if ( thing.bNODAMAGE )
 				info = info .. " nodmg";

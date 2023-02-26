@@ -38,6 +38,8 @@ class ZCConsoleClass abstract {
 } // of class ZCConsoleClass abstract {}
 
 class ZCConsoleSeparator: ZCConsoleClass {
+	const HEADER	= TEXTCOLOR_SAPPHIRE;
+
 	// In fact it doesn't make sense to inherit from this class right now;
 	//internally only a base "ZCConsoleSeparator" class is used.
 	virtual String GetHelpSeparatorName( void ) {
@@ -52,9 +54,9 @@ class ZCConsoleSeparator: ZCConsoleClass {
 			int titleLen = title.Length();
 
 			if ( titleLen > 70 ) {
-				helpCacheString = " - - " .. title;
+				helpCacheString = HEADER .. " - - " .. title;
 			} else {
-				String sepDecor = " - - - - - - - - - - - - - - -";
+				String sepDecor = HEADER .. " - - - - - - - - - - - - - - -";
 
 				if ( titleLen != 0 ) {
 					sepDecor = sepDecor.Left( sepDecor.Length() - titleLen );

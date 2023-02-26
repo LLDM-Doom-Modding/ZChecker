@@ -551,9 +551,6 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					break;
 			} // of switch ( pspriteOverlaysMode ) {}
 
-			if ( pspriteOverlaysMode != 0 )
-				outStr.AppendFormat( "\n" );
-
 		} // of else if ( pspr ) {}
 
 		return outStr;

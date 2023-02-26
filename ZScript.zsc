@@ -73,17 +73,6 @@ class ZCheckerHandler: StaticEventHandler {
 	int zcConfigCurLineIndex;
 
 
-	ZCConsoleClass GetZCConsoleClass( int index ) {
-		ZCConsoleClass ccmd = NULL;
-
-		if ( index >= 0 && index < zcConsoleHandleClasses.Size() ) {
-			ccmd = zcConsoleHandleClasses[ index ];
-			//ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleClass(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
-		}
-
-		return ccmd;
-	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
-
 	void UpdateInternalClassnameByField( uint fieldnum ) {
 		if ( fieldnum < MaxTestee ) {
 			String newClassname = "";
@@ -110,6 +99,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		return !!classname;
 	}
+
 	private void addConsoleSeparator( bool importantFlag = false ) {
 		zcConsoleHandleClasses.Push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
 	}
