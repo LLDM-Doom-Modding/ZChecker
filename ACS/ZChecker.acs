@@ -58,3 +58,10 @@ script "ZChecker_SetExternalInterfaceCVar" ( int playernum ) {
 
 	SetUserCVar( playernum, cvarname, data );
 }
+
+script "ZChecker_WarpToEverything" ( int simplified_level ) {
+	if ( simplified_level )
+		ChangeLevel( "Everything_simpled", 0, CHANGELEVEL_NOINTERMISSION, -1 );
+	else
+		ChangeLevel( "Everything", 0, CHANGELEVEL_NOINTERMISSION, -1 );
+}

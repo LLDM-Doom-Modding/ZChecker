@@ -13,8 +13,8 @@ class ZCEvmapCommand: ZCConsoleCommand {
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev add|new|goto|pause|optimize|recreate|reload",
-			"Operates with world on the Everything map.",
+			"zcev add|new|goto|pause|optimize|recreate|reload;zcev map[2]|level[2]",
+			"Operates with world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warps player to the \"map everything\" and \"map everything_simpled\".",
 			CCF_Unreleased
 		);
 	}
@@ -164,3 +164,38 @@ class ZCEvmapCommand_pause: ZCEvmapCommand {
 		);
 	}
 } // of class ZCEvmapCommand_pause: ZCEvmapCommand {}
+
+class ZCEvmapCommand_warptomap: ZCEvmapCommand {
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"zcev map|launch;zcev map2|launch2",
+			"Warp to map \"Everything\" when no digit provided or to map \"Everything_simpled\" in other case."
+		);
+	}
+
+	override bool HandleArguments() {
+		bool outValue = false;
+		int ccmdArgsSize = complexArgsTest( "map" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "level" );
+
+		if ( ccmdArgsSize ) {
+			if ( ccmdArgsSize == 1 )
+				outValue = true;
+			else
+				SetNonblockingUsageMessage();
+		}
+
+		return outValue;
+	}
+	override void DoCommand( void ) {
+		// [McM] Compatibility. Again.
+		//LevelLocals.ChangeLevel( "Everything", 0, 0 );
+
+		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) != -1 );
+
+		ACS_ExecuteAlways( -int( 'ZChecker_WarpToEverything' ), 0, isSimplified );
+		console.HideConsole();
+	}
+} // of class ZCEvmapCommand_warptomap: ZCEvmapCommand {}
