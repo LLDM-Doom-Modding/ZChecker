@@ -143,7 +143,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	}
 
 	override bool HandleArguments() {
-		testeeStatus = -1;
+		testeeStatus = PPS_Error;
 		bool outValue = false;
 
 		if ( ccmd.args.Size() == 1 || ccmd.args.Size() == 2 ) {
@@ -788,25 +788,513 @@ class ZCSetStateCommand: ZCConsoleCommand {
 } // of class ZCSetStateCommand: ZCConsoleCommand {}
 
 
+
+
+struct ZCSetPropertyParameterDouble {
+	double value;
+	bool changed;
+
+	double valclamp( String valuedesc, double minlimit, double maxlimit ) {
+		if ( !changed )
+			return value;
+
+		double tmpfloat = clamp( value, minlimit, maxlimit );
+
+		if ( value != tmpfloat ) {
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( LLCOLOR_WARNING .. "%s (%i) isn't in range [%i; %i]. " .. LLCOLOR_MAIN .. "Clamped to %i.", valuedesc, value, minlimit, maxlimit, tmpfloat ) );
+			value = tmpfloat;
+		}
+
+		return value;
+	}
+
+	void set( in double newval ) {
+		value = newval;
+		changed = true;
+	}
+
+	void setfor( out double what ) {
+		if ( changed )
+			what = value;
+	}
+} // of struct ZCSetPropertyParameterDouble {}
+
+struct ZCSetPropertyParameterInteger {
+	int value;
+	bool changed;
+
+	double valclamp( String valuedesc, int minlimit, int maxlimit ) {
+		if ( !changed )
+			return value;
+
+		int tmpfloat = clamp( value, minlimit, maxlimit );
+
+		if ( value != tmpfloat ) {;
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( LLCOLOR_WARNING .. "%s (%.3d) isn't in range [%.3d; %.3d]. " .. LLCOLOR_MAIN .. "Clamped to %.3d.", valuedesc, value, minlimit, maxlimit, tmpfloat ) );
+			value = tmpfloat;
+		}
+
+		return value;
+	}
+
+	void set( in int newval ) {
+		value = newval;
+		changed = true;
+	}
+
+	void setfor( out int what ) {
+		if ( changed )
+			what = value;
+	}
+} // of struct ZCSetPropertyParameterInteger {}
+
+struct ZCSetPropertyParameterPointer {
+	Actor value; // [striked] See "ZCConsoleCommand.EPositionParseStatus".
+	bool changed;
+
+	void set( in Actor newval ) {
+		value = newval;
+		changed = true;
+	}
+
+	void setfor( out Actor what ) {
+		if ( changed )
+			what = value;
+	}
+}
+
+
+struct ZCSetPropertyExtraParameters play {
+	enum EPropertyFieldsDoubles {
+		PFD_X = 0,	// Coordinates.
+		PFD_Y,
+		PFD_Z,
+		PFD_VelX,	// Current velocity.
+		PFD_VelY,
+		PFD_VelZ,
+		PFD_Angle,	// Tilts.
+		PFD_Pitch,
+		PFD_Roll,
+		PFD_Radius,	// Interactions.
+		PFD_Height,
+		PFD_Speed,
+		PFD_FloatSpeed,
+		PFD_Gravity,
+		PFD_ScaleX,	// Visual.
+		PFD_ScaleY,
+		PFD_Alpha,
+
+		PFD_Quantity
+	}
+
+	enum EPropertyFieldsIntegers {
+		PFI_Health = 0,
+		PFI_Mass,
+		PFI_Arg0,
+		PFI_Arg1,
+		PFI_Arg2,
+		PFI_Arg3,
+		PFI_Arg4,
+		PFI_Special,
+		PFI_TID,
+		PFI_TIDToHate,
+
+		PFI_Quantity,
+
+		PFI_Args_Start		= PFI_Arg0,
+		PFI_Args_End 		= PFI_Arg4 + 1,
+	}
+
+	enum EPropertyFieldsPointers {
+		PFP_Target = 0,
+		PFP_Master,
+		PFP_Tracer,
+
+		PFP_Quantity
+	}
+
+	ZCSetPropertyParameterDouble[ PFD_Quantity ] doubles;
+	ZCSetPropertyParameterInteger[ PFI_Quantity ] integers;
+	ZCSetPropertyParameterPointer[ PFP_Quantity ] pointers;
+
+
+	void Clear( void ) {
+		for ( int i = 0; i < PFD_Quantity; i++ )
+			doubles[ i ].changed = false;
+
+		for ( int i = 0; i < PFI_Quantity; i++ )
+			integers[ i ].changed = false;
+
+		for ( int i = 0; i < PFP_Quantity; i++ )
+			pointers[ i ].changed = false;
+	}
+
+	void AdjustValues( void ) {
+		static const double PFD_Data_MinLimits[] = {
+			-9999999999.9, -9999999999.9, -9999999999.9,
+			-32767.0, -32767.0, -32767.0,
+			-36000.0, -90.0, -36000.0,
+			0.0, 0.0, 0.0, 0.0, 0.0,
+			-32767.0, -32767.0, 0.0
+		};
+		static const double PFD_Data_MaxLimits[] = {
+			9999999999.9, 9999999999.9, 9999999999.9,
+			32767.0, 32767.0, 32767.0,
+			36000.0, 90.0, 36000.0,
+			32767.0, 32767.0, 32767.0, 32767.0, 32767.0,
+			32767.0, 32767.0, 1.0
+		};
+		static const String PFD_Data_LimitsDescriptions[] = {
+			"X", "Y", "Z",
+			"velX", "velY", "velZ",
+			"angle", "pitch", "roll",
+			"radius", "height", "speed", "float speed", "gravity",
+			"scaleX", "scaleY", "alpha"
+		};
+		static const String PFP_Data_PtrDescriptions[] = {
+			"target", "master", "tracer"
+		};
+
+
+		for ( int i = 0; i < PFD_Quantity; i++ )
+			doubles[ i ].valclamp( PFD_Data_LimitsDescriptions[ i ], PFD_Data_MinLimits[ i ], PFD_Data_MaxLimits[ i ] );
+
+		doubles[ PFD_Angle ].value %= 360.0;
+		doubles[ PFD_Roll ].value %= 360.0;
+
+		integers[ PFI_Health ].valclamp( "Health", -0x7FFFFFFF, 0x7FFFFFFF );
+		integers[ PFI_Special ].valclamp( "Special/action", 0, 65535 );
+
+		for ( int i = PFI_Args_Start; i < PFI_Args_End; i++ )
+			integers[ i ].valclamp( "Args[ " .. ( i - PFI_Args_Start ) .. " ]", 0, 255 );
+
+		integers[ PFI_TID ].valclamp( "TID", 0, 2147483647 );
+		integers[ PFI_TIDToHate ].valclamp( "TID to hate", 0, 2147483647 );
+	} // of void AdjustValues( void ) {}
+
+}; // of struct ZCSetPropertyExtraParameters play {}
+
 class ZCSetPropertyCommand: ZCConsoleCommand {
+	enum EPropertySetMode {
+		PSM_Error = -2,
+		PSM_WrongRelative = -1,
+		PSM_Raw = 0,
+		PSM_Add,
+		PSM_Relative,
+	};
+
+	Actor alteree;
+	Actor relativeTo; // May be an alteree actor itself.
+
+	EPositionParseStatus testeeStatus;
+	EPropertySetMode setmode;
+	ZCSetPropertyExtraParameters params;
+
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setproperty",
-			"zcsetprop[erty] [<pos>] <property> <value>;zcsetp [<pos>] <property> <value>;zcwrite [<pos>] <property> <value>;zcw [<pos>] <property> <value>",
+			"zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcw[rite] [<pos>] [add|rel[:<pos>]] <property>:<value>[,...]",
 
-			"Sets a <property> to <value> for the actor in position <pos> (or for the linetarget). By default all properties will be simply overwritten, but some of them may has a prefix \"a[dd]\"|\"+\" for adding to current value, or \"r[el[ative]]]\" for setting it relative to caller (player). Possible properties are:\n"
-				.. "  [a|r](pos|warp) <x>,<y>[,<z>]; [a](h[ealth]|hp) <val>; [a]speed <val>; [a|r]ang[le] <val>; [a|r]pitch <val>; [a|r]roll <val>; [a]scale (<both>|<x>,<y>); [a]alpha <val>; [a]radius <val>; [a]height <val>; target|pt <pos>; master|pm <pos>; tracer|pr <pos>; [a]a[rg]0..[a]a[rg]4 <val>; special|action <val>; [a]mass <val>; tid <val>; tidtohate <val>; [a|r]grav[ity] <val>"
+			"Sets a <property> to <value> for the actor in position <pos> (or for the linetarget if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if it's possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to caller player if <pos> is omitted (also if it is possible). Recognizable properties are:\n"
+				.. "  WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle <float>, pitch <float>, roll <float>;\n"
+				.. "  INTERACT: health|hp <int>, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>;\n"
+				.. "  VISUAL  : scale[x|y] <float>, alpha <float>;\n"
+				.. "  POINTERS: target|tp <pos>, master|mp <pos>, tracer|trp|rp <pos>;\n"
+				.. "  SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>, tidtohate|hatetid <val>."
 		);
-
-		zcFlags = CCF_Unreleased;
 	}
 
 	override bool HandleArguments() {
-		ZCGlobal.Log( LL_Main, LLCOLOR_EMERGENCY .. "[Work-in-progress, not released yet]." );
-		return false;
+		bool outValue = false;
+		int ccmdArgsSize = ccmd.args.Size();
+		alteree = relativeTo = NULL;
+
+		if ( ccmdArgsSize == 1 ) {
+			alteree = LinetraceActor();
+			outValue = true;
+
+		} else if ( ccmdArgsSize > 1 ) {
+			String modeargstr = ccmd.args[ ccmdArgsSize - 2 ];
+			modeargstr.ToLower();
+
+			// Set mode parsing:
+			setmode = PSM_Raw;
+
+			if ( modeargstr == "add" || modeargstr == "+" ) {
+				setmode = PSM_Add;
+
+			} else if ( modeargstr.Left( 3 ) == "rel" ) {
+				setmode = PSM_WrongRelative;
+
+				int delimIndex = modeargstr.IndexOf( "=" );
+
+				if ( delimIndex == -1 )
+					delimIndex = modeargstr.IndexOf( ":" );
+
+				if ( delimIndex != -1 ) {
+					String relactorstr = modeargstr.Mid( delimIndex + 1, modeargstr.Length() - delimIndex - 1 );
+
+					if ( ( testeeStatus = getPlaceTestee( relativeTo, specialstring: relactorstr ) ) > PPS_WrongPos )
+						setmode = PSM_Relative;
+
+				} else {
+					relativeTo = players[ ccmd.e.Player ].mo;
+					setmode = PSM_Relative;
+					ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "Base actor for relative properties " .. LLCOLOR_MAIN .. "is set to caller player" .. TEXTCOLOR_DARKGRAY .. "." );
+				}
+
+			} else if ( modeargstr == "raw" ) {
+				setmode = PSM_Raw;
+
+			} else {
+				setmode = PSM_Error;
+			}
+
+			// In general an alteree actor place parsing:
+			if ( ccmdArgsSize == 2 && setmode == PSM_Error ) {
+				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown keyword " .. LLCOLOR_MAIN .. "\"" .. modeargstr .. "\"." );
+			} else {
+				if ( ccmdArgsSize == 3 || setmode == PSM_Error ) {
+					if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) )
+						outValue = true;
+				} else {
+					alteree = LinetraceActor();
+					outValue = true;
+				}
+			}
+		} // of else if ( ccmdArgsSize > 1 ) {}
+
+
+		// Parse properties/parameters string:
+		if ( outValue ) {
+			params.Clear();
+
+			Array<String> paramlist;
+			ccmd.args[ ccmdArgsSize - 1 ].ToLower();
+			ccmd.args[ ccmdArgsSize - 1 ].Split( paramlist, ",", TOK_SKIPEMPTY );
+
+			for ( int i = 0; i < paramlist.Size(); i++ ) {
+				String curparam = paramlist[ i ];
+				curparam.ToLower();
+
+				int delimIndex = curparam.IndexOf( "=" );
+
+				if ( delimIndex == -1 )
+					delimIndex = curparam.IndexOf( ":" );
+
+				if ( delimIndex == -1 ) {
+					ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "No delimiter symbol" .. LLCOLOR_MAIN .. " (\":\" or \"=\") " .. LLCOLOR_WARNING .. "provided" .. LLCOLOR_MAIN .. " for property \"" .. curparam .. "\"." );
+					continue;
+				}
+
+				String prop = curparam.Left( delimIndex );
+				String pvalue = curparam.Mid( delimIndex + 1, curparam.Length() - delimIndex - 1 );
+
+
+				if ( prop == "target" || prop == "targ" || prop == "tp" ) {
+					getPlaceTestee( params.pointers[ params.PFP_Target ].value, 0, pvalue );
+					params.pointers[ params.PFP_Target ].changed = true;
+
+				} else if ( prop == "master" || prop == "mp" ) {
+					getPlaceTestee( params.pointers[ params.PFP_Master ].value, 0, pvalue );
+					params.pointers[ params.PFP_Master ].changed = true;
+
+				} else if ( prop == "tracer" || prop == "trp" || prop == "rp" ) {
+					getPlaceTestee( params.pointers[ params.PFP_Tracer ].value, 0, pvalue );
+					params.pointers[ params.PFP_Tracer ].changed = true;
+
+				} else {
+					double paramdouble;
+
+					// Some parameters (like "posz") has extra values (like "floor").
+					if ( str2double_Ptr( pvalue, +paramdouble ) ) {
+						int paramint;
+
+						if ( prop == "angle" || prop == "ang" ) {
+							params.doubles[ params.PFD_Angle ].set( paramdouble );
+						} else if ( prop == "pitch" ) {
+							params.doubles[ params.PFD_Pitch ].set( paramdouble );
+						} else if ( prop == "roll" ) {
+							params.doubles[ params.PFD_Roll ].set( paramdouble );
+						} else if ( prop == "x" || prop == "posx" ) {
+							params.doubles[ params.PFD_X ].set( paramdouble );
+						} else if ( prop == "y" || prop == "posy" ) {
+							params.doubles[ params.PFD_Y ].set( paramdouble );
+						} else if ( prop == "z" || prop == "posy" ) {
+							params.doubles[ params.PFD_Z ].set( paramdouble );
+						} else if ( prop == "vx" || prop == "velx" ) {
+							params.doubles[ params.PFD_VelX ].set( paramdouble );
+						} else if ( prop == "vy" || prop == "vely" ) {
+							params.doubles[ params.PFD_VelY ].set( paramdouble );
+						} else if ( prop == "vz" || prop == "vely" ) {
+							params.doubles[ params.PFD_VelZ ].set( paramdouble );
+						} else if ( prop == "radius" || prop == "rad" ) {
+							params.doubles[ params.PFD_Radius ].set( paramdouble );
+						} else if ( prop == "height" ) {
+							params.doubles[ params.PFD_Height ].set( paramdouble );
+						} else if ( prop == "speed" ) {
+							params.doubles[ params.PFD_Speed ].set( paramdouble );
+						} else if ( prop == "floatspeed" || prop == "flspeed" || prop == "fspeed" ) {
+							params.doubles[ params.PFD_FloatSpeed ].set( paramdouble );
+						} else if ( prop == "gravity" || prop == "grav" ) {
+							params.doubles[ params.PFD_Gravity ].set( paramdouble );
+						} else if ( prop == "scale" ) {
+							params.doubles[ params.PFD_ScaleX ].set( paramdouble );
+							params.doubles[ params.PFD_ScaleY ].set( paramdouble );
+						} else if ( prop == "scalex" ) {
+							params.doubles[ params.PFD_ScaleX ].set( paramdouble );
+						} else if ( prop == "scaley" ) {
+							params.doubles[ params.PFD_ScaleY ].set( paramdouble );
+						} else if ( prop == "alpha" ) {
+							params.doubles[ params.PFD_Height ].set( paramdouble );
+
+						// Integer properties:
+						} else if ( str2int_Ptr( pvalue, +paramint, true ) ) {
+							int propnamelen = prop.Length();
+
+							if ( prop == "health" || prop == "hp" || prop == "h" ) {
+								params.integers[ params.PFI_Health ].set( paramint );
+							} else if ( prop == "mass" ) {
+								params.integers[ params.PFI_Mass ].set( paramint );
+							} else if ( prop == "tid" ) {
+								params.integers[ params.PFI_TID ].set( paramint );
+							} else if ( prop == "tidtohate" || prop == "hatetid" ) {
+								params.integers[ params.PFI_TIDToHate ].set( paramint );
+							} else if ( prop == "action" || prop == "special" || prop == "spec" ) {
+								params.integers[ params.PFI_Special ].set( paramint );
+
+							} else if ( ( propnamelen == 2 && prop.Left( 1 ) == "a" ) || ( propnamelen == 4 && prop.Left( 3 ) == "arg" ) ) {
+								int argnum = prop.Mid( propnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
+
+								if ( argnum >= 0 && argnum < ZCSummonExtraParameters.SPECARGS_MAX )
+									params.integers[ argnum + params.PFI_Arg0 ].set( paramint );
+								else
+									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong argument number in parameter \"" .. prop .. "\"." );
+
+							} else {
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown integer property \"" .. prop .. "\"." );
+							}
+
+						} else {
+							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown float-point property \"" .. prop .. "\"." );
+						}
+
+					} else {
+						if ( prop == "z" || prop == "posz" ) {
+							String pvalueLeft1 = pvalue.Left( 1 );
+
+							if ( pvalueLeft1 == "f" )
+								params.doubles[ params.PFD_Z ].set( relativeTo.floorz );
+							else if ( pvalueLeft1 == "c" )
+								params.doubles[ params.PFD_Z ].set( relativeTo.ceilingz - alteree.height );
+							else if ( pvalue.Left( 4 ) == "rawc" || pvalue.Left( 2 ) == "hc" )
+								params.doubles[ params.PFD_Z ].set( relativeTo.ceilingz );
+							else
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. pvalue .. "\" for property \"" .. prop .. "\"." );
+
+						} else if ( prop == "tid" && ( pvalue.Left( 3 ) == "uni" || pvalue == "new" ) ) {
+							params.integers[ params.PFI_TID ].set( Actor.FindUniqueTid() );
+
+						} else {
+							// In fast, this line is a last frontier when no input matches found at all.
+							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown property \"" .. prop .. "\"." );
+						}
+					} // of else of if ( str2double_Ptr( paramdiv[ 1 ], +paramdouble ) ) {}
+
+				} // of else of {} else if ( prop == "tracer" || prop == "trp" || prop == "rp" ) {}
+
+			} // of for ( int i = 0; i < paramlist.Size(); i++ ) {}
+
+		} // of if ( outValue ) {}
+
+
+		if ( setmode == PSM_Add )
+			relativeTo = alteree;
+
+		return outValue;
 	}
 
 	override void DoCommand( void ) {
-		ZCGlobal.Log( LL_Main, "Impossible inscription, actually. Despite the fact it is a dummy." );
+		if ( !alteree )
+			return;
+
+		ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "[Work-in-progress, not all of the properties can be changed correctly or be changed at all]." );
+
+		// Valid in "PSM_Add" and "PSM_Relative" set modes.
+		if ( relativeTo ) {
+			params.integers[ params.PFI_Health ].value += relativeTo.health;
+			params.integers[ params.PFI_Mass ].value += relativeTo.health;
+
+			//params.integers[ params.PFI_Special ].value += relativeTo.health;
+			//params.integers[ params.PFI_TID ].value += relativeTo.health;
+			//params.integers[ params.PFI_TIDToHate ].value += relativeTo.health;
+			//for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
+			//	params.integers[ params.PFI_Args_Start + i ].value += relativeTo.args[ i ];
+
+			params.doubles[ params.PFD_X ].value += relativeTo.pos.x;
+			params.doubles[ params.PFD_Y ].value += relativeTo.pos.y;
+			params.doubles[ params.PFD_Z ].value += relativeTo.pos.z;
+			params.doubles[ params.PFD_VelX ].value += relativeTo.vel.x;
+			params.doubles[ params.PFD_VelY ].value += relativeTo.vel.y;
+			params.doubles[ params.PFD_VelZ ].value += relativeTo.vel.z;
+
+			params.doubles[ params.PFD_Angle ].value += relativeTo.angle;
+			params.doubles[ params.PFD_Pitch ].value += relativeTo.pitch;
+			params.doubles[ params.PFD_Roll ].value += relativeTo.roll;
+			params.doubles[ params.PFD_Radius ].value += relativeTo.radius;
+			params.doubles[ params.PFD_Height ].value += relativeTo.height;
+			params.doubles[ params.PFD_Speed ].value += relativeTo.speed;
+			params.doubles[ params.PFD_FloatSpeed ].value += relativeTo.floatspeed;
+			params.doubles[ params.PFD_Gravity ].value += relativeTo.gravity;
+			params.doubles[ params.PFD_ScaleX ].value += relativeTo.scale.x;
+			params.doubles[ params.PFD_ScaleY ].value += relativeTo.scale.y;
+			params.doubles[ params.PFD_Alpha ].value += relativeTo.alpha;
+		}
+
+
+		// Clamping etc.:
+		params.AdjustValues();
+
+
+		// Changing:
+		params.pointers[ params.PFP_Target ].setfor( alteree.target );
+		params.pointers[ params.PFP_Master ].setfor( alteree.master );
+		params.pointers[ params.PFP_Tracer ].setfor( alteree.tracer );
+
+		params.integers[ params.PFI_Health ].setfor( alteree.health );
+		params.integers[ params.PFI_Mass ].setfor( alteree.mass );
+		params.integers[ params.PFI_Special ].setfor( alteree.special );
+
+		//ZCGlobal.Log( LL_Main, "HP for " .. alteree.GetClassName() .. ": must be " .. params.integers[ params.PFI_Health ].value .. ", is " .. alteree.health );
+
+		if ( params.integers[ params.PFI_TID ].changed )
+			alteree.ChangeTid( params.integers[ params.PFI_TID ].value );
+		//if ( params.integers[ params.PFI_TIDToHate ].changed )
+		//	alteree.Thing_Hate( 0, params.integers[ params.PFI_TIDToHate ].value, 0 );
+
+		for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
+			params.integers[ params.PFI_Args_Start + i ].setfor( alteree.args[ i ] );
+
+		vector3 altereeNewPos = (
+					params.doubles[ params.PFD_X ].changed? params.doubles[ params.PFD_X ].value : alteree.pos.x,
+					params.doubles[ params.PFD_Y ].changed? params.doubles[ params.PFD_Y ].value : alteree.pos.y,
+					params.doubles[ params.PFD_Z ].changed? params.doubles[ params.PFD_Z ].value : alteree.pos.z
+				);
+		alteree.SetOrigin( altereeNewPos, false );
+		params.doubles[ params.PFD_VelX ].setfor( alteree.vel.x );
+		params.doubles[ params.PFD_VelY ].setfor( alteree.vel.y );
+		params.doubles[ params.PFD_VelZ ].setfor( alteree.vel.z );
+
+		params.doubles[ params.PFD_Angle ].setfor( alteree.angle );
+		params.doubles[ params.PFD_Pitch ].setfor( alteree.pitch );
+		params.doubles[ params.PFD_Roll ].setfor( alteree.roll );
+		alteree.A_SetSize( 	params.doubles[ params.PFD_Radius ].changed? params.doubles[ params.PFD_Radius ].value : -1,
+							params.doubles[ params.PFD_Height ].changed? params.doubles[ params.PFD_Height ].value : -1, false );
+		params.doubles[ params.PFD_Speed ].setfor( alteree.speed );
+		params.doubles[ params.PFD_FloatSpeed ].setfor( alteree.floatspeed );
+		params.doubles[ params.PFD_Gravity ].setfor( alteree.gravity );
+		params.doubles[ params.PFD_ScaleX ].setfor( alteree.scale.x );
+		params.doubles[ params.PFD_ScaleY ].setfor( alteree.scale.y );
+		params.doubles[ params.PFD_Alpha ].setfor( alteree.alpha );
 	}
 } // of class ZCSetPropertyCommand: ZCConsoleCommand {}
