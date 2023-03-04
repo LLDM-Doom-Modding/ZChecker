@@ -336,7 +336,10 @@ class ZCSummonCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_summon",
 			"zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,panel|add,arg0-4,zofs,fofs,hp,aggr (...:<value>), notproj,friend|foe,[no]infi>]",
-			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n   f[riend]|foe, [r[el]]a[ngle]:<[relative]faceangle>, panel|add[:<pos>], tid:<TID>, zofs:<mappixels>, f[wd]ofs:<mappixels>, hp|health:<hp>, notproj[ectile], spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, aggr[essiveness]:<dflt55>, [no]infi[ght].",
+			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n"
+				.. "  BEHAVIOUR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];\n"
+				.. "  WORLD    : [rel]ang[le]:<[relative]faceangle>, zofs:<mappixels>, f[wd]ofs:<mappixels>;\n"
+				.. "  SPECIAL  : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.",
 			'ZCTooltipSummonCommand'
 		);
 	}
@@ -422,7 +425,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = false;
 									params.isAngled = true;
-								} else if ( paramdiv[ 0 ] == "relang" || paramdiv[ 0 ] == "relangle" || paramdiv[ 0 ] == "relativeang" || paramdiv[ 0 ] == "relativeangle" || paramdiv[ 0 ] == "rang" || paramdiv[ 0 ] == "rangle" ) {
+								} else if ( paramdiv[ 0 ] == "relang" || paramdiv[ 0 ] == "relangle" || paramdiv[ 0 ] == "ra" || paramdiv[ 0 ] == "relativeang" || paramdiv[ 0 ] == "relativeangle" || paramdiv[ 0 ] == "rang" || paramdiv[ 0 ] == "rangle" ) {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = true;
 									params.isAngled = true;
@@ -515,7 +518,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 			return;
 
 		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( "summoning more than 200 actors" ) ) {
-			ZCGlobal.Log( LL_Main, "Trying to summon more than 200 actors in once. " .. TEXTCOLOR_DARKGRAY .. "You may disable this limit switching the \"Allow dangerous actions\" option." );
+			ZCGlobal.Log( LL_Main, "Trying to summon more than 200 actors in once. " .. LLCOLOR_DARK .. "You may disable this limit switching the \"Allow dangerous actions\" option." );
 			return;
 		}
 
@@ -564,7 +567,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						field.UpdateActorMetainformation( ccmd );
 
 						if ( summoneeAmount > 1 )
-							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Only last summoned actor added to the list." );
+							ZCGlobal.Log( LL_Main, LLCOLOR_DARK .. "Only last summoned actor added to the list." );
 					}
 				} else {
 					ZCGlobal.Log( LL_Main, TEXTCOLOR_BRICK .. "Cannot summon actor class " .. TEXTCOLOR_DARKGRAY .. "\"" .. TEXTCOLOR_GRAY .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
@@ -897,7 +900,6 @@ struct ZCSetPropertyExtraParameters play {
 		PFI_Arg4,
 		PFI_Special,
 		PFI_TID,
-		PFI_TIDToHate,
 
 		PFI_Quantity,
 
@@ -969,7 +971,6 @@ struct ZCSetPropertyExtraParameters play {
 			integers[ i ].valclamp( "Args[ " .. ( i - PFI_Args_Start ) .. " ]", 0, 255 );
 
 		integers[ PFI_TID ].valclamp( "TID", 0, 2147483647 );
-		integers[ PFI_TIDToHate ].valclamp( "TID to hate", 0, 2147483647 );
 	} // of void AdjustValues( void ) {}
 
 }; // of struct ZCSetPropertyExtraParameters play {}
@@ -993,16 +994,33 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setproperty",
-			"zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcw[rite] [<pos>] [add|rel[:<pos>]] <property>:<value>[,...]",
+			"zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcprop [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]",
 
 			"Sets a <property> to <value> for the actor in position <pos> (or for the linetarget if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if it's possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to caller player if <pos> is omitted (also if it is possible). Recognizable properties are:\n"
-				.. "  WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle <float>, pitch <float>, roll <float>;\n"
-				.. "  INTERACT: health|hp <int>, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>;\n"
+				.. "  WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\n"
+				.. "  INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>;\n"
 				.. "  VISUAL  : scale[x|y] <float>, alpha <float>;\n"
-				.. "  POINTERS: target|tp <pos>, master|mp <pos>, tracer|trp|rp <pos>;\n"
-				.. "  SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>, tidtohate|hatetid <val>."
+				.. "  POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;\n"
+				.. "  SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique."
 		);
 	}
+
+	private void handlePointer( int pointer_id, String propvalue ) {
+		if ( propvalue != "" ) {
+			Actor newptr;
+
+			if ( propvalue == "null" || propvalue == "none" || propvalue == "clear" ) {
+				params.pointers[ pointer_id ].set( NULL );
+			} else {
+				getPlaceTestee( newptr, 0, propvalue );
+
+				if ( newptr ) 
+					params.pointers[ pointer_id ].set( newptr );
+			}
+		} else {
+			params.pointers[ pointer_id ].set( players[ ccmd.e.Player ].mo );
+		}
+	} // of private void handlePointer( int pointer_id, String pvalue ) {}
 
 	override bool HandleArguments() {
 		bool outValue = false;
@@ -1010,6 +1028,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		alteree = relativeTo = NULL;
 
 		if ( ccmdArgsSize == 1 ) {
+			// Set properties for the linetarget.
 			alteree = LinetraceActor();
 			outValue = true;
 
@@ -1040,7 +1059,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				} else {
 					relativeTo = players[ ccmd.e.Player ].mo;
 					setmode = PSM_Relative;
-					ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "Base actor for relative properties " .. LLCOLOR_MAIN .. "is set to caller player" .. TEXTCOLOR_DARKGRAY .. "." );
+					ZCGlobal.Log( LL_Detailed, LLCOLOR_DARK .. "Base actor for relative properties " .. LLCOLOR_MAIN .. "is set to caller player" .. LLCOLOR_DARK .. "." );
 				}
 
 			} else if ( modeargstr == "raw" ) {
@@ -1051,16 +1070,14 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			}
 
 			// In general an alteree actor place parsing:
-			if ( ccmdArgsSize == 2 && setmode == PSM_Error ) {
-				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown keyword " .. LLCOLOR_MAIN .. "\"" .. modeargstr .. "\"." );
-			} else {
-				if ( ccmdArgsSize == 3 || setmode == PSM_Error ) {
-					if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) )
-						outValue = true;
-				} else {
-					alteree = LinetraceActor();
+			if ( ccmdArgsSize == 3 || setmode == PSM_Error ) {
+				if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) )
 					outValue = true;
-				}
+				else
+					ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown keyword " .. LLCOLOR_MAIN .. "\"" .. modeargstr .. "\"." );
+			} else {
+				alteree = LinetraceActor();
+				outValue = true;
 			}
 		} // of else if ( ccmdArgsSize > 1 ) {}
 
@@ -1092,16 +1109,13 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 
 
 				if ( prop == "target" || prop == "targ" || prop == "tp" ) {
-					getPlaceTestee( params.pointers[ params.PFP_Target ].value, 0, pvalue );
-					params.pointers[ params.PFP_Target ].changed = true;
+					handlePointer( params.PFP_Target, pvalue );
 
 				} else if ( prop == "master" || prop == "mp" ) {
-					getPlaceTestee( params.pointers[ params.PFP_Master ].value, 0, pvalue );
-					params.pointers[ params.PFP_Master ].changed = true;
+					handlePointer( params.PFP_Master, pvalue );
 
 				} else if ( prop == "tracer" || prop == "trp" || prop == "rp" ) {
-					getPlaceTestee( params.pointers[ params.PFP_Tracer ].value, 0, pvalue );
-					params.pointers[ params.PFP_Tracer ].changed = true;
+					handlePointer( params.PFP_Tracer, pvalue );
 
 				} else {
 					double paramdouble;
@@ -1158,8 +1172,6 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 								params.integers[ params.PFI_Mass ].set( paramint );
 							} else if ( prop == "tid" ) {
 								params.integers[ params.PFI_TID ].set( paramint );
-							} else if ( prop == "tidtohate" || prop == "hatetid" ) {
-								params.integers[ params.PFI_TIDToHate ].set( paramint );
 							} else if ( prop == "action" || prop == "special" || prop == "spec" ) {
 								params.integers[ params.PFI_Special ].set( paramint );
 
@@ -1180,24 +1192,37 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 						}
 
 					} else {
+						Actor baseactor = ( relativeTo? relativeTo : alteree );
+
 						if ( prop == "z" || prop == "posz" ) {
 							String pvalueLeft1 = pvalue.Left( 1 );
 
 							if ( pvalueLeft1 == "f" )
-								params.doubles[ params.PFD_Z ].set( relativeTo.floorz );
+								params.doubles[ params.PFD_Z ].set( baseactor.floorz );
 							else if ( pvalueLeft1 == "c" )
-								params.doubles[ params.PFD_Z ].set( relativeTo.ceilingz - alteree.height );
+								params.doubles[ params.PFD_Z ].set( baseactor.ceilingz - alteree.height );
 							else if ( pvalue.Left( 4 ) == "rawc" || pvalue.Left( 2 ) == "hc" )
-								params.doubles[ params.PFD_Z ].set( relativeTo.ceilingz );
+								params.doubles[ params.PFD_Z ].set( baseactor.ceilingz );
 							else
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. pvalue .. "\" for property \"" .. prop .. "\"." );
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. pvalue .. "\" for the Z coordinate property. " .. LLCOLOR_DARK .. "Must be " .. LLCOLOR_MAIN .. "<float>" .. LLCOLOR_DARK .. ", " .. LLCOLOR_MAIN .. "f[loor] " .. LLCOLOR_DARK .. ", " .. LLCOLOR_MAIN .. "c[eil]" .. LLCOLOR_DARK .. " or " .. LLCOLOR_MAIN .. "rawc[eil]|hc" .. LLCOLOR_DARK );
 
-						} else if ( prop == "tid" && ( pvalue.Left( 3 ) == "uni" || pvalue == "new" ) ) {
+						} else if ( prop == "health" || prop == "hp" || prop == "h" ) {
+							if ( pvalue.Left( 1 ) == "s" )
+								params.integers[ params.PFI_Health ].set( baseactor.GetSpawnHealth() );
+							else if ( pvalue == "max" )
+								params.integers[ params.PFI_Health ].set( 0x7FFFFFFF );
+							else
+								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. pvalue .. "\" for the health property. " .. LLCOLOR_DARK .. "Must be " .. LLCOLOR_MAIN .. "<int>" .. LLCOLOR_DARK .. ", " .. LLCOLOR_MAIN .. "max" .. LLCOLOR_DARK .. " or " .. LLCOLOR_MAIN .. "s[pawn]" .. LLCOLOR_DARK );
+
+						} else if ( prop == "tid" && ( pvalue.Left( 2 ) == "un" || pvalue == "new" ) ) {
 							params.integers[ params.PFI_TID ].set( Actor.FindUniqueTid() );
+
+						} else if ( pvalue == "" ) {
+							ZCGlobal.Log( LL_Main, LLCOLOR_DARK .. "Skipped empty property \"" .. prop .. "\"." );
 
 						} else {
 							// In fast, this line is a last frontier when no input matches found at all.
-							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown property \"" .. prop .. "\"." );
+							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown property " .. LLCOLOR_MAIN .. "\"" .. prop .. ":" .. pvalue .. "\"." );
 						}
 					} // of else of if ( str2double_Ptr( paramdiv[ 1 ], +paramdouble ) ) {}
 
@@ -1218,16 +1243,15 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		if ( !alteree )
 			return;
 
-		ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "[Work-in-progress, not all of the properties can be changed correctly or be changed at all]." );
+		ZCGlobal.Log( LL_Main, LLCOLOR_DARK .. "[Work-in-progress, not all of the properties can be changed correctly or be changed at all]." );
 
 		// Valid in "PSM_Add" and "PSM_Relative" set modes.
 		if ( relativeTo ) {
 			params.integers[ params.PFI_Health ].value += relativeTo.health;
 			params.integers[ params.PFI_Mass ].value += relativeTo.health;
 
-			//params.integers[ params.PFI_Special ].value += relativeTo.health;
-			//params.integers[ params.PFI_TID ].value += relativeTo.health;
-			//params.integers[ params.PFI_TIDToHate ].value += relativeTo.health;
+			//params.integers[ params.PFI_Special ].value += relativeTo.special;
+			//params.integers[ params.PFI_TID ].value += relativeTo.tid;
 			//for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
 			//	params.integers[ params.PFI_Args_Start + i ].value += relativeTo.args[ i ];
 
@@ -1269,8 +1293,6 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 
 		if ( params.integers[ params.PFI_TID ].changed )
 			alteree.ChangeTid( params.integers[ params.PFI_TID ].value );
-		//if ( params.integers[ params.PFI_TIDToHate ].changed )
-		//	alteree.Thing_Hate( 0, params.integers[ params.PFI_TIDToHate ].value, 0 );
 
 		for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
 			params.integers[ params.PFI_Args_Start + i ].setfor( alteree.args[ i ] );

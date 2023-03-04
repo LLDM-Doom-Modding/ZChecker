@@ -376,7 +376,12 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 			double tempConverted = str.ToDouble();
 
-			if ( ( firstChar >= 0x31 && firstChar <= 0x39 ) || ( firstChar == 0x30 && str.Length() == 1 ) || ( firstChar == 0x2E /* '.' */ ) ) {
+			while ( firstChar == 0x30 ) {
+				str = str.Mid( 1, str.Length() - 1 );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			if ( ( firstChar >= 0x31 && firstChar <= 0x39 ) || ( firstChar == 0x30 ) || ( firstChar == 0x2E /* '.' */ ) ) {
 				isDouble = true;
 				converted = ( isSigned? -tempConverted : tempConverted );
 			}
