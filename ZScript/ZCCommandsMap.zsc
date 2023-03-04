@@ -14,7 +14,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"zcev add|new|goto|pause|optimize|recreate|reload;zcev map[2]|level[2]",
-			"Operates with world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warps player to the \"map everything\" and \"map everything_simpled\".",
+			"Operates with world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warps player to the \"map everything\" and \"map everything_simple\".",
 			CCF_Unreleased
 		);
 	}
@@ -169,7 +169,7 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"zcev map|launch;zcev map2|launch2",
-			"Warp to map \"Everything\" when no digit provided or to map \"Everything_simpled\" in other case."
+			"Warp to map \"Everything\" when no digit provided or to map \"Everything_simple\" in other case."
 		);
 	}
 

@@ -163,7 +163,7 @@ class ZCGlobal: Thinker {
 		// Got from "mapchecksum everything" CCMD:
 		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
 
-		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLED" )
+		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLE" )
 			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
 	}
 

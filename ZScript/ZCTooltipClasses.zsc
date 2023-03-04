@@ -40,14 +40,14 @@ class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 			"A map named \"`2Everything`2\" is an universal card-index.\n" ..
 			"Right now there's two maps:\n" ..
 			LISTPREFIX .. "\"`2Everything`2\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures) and may be out-of-date in ZChecker beta versions; `dand`x\n" ..
-			LISTPREFIX .. "\"`2Everything_simpled`2\", lightweight, but fully functional variant.\n\n" ..
+			LISTPREFIX .. "\"`2Everything_simple`2\", lightweight, but fully functional variant.\n\n" ..
 			"	`gWarning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`g. `xThe consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
 		) );
 	}
 
 	override String GetExamples() {
 		return HighlightText(
-			"\"`Cmap everything_simpled`C\" changes the level to the Everything map (simplified version)."
+			"\"`Cmap everything_simple`C\" changes the level to the Everything map (simplified version)."
 		);
 	}
 }
