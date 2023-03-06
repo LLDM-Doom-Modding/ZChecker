@@ -5,12 +5,15 @@
 AddOptionMenu "OptionsMenu" {
 	StaticText " "
 	Submenu "ZChecker Control", "mcm_ZChecker_ControlMenu"
+	ZCHandlerExistenceCheckWarning "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in options menu above."
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "ZChecker control"
 
 	StaticText " "
+	ZCHandlerExistenceCheckWarning "\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker is not able to be launched properly\ci.\n\n\ciPossible reason: usage of the \cu\"\crEventHandlers = ...\cu\"\n\cu(\cinot \cu\"\cqAddEventHandlers = ...\cu\") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0."
+
 	StaticText "General categories", 1
 	Submenu "Informational panels control", "mcm_ZChecker_ControlMenu_Panels"
 	Submenu "Call console command [WIP]", "mcm_ZChecker_ControlMenu_CallCCMD"
@@ -113,6 +116,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "This option allows using a special \"Everything\" map", DARKGRAY
     StaticText "scripts for any map, skipping the conformity check.", DARKGRAY
 	StaticText " "
+	ZCHandlerExistenceCheckWarning "\n\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cx\"Everything\" map CCMDs cannot be used."
 	StaticText "Related CCMDs (closes menu)", 1
 	Command "Recreate actors: \"zcevre\"", "zcev recreate", 0, 1
 	Command "Teleport to start: \"zcevg start\"", "zcev goto start", 0, 1
@@ -126,6 +130,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     StaticText "All commands may be shown via \"zchelp all\" in", DARKGREEN
     StaticText "the console; also you may use a \"zchelp <command>\".", DARKGREEN
     StaticText " "
+	ZCHandlerExistenceCheckWarning "\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used."
     StaticText " "
 
     StaticText "Command examples:", 1

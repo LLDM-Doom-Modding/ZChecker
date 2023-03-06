@@ -358,7 +358,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 		// Thanks to m8f for the "drawTextCenter()" function code from his "Hellscape Navigator".
 		double bordersXMargin = 4.0;
-		double scale = 1.0 / infopanelScale;
+
+		// Previously, the game crashed on a new game after a "endgame" CCMD (key F7).
+		double scale = 1.0 / ( infopanelScale > 0.0? infopanelScale : 1.0 );
 
 		int height = int( scale * Screen.GetHeight() );
 		int width = int( scale * Screen.GetWidth() );
