@@ -57,7 +57,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 			decoratePointerStringUI( thing.tracer, "Tracer", ORANGE );
 
 		if ( Inventory( thing ) )
-			outstr = outstr .. "\n" .. decoratePointerStringUI( Inventory( thing ).owner, BLACK .. "Inv." .. DARKGRAY .. "Owner", DARKGREEN ) .. "\n";
+			outstr = outstr .. "\n" .. decoratePointerStringUI( Inventory( thing ).owner, BLACK .. "Inv." .. DARKGRAY .. "Owner", DARKGREEN );
 
 		return outstr;
 	}
@@ -70,6 +70,9 @@ class ZCInteractionPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 	}
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
+		if ( thingfield.actorType == IAT_StateProvider )
+			return ""; // Skip weapon in hands, in theory interaction pointers are useless for it.
+
 		Actor linetargeted = thing.GetPointer( thing.player? AAPTR_PLAYER_GETTARGET : AAPTR_LINETARGET );
 
 		return

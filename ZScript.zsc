@@ -42,7 +42,7 @@ version "3.3.0"
 #include "ZScript/ZCInfopanelsOther.zsc"
 
 
-const ZCheckerVersionNumber = "0.80";
+const ZCheckerVersionNumber = "0.81";
 
 const ZCheckerVersion = ZCheckerVersionNumber .. ", branch \"" .. ZCheckerVersionBranch .. "\"";
 
@@ -73,17 +73,6 @@ class ZCheckerHandler: StaticEventHandler {
 	int zcConfigCurLineIndex;
 
 
-	ZCConsoleClass GetZCConsoleClass( int index ) {
-		ZCConsoleClass ccmd = NULL;
-
-		if ( index >= 0 && index < zcConsoleHandleClasses.Size() ) {
-			ccmd = zcConsoleHandleClasses[ index ];
-			//ZCGlobal.Log( LL_Debug, GetClassName() .. "::GetZCConsoleClass(). CCMD #" .. index .. " is <" .. zcConsoleHandleClasses[ index ] .. ">." );
-		}
-
-		return ccmd;
-	} // of ZCConsoleClass GetZCConsoleClass( int index ) {}
-
 	void UpdateInternalClassnameByField( uint fieldnum ) {
 		if ( fieldnum < MaxTestee ) {
 			String newClassname = "";
@@ -110,6 +99,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		return !!classname;
 	}
+
 	private void addConsoleSeparator( bool importantFlag = false ) {
 		zcConsoleHandleClasses.Push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
 	}
@@ -368,7 +358,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 		// Thanks to m8f for the "drawTextCenter()" function code from his "Hellscape Navigator".
 		double bordersXMargin = 4.0;
-		double scale = 1.0 / infopanelScale;
+
+		// Previously, the game crashed on a new game after a "endgame" CCMD (key F7).
+		double scale = 1.0 / ( infopanelScale > 0.0? infopanelScale : 1.0 );
 
 		int height = int( scale * Screen.GetHeight() );
 		int width = int( scale * Screen.GetWidth() );

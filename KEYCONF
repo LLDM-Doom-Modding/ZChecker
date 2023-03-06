@@ -15,8 +15,9 @@ alias zcclear "zcrem %1"
 
 alias zcsetprop "netevent zc_setproperty@@%1@@%2@@%3"
 alias zcsetp "zcsetprop %1 %2 %3"
-alias zcwrite "zcsetprop %1 %2 %3"
-alias zcw "zcsetprop %1 %2 %3"
+alias zcsp "zcsetprop %1 %2 %3"
+alias zcprop "zcsetprop %1 %2 %3"
+alias zchate "zcsetprop %1 target:%2"
 
 alias zcsetstate "netevent zc_setstate@@%1@@%2"
 alias zcsetst "zcsetstate %1 %2"

@@ -1,15 +1,22 @@
 //
 
 GameInfo {
+	// Map handler should be also defined here because of the "Force use map 
+	//scripts" CVar existence.
+
 	AddEventHandlers = "ZCheckerHandler", "ZCheckerEverythingMapHandler"
 }
 
 Map EVERYTHING "ZChecker: Everything" {
 	Sky1 = "RSKY3"
 	Music = "D_RUNNIN"
+	Cluster = 0
+	NoAutosaveHint
 }
 
-Map EVERYTHING_SIMPLED "ZChecker: Everything (simpled map)" {
+Map EVERYTHING_SIMPLE "ZChecker: Everything (simplified map)" {
 	Sky1 = "RSKY3"
 	Music = "D_RUNNIN"
+	Cluster = 0
+	NoAutosaveHint
 }
