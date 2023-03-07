@@ -579,9 +579,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		if ( !configuration.zcHandlerPanels ) {
 			ZCGlobal tempglobal = ZCGlobal.ClearscopeGet();
 
-			if ( tempglobal && tempglobal.zcHandler && tempglobal.zcHandler.panels )
-				configuration.zcHandlerPanels = tempglobal.zcHandler.panels;
-		}
+			if ( tempglobal ) {
+				ZCheckerHandler temphandler = tempglobal.GetHandlerClearscope();
+
+				if ( temphandler && temphandler.panels )
+					configuration.zcHandlerPanels = temphandler.panels;
+			}
+		} // of if ( !configuration.zcHandlerPanels ) {}
 
 		Font rfont = smallfont;
 
@@ -593,7 +597,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::RenderOverlay(). Unable to access the ZChecker handler panels." );
 
 			ZCGlobal tempglobal = ZCGlobal.ClearscopeGet();
-			ZCheckerHandler temphandler = ( tempglobal? tempglobal.zcHandler : NULL );
+			ZCheckerHandler temphandler = ( tempglobal? tempglobal.GetHandlerClearscope() : NULL );
 			ZCPanelsStorage temppanels = ( temphandler? temphandler.panels : NULL );
 			String DARK  = TEXTCOLOR_DARKGRAY;
 			String WHITE = TEXTCOLOR_WHITE;
