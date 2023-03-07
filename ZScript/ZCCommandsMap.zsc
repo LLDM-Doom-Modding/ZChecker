@@ -66,12 +66,13 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 	}
 
 	protected void gotoCCMDPlayerTeleport( vector3 newpos, double newangle ) {
-		PlayerPawn player = players[ ccmd.e.Player ].mo;
+		PlayerPawn pl = players[ ccmd.e.Player ].mo;
 
-		player.SetOrigin( newpos, false );
-		player.SetZ( player.floorz );
-		player.angle = newangle;
-		player.vel.xy = (0.0, 0.0);
+		pl.SetOrigin( newpos, false );
+		pl.SetZ( pl.floorz );
+		pl.angle = newangle;
+		pl.vel.xy = (0.0, 0.0);
+		pl.player.vel = (0.0, 0.0);
 	}
 
 	override void DoCommand( void ) {
