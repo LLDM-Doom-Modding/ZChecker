@@ -260,6 +260,10 @@ struct ZCSummonExtraParameters play {
 	double faceangle;
 	bool isAngled;
 	bool isFaceangleRelative;
+
+	double facepitch;
+	bool isFacepitchRelative;
+
 	double zofs, forwardofs;
 
 	int tid;
@@ -278,8 +282,9 @@ struct ZCSummonExtraParameters play {
 		infopanelPos = INFOPANEL_IGNORE;
 
 		isAngled = false;
-		isFaceangleRelative = false;
+		isFaceangleRelative = isFacepitchRelative = false;
 		faceangle = 0.0;
+		facepitch = 0.0;
 		zofs = forwardofs = 0.0;
 
 		tid = special = 0;
@@ -292,7 +297,7 @@ struct ZCSummonExtraParameters play {
 		isFriend = isFoe = notProjectileRules = forceInfight = cannotInfight = false;
 	}
 
-	private void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
+	void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
 		double tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {
@@ -301,7 +306,7 @@ struct ZCSummonExtraParameters play {
 		}
 	}
 
-	private void clampint( out int value, String valuedesc, int minlimit, int maxlimit ) {
+	void clampint( out int value, String valuedesc, int minlimit, int maxlimit ) {
 		int tmpint = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpint ) {
@@ -312,6 +317,7 @@ struct ZCSummonExtraParameters play {
 
 	void AdjustValues( void ) {
 		faceangle %= 360.0;
+		clampfloat( facepitch, "Pitch", -90.0, 90.0 );
 
 		clampfloat( zofs, "Z offset", -32767.0, 32768.0 );
 		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
@@ -338,7 +344,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 			"zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,panel|add,arg0-4,zofs,fofs,hp,aggr (...:<value>), notproj,friend|foe,[no]infi>]",
 			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n"
 				.. "  BEHAVIOUR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];\n"
-				.. "  WORLD    : [rel]ang[le]:<[relative]faceangle>, zofs:<mappixels>, f[wd]ofs:<mappixels>;\n"
+				.. "  WORLD    : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>;\n"
 				.. "  SPECIAL  : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.",
 			'ZCTooltipSummonCommand'
 		);
@@ -429,6 +435,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = true;
 									params.isAngled = true;
+
+								} else if ( paramdiv[ 0 ] == "pitch" ) {
+									params.facepitch = paramvalue;
+									params.isFacepitchRelative = false;
+								} else if ( paramdiv[ 0 ] == "relpitch" || paramdiv[ 0 ] == "relativepitch" ) {
+									params.facepitch = paramvalue;
+									params.isFacepitchRelative = true;
+
 								} else if ( paramdiv[ 0 ] == "tid" ) {
 									params.tid = paramvalue;
 								} else if ( paramdiv[ 0 ] == "hp" || paramdiv[ 0 ] == "health" ) {
@@ -441,6 +455,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.forwardofs = paramvalue;
 								} else if ( paramdiv[ 0 ].Left( 4 ) == "aggr" ) {
 									params.aggresiveness = paramvalue;
+
 								} else if ( ( paramnamelen == 2 && paramdiv[ 0 ].Left( 1 ) == "a" ) || ( paramnamelen == 4 && paramdiv[ 0 ].Left( 3 ) == "arg" ) ) {
 									int argnum = paramdiv[ 0 ].Mid( paramnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
 
@@ -448,6 +463,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 										params.specargs[ argnum ] = paramvalue;
 									else
 										ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
+
 								} else {
 									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown parameter \"" .. curparam .. "\"." );
 								}
@@ -483,6 +499,17 @@ class ZCSummonCommand: ZCConsoleCommand {
 
 		if ( params.isAngled )
 			summoned.angle = ( params.isFaceangleRelative? summoned.AngleTo( splayer ) : 0.0 ) + params.faceangle;
+
+
+		double newpitch = params.facepitch;
+
+		if ( params.isFacepitchRelative ) {
+			newpitch += splayer.pitch;
+			params.clampfloat( newpitch, "Relative pitch", -90.0, 90.0 );
+		}
+
+		summoned.pitch = newpitch;
+
 
 		if ( params.isFriend )
 			summoned.bFRIENDLY = true;
