@@ -603,7 +603,7 @@ class ZCheckerHandler: StaticEventHandler {
 			zcCCMDInfo.nonblockingCommands.Clear();
 		} // of if ( nonblockingCommandsAmount != 0 ) {}
 
-		if ( e.name == "zcheckermap_recreate" || e.name == "zcheckermap_pause_level_part" )
+		if ( e.name == "zc_evmap_recreate" /*|| e.name == "zc_evmap_pause_level_part"*/ )
 			interceptNeteventsMode = 0;
 
 		if ( interceptNeteventsMode ) {

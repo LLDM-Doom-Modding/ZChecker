@@ -6,16 +6,6 @@ struct ZCheckerEverythingMapHandlerConfig {
 	transient bool isNoFontWarningShown;
 
 	String currentConsoleplayerInfostr;
-
-
-	// All next variables are unused because arena isn't created yet:
-	vector3 lastPosMain, lastPosArena;
-
-	bool mainlocPaused, arenaPaused;
-
-	vector2 mainlocStart, mainlocEnd;
-	vector2 arenaCreatePos;
-	vector2 arenaStart, arenaEnd;
 }
 
 class ZCheckerSectorSetterData play {
@@ -419,22 +409,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			//console.printf( level.Sectors[ i ].Index() .. ". st: " .. evSectorType .. "/" .. isSectorTyped .. ", sdef: " .. level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) );
 
-			// Special main location/arena definition:
-			if ( !isSectorTyped && ( evSectorType = level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) ) != "" ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Found special sector definition \"" .. evSectorType .. "\" (sector " .. i .. ")." );
-
-				if ( evSectorType ~== "arena" ) {
-					configuration.arenaCreatePos = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "arena_start" ) {	// Top-left arena point.
-					configuration.arenaStart = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "arena_end" ) {		// Bottom-right arena point.
-					configuration.arenaEnd = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "main_location_start" ) {	// Top-left main location point.
-					configuration.mainlocStart = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "main_location_end" ) {		// Bottom-right main location point.
-					configuration.mainlocEnd = level.Sectors[ i ].centerspot;
-				}
-			}
 		} // of for ( int i = 0; i < level.sectors.Size(); i++ ) {}
 
 
@@ -481,59 +455,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	override void NetworkProcess( ConsoleEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 
-			if ( e.Name ~== "zcheckermap_recreate" ) {
+			if ( e.Name == "zc_evmap_recreate" ) {
 				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Recreating/reloading map..." );
 				RecreateEverything();
-
-			} else if ( e.Name ~== "zcheckermap_pause_level_part" ) {
-				vector2 pauseFrom, pauseTo;
-				bool isPausing = false;
-				String logStr = GetClassName() .. "::NetworkProcess(). ";
-
-				if ( e.args[ 0 ] == 0 ) {
-					pauseFrom = configuration.mainlocStart;
-					pauseTo = configuration.mainlocEnd;
-
-					logStr = logStr .. ( configuration.mainlocPaused? "L" : "Unl" );
-					isPausing = configuration.mainlocPaused;
-					configuration.mainlocPaused ^= true;
-
-					logStr = logStr .. "oading main part...";
-				} else {
-					pauseFrom = configuration.arenaStart;
-					pauseTo = configuration.arenaEnd;
-
-					logStr = logStr .. ( configuration.arenaPaused? "L" : "Unl" );
-					isPausing = configuration.arenaPaused;
-					configuration.arenaPaused ^= true;
-
-					logStr = logStr .. "oading arena part...";
-				}
-
-				ZCGlobal.Log( LL_Main, logStr );
-
-				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
-				Actor curActor;
-
-				// Load/unload all from selected level part:
-				while ( curActor = Actor( it.Next() ) ) {
-					if ( curActor.pos.x >= pauseFrom.x && curActor.pos.y <= pauseFrom.y && curActor.pos.x <= pauseTo.x && curActor.pos.y >= pauseTo.y
-							&& !IsActorRestricted( curActor ) ) {
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Handling actor " .. curActor.GetClassName() );
-
-						// This line has no check for the already setted INVISIBLE flag:
-						curActor.bNOINTERACTION = curActor.bINVISIBLE = curActor.bDORMANT = !isPausing;
-						curActor.A_ChangeLinkFlags( !isPausing, !isPausing );
-
-						// It crashes...
-						//if ( isPausing ) 
-						//	curActor.UnlinkFromWorld();
-						//else
-						//	curActor.LinkToWorld();
-					}
-				} // of while ( curActor = Actor( it.Next() ) ) {}
-
-			} // of else if ( e.Name ~== "zcheckermap_pause_level_part" ) {}
+			}
 
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 
