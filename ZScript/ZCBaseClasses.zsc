@@ -281,7 +281,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		if ( tooltipClass ) {
 			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltipClass ) );
-			//ZCTooltipClass( ZCGlobal.Get().zcHandler.LocateZCConsoleClass( tooltipClass ) );
+			//ZCTooltipClass( ZCGlobal.GetHandler().LocateZCConsoleClass( tooltipClass ) );
 		}
 	} // of protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {}
 
@@ -898,7 +898,7 @@ class ZCBaseInfoPanelPart abstract {
 		return GetClassName() .. "::GetInfo(). Not overrided.";
 	}
 
-	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
+	ui virtual String GetSubmenuLabel( OptionMenuDescriptor submenuDesc ) {
 		String label = "Submenu. ";
 
 		int i = 0;

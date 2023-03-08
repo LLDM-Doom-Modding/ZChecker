@@ -74,15 +74,19 @@ const LETTER_Z_LOWER = 122;
 
 
 class ZCGlobal: Thinker {
-	ZCheckerHandler zcHandler;
 	EZCheckerLogLevels zcCurLogLevel;
+	private ZCheckerHandler zcHandler;
+	private transient CVar zcLoglevelCVar;
 
 	Array<ZCInternalStringDictionaryCell> internalStrings;
 
 	/* === ZChecker utils === */
 
 	void UpdateLogLevel( void ) {
-		zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+		if ( !zcLoglevelCVar )
+			zcLoglevelCVar = CVar.FindCVar( "mcm_zchecker_loglevel" );
+
+		zcCurLogLevel = zcLoglevelCVar.GetInt();
 	}
 
 	static clearscope ZCGlobal ClearscopeGet( void ) {
@@ -103,14 +107,35 @@ class ZCGlobal: Thinker {
 		return it;
 	} // of static play ZCGlobal Get( void ) {}
 
-	void InitZCheckerHandler( ZCheckerHandler inithandler ) {
-		zcHandler = inithandler;
-	} // of void InitZCheckerHandler( ZCheckerHandler inithandler ) {}
+	clearscope EZCheckerLogLevels _GetLoglevel( void ) {
+		return zcCurLogLevel;
+	}
+	static clearscope EZCheckerLogLevels GetLoglevelClearscope( void ) {
+		return ClearscopeGet().zcCurLogLevel;
+	}
+	static play EZCheckerLogLevels GetLoglevel( void ) {
+		return Get().zcCurLogLevel;
+	}
+
+	void SaveHandler( ZCheckerHandler inithandler ) {
+		if ( !zcHandler )
+			zcHandler = inithandler;
+	}
+
+	clearscope ZCheckerHandler _GetHandler( void ) {
+		return zcHandler;
+	}
+	static play ZCheckerHandler GetHandler( void ) {
+		return Get().zcHandler;
+	}
+	static clearscope ZCheckerHandler GetHandlerClearscope( void ) {
+		return ClearscopeGet().zcHandler;
+	}
 
 
 	// Prints well-decorated information string:
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
-		String logPrefix = "";
+		String logPrefix;
 
 		if ( !( loglevel & LL_NoPrefix ) ) {
 			switch ( loglevel & ~LL_FlagsMask ) {
@@ -133,19 +158,19 @@ class ZCGlobal: Thinker {
 				text = text .. ".";
 		}
 
-		console.printf( logPrefix .. text );
+		console.printf( "%s%s", logPrefix, text );
 	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {}
 
 	// A play-scope wrapper around a data-scope method (mostly used):
 	static play void Log( EZCheckerLogLevels loglevel, String text ) {
-		if ( ZCGlobal.Get().zcCurLogLevel >= ( loglevel & ~LL_FlagsMask ) )
+		if ( GetLoglevel() >= ( loglevel & ~LL_FlagsMask ) )
 			ClearscopeLog( loglevel, text );
 	}
 
 	static ui void UILog( EZCheckerLogLevels loglevel, String text ) {
 		ZCGlobal it = ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
 
-		if ( it && ( it.zcCurLogLevel >= ( loglevel & ~LL_FlagsMask ) ) )
+		if ( it && ( it._GetLoglevel() >= ( loglevel & ~LL_FlagsMask ) ) )
 			ClearscopeLog( loglevel, text );
 	}
 
@@ -171,7 +196,7 @@ class ZCGlobal: Thinker {
 		bool isallowed = CVar.FindCVar( "mcm_zchecker_allowdangerccmds" ).GetBool();
 
 		if ( isallowed && desc != "" )
-			ClearscopeLog( LL_Main, LLCOLOR_WARNING .. "Warning: " .. LLCOLOR_MAIN .. desc );
+			DataLog( LL_Main, LLCOLOR_WARNING .. "Warning: " .. LLCOLOR_MAIN .. desc );
 
 		return isallowed;
 	}

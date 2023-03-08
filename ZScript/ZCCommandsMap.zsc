@@ -3,19 +3,15 @@
 //
 
 class ZCEvmapCommand: ZCConsoleCommand {
-	protected void InitEvmapCCMD( String helpheader, String helpdesc, int extraflags = CCF_None, class<ZCTooltipClass> helptooltip = NULL ) {
+	protected void InitEvmapCCMD( String helpheader, String helpdesc, class<ZCTooltipClass> helptooltip = NULL ) {
 		zcFlags = CCF_NonblockingFailure;
-		if ( !!extraflags )
-			zcFlags |= extraflags;
-
 		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, helptooltip );
 	}
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev add|new|goto|pause|optimize|recreate|reload;zcev map[2]|level[2]",
-			"Operates with world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warps player to the \"map everything\" and \"map everything_simple\".",
-			CCF_Unreleased
+			"zcev goto <class>|s[tart];zcev re[create|load];zcev map[2]|level[2]",
+			"Operates with world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warps player to the \"map everything\" and \"map everything_simple\"."
 		);
 	}
 
@@ -66,12 +62,13 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 	}
 
 	protected void gotoCCMDPlayerTeleport( vector3 newpos, double newangle ) {
-		PlayerPawn player = players[ ccmd.e.Player ].mo;
+		PlayerPawn pl = players[ ccmd.e.Player ].mo;
 
-		player.SetOrigin( newpos, false );
-		player.SetZ( player.floorz );
-		player.angle = newangle;
-		player.vel.xy = (0.0, 0.0);
+		pl.SetOrigin( newpos, false );
+		pl.SetZ( pl.floorz );
+		pl.angle = newangle;
+		pl.vel.xy = (0.0, 0.0);
+		pl.player.vel = (0.0, 0.0);
 	}
 
 	override void DoCommand( void ) {
@@ -116,18 +113,6 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 	}
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
 
-
-class ZCEvmapCommand_add: ZCEvmapCommand {
-	override void InitCCMD() {
-		InitEvmapCCMD(
-			"zcev add [<class=linetarget>] [<amount=1>] [safe];zcev new [<class=linetarget>] [<amount=1>] [safe]",
-			"Summon <amount> actors of type <class/linetarget> on the Everything map arena. Keyword \"safe\" means summoning without collision.",
-			CCF_Unreleased
-		);
-	}
-} // of class ZCEvmapCommand_add: ZCEvmapCommand {}
-
-
 class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 	override void InitCCMD() {
 		InitEvmapCCMD(
@@ -150,20 +135,9 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 		return outValue;
 	}
 	override void DoCommand( void ) {
-		EventHandler.SendNetworkEvent( "zcheckermap_recreate" );
+		EventHandler.SendNetworkEvent( "zc_evmap_recreate" );
 	}
 } // of class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {}
-
-
-class ZCEvmapCommand_pause: ZCEvmapCommand {
-	override void InitCCMD() {
-		InitEvmapCCMD(
-			"zcev pause;zcev optimize",
-			"Unload all actors from the main location on the Everything map",
-			CCF_Unreleased
-		);
-	}
-} // of class ZCEvmapCommand_pause: ZCEvmapCommand {}
 
 class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 	override void InitCCMD() {

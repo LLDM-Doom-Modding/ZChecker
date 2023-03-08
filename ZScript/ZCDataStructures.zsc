@@ -23,7 +23,7 @@ class ZCheckerCCMDInfo play {
 
 		// If debug is enabled, display maximal amount of arguments (sometimes 
 		//it saves about ten minutes of the bughunting...):
-		if ( ZCGlobal.Get().zcCurLogLevel == LL_Debug ) {
+		if ( ZCGlobal.GetLoglevel() == LL_Debug ) {
 			int curpos = 0;
 
 			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + 2 ) ) )

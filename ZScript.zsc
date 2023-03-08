@@ -259,15 +259,14 @@ class ZCheckerHandler: StaticEventHandler {
 			allActorNames[ index ].names.Push( curclass ); // To speed up a comparing process.
 		}
 
-		if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
+		if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {
 			for ( int i = 0; i< ZCInternalActorNameCell.ARRAY_Quantity; i++ ) {
 				ZCInternalActorNameCell nameCell = allActorNames[ i ];
 				int nameCellSize = nameCell.names.Size();
 
-				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::InitAllActorNames(). " .. String.Format(
-										"allActorNames[%2i] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), i, nameCellSize ) );
+				ZCGlobal.ClearscopeLog( LL_Debug, String.Format( "%s::InitAllActorNames(). allActorNames[%2i] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), GetClassName(), i, nameCellSize ) );
 			}
-		} // of if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {}
+		} // of if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {}
 	} // of protected void InitAllActorNames( void ) {}
 
 
@@ -399,7 +398,7 @@ class ZCheckerHandler: StaticEventHandler {
 					continue;
 
 
-				panelsstr.Push( "\c-" .. outStr .. "\n" );
+				panelsstr.Push( String.Format( "\c-%s\n", outStr ) );
 
 				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
 
@@ -464,7 +463,7 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	override void NetworkProcess( ConsoleEvent e ) {
-		bool isDebugLoggingLevel = ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug );
+		bool isDebugLoggingLevel = ( ZCGlobal.GetLoglevel() >= LL_Debug );
 
 		// ZChecker CCMDs parsing:
 		String ccmdName = zcCCMDInfo.InitFromEvent( e );
@@ -541,11 +540,11 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( ccmdName ~== curCCMD.ccmdInterfaceData.neteventName ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
-				if ( nonblockingCommandsAmount == 0 )
+				if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
 					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.argsamount );
 
 				if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
-					if ( nonblockingCommandsAmount == 0 )
+					if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_OLIVE .. "Requested a non-blocking execution" .. LLCOLOR_DEBUG .. "." );
 
 					zcCCMDInfo.nonblockingCommands.Push( curCCMD );
@@ -604,7 +603,7 @@ class ZCheckerHandler: StaticEventHandler {
 			zcCCMDInfo.nonblockingCommands.Clear();
 		} // of if ( nonblockingCommandsAmount != 0 ) {}
 
-		if ( e.name == "zcheckermap_recreate" || e.name == "zcheckermap_pause_level_part" )
+		if ( e.name == "zc_evmap_recreate" /*|| e.name == "zc_evmap_pause_level_part"*/ )
 			interceptNeteventsMode = 0;
 
 		if ( interceptNeteventsMode ) {
@@ -628,7 +627,7 @@ class ZCheckerHandler: StaticEventHandler {
 								neteventArgColored( e.args[ 0 ] ), ARGSSEP, neteventArgColored( e.args[ 1 ] ), ARGSSEP, neteventArgColored( e.args[ 2 ] ) );
 
 			if ( interceptNeteventsMode == 3 )
-				outStr = outStr .. " from player #" .. TEXTCOLOR_WHITE .. e.Player;
+				outStr.AppendFormat( " from player #" .. TEXTCOLOR_WHITE .. "%i", e.Player );
 
 			ZCGlobal.Log( LL_Normal, outStr );
 		} // of if ( interceptNeteventsMode ) {}
@@ -680,7 +679,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 	override void WorldLoaded( WorldEvent e ) {
 		globalclass = ZCGlobal.Get();
-		globalclass.InitZCheckerHandler( self );
+		globalclass.SaveHandler( self );
 
 		globalclass.SetZCheckerString( "$1", "" );
 		globalclass.SetZCheckerString( "$2", "" );

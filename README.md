@@ -16,11 +16,11 @@ The main control tool in the game world. All of them are started with the prefix
 
 - `zcsummon <actor> [<amount>] [<extra_param[:value]>][,...]`. A powerful replacement of the built-in "summon" command. Recognizes wildcards ("z*man" for "Zombieman"), has a plethora of parameters such as spawn amount, start health or forced infighting disabling.
 
+- `zcsetprop [<pos>] [add|rel[:<srcpos>]|raw] <property[:value]>[,...]`. Sets a property value (including position, some pointers and common interaction properties like health) for the actor `<pos>`. May be simply assigned or, if possible, added to the current actor value/assigned as sum with the current value from the actor `<srcpos>` (player actor itself by default).
+
 - `zcsetf [<pos>] <flagname> [<value>]`. Toggles, sets or resets a flag for the specified actor (or for the linetarget if `<pos>` is omitted).
 
 - `zcsetst [<pos>] <statename>`. Sets a state for the specified actor (or for the linetarget if `<pos>` is omitted).
-
-- _`zcsetp [<pos>] <property[:value]>[,...]`_ [WIP]. Sets a property value.
 
 - `zcgive [<pos>] <invname> [<amount>]`, `zctake [<pos>] <invname> [<amount>]`. Operates on the specified actor's inventory, almost like the built-in "`give`" and "`take`" commands. Also, like `zcsummon`, recognizes wildcards.
 
@@ -42,11 +42,13 @@ Adds some `zcev`-prefixed commands:
 
 - `zcev recreate` or `zcevre`. Recreates all actors on the Everything map.
 
-- `zcev goto` or `zcevg`. Teleports a player next to the specified actor. Wildcards are also will be recognized.
+- `zcev goto <class>|start` or `zcevg <class>|start`. Teleports a player next to the specified actor or to start point. Wildcards are also will be recognized.
 
-- ...And some other CCMDs.
+- `zcev map` or `zcev level`. Warp to map "`Everything`".
 
-Note: map "`Everything`" may be outdated in the beta versions of the project. It's better to use "`map everything_simpled`" instead.
+- `zcev map2` or `zcev level2`. Warp to map "`Everything_simple`".
+
+Note: map "`Everything`" may be outdated in the beta versions of the project; so right now it's better to use "`Everything_simple`" instead.
 
 
 ## Some remarks
@@ -64,7 +66,7 @@ Due to internal netevent realization restrictions in the engine you are not able
 
 ### LLDM crew
 
-- **JSO_x** a.k.a. **Morthimer McMare**: idea, almost all code, map "Everything_simpled";
+- **JSO_x** a.k.a. **Morthimer McMare**: idea, almost all of the code, map "Everything_simple";
 
 - **StormCatcher.77**: map "Everything";
 
