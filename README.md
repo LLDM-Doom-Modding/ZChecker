@@ -42,11 +42,13 @@ Adds some `zcev`-prefixed commands:
 
 - `zcev recreate` or `zcevre`. Recreates all actors on the Everything map.
 
-- `zcev goto` or `zcevg`. Teleports a player next to the specified actor. Wildcards are also will be recognized.
+- `zcev goto <class>|start` or `zcevg <class>|start`. Teleports a player next to the specified actor or to start point. Wildcards are also will be recognized.
 
-- ...And some other CCMDs.
+- `zcev map` or `zcev level`. Warp to map "`Everything`".
 
-Note: map "`Everything`" may be outdated in the beta versions of the project. It's better to use "`map everything_simpled`" instead.
+- `zcev map2` or `zcev level2`. Warp to map "`Everything_simple`".
+
+Note: map "`Everything`" may be outdated in the beta versions of the project; so right now it's better to use "`Everything_simple`" instead.
 
 
 ## Some remarks
@@ -64,7 +66,7 @@ Due to internal netevent realization restrictions in the engine you are not able
 
 ### LLDM crew
 
-- **JSO_x** a.k.a. **Morthimer McMare**: idea, almost all code, map "Everything_simpled";
+- **JSO_x** a.k.a. **Morthimer McMare**: idea, almost all of the code, map "Everything_simple";
 
 - **StormCatcher.77**: map "Everything";
 
