@@ -16,11 +16,11 @@ The main control tool in the game world. All of them are started with the prefix
 
 - `zcsummon <actor> [<amount>] [<extra_param[:value]>][,...]`. A powerful replacement of the built-in "summon" command. Recognizes wildcards ("z*man" for "Zombieman"), has a plethora of parameters such as spawn amount, start health or forced infighting disabling.
 
+- `zcsetprop [<pos>] [add|rel[:<srcpos>]|raw] <property[:value]>[,...]`. Sets a property value (including position, some pointers and common interaction properties like health) for the actor `<pos>`. May be simply assigned or, if possible, added to the current actor value/assigned as sum with the current value from the actor `<srcpos>` (player actor itself by default).
+
 - `zcsetf [<pos>] <flagname> [<value>]`. Toggles, sets or resets a flag for the specified actor (or for the linetarget if `<pos>` is omitted).
 
 - `zcsetst [<pos>] <statename>`. Sets a state for the specified actor (or for the linetarget if `<pos>` is omitted).
-
-- _`zcsetp [<pos>] <property[:value]>[,...]`_ [WIP]. Sets a property value.
 
 - `zcgive [<pos>] <invname> [<amount>]`, `zctake [<pos>] <invname> [<amount>]`. Operates on the specified actor's inventory, almost like the built-in "`give`" and "`take`" commands. Also, like `zcsummon`, recognizes wildcards.
 
