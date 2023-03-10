@@ -1,0 +1,88 @@
+//
+// Tab size for this file: 4.
+//
+// "ZCGlobal.Log()" and all of its derivatives overrides next colors placeholders:
+//	'\c-' is a "LLCOLOR_MAIN" 	 (default user messages color, usually gray);
+//	'\c!' is a "LLCOLOR_WARNING" (yellow);
+//	'\c~' is a "LLCOLOR_DARK"	 (darkgray).
+//
+
+
+[enu default]
+
+
+// === General and core ===
+
+// Commons:
+ZCHECKER_GREETINGS_SUCCESS 		= "ZChecker v%s initialized successfully. Total %i console commands, %i info panels.";
+ZCHECKER_GREETINGS_WARNINGS 	= "ZChecker v%s initialized \c!with warnings\c-. Total %i console commands, %i info panels.";
+
+ZCHECKER_CCMDSHELP_USAGE		= "Usage";
+ZCHECKER_CCMDSHELP_TIPS			= "Tips";
+ZCHECKER_CCMDSHELP_EXAMPLES		= "Examples";
+ZCHECKER_CCMDS_DANGERALLOWEDWARN= "Warning";
+ZCHECKER_LOG_EMERGENCY_PREFIX 	= "[ZChecker emergency]";
+
+// Network events intercepting:
+ZCHECKER_NETEVENTINTC_NETEVENT	= "Netevent";
+ZCHECKER_NETEVENTINTC_MANUAL	= "Manual";
+ZCHECKER_NETEVENTINTC_SYSTEM	= "System";
+ZCHECKER_NETEVENTINTC_TIMEAT	= "at";
+ZCHECKER_NETEVENTINTC_FROMPLAYER= "from player #";
+
+// For "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()".
+ZCHECKER_GETACTOR_LTSKIPACTOR	= "Skipped special linetarget class \"%s\".";
+ZCHECKER_GETACTOR_LTNOACTORS	= "No available linetarget actors found.";
+ZCHECKER_GETACTOR_EMPTYPOS		= "No actor in position %i.";
+ZCHECKER_GETACTOR_WRONGPOS		= "\c!Wrong position %i\c- (must be in range [1..%i]).";
+ZCHECKER_GETACTOR_UNKNOWNKEYWORD= "\c!Unknown placeholder \"%s\" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.";
+
+// For "ZCConsoleCommand::ParseSpecialActorName()".
+ZCHECKER_PARSENAME_WRONGSELECT	= "\c!Selection \"%s\" isn't a positive integer.";
+ZCHECKER_PARSENAME_EMPTYKEYWORD	= "\c!Skipped\c- empty placeholder \"%s\". You may use \"%%null\" or \"%%none\" to override this.";
+ZCHECKER_PARSENAME_UNSETVAR		= "\c!Skipped\c- unset internal variable \"%s\".";
+ZCHECKER_PARSENAME_NOCLASSCHARS	= "\c!Not provided any class identifier characters.";
+ZCHECKER_PARSENAME_WITHFILTER 	= "\c~ with filter \cj%s\c~";
+ZCHECKER_PARSENAME_NOTFOUND	 	= "Cannot find any suitable actor name candidates";
+ZCHECKER_PARSENAME_FOUNDSOME 	= "Found more than one suitable actor name candidate";
+ZCHECKER_PARSENAME_SELECTBOUNDS	= "\c!Selected index \cn%i \c!is out of range\c- of the found candidates.";
+ZCHECKER_PARSENAME_IGNORESELECT = "\c!Ignoring numerical selection %i\c-";
+
+// For "ZCConsoleCommand::RemoveWorldThinker()".
+ZCHECKER_PREVENTREMOVELIVEPLAYER= "\crIt's better not to destroy a live player %i\c-. \c!Terminated\c-.";
+ZCHECKER_REMOVELIVEPLAYERWARNING= "destroying live player";
+
+
+// === Menus ===
+//     [WIP]
+
+ZCHECKER_MENU_SUBMENU_DFLTLABEL	= "Submenu. ";
+ZCHECKER_MENU_SUBMENU_DFLTMORE	= "[...more]";
+
+
+// === An "Everything" maps ===
+
+ZCHECKER_EVMAP_INITERROR			= "%s::RecreateEverything(). Cannot run due to the map errors, terminating.";
+ZCHECKER_EVMAP_TOTALRECREATE		= "Recreating/reloading map...";
+ZCHECKER_EVMAP_AUTOIDDQD			= "Auto-godmode enabled.";
+ZCHECKER_EVMAP_AUTONOTARGET			= "Auto-notarget enabled.";
+ZCHECKER_EVMAPSPAWN_SUCCESS			= "\cqsummoned class \"\cd%s\cq\"\c~ (sprite \"%s\").";
+ZCHECKER_EVMAPSPAWN_TNT1A0SKIP 		= "class \"%s\" omitted because of empty sprite \"%s\".";
+ZCHECKER_EVMAPSPAWN_MISSPRITESKIP	= "class \"%s\" omitted because of empty sprite \"%s\" (was %s).";
+ZCHECKER_EVMAPSPAWN_INVISSKIP		= "class \"%s\" omitted because of +STEALTH/+INVISIBLE flag set.";
+ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP		= "class \"%s\" omitted due to inheritance from the \"PlayerChunk\".";
+ZCHECKER_EVMAPSPAWN_REPLACEDSKIP	= "class \"%s\" replaced and thus omitted.";
+ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "replaced by \"%s\" class \"%s\" is restricted.";
+ZCHECKER_EVMAP_RESUMMON				= "\c~Spawned \c-%s\c~.";
+ZCHECKER_EVMAP_INFOSTR_REPLACES		= "%s \cnreplaces\c- %s";
+
+
+// === Console commands ===
+//          [WIP]
+
+// "zcact":
+ZCHECKER_ZCACT_CANNOTREVIVE		= "Cannot revive actor %s";
+ZCHECKER_ZCACT_REVIVED			= "Revived actor %s";
+ZCHECKER_ZCACT_REVIVEVANISH		= "Actor %s revived, but vanished.";
+ZCHECKER_ZCACT_REVIVEBLOCKED	= "Actor %s reviving \cablocked\c-.";
+

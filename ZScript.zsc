@@ -290,9 +290,8 @@ class ZCheckerHandler: StaticEventHandler {
 		ParseConfigFile();
 		InitAllActorNames();
 
-		ZCGlobal.Log( LL_Detailed, String.Format( "ZChecker v%s initialized %s. Total %i console commands, %i info panels.",
-									ZCheckerVersionNumber, ( handlerInitSuccess? "successfully" : TEXTCOLOR_RED .. "with warnings" .. LLCOLOR_MAIN ),
-									zcConsoleHandleClasses.Size(), panels.defaultPanels.Size() ) );
+		ZCGlobal.Log( LL_Detailed, String.Format( ( handlerInitSuccess? ZCGlobal.Loc( "GREETINGS_SUCCESS" ) : ZCGlobal.Loc( "GREETINGS_WARNINGS" ) ),
+									ZCheckerVersionNumber, zcConsoleHandleClasses.Size(), panels.defaultPanels.Size() ) );
 
 		Super.OnRegister();
 	}
@@ -553,7 +552,7 @@ class ZCheckerHandler: StaticEventHandler {
 					if ( curCCMD.HandleArguments() )
 						curCCMD.DoCommand();
 					else
-						ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage" .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
+						ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. ZCGlobal.Locz( "CCMDSHELP_USAGE" ) .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
 
 					interceptNeteventsMode = 0;
 					break;
@@ -597,7 +596,7 @@ class ZCheckerHandler: StaticEventHandler {
 			}
 
 			if ( printUsage && zcCCMDInfo.usageNonblockingCommand )
-				ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. "Usage" .. LLCOLOR_MAIN .. ":\n" .. zcCCMDInfo.usageNonblockingCommand.GetHelpString() );
+				ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. ZCGlobal.Locz( "CCMDSHELP_USAGE" ) .. LLCOLOR_MAIN .. ":\n" .. zcCCMDInfo.usageNonblockingCommand.GetHelpString() );
 
 			interceptNeteventsMode = 0;
 			zcCCMDInfo.nonblockingCommands.Clear();
@@ -609,17 +608,24 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( interceptNeteventsMode ) {
 			String outStr = "";
 
-			if ( interceptNeteventsMode == 3 )
-				outStr = TEXTCOLOR_GRAY .. ( e.IsManual? "Manual" : "System" ) .. TEXTCOLOR_DARKGRAY .. " netevent ";
-			else
-				outStr = TEXTCOLOR_DARKGRAY .. "Netevent ";
+			if ( interceptNeteventsMode == 3 ) {
+				outStr = String.Format( TEXTCOLOR_GRAY .. "%s" .. TEXTCOLOR_DARKGRAY .. " %s ",
+										ZCGlobal.Locz( "NETEVENTINTC_" .. ( e.IsManual? "MANUAL" : "SYSTEM" ) ),
+										ZCGlobal.Locz( "NETEVENTINTC_NETEVENT" ) );
+			} else {
+				outStr = TEXTCOLOR_DARKGRAY .. ZCGlobal.Locz( "NETEVENTINTC_NETEVENT" ) .. " ";
+			}
 
 			// Compatibility between all *ZDoom versions:
 			int compatTicRate = max( Thinker.Tics2Seconds( 350000 ), 1 );
 			compatTicRate = int( 350000 / compatTicRate );
 
-			if ( interceptNeteventsMode >= 2 )
-				outStr.AppendFormat( "at %s.%02i ", level.TimeFormatted(), int( floor( ( level.time % compatTicRate ) / double( compatTicRate ) * 100.0 ) ) );
+			if ( interceptNeteventsMode >= 2 ) {
+				outStr.AppendFormat( "%s %s.%02i ",
+									ZCGlobal.Locz( "NETEVENTINTC_TIMEAT" ),
+									level.TimeFormatted(),
+									int( floor( ( level.time % compatTicRate ) / double( compatTicRate ) * 100.0 ) ) );
+			}
 
 			String ARGSSEP = TEXTCOLOR_DARKGRAY .. "/" .. TEXTCOLOR_CREAM;
 
@@ -627,7 +633,7 @@ class ZCheckerHandler: StaticEventHandler {
 								neteventArgColored( e.args[ 0 ] ), ARGSSEP, neteventArgColored( e.args[ 1 ] ), ARGSSEP, neteventArgColored( e.args[ 2 ] ) );
 
 			if ( interceptNeteventsMode == 3 )
-				outStr.AppendFormat( " from player #" .. TEXTCOLOR_WHITE .. "%i", e.Player );
+				outStr.AppendFormat( " %s" .. TEXTCOLOR_WHITE .. "%i", ZCGlobal.Locz( "NETEVENTINTC_FROMPLAYER" ), e.Player );
 
 			ZCGlobal.Log( LL_Normal, outStr );
 		} // of if ( interceptNeteventsMode ) {}

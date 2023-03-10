@@ -31,6 +31,7 @@ enum EZCheckerLogLevels {
 	LL_Extra 	= LL_Detailed,
 
 	LL_FlagsMask	= 0xFFF0,
+	LL_NoLocalize	= 0x2000,
 	LL_NoDot		= 0x4000,
 	LL_NoPrefix		= 0x8000
 };
@@ -137,13 +138,14 @@ class ZCGlobal: Thinker {
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
 		String logPrefix;
 
+		// Message prefix:
 		if ( !( loglevel & LL_NoPrefix ) ) {
 			switch ( loglevel & ~LL_FlagsMask ) {
 				case LL_Debug:
 					logPrefix = LLCOLOR_DEBUG .. "[ZC Debug] ";
 					break;
 				case LL_Emergency:
-					logPrefix = TEXTCOLOR_RED .. "[ZChecker emergency] " .. LLCOLOR_EMERGENCY;
+					logPrefix = String.Format( TEXTCOLOR_RED .. "%s " .. LLCOLOR_EMERGENCY, ZCGlobal.Localize( "LOG_EMERGENCY_PREFIX" ) );
 					break;
 				default:
 					logPrefix = TEXTCOLOR_GRAY .. "[ZC] " .. LLCOLOR_MAIN;
@@ -151,6 +153,13 @@ class ZCGlobal: Thinker {
 			} // of switch ( loglevel & ~LL_NoPrefix ) {
 		} // of if ( !( loglevel & LL_NoPrefix ) ) {
 
+
+		// Auto-localization (without a "ZCHECKER_" prefix in text):
+		if ( text.Left( 1 ) == "$" && !( loglevel & LL_NoLocalize ) )
+			text = ZCGlobal.Localize( text.Mid( 1, text.Length() - 1 ) );
+
+
+		// Dot at the end of the line:
 		if ( !( loglevel & LL_NoDot ) ) {
 			String lastch = text.Mid( text.Length() - 1 );
 
@@ -158,7 +167,16 @@ class ZCGlobal: Thinker {
 				text = text .. ".";
 		}
 
+
+		// Replacing some colors:
+		text.Replace( "\034!", LLCOLOR_WARNING );
+		text.Replace( "\034~", LLCOLOR_DARK );
+		//text.Replace( "\034-", LLCOLOR_MAIN ); // Right now "\c-" replaces to the "\c-" here.
+
+
+		// Logging:
 		console.printf( "%s%s", logPrefix, text );
+
 	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {}
 
 	// A play-scope wrapper around a data-scope method (mostly used):
@@ -181,6 +199,16 @@ class ZCGlobal: Thinker {
 			ClearscopeLog( loglevel, text );
 	}
 
+	static clearscope String Localize( String textid ) {
+		return StringTable.Localize( "$ZCHECKER_" .. textid );
+	}
+	static clearscope String Locz( String textid ) {
+		return StringTable.Localize( "$ZCHECKER_" .. textid );
+	}
+	static clearscope String Loc( String textid ) {
+		return StringTable.Localize( "$ZCHECKER_" .. textid );
+	}
+
 
 
 	// Test for the special ZChecker level:
@@ -196,7 +224,7 @@ class ZCGlobal: Thinker {
 		bool isallowed = CVar.FindCVar( "mcm_zchecker_allowdangerccmds" ).GetBool();
 
 		if ( isallowed && desc != "" )
-			DataLog( LL_Main, LLCOLOR_WARNING .. "Warning: " .. LLCOLOR_MAIN .. desc );
+			DataLog( LL_Main, LLCOLOR_WARNING .. ZCGlobal.Locz( "CCMDS_DANGERALLOWEDWARN" ) .. ": " .. LLCOLOR_MAIN .. desc );
 
 		return isallowed;
 	}

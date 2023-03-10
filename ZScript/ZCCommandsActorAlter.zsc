@@ -189,6 +189,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			}
 		}
 
+		String thingClassName = thing.GetClassName();
 
 		if ( !reviveBlocked ) {
 			// Compatibility with older versions.
@@ -200,14 +201,14 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				thing.master = prevMaster;
 
 				if ( thing.bCORPSE )
-					ZCGlobal.Log( LL_Main, "Cannot revive actor " .. thing.GetClassName() );
+					LogLocalize2Str( LL_Main, "ZCACT_CANNOTREVIVE", thingClassName );
 				else
-					ZCGlobal.Log( LL_Detailed, "Revived actor " .. thing.GetClassName() );
+					LogLocalize2Str( LL_Detailed, "ZCACT_REVIVED", thingClassName );
 			} else {
-				ZCGlobal.Log( LL_Main, "Actor " .. thing.GetClassName() .. " revived, but vanished." );
+				LogLocalize2Str( LL_Main, "ZCACT_REVIVEVANISH", thingClassName );
 			}
 		} else {
-			ZCGlobal.Log( LL_Main, "Actor " .. thing.GetClassName() .. " reviving " .. TEXTCOLOR_BRICK .. "blocked\c-." );
+			LogLocalize2Str( LL_Main, "ZCACT_REVIVEBLOCKED", thingClassName );
 		}
 	}
 
