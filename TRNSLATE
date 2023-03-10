@@ -1,6 +1,0 @@
-// Translation file for the ZChecker project.
-// Unused due to the different IWADs palettes problem.
-
-mcm_ZChecker_ActorInfoReady				= "168:191=119:127", "208:223=115:122", "231:231=114:114"
-mcm_ZChecker_ActorInfoMasterDied		= "168:191=160:167", "208:223=228:231", "231:231=227:227"
-mcm_ZChecker_ActorInfoWrongMaster		= "168:191=178:191", "208:223=174:177", "231:231=173:173"

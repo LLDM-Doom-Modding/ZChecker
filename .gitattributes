@@ -3,8 +3,10 @@
 CVARINFO 	linguist-language=C
 KEYCONF 	linguist-language=D
 MAPINFO 	linguist-language=C
-MENUDEF 	linguist-language=C++
+MENUDEF.* 	linguist-language=C++
 TRNSLATE 	linguist-language=C
 LANGUAGE.*	linguist-language=C
+FONTDEFS	linguist-language=C
+zchecker.cfg linguist-language=Python
 
 ZScript/ZCBranchSpecific.zsc	merge=ours
