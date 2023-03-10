@@ -5,5 +5,6 @@ KEYCONF 	linguist-language=D
 MAPINFO 	linguist-language=C
 MENUDEF 	linguist-language=C++
 TRNSLATE 	linguist-language=C
+LANGUAGE.*	linguist-language=C
 
 ZScript/ZCBranchSpecific.zsc	merge=ours
