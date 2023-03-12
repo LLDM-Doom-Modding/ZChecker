@@ -779,7 +779,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		Actor thing = Actor( th );
 
 		if ( thing && thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "REMOVELIVEPLAYERWARNING" ) ) ) {
-			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PREVENTREMOVELIVEPLAYER" ), thing.PlayerNumber() + 1 ) );
+			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "REMOVELIVEPLAYERPREVENT" ), thing.PlayerNumber() + 1 ) );
 		} else {
 			if ( thing )
 				thing.ClearCounters();

@@ -49,7 +49,7 @@ ZCHECKER_PARSENAME_SELECTBOUNDS	= "\c!Selected index \cn%i \c!is out of range\c-
 ZCHECKER_PARSENAME_IGNORESELECT = "\c!Ignoring numerical selection %i\c-";
 
 // For "ZCConsoleCommand::RemoveWorldThinker()".
-ZCHECKER_PREVENTREMOVELIVEPLAYER= "\crIt's better not to destroy a live player %i\c-. \c!Terminated\c-.";
+ZCHECKER_REMOVELIVEPLAYERPREVENT= "\crIt's better not to destroy a live player %i\c-. \c!Terminated\c-.";
 ZCHECKER_REMOVELIVEPLAYERWARNING= "destroying live player";
 
 
@@ -80,9 +80,66 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES		= "%s \cnreplaces\c- %s";
 // === Console commands ===
 //          [WIP]
 
+// File "ZCCommandsActorAlter.zsc":
+
 // "zcact":
 ZCHECKER_ZCACT_CANNOTREVIVE		= "Cannot revive actor %s";
 ZCHECKER_ZCACT_REVIVED			= "Revived actor %s";
 ZCHECKER_ZCACT_REVIVEVANISH		= "Actor %s revived, but vanished.";
 ZCHECKER_ZCACT_REVIVEBLOCKED	= "Actor %s reviving \cablocked\c-.";
+ZCHECKER_ZCACT_KILLED 			= "Killed actor %s.";
+ZCHECKER_ZCACT_CANNOTKILL		= "Cannot kill actor %s";
+ZCHECKER_ZCACT_XKILLED 			= "Extremely killed actor %s.";
+ZCHECKER_ZCACT_CANNOTXKILL		= "Cannot extremely kill actor %s";
+ZCHECKER_ZCACT_DESTROYED		= "Destroyed actor %s.";
+
+// "zcgive":
+ZCHECKER_ZCGIVE_SUCCESS			= "Item \"%s\" is given to the actor \"%s\".";
+ZCHECKER_ZCGIVE_CANNOTRECEIVE	= "Actor %s cannot receive item.";
+ZCHECKER_ZCGIVE_NOTINVCLASS		= "\"%s\" isn't an Inventory actor.";
+
+// "zctake":
+ZCHECKER_ZCTAKE_SUCCESS			= "Item \"%s\" is taken from the actor \"%s\".";
+ZCHECKER_ZCTAKE_CANNOTRECEIVE	= "Cannot take item from actor %s.";
+ZCHECKER_ZCTAKE_NOTINVCLASS		= "\"%s\" isn't an Inventory actor.";
+
+// "zcsummon":
+ZCHECKER_ZCSUMMON_CLAMPINT		= "\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.";
+ZCHECKER_ZCSUMMON_CLAMPFLOAT	= "\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.";
+ZCHECKER_ZCSUMMON_WRONGPANEL	= "\c!Wrong panel number \"%s\".";
+ZCHECKER_ZCSUMMON_WRONGARG		= "\c!Wrong argument number for parameter %s.";
+ZCHECKER_ZCSUMMON_WRONGDIGIT	= "\c!Value \"%s\" \c-for parameter \"%s\" \c!isn't a digit.";
+ZCHECKER_ZCSUMMON_EMPTYVALUE	= "\c!Empty value for parameter \"%s\".";
+ZCHECKER_ZCSUMMON_UNKNOWNPARAM	= "\c!Unknown parameter \"%s\"";
+ZCHECKER_ZCSUMMON_UNKNOWNFLAG	= "\c!Unknown flag \"%s\".";
+ZCHECKER_ZCSUMMON_LIMITPREVENT	= "Trying to summon more than 200 actors in once. \c~You may disable this limit switching the \"Allow dangerous actions\" option.";
+ZCHECKER_ZCSUMMON_LIMITWARNING	= "summoning more than 200 actors";
+ZCHECKER_ZCSUMMON_SUCCESS		= "Summoned %i %s \c~of class \"\cd%s\c~\".";
+ZCHECKER_ZCSUMMON_ADDINSUFFPLACE= "Cannot add actor to list, insufficient place. Try set target to list directly via parameter \"panel:1\"..\"panel:%i\".";
+ZCHECKER_ZCSUMMON_ADDONLYLAST	= "\c~Only last summoned actor added to the list.";
+ZCHECKER_ZCSUMMON_CANNOTSUMMON	= "\caCannot summon actor class \cu\"\c-%s\cu\". It may be abstract or immediately destroyed in the BeginPlay() override.";
+ZCHECKER_ZCSUMMON_NOTACTOR		= "\"%s\" isn't an Actor class.";
+
+// "zcsetflag":
+ZCHECKER_ZCSETFLAG_SUCCESS		= "Flag \"%s\" for actor %s is succesfully set to %i.";
+
+// "zcsetprop":
+ZCHECKER_ZCSETP_RELPLAYER		= "\c~Base actor for relative properties \c-is set to caller player\c~.";
+ZCHECKER_ZCSETP_UNKNOWNMODE		= "\c!Unknown mode \c~\"\c-%s\c~\". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.";
+ZCHECKER_ZCSETP_NODELIMCHARS	= "\c!No delimiter character \c-(\":\" or \"=\") \c!provided \ñ-for property \"%s\".";
+ZCHECKER_ZCSETP_WRONGARG		= "\c!Wrong argument number in parameter \"%s\"";
+ZCHECKER_ZCSETP_WRONGINTPROP	= "\c!Unknown integer property \"%s\"";
+ZCHECKER_ZCSETP_WRONGFLOATPROP	= "\c!Unknown float-point property \"%s\"";
+ZCHECKER_ZCSETP_WRONGKEYWORDZ	= "\c!Unknown placeholder \"\c-%s\c!\" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ or \c-rawc[eil]|hc\c~";
+ZCHECKER_ZCSETP_WRONGKEYWORDHP	= "\c!Unknown placeholder \"\c-%s\c!\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ or \c-s[pawn]\c~";
+ZCHECKER_ZCSETP_EMPTYPROP		= "\c~Skipped empty property \"\c-%s\c~\".";
+ZCHECKER_ZCSETP_UNKNOWNPROP		= "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
+ZCHECKER_ZCSETP_SUCCESS			= "Properties for actor \"%s\" succesfully changed.";
+
+
+
+
+
+
+
 

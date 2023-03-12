@@ -62,11 +62,11 @@ class ZCGiveCommand: ZCConsoleCommand {
 
 			if ( itemClass is 'Inventory' ) {
 				if ( testee.A_GiveInventory( itemName, itemAmount ) )
-					ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" is given to the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
+					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCGIVE_SUCCESS" ), itemClass.GetClassName(), testee.GetClassName() ) );
 				else
-					ZCGlobal.Log( LL_Main, "Actor " .. testee.GetClassName() .. " cannot receive item." );
+					LogLocalize2Str( LL_Main, "ZCGIVE_CANNOTRECEIVE", testee.GetClassName() );
 			} else {
-				ZCGlobal.Log( LL_Main, "\"" .. itemName .. "\" isn't an inventory actor." );
+				LogLocalize2Str( LL_Main, "ZCGIVE_NOTINVCLASS", itemName );
 			}
 		} // of if ( testee ) {}
 
@@ -97,12 +97,13 @@ class ZCTakeCommand: ZCGiveCommand {
 						Inventory inv = testee.FindInventory( itemName );
 						inv.Destroy();
 					}*/
+
 					Inventory inv = testee.FindInventory( itemName );
 
 					if ( inv && inv.amount == 0 )
 						inv.Destroy();
 
-					ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" is taken from the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
+					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCTAKE_SUCCESS" ), itemClass.GetClassName(), testee.GetClassName() ) );
 
 					/*if ( inv && !inv.bKEEPDEPLETED ) {
 						ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" destroyed from the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
@@ -111,10 +112,11 @@ class ZCTakeCommand: ZCGiveCommand {
 						ZCGlobal.Log( LL_Detailed, "Item \"" .. itemClass.GetClassName() .. "\" taken from the actor " .. testee.GetClassName() .. " <" .. testee .. ">." );
 					}*/
 				} else {
-					ZCGlobal.Log( LL_Main, "Cannot take item from actor " .. testee.GetClassName() .. "." );
+					LogLocalize2Str( LL_Main, "ZCTAKE_CANNOTRECEIVE", testee.GetClassName() );
 				}
+
 			} else {
-				ZCGlobal.Log( LL_Main, "\"" .. itemName .. "\" isn't an inventory actor." );
+				LogLocalize2Str( LL_Main, "ZCTAKE_NOTINVCLASS", itemName );
 			}
 		} // of if ( testee ) {}
 	} // of override void DoCommand( void ) {}
@@ -216,7 +218,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		if ( !thing )
 			return;
 
-		Name thingname = thing.GetClassName();
+		String thingname = thing.GetClassName();
 
 		switch ( actoraction ) {
 			case AC_Revive:
@@ -227,24 +229,24 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 				// Some actors are instantly destroyed in the "Death:" state sequence.
 				if ( thing && thing.health > 0 )
-					ZCGlobal.Log( LL_Main, "Cannot kill actor " .. thingname );
+					LogLocalize2Str( LL_Main, "ZCACT_CANNOTKILL", thingname );
 				else
-					ZCGlobal.Log( LL_Detailed, "Killed actor " .. thingname );
+					LogLocalize2Str( LL_Detailed, "ZCACT_KILLED", thingname );
 				break;
 			case AC_XKill:
 				thing.DamageMobj( thing, thing, 0x7FFFFFF, 'None', DMSS_FOILINVUL | DMSS_NOFACTOR | DMSS_NOPROTECT );
 
 				if ( thing && thing.health > 0 )
-					ZCGlobal.Log( LL_Main, "Cannot extremely kill actor " .. thingname );
+					LogLocalize2Str( LL_Main, "ZCACT_CANNOTXKILL", thingname );
 				else
-					ZCGlobal.Log( LL_Detailed, "Extremely killed actor " .. thingname );
+					LogLocalize2Str( LL_Detailed, "ZCACT_XKILLED", thingname );
 				break;
 			case AC_Destroy:
 				if ( RemoveWorldThinker( thing ) )
-					ZCGlobal.Log( LL_Detailed, "Destroyed actor " .. thingname );
+					LogLocalize2Str( LL_Detailed, "ZCACT_DESTROYED", thingname );
 				break;
 			default:
-				ZCGlobal.Log( LL_Emergency, "Unknown action id \"" .. actoraction .. "\" for thing " .. thingname );
+				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown action id \"" .. actoraction .. "\" for thing " .. thingname );
 				break;
 		}
 	}
@@ -302,7 +304,7 @@ struct ZCSummonExtraParameters play {
 		double tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {
-			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpfloat );
+			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPFLOAT" ), valuedesc, value, minlimit, maxlimit, tmpfloat ) );
 			value = tmpfloat;
 		}
 	}
@@ -311,7 +313,7 @@ struct ZCSummonExtraParameters play {
 		int tmpint = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpint ) {
-			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. valuedesc .. " (" .. value .. ") isn't in range [" .. minlimit .. "; " .. maxlimit .. "]. " .. LLCOLOR_MAIN .. "Clamped to " .. tmpint );
+			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPINT" ), valuedesc, value, minlimit, maxlimit, tmpint ) );
 			value = tmpint;
 		}
 	}
@@ -412,7 +414,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 								if ( str2int_Ptr( panelposStr, +panelposNum ) && checkTesteePlace( --panelposNum ) )
 									params.infopanelPos = panelposNum;
 								else
-									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong panel number \"" .. panelposStr .. "\"." );
+									LogLocalize2Str( LL_Main, "ZCSUMMON_WRONGPANEL", panelposStr );
 							}
 						} else {
 							params.infopanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
@@ -463,21 +465,21 @@ class ZCSummonCommand: ZCConsoleCommand {
 									if ( argnum >= 0 && argnum < params.SPECARGS_MAX )
 										params.specargs[ argnum ] = paramvalue;
 									else
-										ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong argument number for parameter \"" .. paramdiv[ 0 ] .. "\"." );
+										LogLocalize2Str( LL_Main, "ZCSUMMON_WRONGARG", paramdiv[ 0 ] );
 
 								} else {
-									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown parameter \"" .. curparam .. "\"." );
+									LogLocalize2Str( LL_Main, "ZCSUMMON_UNKNOWNPARAM", curparam );
 								}
 							} else {
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Value \"" .. paramdiv[ 1 ] .. "\" for parameter \"" .. paramdiv[ 0 ] .. "\" isn't a digit." );
-							} // of else of if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue ) ) {}
+								ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_WRONGDIGIT" ), paramdiv[ 1 ], paramdiv[ 0 ] ) );
+							} // of else of if ( str2int_Ptr( paramdiv[ 1 ], +paramvalue, true ) ) {}
 
 						} else {
-							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "No value " .. LLCOLOR_MAIN .. "for parameter \"" .. curparam .. "\"." );
+							LogLocalize2Str( LL_Main, "ZCSUMMON_EMPTYVALUE", curparam );
 						} // of else of if ( colonIndex < curparam.Length() ) {}
 
 					} else {
-						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown flag \"" .. curparam .. "\"." );
+						LogLocalize2Str( LL_Main, "ZCSUMMON_UNKNOWNFLAG", curparam );
 					}
 
 				} // of for ( int i = 0; i < paramlist.Size(); i++ ) {}
@@ -545,8 +547,8 @@ class ZCSummonCommand: ZCConsoleCommand {
 		if ( classnameParseStatus == CPS_RegexFailed )
 			return;
 
-		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( "summoning more than 200 actors" ) ) {
-			ZCGlobal.Log( LL_Main, "Trying to summon more than 200 actors in once. " .. LLCOLOR_DARK .. "You may disable this limit switching the \"Allow dangerous actions\" option." );
+		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "ZCSUMMON_LIMITWARNING" ) ) ) {
+			ZCGlobal.Log( LL_Main, ZCGlobal.Locz( "ZCSUMMON_LIMITPREVENT" ) );
 			return;
 		}
 
@@ -581,10 +583,10 @@ class ZCSummonCommand: ZCConsoleCommand {
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
 				if ( summoned ) {
-					ZCGlobal.Log( LL_Detailed, "Summoned " .. summoneeAmount .. " actor" .. ( summoneeAmount > 1? "s " : " " ) .. TEXTCOLOR_DARKGRAY .. "of class \"" .. TEXTCOLOR_GREEN .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\"" );
+					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCSUMMON_SUCCESS" ), summoneeAmount, ( summoneeAmount > 1? "actors" : "actor" ), summoneeClass.GetClassName() ) );
 
 					if ( params.infopanelPos == params.INFOPANEL_NOFREE ) {
-						ZCGlobal.Log( LL_Main, "Cannot add actor to list, insufficient place. Try set target to list directly via parameter \"panel:1\"..\"panel:" .. MaxTestee .. "\"." );
+						ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_ADDINSUFFPLACE" ), MaxTestee ) );
 
 					} else if ( params.infopanelPos != params.INFOPANEL_IGNORE ) {
 						// No duplicate fields check when summoning new actors, of course.
@@ -595,15 +597,18 @@ class ZCSummonCommand: ZCConsoleCommand {
 						field.UpdateActorMetainformation( ccmd );
 
 						if ( summoneeAmount > 1 )
-							ZCGlobal.Log( LL_Main, LLCOLOR_DARK .. "Only last summoned actor added to the list." );
+							ZCGlobal.Log( LL_Main, ZCGlobal.Locz( "ZCSUMMON_ADDONLYLAST" ) );
 					}
+
 				} else {
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_BRICK .. "Cannot summon actor class " .. TEXTCOLOR_DARKGRAY .. "\"" .. TEXTCOLOR_GRAY .. summoneeClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
+					// If an actor cannot be summoned or destroyed right after its spawn:
+					LogLocalize2Str( LL_Main, "ZCSUMMON_CANNOTSUMMON", summonee );
 				}
+
 			} // of if ( player ) {}
 
 		} else {
-			ZCGlobal.Log( LL_Main, "\"" .. summonee .. "\" isn't an actor class." );
+			LogLocalize2Str( LL_Main, "ZCSUMMON_NOTACTOR", summonee );
 		}
 	}
 } // of class ZCSummonCommand: ZCConsoleCommand {}
@@ -755,7 +760,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 				testee.A_ChangeLinkFlags( sector: setFlag( testee.bNOSECTOR ) );
 
 			if ( !callACSSetFlag )
-				ZCGlobal.Log( LL_Detailed, "Flag \"" .. flagName .. "\" for actor " .. testee.GetClassName() .. " is succesfully set to " .. flagSetType );
+				ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCSETFLAG_SUCCESS" ), flagName, testee.GetClassName(), flagSetType ) );
 		} // of if ( !skipKnownFlags ) {}
 
 
@@ -832,7 +837,7 @@ struct ZCSetPropertyParameterDouble {
 		double tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {
-			ZCGlobal.ClearscopeLog( LL_Main, String.Format( LLCOLOR_WARNING .. "%s (%i) isn't in range [%i; %i]. " .. LLCOLOR_MAIN .. "Clamped to %i.", valuedesc, value, minlimit, maxlimit, tmpfloat ) );
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPINT" ), valuedesc, value, minlimit, maxlimit, tmpfloat ) );
 			value = tmpfloat;
 		}
 
@@ -861,7 +866,7 @@ struct ZCSetPropertyParameterInteger {
 		int tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {;
-			ZCGlobal.ClearscopeLog( LL_Main, String.Format( LLCOLOR_WARNING .. "%s (%.3d) isn't in range [%.3d; %.3d]. " .. LLCOLOR_MAIN .. "Clamped to %.3d.", valuedesc, value, minlimit, maxlimit, tmpfloat ) );
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPFLOAT" ), valuedesc, value, minlimit, maxlimit, tmpfloat ) );
 			value = tmpfloat;
 		}
 
@@ -1087,7 +1092,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				} else {
 					relativeTo = players[ ccmd.e.Player ].mo;
 					setmode = PSM_Relative;
-					ZCGlobal.Log( LL_Detailed, LLCOLOR_DARK .. "Base actor for relative properties " .. LLCOLOR_MAIN .. "is set to caller player" .. LLCOLOR_DARK .. "." );
+					ZCGlobal.Log( LL_Detailed, "$ZCSETP_RELPLAYER" );
 				}
 
 			} else if ( modeargstr == "raw" ) {
@@ -1102,7 +1107,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) )
 					outValue = true;
 				else
-					ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown keyword " .. LLCOLOR_MAIN .. "\"" .. modeargstr .. "\"." );
+					LogLocalize2Str( LL_Main, "ZCSETP_UNKNOWNMODE", modeargstr );
 			} else {
 				alteree = LinetraceActor();
 				outValue = true;
@@ -1128,7 +1133,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 					delimIndex = curparam.IndexOf( ":" );
 
 				if ( delimIndex == -1 ) {
-					ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "No delimiter symbol" .. LLCOLOR_MAIN .. " (\":\" or \"=\") " .. LLCOLOR_WARNING .. "provided" .. LLCOLOR_MAIN .. " for property \"" .. curparam .. "\"." );
+					LogLocalize2Str( LL_Main, "ZCSETP_NODELIMCHARS", curparam );
 					continue;
 				}
 
@@ -1158,17 +1163,17 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 							params.doubles[ params.PFD_Pitch ].set( paramdouble );
 						} else if ( prop == "roll" ) {
 							params.doubles[ params.PFD_Roll ].set( paramdouble );
-						} else if ( prop == "x" || prop == "posx" ) {
+						} else if ( prop == "x" || prop == "posx" || prop == "xpos" ) {
 							params.doubles[ params.PFD_X ].set( paramdouble );
-						} else if ( prop == "y" || prop == "posy" ) {
+						} else if ( prop == "y" || prop == "posy" || prop == "ypos" ) {
 							params.doubles[ params.PFD_Y ].set( paramdouble );
-						} else if ( prop == "z" || prop == "posy" ) {
+						} else if ( prop == "z" || prop == "posz" || prop == "zpos" ) {
 							params.doubles[ params.PFD_Z ].set( paramdouble );
-						} else if ( prop == "vx" || prop == "velx" ) {
+						} else if ( prop == "vx" || prop == "velx" || prop == "xvel" ) {
 							params.doubles[ params.PFD_VelX ].set( paramdouble );
-						} else if ( prop == "vy" || prop == "vely" ) {
+						} else if ( prop == "vy" || prop == "vely" || prop == "yvel" ) {
 							params.doubles[ params.PFD_VelY ].set( paramdouble );
-						} else if ( prop == "vz" || prop == "vely" ) {
+						} else if ( prop == "vz" || prop == "velz" || prop == "zvel" ) {
 							params.doubles[ params.PFD_VelZ ].set( paramdouble );
 						} else if ( prop == "radius" || prop == "rad" ) {
 							params.doubles[ params.PFD_Radius ].set( paramdouble );
@@ -1209,14 +1214,14 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 								if ( argnum >= 0 && argnum < ZCSummonExtraParameters.SPECARGS_MAX )
 									params.integers[ argnum + params.PFI_Arg0 ].set( paramint );
 								else
-									ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong argument number in parameter \"" .. prop .. "\"." );
+									LogLocalize2Str( LL_Main, "ZCSETP_WRONGARG", prop );
 
 							} else {
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown integer property \"" .. prop .. "\"." );
+								LogLocalize2Str( LL_Main, "ZCSETP_WRONGINTEGER", prop );
 							}
 
 						} else {
-							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown float-point property \"" .. prop .. "\"." );
+							LogLocalize2Str( LL_Main, "ZCSETP_WRONGFLOAT", prop );
 						}
 
 					} else {
@@ -1232,7 +1237,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 							else if ( pvalue.Left( 4 ) == "rawc" || pvalue.Left( 2 ) == "hc" )
 								params.doubles[ params.PFD_Z ].set( baseactor.ceilingz );
 							else
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. pvalue .. "\" for the Z coordinate property. " .. LLCOLOR_DARK .. "Must be " .. LLCOLOR_MAIN .. "<float>" .. LLCOLOR_DARK .. ", " .. LLCOLOR_MAIN .. "f[loor] " .. LLCOLOR_DARK .. ", " .. LLCOLOR_MAIN .. "c[eil]" .. LLCOLOR_DARK .. " or " .. LLCOLOR_MAIN .. "rawc[eil]|hc" .. LLCOLOR_DARK );
+								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDZ", pvalue ); 
 
 						} else if ( prop == "health" || prop == "hp" || prop == "h" ) {
 							if ( pvalue.Left( 1 ) == "s" )
@@ -1240,17 +1245,17 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 							else if ( pvalue == "max" )
 								params.integers[ params.PFI_Health ].set( 0x7FFFFFFF );
 							else
-								ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. pvalue .. "\" for the health property. " .. LLCOLOR_DARK .. "Must be " .. LLCOLOR_MAIN .. "<int>" .. LLCOLOR_DARK .. ", " .. LLCOLOR_MAIN .. "max" .. LLCOLOR_DARK .. " or " .. LLCOLOR_MAIN .. "s[pawn]" .. LLCOLOR_DARK );
+								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDHP", pvalue ); 
 
 						} else if ( prop == "tid" && ( pvalue.Left( 2 ) == "un" || pvalue == "new" ) ) {
 							params.integers[ params.PFI_TID ].set( Actor.FindUniqueTid() );
 
 						} else if ( pvalue == "" ) {
-							ZCGlobal.Log( LL_Main, LLCOLOR_DARK .. "Skipped empty property \"" .. prop .. "\"." );
+							LogLocalize2Str( LL_Main, "ZCSETP_EMPTYPROP", prop ); 
 
 						} else {
 							// In fast, this line is a last frontier when no input matches found at all.
-							ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown property " .. LLCOLOR_MAIN .. "\"" .. prop .. ":" .. pvalue .. "\"." );
+							ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSETP_UNKNOWNPROP" ), prop, pvalue ) );
 						}
 					} // of else of if ( str2double_Ptr( paramdiv[ 1 ], +paramdouble ) ) {}
 
@@ -1271,9 +1276,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		if ( !alteree )
 			return;
 
-		ZCGlobal.Log( LL_Main, LLCOLOR_DARK .. "[Work-in-progress, not all of the properties can be changed correctly or be changed at all]." );
-
-		// Valid in "PSM_Add" and "PSM_Relative" set modes.
+		// Pointer is valid in "PSM_Add" and "PSM_Relative" set modes.
 		if ( relativeTo ) {
 			params.integers[ params.PFI_Health ].value += relativeTo.health;
 			params.integers[ params.PFI_Mass ].value += relativeTo.health;
@@ -1317,20 +1320,26 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.integers[ params.PFI_Mass ].setfor( alteree.mass );
 		params.integers[ params.PFI_Special ].setfor( alteree.special );
 
-		//ZCGlobal.Log( LL_Main, "HP for " .. alteree.GetClassName() .. ": must be " .. params.integers[ params.PFI_Health ].value .. ", is " .. alteree.health );
-
 		if ( params.integers[ params.PFI_TID ].changed )
 			alteree.ChangeTid( params.integers[ params.PFI_TID ].value );
 
 		for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
 			params.integers[ params.PFI_Args_Start + i ].setfor( alteree.args[ i ] );
 
+		bool changedX = params.doubles[ params.PFD_X ].changed;
+		bool changedY = params.doubles[ params.PFD_Y ].changed;
+		bool changedZ = params.doubles[ params.PFD_Z ].changed;
 		vector3 altereeNewPos = (
-					params.doubles[ params.PFD_X ].changed? params.doubles[ params.PFD_X ].value : alteree.pos.x,
-					params.doubles[ params.PFD_Y ].changed? params.doubles[ params.PFD_Y ].value : alteree.pos.y,
-					params.doubles[ params.PFD_Z ].changed? params.doubles[ params.PFD_Z ].value : alteree.pos.z
+					changedX? params.doubles[ params.PFD_X ].value : alteree.pos.x,
+					changedY? params.doubles[ params.PFD_Y ].value : alteree.pos.y,
+					changedZ? params.doubles[ params.PFD_Z ].value : alteree.pos.z
 				);
-		alteree.SetOrigin( altereeNewPos, false );
+
+		if ( changedX || changedY )
+			alteree.SetOrigin( altereeNewPos, false );
+		else if ( changedZ )
+			alteree.SetZ( altereeNewPos.z );
+
 		params.doubles[ params.PFD_VelX ].setfor( alteree.vel.x );
 		params.doubles[ params.PFD_VelY ].setfor( alteree.vel.y );
 		params.doubles[ params.PFD_VelZ ].setfor( alteree.vel.z );
@@ -1346,5 +1355,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.doubles[ params.PFD_ScaleX ].setfor( alteree.scale.x );
 		params.doubles[ params.PFD_ScaleY ].setfor( alteree.scale.y );
 		params.doubles[ params.PFD_Alpha ].setfor( alteree.alpha );
+
+		//LogLocalize2Str( LL_Detailed, "ZCSETP_SUCCESS", "" .. alteree.GetClassName() );
 	}
 } // of class ZCSetPropertyCommand: ZCConsoleCommand {}
