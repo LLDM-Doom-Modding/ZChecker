@@ -287,7 +287,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( !spriteCheckSuccess ) {
 					if ( stSprite == spriteTNT1A0 )
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_TNT1A0SKIP" ), cls.GetClassName(), stSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
 					else
 						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stSpriteName, "" .. stSprite ) );
 

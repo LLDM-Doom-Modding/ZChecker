@@ -30,28 +30,6 @@ ZCHECKER_NETEVENTINTC_SYSTEM	= "System";
 ZCHECKER_NETEVENTINTC_TIMEAT	= "at";
 ZCHECKER_NETEVENTINTC_FROMPLAYER= "from player #";
 
-// For "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()".
-ZCHECKER_GETACTOR_LTSKIPACTOR	= "Skipped special linetarget class \"%s\".";
-ZCHECKER_GETACTOR_LTNOACTORS	= "No available linetarget actors found.";
-ZCHECKER_GETACTOR_EMPTYPOS		= "No actor in position %i.";
-ZCHECKER_GETACTOR_WRONGPOS		= "\c!Wrong position %i\c- (must be in range [1..%i]).";
-ZCHECKER_GETACTOR_UNKNOWNKEYWORD= "\c!Unknown placeholder \"%s\" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.";
-
-// For "ZCConsoleCommand::ParseSpecialActorName()".
-ZCHECKER_PARSENAME_WRONGSELECT	= "\c!Selection \"%s\" isn't a positive integer.";
-ZCHECKER_PARSENAME_EMPTYKEYWORD	= "\c!Skipped\c- empty placeholder \"%s\". You may use \"%%null\" or \"%%none\" to override this.";
-ZCHECKER_PARSENAME_UNSETVAR		= "\c!Skipped\c- unset internal variable \"%s\".";
-ZCHECKER_PARSENAME_NOCLASSCHARS	= "\c!Not provided any class identifier characters.";
-ZCHECKER_PARSENAME_WITHFILTER 	= "\c~ with filter \cj%s\c~";
-ZCHECKER_PARSENAME_NOTFOUND	 	= "Cannot find any suitable actor name candidates";
-ZCHECKER_PARSENAME_FOUNDSOME 	= "Found more than one suitable actor name candidate";
-ZCHECKER_PARSENAME_SELECTBOUNDS	= "\c!Selected index \cn%i \c!is out of range\c- of the found candidates.";
-ZCHECKER_PARSENAME_IGNORESELECT = "\c!Ignoring numerical selection %i\c-";
-
-// For "ZCConsoleCommand::RemoveWorldThinker()".
-ZCHECKER_REMOVELIVEPLAYERPREVENT= "\crIt's better not to destroy a live player %i\c-. \c!Terminated\c-.";
-ZCHECKER_REMOVELIVEPLAYERWARNING= "destroying live player";
-
 
 
 // === Menus ===
@@ -90,7 +68,7 @@ ZCHECKER_EVMAP_TOTALRECREATE		= "Recreating/reloading map...";
 ZCHECKER_EVMAP_AUTOIDDQD			= "Auto-godmode enabled.";
 ZCHECKER_EVMAP_AUTONOTARGET			= "Auto-notarget enabled.";
 ZCHECKER_EVMAPSPAWN_SUCCESS			= "\cqsummoned class \"\cd%s\cq\"\c~ (sprite \"%s\").";
-ZCHECKER_EVMAPSPAWN_TNT1A0SKIP 		= "class \"%s\" omitted because of empty sprite \"%s\".";
+ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP	= "class \"%s\" omitted because of empty sprite \"%s\".";
 ZCHECKER_EVMAPSPAWN_MISSPRITESKIP	= "class \"%s\" omitted because of empty sprite \"%s\" (was %s).";
 ZCHECKER_EVMAPSPAWN_INVISSKIP		= "class \"%s\" omitted because of +STEALTH/+INVISIBLE flag set.";
 ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP		= "class \"%s\" omitted due to inheritance from the \"PlayerChunk\".";
@@ -103,6 +81,63 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES		= "%s \cnreplaces\c- %s";
 
 // === Console commands ===
 //          [WIP]
+
+// General:
+
+ZCHECKER_CCMD_WIP				= "\c~[Work-in-progress command, may behave strangely or not work at all].";
+
+// "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()".
+ZCHECKER_GETACTOR_LTSKIPACTOR	= "Skipped special linetarget class \"%s\".";
+ZCHECKER_GETACTOR_LTNOACTORS	= "No available linetarget actors found.";
+ZCHECKER_GETACTOR_EMPTYPOS		= "No actor in position %i.";
+ZCHECKER_GETACTOR_WRONGPOS		= "\c!Wrong position %i\c- (must be in range [1..%i]).";
+ZCHECKER_GETACTOR_UNKNOWNKEYWORD= "\c!Unknown placeholder \"%s\" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.";
+
+// "ZCConsoleCommand::ParseSpecialActorName()".
+ZCHECKER_PARSENAME_WRONGSELECT	= "\c!Selection \"%s\" isn't a positive integer.";
+ZCHECKER_PARSENAME_EMPTYKEYWORD	= "\c!Skipped\c- empty placeholder \"%s\". You may use \"%%null\" or \"%%none\" to override this.";
+ZCHECKER_PARSENAME_UNSETVAR		= "\c!Skipped\c- unset internal variable \"%s\".";
+ZCHECKER_PARSENAME_NOCLASSCHARS	= "\c!Not provided any class identifier characters.";
+ZCHECKER_PARSENAME_WITHFILTER 	= "\c~ with filter \cj%s\c~";
+ZCHECKER_PARSENAME_NOTFOUND	 	= "Cannot find any suitable actor name candidates";
+ZCHECKER_PARSENAME_FOUNDSOME 	= "Found more than one suitable actor name candidate";
+ZCHECKER_PARSENAME_SELECTBOUNDS	= "\c!Selected index \cn%i \c!is out of range\c- of the found candidates.";
+ZCHECKER_PARSENAME_IGNORESELECT = "\c!Ignoring numerical selection %i\c-";
+
+// "ZCConsoleCommand::RemoveWorldThinker()".
+ZCHECKER_REMOVELIVEPLAYERPREVENT= "\crIt's better not to destroy a live player %i\c-. \c!Terminated\c-.";
+ZCHECKER_REMOVELIVEPLAYERWARNING= "destroying live player";
+
+// "ZCAddCommand::HandleDuplicateActorFields()".
+ZCHECKER_ADD_DUPLICATELINK		= "\c~Found \c!duplicate link \c~for actor \c-%s\c~ in panel %i.";
+
+
+// File "ZCCommandsGeneral.zsc":
+
+// "zchelp":
+ZCHECKER_ZCHELP_CANNOTFIND			= "\czZChecker help: \cxcannot find ZChecker console command \c~\"\c-%s\c~\"\cx.";
+ZCHECKER_ZCHELP_VERBOSETITLE		=
+"\cyZChecker \chv%s.\n"
+"  (c)\cj JSO_x \cha.k.a.\cj Morthimer McMare\ch;\n"
+"  (c)\cj LLDM-Doom-modding\ch team.\n\n";
+ZCHECKER_ZCHELP_HEADERCOMMONCCMDS	= "\cjAvailable commands, common used\c-:";
+ZCHECKER_ZCHELP_HEADERALLCCMDS		= "\cjAvailable commands, complete list\c-:";
+
+// "zcadd":
+ZCHECKER_ZCADD_ADDINSUFFPLACE		= "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd 1\"..\"zcadd %i\".";
+ZCHECKER_ZCADD_NOWEAPON				= "No weapon, cannot add.";
+ZCHECKER_ZCADD_FORCENOTFOUND		= "Cannot find any suitable actors.";
+ZCHECKER_ZCADD_SUCCESSCOMMON		= "Added actor %s";
+ZCHECKER_ZCADD_SUCCESSPLAYER		= "Added a PlayerPawn actor %s";
+ZCHECKER_ZCADD_SUCCESSWEAPON		= "Added a StateProvider actor %s";
+ZCHECKER_ZCADD_SUCCESSFORCED		= "Added an arbitrary actor %s";
+ZCHECKER_ZCADD_USINGPREVLINK		= "\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.";
+
+// "zcrem"/"zcclear":
+ZCHECKER_ZCREM_SUCCESS				= "Removed actor \"%s\" <%s> from position %i.";
+ZCHECKER_ZCREM_SUCCESSTOTAL			= "All actors cleared from the infopanels.";
+ZCHECKER_ZCREM_EMPTYPOS				= "Cannot remove, there's no actor in position %i.";
+
 
 // File "ZCCommandsActorAlter.zsc":
 
@@ -159,4 +194,14 @@ ZCHECKER_ZCSETP_WRONGKEYWORDHP	= "\c!Unknown placeholder \"\c-%s\c!\" for the he
 ZCHECKER_ZCSETP_EMPTYPROP		= "\c~Skipped empty property \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP		= "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
 ZCHECKER_ZCSETP_SUCCESS			= "Properties for actor \"%s\" succesfully changed.";
+
+
+// File "ZCCommandsMap.zsc" ("zcev*"):
+
+ZCHECKER_ZCEV_NOTEVMAP			= "Cannot use command not on Everything map.";
+
+// "zcev goto":
+ZCHECKER_ZCEVGOTO_NOTACTOR		= "\"%s\" is not an Actor class.";
+ZCHECKER_ZCEVGOTO_SUCCESS		= "Found actor %s at %s.";
+ZCHECKER_ZCEVGOTO_NOTFOUND		= "Actor \"%s\" does not exist on this map.";
 

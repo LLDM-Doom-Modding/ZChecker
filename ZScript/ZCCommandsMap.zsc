@@ -20,7 +20,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		bool isEverythingLevel = ZCGlobal.IsEverythingLevel();
 
 		if ( !isEverythingLevel )
-			ZCGlobal.Log( LL_Main, "Cannot use command not on Everything map." );
+			ZCGlobal.Log( LL_Main, "$ZCEV_NOTEVMAP" );
 
 		return isEverythingLevel;
 	}
@@ -90,16 +90,17 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 			class<Actor> destActorClass = zcDestinationWord;
 
 			if ( !destActorClass ) {
-				ZCGlobal.Log( LL_Normal, "\"" .. zcDestinationWord .. "\" is not an Actor class." );
+				LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTACTOR", zcDestinationWord );
 			} else {
 				while ( ( curActor = ZCheckerActorInfo( it.Next( true ) ) ) && ( curActor.masterClass != destActorClass ) );
 
 				if ( curActor ) {
 					double newPlayerAngle = ( curActor.master? curActor.AngleTo( curActor.master, true ) : atan2( -curActor.masterOffset.y, -curActor.masterOffset.x ) );
 					gotoCCMDPlayerTeleport( curActor.pos, newPlayerAngle );
-					ZCGlobal.Log( LL_Detailed, "Found actor " .. curActor.masterClass.GetClassName() .. " at " .. curActor.pos .. "." );
+					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCEVGOTO_SUCCESS" ), curActor.masterClass.GetClassName(), "" .. curActor.pos ) );
 				} else {
-					ZCGlobal.Log( LL_Normal, "Actor \"" .. zcDestinationWord .. "\" does not exist on this map." );
+					// No this actor at the map.
+					LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTFOUND", zcDestinationWord );
 				}
 			}
 		}
