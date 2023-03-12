@@ -136,10 +136,3 @@ ZCHECKER_ZCSETP_EMPTYPROP		= "\c~Skipped empty property \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP		= "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
 ZCHECKER_ZCSETP_SUCCESS			= "Properties for actor \"%s\" succesfully changed.";
 
-
-
-
-
-
-
-

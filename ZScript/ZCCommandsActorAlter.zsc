@@ -1102,13 +1102,22 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				setmode = PSM_Error;
 			}
 
+
 			// In general an alteree actor place parsing:
-			if ( ccmdArgsSize == 3 || setmode == PSM_Error ) {
-				if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) )
-					outValue = true;
-				else
+			if ( ccmdArgsSize != 2 || setmode == PSM_Error ) {
+
+				if ( ccmdArgsSize == 3 && setmode == PSM_Error ) {
+					// 3 args [pos, wrong_mode, props]:
 					LogLocalize2Str( LL_Main, "ZCSETP_UNKNOWNMODE", modeargstr );
+
+				} else if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) ) {
+					// 2 args [pos, props]; or
+					// 3 args [pos, mode, props]:
+					outValue = true;
+				}
+
 			} else {
+				// 2 args [mode, props].
 				alteree = LinetraceActor();
 				outValue = true;
 			}
@@ -1217,11 +1226,11 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 									LogLocalize2Str( LL_Main, "ZCSETP_WRONGARG", prop );
 
 							} else {
-								LogLocalize2Str( LL_Main, "ZCSETP_WRONGINTEGER", prop );
+								LogLocalize2Str( LL_Main, "ZCSETP_WRONGINTPROP", prop );
 							}
 
 						} else {
-							LogLocalize2Str( LL_Main, "ZCSETP_WRONGFLOAT", prop );
+							LogLocalize2Str( LL_Main, "ZCSETP_WRONGFLOATPROP", prop );
 						}
 
 					} else {
