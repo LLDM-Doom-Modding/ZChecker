@@ -53,11 +53,34 @@ ZCHECKER_REMOVELIVEPLAYERPREVENT= "\crIt's better not to destroy a live player %
 ZCHECKER_REMOVELIVEPLAYERWARNING= "destroying live player";
 
 
+
 // === Menus ===
 //     [WIP]
 
 ZCHECKER_MENU_SUBMENU_DFLTLABEL	= "Submenu. ";
 ZCHECKER_MENU_SUBMENU_DFLTMORE	= "[...more]";
+
+ZCHECKER_MAINMENU_TITLE			= "ZChecker control";
+ZCHECKER_OPTIONSMENU_NOHANDLER	= "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in options menu above.";
+
+ZCHECKER_MAINMENU_DIV_GENERAL	= "General categories";
+ZCHECKER_MAINMENU_INFOPANELS	= "Informational panels control";
+ZCHECKER_MAINMENU_CCMDS			= "Call console command [WIP]";
+ZCHECKER_MAINMENU_EVMAP			= "\"Everything\" map settings";
+ZCHECKER_MAINMENU_VISUAL		= "HUD & visual settings";
+ZCHECKER_MAINMENU_OPENINFOPANELS= "Open infopanels menu key";
+ZCHECKER_MAINMENU_OPENCCMDS		= "Open CCMD call menu key";
+ZCHECKER_MAINMENU_OPENEVMAP		= "Open \"Everything\" map settings key";
+ZCHECKER_MAINMENU_OPENVISUAL	= "Open visual settings menu key";
+
+ZCHECKER_MAINMENU_DIV_OTHER		= "Other settings";
+ZCHECKER_MAINMENU_NETEVENTS		= "Netevents info intercepting";
+ZCHECKER_MAINMENU_NETEVENTS_TIP	= "Tries to catch a network events information.";
+
+ZCHECKER_MAINMENUOPT_LOGLEVEL1	= "1. General";
+ZCHECKER_MAINMENUOPT_LOGLEVEL2	= "2. Detailed (default)";
+ZCHECKER_MAINMENUOPT_LOGLEVEL3	= "3. Debug mode";
+
 
 
 // === An "Everything" maps ===
@@ -75,6 +98,7 @@ ZCHECKER_EVMAPSPAWN_REPLACEDSKIP	= "class \"%s\" replaced and thus omitted.";
 ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "replaced by \"%s\" class \"%s\" is restricted.";
 ZCHECKER_EVMAP_RESUMMON				= "\c~Spawned \c-%s\c~.";
 ZCHECKER_EVMAP_INFOSTR_REPLACES		= "%s \cnreplaces\c- %s";
+
 
 
 // === Console commands ===

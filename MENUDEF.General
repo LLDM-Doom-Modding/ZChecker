@@ -4,31 +4,31 @@
 
 AddOptionMenu "OptionsMenu" {
 	StaticText " "
-	Submenu "ZChecker Control", "mcm_ZChecker_ControlMenu"
-	ZCHandlerExistenceCheckWarning "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in options menu above."
+	Submenu "$ZCHECKER_MAINMENU_TITLE", "mcm_ZChecker_ControlMenu"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_NOHANDLER"
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu" {
-    Title "ZChecker control"
+    Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
 	ZCHandlerExistenceCheckWarning "\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker is not able to be launched properly\ci.\n\n\ciPossible reason: usage of the \cu\"\crEventHandlers = ...\cu\"\n\cu(\cinot \cu\"\cqAddEventHandlers = ...\cu\") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0."
 
-	StaticText "General categories", 1
-	Submenu "Informational panels control", "mcm_ZChecker_ControlMenu_Panels"
-	Submenu "Call console command [WIP]", "mcm_ZChecker_ControlMenu_CallCCMD"
-	Submenu "\"Everything\" map settings", "mcm_ZChecker_ControlMenu_MapEverything"
-	Submenu "HUD & visual settings", "mcm_ZChecker_ControlMenu_VisualSettings"
+	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
+	Submenu "$ZCHECKER_MAINMENU_INFOPANELS", "mcm_ZChecker_ControlMenu_Panels"
+	Submenu "$ZCHECKER_MAINMENU_CCMDS", "mcm_ZChecker_ControlMenu_CallCCMD"
+	Submenu "$ZCHECKER_MAINMENU_EVMAP", "mcm_ZChecker_ControlMenu_MapEverything"
+	Submenu "$ZCHECKER_MAINMENU_VISUAL", "mcm_ZChecker_ControlMenu_VisualSettings"
 	StaticText " "
-	Control "Open infopanels menu key", "openmenu mcm_ZChecker_ControlMenu_Panels"
-	Control "Open CCMD call menu key", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
-	Control "Open \"Everything\" map settings key", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
-	Control "Open visual settings menu key", "openmenu mcm_ZChecker_ControlMenu_VisualSettings"
+	Control "$ZCHECKER_MAINMENU_OPENINFOPANELS", "openmenu mcm_ZChecker_ControlMenu_Panels"
+	Control "$ZCHECKER_MAINMENU_OPENCCMDS", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
+	Control "$ZCHECKER_MAINMENU_OPENEVMAP", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
+	Control "$ZCHECKER_MAINMENU_OPENVISUAL", "openmenu mcm_ZChecker_ControlMenu_VisualSettings"
 
 	StaticText " "
-	StaticText "Other settings", 1
-	Option "Netevents info intercepting", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
-    StaticText "Tries to catch a network events information.", DARKGRAY
+	StaticText "$ZCHECKER_MAINMENU_DIV_OTHER", 1
+	Option "$ZCHECKER_MAINMENU_NETEVENTS", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
+    StaticText "$ZCHECKER_MAINMENU_NETEVENTS_TIP", DARKGRAY
 	StaticText " "
 	Option "Allow dangerous actions", "mcm_zchecker_allowdangerccmds", "YesNo"
     StaticText "Allow operations that are known to crash the game.", DARKGRAY
@@ -146,9 +146,9 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
-	1, "1. General"
-	2, "2. Detailed (default)"
-	3, "3. Debug mode"
+	1, "$ZCHECKER_MAINMENUOPT_LOGLEVEL1"
+	2, "$ZCHECKER_MAINMENUOPT_LOGLEVEL2"
+	3, "$ZCHECKER_MAINMENUOPT_LOGLEVEL3"
 }
 
 OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {
