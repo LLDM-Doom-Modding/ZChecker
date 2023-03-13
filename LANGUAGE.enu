@@ -105,8 +105,10 @@ ZCHECKER_PARSENAME_SELECTBOUNDS	= "\c!Selected index \cn%i \c!is out of range\c-
 ZCHECKER_PARSENAME_IGNORESELECT = "\c!Ignoring numerical selection %i\c-";
 
 // "ZCConsoleCommand::RemoveWorldThinker()".
-ZCHECKER_REMOVELIVEPLAYERPREVENT= "\crIt's better not to destroy a live player %i\c-. \c!Terminated\c-.";
-ZCHECKER_REMOVELIVEPLAYERWARNING= "destroying live player";
+ZCHECKER_REMOVEPREVENT_LIVEPLAYER= "\crIt's better not to destroy a live player %i\c-. \c!Skipped\c-.";
+ZCHECKER_REMOVEWARNING_LIVEPLAYER= "destroying live player";
+ZCHECKER_REMOVEPREVENT_ZCINTERNAL= "\crInternal ZChecker class \"\c-%s\cr\" in the destroy list. \c!Skipped\c-.";
+ZCHECKER_REMOVEWARNING_ZCINTERNAL= "destroying internal ZChecker class";
 
 // "ZCAddCommand::HandleDuplicateActorFields()".
 ZCHECKER_ADD_DUPLICATELINK		= "\c~Found \c!duplicate link \c~for actor \c-%s\c~ in panel %i.";
@@ -116,10 +118,9 @@ ZCHECKER_ADD_DUPLICATELINK		= "\c~Found \c!duplicate link \c~for actor \c-%s\c~ 
 
 // "zchelp":
 ZCHECKER_ZCHELP_CANNOTFIND			= "\czZChecker help: \cxcannot find ZChecker console command \c~\"\c-%s\c~\"\cx.";
-ZCHECKER_ZCHELP_VERBOSETITLE		=
-"\cyZChecker \chv%s.\n"
-"  (c)\cj JSO_x \cha.k.a.\cj Morthimer McMare\ch;\n"
-"  (c)\cj LLDM-Doom-modding\ch team.\n\n";
+ZCHECKER_ZCHELP_VERBOSETITLE		= "\cyZChecker \chv%s.\
+  (c)\cj JSO_x \cha.k.a.\cj Morthimer McMare\ch;\
+  (c)\cj LLDM-Doom-modding\ch team.\n\n";
 ZCHECKER_ZCHELP_HEADERCOMMONCCMDS	= "\cjAvailable commands, common used\c-:";
 ZCHECKER_ZCHELP_HEADERALLCCMDS		= "\cjAvailable commands, complete list\c-:";
 
@@ -185,7 +186,7 @@ ZCHECKER_ZCSETFLAG_SUCCESS		= "Flag \"%s\" for actor %s is succesfully set to %i
 // "zcsetprop":
 ZCHECKER_ZCSETP_RELPLAYER		= "\c~Base actor for relative properties \c-is set to caller player\c~.";
 ZCHECKER_ZCSETP_UNKNOWNMODE		= "\c!Unknown mode \c~\"\c-%s\c~\". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.";
-ZCHECKER_ZCSETP_NODELIMCHARS	= "\c!No delimiter character \c-(\":\" or \"=\") \c!provided \ñ-for property \"%s\".";
+ZCHECKER_ZCSETP_NODELIMCHARS	= "\c!No delimiter character \c-(\":\" or \"=\") \c!provided \c-for property \"%s\".";
 ZCHECKER_ZCSETP_WRONGARG		= "\c!Wrong argument number in parameter \"%s\"";
 ZCHECKER_ZCSETP_WRONGINTPROP	= "\c!Unknown integer property \"%s\"";
 ZCHECKER_ZCSETP_WRONGFLOATPROP	= "\c!Unknown float-point property \"%s\"";
@@ -196,12 +197,49 @@ ZCHECKER_ZCSETP_UNKNOWNPROP		= "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
 ZCHECKER_ZCSETP_SUCCESS			= "Properties for actor \"%s\" succesfully changed.";
 
 
-// File "ZCCommandsMap.zsc" ("zcev*"):
+// File "ZCCommandsMap.zsc":
 
+// "zcev (*)":
 ZCHECKER_ZCEV_NOTEVMAP			= "Cannot use command not on Everything map.";
-
-// "zcev goto":
 ZCHECKER_ZCEVGOTO_NOTACTOR		= "\"%s\" is not an Actor class.";
 ZCHECKER_ZCEVGOTO_SUCCESS		= "Found actor %s at %s.";
 ZCHECKER_ZCEVGOTO_NOTFOUND		= "Actor \"%s\" does not exist on this map.";
+
+
+// File "ZCCommandsMiscControl.zsc":
+
+// "zcthinkers":
+ZCHECKER_ZCTHINKERS_WRONGSTATNUM	= "StatNum is out of limits. Must be in range [0; %i].";
+ZCHECKER_ZCTHINKERS_WRONGSELECT		= "Selection index must be a positive integer.";
+ZCHECKER_ZCTHINKERS_NOTTHCLASS		= "\c!Cannot determine \c-Thinker class name \"%s\".";
+ZCHECKER_ZCTHINKERS_WRONGPANEL		= "\c!Wrong panel number \c-\"%s\".";
+ZCHECKER_ZCTHINKERS_WRONGPANELRANGE	= "Panel number \c!must be in range \c-[1..%i].";
+ZCHECKER_ZCTHINKERS_UNKNOWNACTION	= "\c!Unknown action\c-\"%s\".";
+ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS	= "Requested index \c!is out-of-bounds\c-.";
+ZCHECKER_ZCTHINKERSADD_INSUFFPLACE	= "Cannot add target to list, insufficient place. Try set actor to list directly via \"zcaddlistget <...> [1..%i]\".";
+ZCHECKER_ZCTHINKERSADD_SUCCESS		= "Added a world actor %s.";
+ZCHECKER_ZCTHINKERSADD_NOTACTOR		= "Thinker \"%s\" isn't an Actor.";
+ZCHECKER_ZCTHINKERSADD_NOSELECTION	= "Actor index to add \c!not specified\c-.";
+ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS	= "Selection index must be a positive integer.";
+ZCHECKER_ZCTHINKERSRM_SUCCESS		= "Removed %i thinkers of type \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSRAW	= "Removed %i thinkers of \charbitrary\c- type \"%s\".";
+ZCHECKER_ZCTHINKERSRM_NOSELECTION	= "Thinker to remove \c!not specified \c-either by index or by classname.";
+ZCHECKER_ZCTHINKERS_SECTIONACTORS	= "Actors";
+ZCHECKER_ZCTHINKERS_SECTIONSTATIC	= "Static";
+ZCHECKER_ZCTHINKERS_SECTIONSECTORS	= "Sectors";
+ZCHECKER_ZCTHINKERS_SECTIONOTHER	= "Other thinkers";
+ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX	= "Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).";
+ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR= "(+NOSECTOR)";
+ZCHECKER_ZCTHINKERS_LISTATPOS		= "at";
+ZCHECKER_ZCTHINKERS_LISTINVOWNER	= "inv.owner is";
+ZCHECKER_ZCTHINKERS_LISTTOTAL		= "Total %i thinkers of enum type %i.";
+
+// "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
+ZCHECKER_ZCPANEL_NOACTORINPOS		= "There's no actor in position %i.";
+ZCHECKER_ZCPANELINFO_HEADER			= "\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>";
+ZCHECKER_ZCPANELINFO_INHERITANCE	= "  \c~Inherited from \c-%s\c~ <%s>";
+
+// "zcvarsctl":
+ZCHECKER_ZCVARSCTL_SETSUCCESS		= "Internal variable \"\cn%s\c-\" is \cdset\c- to \"%s\".";
+ZCHECKER_ZCVARSCTL_LISTHEADER		= "\cyInternal variables \c~(total \c-%i\c~): ";
 
