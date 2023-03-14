@@ -106,13 +106,13 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 } // of class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart {}
 
 
-class ZCCheatsDefinitionsInfoPanel: ZCBaseInfoPanelPart {
+class ZCCheatsInfoPanel: ZCBaseInfoPanelPart {
 
 	// [McM] This class is being developed by @InfernalSky, so I decided not to alter it heavily.
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_cheatsdefs";
-		optionLabel = "Cheats definitions";
+		optionLabel = "Cheats panel";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -129,8 +129,7 @@ class ZCCheatsDefinitionsInfoPanel: ZCBaseInfoPanelPart {
 				"ExtremelyDead", "", "Buddha 2", "Godmode 2", "", "Buddha", "", "", "No clipping 2"
 			}; // array of string descriptions with the corresponding indexes
 
-			outStr = outStr .. TEXTCOLOR_WHITE .. "Cheats:";
-			outStr.AppendFormat(TEXTCOLOR_CYAN .. "\n  cheats mask = " .. TEXTCOLOR_DARKGRAY .. "0x" .. TEXTCOLOR_WHITE .. "%X", thing.player.cheats);
+			outStr.AppendFormat(TEXTCOLOR_CYAN .. "Cheats mask = " .. TEXTCOLOR_DARKGRAY .. "0x" .. TEXTCOLOR_WHITE .. "%X", thing.player.cheats);
 
 			for ( int i = 0; i < cheatcodes_1.Size(); i++ ) {
 				if ( thing.player.cheats & ( 1 << i ) ) {
