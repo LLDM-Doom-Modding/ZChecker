@@ -60,31 +60,31 @@ ZCHECKER_MAINMENU_ALLOW_CRASH	= "Allow operations that are known to crash the ga
 ZCHECKER_MAINMENU_TWICE_BEHAVIOUR	= "Adding actor twice behaviour";
 ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR	= "Behaviour when using \"zcadd\" on actor which is";
 ZCHECKER_MAINMENU_ALREADY_LIST	= "already in the informational panels list.";
-ZCHECKER_MAINMENU_NO_ZC_HANDLING	= "No ZC-classes special handling";
+ZCHECKER_MAINMENU_NO_ZC_HANDLING= "No ZC-classes special handling";
 ZCHECKER_MAINMENU_DO_NOT_ALTER	= "Do not alter handling for the ZChecker";
-ZCHECKER_MAINMENU_SPECIAL	= "special actors and classes.";
+ZCHECKER_MAINMENU_SPECIAL		= "special actors and classes.";
 ZCHECKER_MAINMENU_OPEN_MENU_KEY	= "Open this controls menu key";
-ZCHECKER_MAINMENU_LOG_LEVEL	= "Log level";
+ZCHECKER_MAINMENU_LOG_LEVEL		= "Log level";
 ZCHECKER_MAINMENU_UPDATE_5_TICS	= "will be updated after up to five world tics.";
 
 ZCHECKER_MAINMENUOPT_LOGLEVEL1	= "1. General";
 ZCHECKER_MAINMENUOPT_LOGLEVEL2	= "2. Detailed (default)";
 ZCHECKER_MAINMENUOPT_LOGLEVEL3	= "3. Debug mode";
 
-ZCHECKER_MAINMENUOPT_FONTS_SMALL = "Built-in smallfont";
-ZCHECKER_MAINMENUOPT_FONTS_SHORT = "Mono smallfont, short space";
-ZCHECKER_MAINMENUOPT_FONTS_FULL = "Mono smallfont, full space";
-ZCHECKER_MAINMENUOPT_FONTS_CONFONT = "Built-in confont";
+ZCHECKER_MAINMENUOPT_FONTS_SMALL	= "Built-in smallfont";
+ZCHECKER_MAINMENUOPT_FONTS_SHORT	= "Mono smallfont, short space";
+ZCHECKER_MAINMENUOPT_FONTS_FULL		= "Mono smallfont, full space";
+ZCHECKER_MAINMENUOPT_FONTS_CONFONT	= "Built-in confont";
 
-ZCHECKER_MAINMENUOPT_NETEVENS_DISABLED = "Disabled";
-ZCHECKER_MAINMENUOPT_NETEVENS_NA = "Names and args";
-ZCHECKER_MAINMENUOPT_NETEVENS_NAM = "Names, args and maptime";
-ZCHECKER_MAINMENUOPT_NETEVENS_FULL = "Full information";
+ZCHECKER_MAINMENUOPT_NETEVENS_DISABLED	= "Disabled";
+ZCHECKER_MAINMENUOPT_NETEVENS_NA		= "Names and args";
+ZCHECKER_MAINMENUOPT_NETEVENS_NAM		= "Names, args and maptime";
+ZCHECKER_MAINMENUOPT_NETEVENS_FULL		= "Full information";
 
-ZCHECKER_MAINMENUOPT_TWICE_SMOVE = "Silently move";
-ZCHECKER_MAINMENUOPT_TWICE_SCOPY = "Silently copy";
-ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN = "Move and warn (default)";
-ZCHECKER_MAINMENUOPT_TWICE_COPYWARN = "Copy and warn";
+ZCHECKER_MAINMENUOPT_TWICE_SMOVE	= "Silently move";
+ZCHECKER_MAINMENUOPT_TWICE_SCOPY	= "Silently copy";
+ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN	= "Move and warn (default)";
+ZCHECKER_MAINMENUOPT_TWICE_COPYWARN	= "Copy and warn";
 
 // === Control menu panels ===
 
@@ -92,17 +92,17 @@ ZCHECKER_PANELS_TITLE	= "ZChecker panels";
 
 // === Control menu Visual Settings ===
 
-ZCHECKER_VISUAL_TITLE	= "ZChecker: HUD and visual settings";
+ZCHECKER_VISUAL_TITLE		= "ZChecker: HUD and visual settings";
 ZCHECKER_VISUAL_POSITIONING	= "Panels positioning";
-ZCHECKER_VISUAL_START_X	= "Panels start X, %";
+ZCHECKER_VISUAL_START_X		= "Panels start X, %";
 ZCHECKER_VISUAL_START_X_10	= "Panels start X, x10%";
-ZCHECKER_VISUAL_START_Y	= "Panels start Y, %";
-ZCHECKER_VISUAL_START_Y_10 = "Panels start Y, x10%";
+ZCHECKER_VISUAL_START_Y		= "Panels start Y, %";
+ZCHECKER_VISUAL_START_Y_10	= "Panels start Y, x10%";
 ZCHECKER_VISUAL_OFFSET_X	= "Next panels X offset, %";
 ZCHECKER_VISUAL_PANELS_SCALE	= "Panels scale";
 ZCHECKER_VISUAL_PANELS_Y_GAP	= "Panels interval Y, multiplier";
 ZCHECKER_VISUAL_BACKGROUND	= "Panels background";
-ZCHECKER_VISUAL_ENABLED	= "Enabled";
+ZCHECKER_VISUAL_ENABLED		= "Enabled";
 ZCHECKER_VISUAL_DIMCOLOR	= "Background color";
 ZCHECKER_VISUAL_DIMALPHA	= "Background alpha";
 ZCHECKER_VISUAL_DIMBORDERWIDTH	= "Border width";
@@ -112,40 +112,40 @@ ZCHECKER_VISUAL_INFOSTR_X10	= "Actor info string X, x10%";
 ZCHECKER_VISUAL_INFOSTR_Y	= "Actor info string Y, %";
 ZCHECKER_VISUAL_INFOSTR_Y10	= "Actor info string Y, x10%";
 ZCHECKER_VISUAL_INFOSTR_SCALE	= "Actor info string scale";
-ZCHECKER_VISUAL_OTHER	= "Other";
+ZCHECKER_VISUAL_OTHER		= "Other";
 ZCHECKER_VISUAL_FONTTYPES	= "General font";
 
 // === Control menu "Everything" map ===
 
-ZCHECKER_EVMAPMENU_TITLE	= "ZChecker: \"Everything\" map settings";
-ZCHECKER_EVMAPMENU_SPAWNOPTIONS = "Spawning options";
-ZCHECKER_EVMAPMENU_GENERAL = "- General -";
-ZCHECKER_EVMAPMENU_SPAWNREPLACED = "Replaced actors";
-ZCHECKER_EVMAPMENU_RESTRICT = "Replacements of restricted actors";
-ZCHECKER_EVMAPMENU_EMPTYSPRITES = "- By empty sprites -";
-ZCHECKER_EVMAPMENU_MISSING = "Actors with missing sprites";
-ZCHECKER_EVMAPMENU_TNT1A0 = "Actors with sprite \"TNT1A0\"";
-ZCHECKER_EVMAPMENU_PLYC = "Actors with sprite \"PLYC*\"";
-ZCHECKER_EVMAPMENU_CODEBASED = "- Code-based -";
-ZCHECKER_EVMAPMENU_STEALTH = "+STEALTH actors";
-ZCHECKER_EVMAPMENU_INVISIBLE = "+INVISIBLE actors";
-ZCHECKER_EVMAPMENU_PLAYERCHUNK = "Inherited from \"PlayerChunk\"";
-ZCHECKER_EVMAPMENU_OTHER = "Other";
-ZCHECKER_EVMAPMENU_AUTONOTARGET = "Auto-notarget";
-ZCHECKER_EVMAPMENU_AUTOGOD = "Auto-godmode";
-ZCHECKER_EVMAPMENU_SPEC_CHEATS = "Enable specified cheats automatically";
-ZCHECKER_EVMAPMENU_ENTERING = "when entering an \"Everything\" map.";
-ZCHECKER_EVMAPMENU_LOGSPAWN = "Log spawn information";
-ZCHECKER_EVMAPMENU_LOGCREATED1 = "Log information to console about created (or";
-ZCHECKER_EVMAPMENU_LOGCREATED2 = "skipped) actors on an \"Everything\" map.";
-ZCHECKER_EVMAPMENU_FORCEUSE = "Force use map scripts";
+ZCHECKER_EVMAPMENU_TITLE		= "ZChecker: \"Everything\" map settings";
+ZCHECKER_EVMAPMENU_SPAWNOPTIONS	= "Spawning options";
+ZCHECKER_EVMAPMENU_GENERAL		= "- General -";
+ZCHECKER_EVMAPMENU_SPAWNREPLACED= "Replaced actors";
+ZCHECKER_EVMAPMENU_RESTRICT		= "Replacements of restricted actors";
+ZCHECKER_EVMAPMENU_EMPTYSPRITES	= "- By empty sprites -";
+ZCHECKER_EVMAPMENU_MISSING		= "Actors with missing sprites";
+ZCHECKER_EVMAPMENU_TNT1A0		= "Actors with sprite \"TNT1A0\"";
+ZCHECKER_EVMAPMENU_PLYC			= "Actors with sprite \"PLYC*\"";
+ZCHECKER_EVMAPMENU_CODEBASED	= "- Code-based -";
+ZCHECKER_EVMAPMENU_STEALTH		= "+STEALTH actors";
+ZCHECKER_EVMAPMENU_INVISIBLE	= "+INVISIBLE actors";
+ZCHECKER_EVMAPMENU_PLAYERCHUNK	= "Inherited from \"PlayerChunk\"";
+ZCHECKER_EVMAPMENU_OTHER		= "Other";
+ZCHECKER_EVMAPMENU_AUTONOTARGET	= "Auto-notarget";
+ZCHECKER_EVMAPMENU_AUTOGOD		= "Auto-godmode";
+ZCHECKER_EVMAPMENU_SPEC_CHEATS	= "Enable specified cheats automatically";
+ZCHECKER_EVMAPMENU_ENTERING		= "when entering an \"Everything\" map.";
+ZCHECKER_EVMAPMENU_LOGSPAWN		= "Log spawn information";
+ZCHECKER_EVMAPMENU_LOGCREATED1	= "Log information to console about created (or";
+ZCHECKER_EVMAPMENU_LOGCREATED2	= "skipped) actors on an \"Everything\" map.";
+ZCHECKER_EVMAPMENU_FORCEUSE		= "Force use map scripts";
 
-ZCHECKER_EVMAPMENU_ALLOWSPEC1 = "This option allows using a special \"Everything\" map";
-ZCHECKER_EVMAPMENU_ALLOWSPEC2 = "scripts for any map, skipping the conformity check.";
-ZCHECKER_EVMAPMENU_CANNOT_LOCATE = "\n\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cx\"Everything\" map CCMDs cannot be used.";
-ZCHECKER_EVMAPMENU_RELATEDCCMD = "Related CCMDs (closes menu)";
-ZCHECKER_EVMAPMENU_RECREATEACTORS = "Recreate actors: \"zcevre\"", "zcev recreate";
-ZCHECKER_EVMAPMENU_TELEPORTSTART = "Teleport to start: \"zcevg start\"", "zcev goto start";
+ZCHECKER_EVMAPMENU_ALLOWSPEC1	= "This option allows using a special \"Everything\" map";
+ZCHECKER_EVMAPMENU_ALLOWSPEC2	= "scripts for any map, skipping the conformity check.";
+ZCHECKER_EVMAPMENU_CANNOT_LOCATE= "\n\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cx\"Everything\" map CCMDs cannot be used.";
+ZCHECKER_EVMAPMENU_RELATEDCCMD	= "Related CCMDs (closes menu)";
+ZCHECKER_EVMAPMENU_RECREATEACTORS = "Recreate actors: \"zcevre\"";
+ZCHECKER_EVMAPMENU_TELEPORTSTART= "Teleport to start: \"zcevg start\"";
 
 // === Control menu CallCCMD ===
 

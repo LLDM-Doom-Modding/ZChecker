@@ -118,8 +118,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	StaticText " "
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_CANNOT_LOCATE"
 	StaticText "$ZCHECKER_EVMAPMENU_RELATEDCCMD", 1
-	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_TELEPORTSTART", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev recreate", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_TELEPORTSTART", "zcev goto start", 0, 1
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
