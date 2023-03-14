@@ -111,7 +111,7 @@ user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
 user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
 //user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
-user bool mcm_zchecker_info_sounddefs		= false;
+user int mcm_zchecker_info_sounddefs		= 0;
 user bool mcm_zchecker_info_cheatsdefs      = false;
 
 

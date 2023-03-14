@@ -83,23 +83,47 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 	{
 		optionCVarName = "mcm_zchecker_info_sounddefs";
 		optionLabel = "Sound definitions";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_sound";
 	}
+
+		String FormatSoundName( Sound sndname ) 
+		{
+			if ( sndname == "" || sndname == " No sound " )
+				return "-";
+
+			return sndname;
+		}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) 
 	{
 		String info = "";
+		
+		int SoundsVariantMode = CVar.GetCVar( "mcm_zchecker_info_sounddefs", players[ consoleplayer ] ).GetInt();
 
-		info = info .. TEXTCOLOR_WHITE .. "Sounds:";
-		info = info .. TEXTCOLOR_RED .. "\n Attack: " .. Thing.AttackSound;
-		info = info .. TEXTCOLOR_RED .. "\n Pain: " .. Thing.PainSound;
-		info = info .. TEXTCOLOR_RED .. "\n Death: " .. Thing.DeathSound;
-		info = info .. TEXTCOLOR_PURPLE .. "\n See: " .. Thing.SeeSound;
-		info = info .. TEXTCOLOR_PURPLE .. "\n Active: " .. Thing.ActiveSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Use: " .. Thing.UseSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Bounce: " .. Thing.BounceSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. Thing.WallBounceSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. Thing.CrushPainSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. Thing.HowlSound;
+		if ( SoundsVariantMode == 2 )
+		{
+			info = info .. TEXTCOLOR_WHITE .. "Sounds:";
+			info = info .. TEXTCOLOR_RED .. "\n Attack: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.AttackSound);
+			info = info .. TEXTCOLOR_RED .. "\n Pain: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.PainSound);
+			info = info .. TEXTCOLOR_RED .. "\n Death: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.DeathSound);
+			info = info .. TEXTCOLOR_SAPPHIRE .. "\n See: " .. TEXTCOLOR_TEAL .. FormatSoundName(Thing.SeeSound);
+			info = info .. TEXTCOLOR_SAPPHIRE .. "\n Active: " .. TEXTCOLOR_TEAL .. FormatSoundName(Thing.ActiveSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Use: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.UseSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Bounce: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.BounceSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.WallBounceSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.CrushPainSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.HowlSound);
+		}
+		
+		if ( SoundsVariantMode == 1 )
+		{
+			info = info .. TEXTCOLOR_WHITE .. "Sounds:";
+			info = info .. TEXTCOLOR_RED .. "\n Attack: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.AttackSound);
+			info = info .. TEXTCOLOR_RED .. "\n Pain: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.PainSound);
+			info = info .. TEXTCOLOR_RED .. "\n Death: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.DeathSound);
+			info = info .. TEXTCOLOR_SAPPHIRE .. "\n See: " .. TEXTCOLOR_TEAL .. FormatSoundName(Thing.SeeSound);
+			info = info .. TEXTCOLOR_SAPPHIRE .. "\n Active: " .. TEXTCOLOR_TEAL .. FormatSoundName(Thing.ActiveSound);
+		}
 
 		return info;
 	}
