@@ -147,12 +147,5 @@ OptionMenu "mcm_ZCheckerSubmenu_sound"
 {
 	Title "ZChecker panel: Sound"
 	StaticText " "
-	Option "Sounds type", "mcm_zchecker_info_sounddefs", "SoundsVariant"
-}
-
-OptionValue "SoundsVariant"
-{
-	0, "Disabled"
-	1, "Main"
-	2, "All"
+	Option "Output rare sounds", "mcm_zchecker_infovar_soundsrare", "YesNo"
 }
