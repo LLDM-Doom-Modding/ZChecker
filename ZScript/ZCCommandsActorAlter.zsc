@@ -1361,9 +1361,14 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.doubles[ params.PFD_Speed ].setfor( alteree.speed );
 		params.doubles[ params.PFD_FloatSpeed ].setfor( alteree.floatspeed );
 		params.doubles[ params.PFD_Gravity ].setfor( alteree.gravity );
-		params.doubles[ params.PFD_ScaleX ].setfor( alteree.scale.x );
-		params.doubles[ params.PFD_ScaleY ].setfor( alteree.scale.y );
+
 		params.doubles[ params.PFD_Alpha ].setfor( alteree.alpha );
+
+		// Compatibility. GZDoom 4.9.0 cannot set "scale.x" and "scale.y" directly:
+		alteree.A_SetScale( params.doubles[ params.PFD_ScaleX ].value, params.doubles[ params.PFD_ScaleY ].value );
+
+		//params.doubles[ params.PFD_ScaleX ].setfor( alteree.scale.x );
+		//params.doubles[ params.PFD_ScaleY ].setfor( alteree.scale.y );
 
 		//LogLocalize2Str( LL_Detailed, "ZCSETP_SUCCESS", "" .. alteree.GetClassName() );
 	}
