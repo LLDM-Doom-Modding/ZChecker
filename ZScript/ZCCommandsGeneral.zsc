@@ -7,8 +7,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_help",
-			"zchelp [<command> | a[ll]|-a|-v]",
-			"This help. If <command> is provided, prints out a help for a specific command (in most cases with examples). Else, if <all> output is enabled, displays general complete help."
+			"$ZCHELP_HELP_TITLE",
+			"$ZCHELP_HELP_DESC"
 		);
 	}
 
@@ -21,7 +21,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			String arg = ccmd.args[ 0 ];
 			arg.ToLower();
 
-			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" ) {
+			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" || arg == "-all" || arg == "--all" ) {
 				verboseHelp = outValue = true;
 			} else {
 
@@ -129,8 +129,8 @@ class ZCAddCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_add",
-			"zcadd [s[elf]|w[eapon]|cam[era]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddforce [<pos>];zcaddlistget [<index>] [<pos>]",
-			"Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.",
+			"$ZCADD_HELP_TITLE",
+			"$ZCADD_HELP_DESC",
 			'ZCTooltipAddCommand'
 		);
 	}
@@ -393,8 +393,8 @@ class ZCRemCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_rem",
-			"zcrem [<pos>];zcclear [<pos>]",
-			"Remove testee from <pos>; removes the whole list if no argument provided."
+			"$ZCREM_HELP_TITLE",
+			"$ZCREM_HELP_DESC"
 		);
 	}
 

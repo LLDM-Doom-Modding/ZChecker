@@ -34,8 +34,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_thinkerscontrol",
-			"zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panelpos>] <numindex>;zclistthinkers <type>;zcaddlistget [<index>] [<pos>]",
-			"Perform a simple operation on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel etc.",
+			"$ZCTHINKERS_HELP_TITLE",
+			"$ZCTHINKERS_HELP_DESC",
 			'ZCTooltipThinkersControlCommand'
 		);
 	}
@@ -524,8 +524,8 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_infopanelcontrol",
-			"zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]",
-			"Perform keen control with informational panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>.",
+			"$ZCPANELCTL_HELP_TITLE",
+			"$ZCPANELCTL_HELP_DESC",
 			'ZCTooltipPanelsControlCommand'
 		);
 	}
@@ -724,8 +724,8 @@ class ZCVariablesControlCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_variablescontrol",
-			"zcvarsctl set|new <$varname> <string_value_or_placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo]",
-			"Perform control on internal ZChecker class variables; identifiers must be started with \"$\" or \"%\".\n  Possible placeholders for the <string value> (first symbol must be \"%%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer)."
+			"$ZCVARSCTL_HELP_TITLE",
+			"$ZCVARSCTL_HELP_DESC"
 		);
 	}
 

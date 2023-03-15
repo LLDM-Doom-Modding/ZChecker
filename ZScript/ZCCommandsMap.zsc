@@ -10,8 +10,8 @@ class ZCEvmapCommand: ZCConsoleCommand {
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev goto <class>|s[tart];zcev re[create|load];zcev map[2]|level[2]",
-			"Operates with world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warps player to the \"map everything\" and \"map everything_simple\"."
+			"$ZCEV_HELP_TITLE",
+			"$ZCEV_HELP_DESC"
 		);
 	}
 
@@ -44,6 +44,13 @@ class ZCEvmapCommand: ZCConsoleCommand {
 
 class ZCEvmapCommand_goto: ZCEvmapCommand {
 	String zcDestinationWord; // Actor class, category or a "start" keyword.
+
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"$ZCEVGOTO_HELP_TITLE",
+			"$ZCEVGOTO_HELP_DESC"
+		);
+	}
 
 	override bool HandleArguments() {
 		bool outValue = false;
@@ -105,20 +112,13 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 			}
 		}
 	} // of override void DoCommand( void ) {}
-
-	override void InitCCMD() {
-		InitEvmapCCMD(
-			"zcev goto <class>|start;zcevg <class>|start",
-			"On the Everything map, go to the specific actor definition/to start"
-		);
-	}
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
 
 class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev recreate|reload;zcevre",
-			"Delete and recreate again all actors on the Everything map, like on start"
+			"$ZCEVRE_HELP_TITLE",
+			"$ZCEVRE_HELP_DESC"
 		);
 	}
 
@@ -143,8 +143,8 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev map|launch;zcev map2|launch2",
-			"Warp to map \"Everything\" when no digit provided or to map \"Everything_simple\" in other case."
+			"$ZCEVMAPWARP_HELP_TITLE",
+			"$ZCEVMAPWARP_HELP_DESC"
 		);
 	}
 

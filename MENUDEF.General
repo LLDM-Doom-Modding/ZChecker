@@ -12,7 +12,7 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_CANNOT_LOCATE"
 
 	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
 	Submenu "$ZCHECKER_MAINMENU_INFOPANELS", "mcm_ZChecker_ControlMenu_Panels"

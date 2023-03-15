@@ -11,8 +11,8 @@ class ZCGiveCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_give",
-			"zcgive [<pos>] <item> [<amount=1>]",
-			"Give <amount> <item>s to the testee <pos> (or linetarget if omitted)",
+			"$ZCGIVE_HELP_TITLE",
+			"$ZCGIVE_HELP_DESC",
 			'ZCTooltipGiveCommand'
 		);
 	}
@@ -77,8 +77,8 @@ class ZCTakeCommand: ZCGiveCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_take",
-			"zctake [<pos>] <item> [<amount=1>]",
-			"Take <amount> <item>s from the testee <pos> (or linetarget if omitted)",
+			"$ZCTAKE_HELP_TITLE",
+			"$ZCTAKE_HELP_DESC",
 			'ZCTooltipTakeCommand'
 		);
 	}
@@ -139,8 +139,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_actoraction",
-			"zcact [<pos>] <action>",
-			"Do special complex action with actor on <pos> (or linetarget if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\""
+			"$ZCACT_HELP_TITLE",
+			"$ZCACT_HELP_DESC"
 		);
 	}
 
@@ -344,11 +344,8 @@ class ZCSummonCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_summon",
-			"zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,panel|add,arg0-4,zofs,fofs,hp,aggr (...:<value>), notproj,friend|foe,[no]infi>]",
-			"Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\n"
-				.. "  BEHAVIOUR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];\n"
-				.. "  WORLD    : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>;\n"
-				.. "  SPECIAL  : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.",
+			"$ZCSUMMON_HELP_TITLE",
+			"$ZCSUMMON_HELP_DESC",
 			'ZCTooltipSummonCommand'
 		);
 	}
@@ -617,8 +614,8 @@ class ZCCopyPasteClass_dummy: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"",
-			"zccopyclass;zccopysummon [<amount=1>] [<comma-separated list as in \"zcsummon\">]",
-			"A paired commands. \"zccopyclass\" saves a linetarget actor class into $savedclass internal variable; \"zccopysummon\" summons a $savedclass actor(s)."
+			"$ZCCOPYPASTE_HELP_TITLE",
+			"$ZCCOPYPASTE_HELP_DESC"
 		);
 	}
 }
@@ -635,8 +632,8 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setflag",
-			"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]",
-			"Set/reset a <flag> for the testee in <pos> (or linetarget actor if omitted). If no <value> provided, toggles a <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution result in singleplayer for the most of the flags will be delayed for one tic.",
+			"$ZCSETFLAG_HELP_TITLE",
+			"$ZCSETFLAG_HELP_DESC",
 			'ZCTooltipSetFlagCommand'
 		);
 	}
@@ -786,8 +783,8 @@ class ZCSetStateCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setstate",
-			"zcsetstate [<pos>] <state label>;zcsets[t] [<pos>] <state label>;zcst [<pos>] <state label>",
-			"Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic."
+			"$ZCSETSTATE_HELP_TITLE",
+			"$ZCSETSTATE_HELP_DESC"
 		);
 	}
 
@@ -1027,14 +1024,8 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_setproperty",
-			"zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcprop [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]",
-
-			"Sets a <property> to <value> for the actor in position <pos> (or for the linetarget if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if it's possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to caller player if <pos> is omitted (also if it is possible). Recognizable properties are:\n"
-				.. "  WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\n"
-				.. "  INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>;\n"
-				.. "  VISUAL  : scale[x|y] <float>, alpha <float>;\n"
-				.. "  POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;\n"
-				.. "  SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique."
+			"$ZCSETP_HELP_TITLE",
+			"$ZCSETP_HELP_DESC"
 		);
 	}
 
