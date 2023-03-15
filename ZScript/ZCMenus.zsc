@@ -98,7 +98,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		if ( !handler ) {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
 			desc.mItems.Push( new( "OptionMenuItemZCHandlerExistenceCheckWarning" ).Init(
-					"\cxCannot locate ZChecker static event handler.\\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\\n\ciin MAPINFO on GZDoom older than 4.8.0.\\n\cxInformational panels are not able to be initialized."
+					"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxInformational panels are not able to be initialized."
 				) );
 		} else {
 			ReinitMenuPanelItems( desc, handler );
@@ -509,7 +509,8 @@ class OptionMenuItemZCHandlerExistenceCheckWarning: OptionMenuItemStaticText {
 	OptionMenuItemStaticText Init( String label, int cr = -1 ) {
 		isHandlerFound = !!ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 		isWarningInjected = false;
-		realLabel = label;
+
+		realLabel = ( label.Left( 1 ) == "$"? StringTable.Localize( label ) : label );
 
 		return Super.Init( "", cr );
 	}
@@ -556,11 +557,12 @@ class OptionMenuItemZCHandlerExistenceCheckWarning: OptionMenuItemStaticText {
 			int startInjectIndex = getSelfIndex( desc );
 
 			Array<String> labeldiv;
-			realLabel.Split( labeldiv, "\\n" );
+			realLabel.Split( labeldiv, "\n" );
 			int labeldivSize = labeldiv.Size();
+			//console.printf( TEXTCOLOR_DARKGRAY .. "realLabel: \"" .. TEXTCOLOR_DARKGREEN .. realLabel .. TEXTCOLOR_DARKGRAY .. "\". labeldivSize: " .. labeldivSize .. "." );
 
 			for ( int i = labeldivSize - 1; i >= 0; i-- ) {
-				labeldiv[ i ].Replace( "\\c", "\c" );
+				//labeldiv[ i ].Replace( "\\c", "\c" ); // [McM] Not required for the localized strings.
 				desc.mItems.Insert( startInjectIndex, new( "OptionMenuItemStaticText" ).Init( labeldiv[ i ] ) );
 			}
 
