@@ -6,7 +6,6 @@ alias zchelp "netevent zc_help@@%1"
 alias zcadd "netevent zc_add@@%1@@%2"
 alias zcaddself "zcadd self %1"
 alias zcaddweap "zcadd weapon %1"
-alias zcaddf "zcadd force %1"
 alias zcaddforce "zcadd force %1"
 alias zcaddlistget "zcthinkers actors add:%2 %1"
 

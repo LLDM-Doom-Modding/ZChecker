@@ -1053,7 +1053,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		} else {
 			params.pointers[ pointer_id ].set( players[ ccmd.e.Player ].mo );
 		}
-	} // of private void handlePointer( int pointer_id, String pvalue ) {}
+	} // of private void handlePointer( int pointer_id, String propvalue ) {}
 
 	override bool HandleArguments() {
 		bool outValue = false;
@@ -1202,7 +1202,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 						} else if ( prop == "scaley" ) {
 							params.doubles[ params.PFD_ScaleY ].set( paramdouble );
 						} else if ( prop == "alpha" ) {
-							params.doubles[ params.PFD_Height ].set( paramdouble );
+							params.doubles[ params.PFD_Alpha ].set( paramdouble );
 
 						// Integer properties:
 						} else if ( str2int_Ptr( pvalue, +paramint, true ) ) {
@@ -1365,10 +1365,11 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.doubles[ params.PFD_Alpha ].setfor( alteree.alpha );
 
 		// Compatibility. GZDoom 4.9.0 cannot set "scale.x" and "scale.y" directly:
-		alteree.A_SetScale( params.doubles[ params.PFD_ScaleX ].value, params.doubles[ params.PFD_ScaleY ].value );
+		vector2 newscale = (params.doubles[ params.PFD_ScaleX ].changed? params.doubles[ params.PFD_ScaleX ].value : alteree.scale.x,
+							params.doubles[ params.PFD_ScaleY ].changed? params.doubles[ params.PFD_ScaleY ].value : alteree.scale.y);
 
-		//params.doubles[ params.PFD_ScaleX ].setfor( alteree.scale.x );
-		//params.doubles[ params.PFD_ScaleY ].setfor( alteree.scale.y );
+		alteree.A_SetScale( newscale.x, newscale.y, usezero: true );
+
 
 		//LogLocalize2Str( LL_Detailed, "ZCSETP_SUCCESS", "" .. alteree.GetClassName() );
 	}
