@@ -387,13 +387,17 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			}
 
 			double tempConverted = str.ToDouble();
+			int tempStrlen = str.Length();
 
-			while ( firstChar == 0x30 ) {
-				str = str.Mid( 1, str.Length() - 1 );
+			// Removing leading zeros:
+			while ( firstChar == 0x30 && tempStrlen > 1 ) {
+				tempStrlen--;
+				str = str.Mid( 1, tempStrlen );
 				firstChar = str.CharCodeAt( 0 );
 			}
 
-			if ( ( firstChar >= 0x31 && firstChar <= 0x39 ) || ( firstChar == 0x30 ) || ( firstChar == 0x2E /* '.' */ ) ) {
+			// Treat as a float-point digit if first char is '0'..'9' or '.':
+			if ( ( firstChar >= 0x30 && firstChar <= 0x39 ) || ( firstChar == 0x2E /* '.' */ ) ) {
 				isDouble = true;
 				converted = ( isSigned? -tempConverted : tempConverted );
 			}
