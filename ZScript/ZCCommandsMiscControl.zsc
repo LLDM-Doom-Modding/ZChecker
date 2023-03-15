@@ -276,23 +276,28 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				ZCGlobal.Log( LL_Main, "$ZCTHINKERSADD_SELECTBOUNDS" );
 
 			} else if ( curThinker is "Actor" ) {
-
 				// Find next free testee place ("-1" if not found):
 				if ( -1 == zcActionArg && -1 == ZCAddCommand.FindFreeTesteePlace( ccmd ) ) {
 					ZCGlobal.Log( LL_Normal, String.Format( ZCGlobal.Locz( "ZCTHINKERSADD_INSUFFPLACE" ), MaxTestee ) );
 
 				} else {
-					int newPanelPos = ZCAddCommand.HandleDuplicateActorFields( ccmd, Actor( curThinker ), zcActionArg );
+					class<Actor> locatedActorClass = Actor( curThinker ).GetClass();
 
-					if ( newPanelPos == -1 )
-						newPanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
+					if ( ZCGlobal.SpecialZCActorsHandling() && ( locatedActorClass == "ZCheckerActorInfo" || locatedActorClass == "ZCheckerSectorSetter" ) ) {
+						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", curThinker.GetClassName() .. "" );
+					} else {
+						int newPanelPos = ZCAddCommand.HandleDuplicateActorFields( ccmd, Actor( curThinker ), zcActionArg );
 
-					ZCheckerField field = ccmd.handler.Testee[ newPanelPos ];
+						if ( newPanelPos == -1 )
+							newPanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
 
-					field.mo = Actor( curThinker );
-					field.UpdateActorMetainformation( ccmd );
+						ZCheckerField field = ccmd.handler.Testee[ newPanelPos ];
 
-					LogLocalize2Str( LL_Detailed, "ZCTHINKERSADD_SUCCESS", field.mo.GetClassName() .. " <" .. field.mo .. ">" );
+						field.mo = Actor( curThinker );
+						field.UpdateActorMetainformation( ccmd );
+
+						LogLocalize2Str( LL_Detailed, "ZCTHINKERSADD_SUCCESS", field.mo.GetClassName() .. " <" .. field.mo .. ">" );
+					}
 
 				} // of else of if ( -1 == zcActionArg && -1 == ZCAddCommand.FindFreeTesteePlace( ccmd ) ) {}
 

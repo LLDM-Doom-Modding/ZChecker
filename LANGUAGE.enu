@@ -185,7 +185,7 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES		= "%s \cnreplaces\c- %s";
 ZCHECKER_CCMD_WIP				= "\c~[Work-in-progress command, may behave strangely or not work at all].";
 
 // "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()".
-ZCHECKER_GETACTOR_LTSKIPACTOR	= "Skipped special linetarget class \"%s\".";
+ZCHECKER_GETACTOR_SKIPPEDSPECIAL= "Skipped special ZChecker class \"%s\".";
 ZCHECKER_GETACTOR_LTNOACTORS	= "No available linetarget actors found.";
 ZCHECKER_GETACTOR_EMPTYPOS		= "No actor in position %i.";
 ZCHECKER_GETACTOR_WRONGPOS		= "\c!Wrong position %i\c- (must be in range [1..%i]).";
@@ -226,10 +226,12 @@ ZCHECKER_ZCHELP_HEADERALLCCMDS		= "\cjAvailable commands, complete list\c-:";
 ZCHECKER_ZCADD_ADDINSUFFPLACE		= "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd 1\"..\"zcadd %i\".";
 ZCHECKER_ZCADD_NOWEAPON				= "No weapon, cannot add.";
 ZCHECKER_ZCADD_FORCENOTFOUND		= "Cannot find any suitable actors.";
+ZCHECKER_ZCADD_CAMERAISPLAYER		= "\c~Player camera is linked to the player, adding player actor itself.";
 ZCHECKER_ZCADD_SUCCESSCOMMON		= "Added actor %s";
 ZCHECKER_ZCADD_SUCCESSPLAYER		= "Added a PlayerPawn actor %s";
 ZCHECKER_ZCADD_SUCCESSWEAPON		= "Added a StateProvider actor %s";
 ZCHECKER_ZCADD_SUCCESSFORCED		= "Added an arbitrary actor %s";
+ZCHECKER_ZCADD_SUCCESSCAMERA		= "Added a player camera %s";
 ZCHECKER_ZCADD_USINGPREVLINK		= "\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.";
 
 // "zcrem"/"zcclear":
