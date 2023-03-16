@@ -16,7 +16,7 @@ The main control tool in the game world. All console commands begin with the pre
   
   - If the argument is a `<command>`: Prints a large help text with examples. Command names can be written without the "zc" prefix: for example, both `zchelp zcadd` and `zchelp add` are valid.
 
-- `zcadd [self|weap] [<pos>]`. Adds the linetarget actor, or the `self.player` pointer, or the currently selected weapon to the info panel at poisition `<pos>` (see [Section 2. Information panels](#2-informational-panels-infopanels)). If the position is omitted, adds to the first empty panel.
+- `zcadd [self|weap] [<pos>]`. Adds the linetarget actor, or the `self.player` pointer, or the currently selected weapon to the info panel at poisition `<pos>` (see [Section 2. Information panels](#2-information-panels-infopanels)). If the position is omitted, adds to the first empty panel.
 
 - `zcrem [<pos>]` or `zcclear [<pos>]`. Removes an actor from infopanel `<pos>`, or clears all if argument is omitted.
 
@@ -56,7 +56,7 @@ Note: the Everything map may be outdated in the beta versions of the project. It
 
 ## General notes
 
-Wildcards in actor names are `*` (asterisk) and `-` (hyphen). 
+Wildcards in actor names are `*` (asterisk) and `-` (hyphen).
 
 `*` may be replaced with any amount (including 0). `-` works the same way but will have at least one character.
 

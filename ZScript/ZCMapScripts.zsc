@@ -6,16 +6,6 @@ struct ZCheckerEverythingMapHandlerConfig {
 	transient bool isNoFontWarningShown;
 
 	String currentConsoleplayerInfostr;
-
-
-	// All next variables are unused because arena isn't created yet:
-	vector3 lastPosMain, lastPosArena;
-
-	bool mainlocPaused, arenaPaused;
-
-	vector2 mainlocStart, mainlocEnd;
-	vector2 arenaCreatePos;
-	vector2 arenaStart, arenaEnd;
 }
 
 class ZCheckerSectorSetterData play {
@@ -200,7 +190,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	// Clears all previous spawned actors excluding forbidden and summons all of them again:
 	void RecreateEverything( void ) {
 		if ( !canRecreateEverything ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). Cannot run due to the map errors, terminating." );
+			ZCConsoleCommand.LogLocalize2Str( LL_Emergency, "EVMAP_INITERROR", GetClassName() );
 			return;
 		}
 
@@ -252,7 +242,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( clsReplacee != cls && IsClassRestricted( clsReplacee ) ) {
 					skipactor = true;
-					logCreatingActor( "replaced by \"" .. cls.GetClassName() .. "\" class \"" .. clsReplacee.GetClassName() .. "\" is restricted." );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_REPLRESTRICTEDSKIP" ), cls.GetClassName(), clsReplacee.GetClassName() ) );
 				}
 			}
 
@@ -297,24 +287,24 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( !spriteCheckSuccess ) {
 					if ( stSprite == spriteTNT1A0 )
-						logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite \"" .. stSpriteName .. "\"." );
+						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
 					else
-						logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of empty sprite \"" .. stSpriteName .. "\" " .. TEXTCOLOR_ORANGE .. "(was " .. stSprite .. ")." );
+						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stSpriteName, "" .. stSprite ) );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
-					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted because of +STEALTH/+INVISIBLE flag set." );
-
-				} else if ( !spawnPlayerChunks && cls is "PlayerChunk" ) {
-					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" omitted due to inheritance from the \"PlayerChunk\"." );
+					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_INVISSKIP" ), cls.GetClassName() ) );
 
 				} else if ( !spawnReplaced && Actor.GetReplacement( cls ) != cls ) {
-					logCreatingActor( "class \"" .. cls.GetClassName() .. "\" replaced and thus omitted." );
+					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_REPLACEDSKIP" ), cls.GetClassName() ) );
+
+				} else if ( !spawnPlayerChunks && cls is "PlayerChunk" ) {
+					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_PLCHUNKSKIP" ), cls.GetClassName() ) );
 
 				} else {
 					ESectorStarts clsType = GetSectorStartForClass( cls );
 
 					if ( clsType != S__Nothing ) {
-						logCreatingActor( TEXTCOLOR_DARKGREEN .. "summoned class \"" .. TEXTCOLOR_GREEN .. cls.GetClassName() .. TEXTCOLOR_DARKGREEN .. "\"" .. TEXTCOLOR_DARKGRAY .. " (sprite \"" .. stSpriteName .. "\")." );
+						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_SUCCESS" ), cls.GetClassName(), stSpriteName ) );
 						evSectors[ clsType ].setter.DoJump( cls );
 					} else if ( logSpawnInfo ) {
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" cannot be assigned to any category and thus skipped." );
@@ -419,22 +409,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			//console.printf( level.Sectors[ i ].Index() .. ". st: " .. evSectorType .. "/" .. isSectorTyped .. ", sdef: " .. level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) );
 
-			// Special main location/arena definition:
-			if ( !isSectorTyped && ( evSectorType = level.Sectors[ i ].GetUDMFString( ZCUDMF_SpecialDef ) ) != "" ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Found special sector definition \"" .. evSectorType .. "\" (sector " .. i .. ")." );
-
-				if ( evSectorType ~== "arena" ) {
-					configuration.arenaCreatePos = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "arena_start" ) {	// Top-left arena point.
-					configuration.arenaStart = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "arena_end" ) {		// Bottom-right arena point.
-					configuration.arenaEnd = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "main_location_start" ) {	// Top-left main location point.
-					configuration.mainlocStart = level.Sectors[ i ].centerspot;
-				} else if ( evSectorType ~== "main_location_end" ) {		// Bottom-right main location point.
-					configuration.mainlocEnd = level.Sectors[ i ].centerspot;
-				}
-			}
 		} // of for ( int i = 0; i < level.sectors.Size(); i++ ) {}
 
 
@@ -463,14 +437,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				pl.cheats |= CF_NOTARGET;
 
 				if ( e.PlayerNumber == consoleplayer )
-					ZCGlobal.Log( LL_Main, "Auto-notarget enabled." );
+					ZCGlobal.Log( LL_Main, "$EVMAP_AUTONOTARGET" );
 			}
 
 			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_iddqd", pl ).GetBool() ) {
 				pl.cheats |= CF_GODMODE;
 
 				if ( e.PlayerNumber == consoleplayer )
-					ZCGlobal.Log( LL_Main, "Auto-godmode enabled." );
+					ZCGlobal.Log( LL_Main, "$EVMAP_AUTOIDDQD" );
 			}
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 
@@ -481,59 +455,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	override void NetworkProcess( ConsoleEvent e ) {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 
-			if ( e.Name ~== "zcheckermap_recreate" ) {
-				ZCGlobal.Log( LL_Main, GetClassName() .. "::NetworkProcess(). Recreating/reloading map..." );
+			if ( e.Name == "zc_evmap_recreate" ) {
+				ZCGlobal.Log( LL_Main, "$EVMAP_TOTALRECREATE" );
 				RecreateEverything();
-
-			} else if ( e.Name ~== "zcheckermap_pause_level_part" ) {
-				vector2 pauseFrom, pauseTo;
-				bool isPausing = false;
-				String logStr = GetClassName() .. "::NetworkProcess(). ";
-
-				if ( e.args[ 0 ] == 0 ) {
-					pauseFrom = configuration.mainlocStart;
-					pauseTo = configuration.mainlocEnd;
-
-					logStr = logStr .. ( configuration.mainlocPaused? "L" : "Unl" );
-					isPausing = configuration.mainlocPaused;
-					configuration.mainlocPaused ^= true;
-
-					logStr = logStr .. "oading main part...";
-				} else {
-					pauseFrom = configuration.arenaStart;
-					pauseTo = configuration.arenaEnd;
-
-					logStr = logStr .. ( configuration.arenaPaused? "L" : "Unl" );
-					isPausing = configuration.arenaPaused;
-					configuration.arenaPaused ^= true;
-
-					logStr = logStr .. "oading arena part...";
-				}
-
-				ZCGlobal.Log( LL_Main, logStr );
-
-				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
-				Actor curActor;
-
-				// Load/unload all from selected level part:
-				while ( curActor = Actor( it.Next() ) ) {
-					if ( curActor.pos.x >= pauseFrom.x && curActor.pos.y <= pauseFrom.y && curActor.pos.x <= pauseTo.x && curActor.pos.y >= pauseTo.y
-							&& !IsActorRestricted( curActor ) ) {
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Handling actor " .. curActor.GetClassName() );
-
-						// This line has no check for the already setted INVISIBLE flag:
-						curActor.bNOINTERACTION = curActor.bINVISIBLE = curActor.bDORMANT = !isPausing;
-						curActor.A_ChangeLinkFlags( !isPausing, !isPausing );
-
-						// It crashes...
-						//if ( isPausing ) 
-						//	curActor.UnlinkFromWorld();
-						//else
-						//	curActor.LinkToWorld();
-					}
-				} // of while ( curActor = Actor( it.Next() ) ) {}
-
-			} // of else if ( e.Name ~== "zcheckermap_pause_level_part" ) {}
+			}
 
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}
 
@@ -579,9 +504,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		if ( !configuration.zcHandlerPanels ) {
 			ZCGlobal tempglobal = ZCGlobal.ClearscopeGet();
 
-			if ( tempglobal && tempglobal.zcHandler && tempglobal.zcHandler.panels )
-				configuration.zcHandlerPanels = tempglobal.zcHandler.panels;
-		}
+			if ( tempglobal ) {
+				ZCheckerHandler temphandler = tempglobal.GetHandlerClearscope();
+
+				if ( temphandler && temphandler.panels )
+					configuration.zcHandlerPanels = temphandler.panels;
+			}
+		} // of if ( !configuration.zcHandlerPanels ) {}
 
 		Font rfont = smallfont;
 
@@ -593,7 +522,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::RenderOverlay(). Unable to access the ZChecker handler panels." );
 
 			ZCGlobal tempglobal = ZCGlobal.ClearscopeGet();
-			ZCheckerHandler temphandler = ( tempglobal? tempglobal.zcHandler : NULL );
+			ZCheckerHandler temphandler = ( tempglobal? tempglobal.GetHandlerClearscope() : NULL );
 			ZCPanelsStorage temppanels = ( temphandler? temphandler.panels : NULL );
 			String DARK  = TEXTCOLOR_DARKGRAY;
 			String WHITE = TEXTCOLOR_WHITE;
@@ -757,7 +686,7 @@ class ZCheckerActorInfo: Actor {
 			class<Actor> replacee = Actor.GetReplacee( masterClass );
 
 			if ( replacee != masterClass )
-				masterInfo = masterInfo .. " \cnreplaces\c- " .. replacee.GetClassName();
+				masterInfo = String.Format( ZCGlobal.Locz( "EVMAP_INFOSTR_REPLACES" ), masterInfo, replacee.GetClassName() );
 
 			SetZ( floorZ );
 		} else {
@@ -793,7 +722,7 @@ class ZCheckerActorInfo: Actor {
 				master.Destroy();
 
 			master = Spawn( masterClass, ( pos.xy - masterOffset, 0.0 ) );
-			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::Activate(). " .. LLCOLOR_MAIN .. "Spawned " .. master.GetClassName() .. "." );
+			ZCConsoleCommand.LogLocalize2Str( LL_Detailed, "EVMAP_RESUMMON", master.GetClassName() );
 			SetMasterZ();
 		}
 	}

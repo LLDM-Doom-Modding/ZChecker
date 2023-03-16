@@ -204,21 +204,27 @@ class ZCTooltipClass: ZCConsoleClass {
 	override String GetHelpString( void ) {
 		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
-			String addtext = GetPlaintext();
+			String addtext = HighlightText( GetPlaintext() );
 
 			if ( addtext != "" )
 				helpCacheString = NORMAL .. addtext .. "\n";
 
-			addtext = GetTips();
+			addtext = HighlightText( GetTips() );
 
-			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\--------= =-----/\n" .. HEADER .. "| Tips:\n" .. NORMAL .. addtext .. "\n";
+			if ( addtext != "" ) {
+				helpCacheString.AppendFormat(
+								HEADER .. "\\--------= =-----/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
+								ZCGlobal.Locz( "CCMDSHELP_TIPS" ), addtext );
+			}
 
-			addtext = GetExamples();
+			addtext = HighlightText( GetExamples() );
 
-			if ( addtext != "" )
-				helpCacheString = helpCacheString .. HEADER .. "\\------------= =-/\n" .. HEADER .. "| Examples:\n" .. NORMAL .. IndentNewlines( addtext ) .. "\n";
-		}
+			if ( addtext != "" ) {
+				helpCacheString.AppendFormat(
+								HEADER .. "\\------------= =-/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
+								ZCGlobal.Locz( "CCMDSHELP_EXAMPLES" ), IndentNewlines( addtext ) );
+			}
+		} // of if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {}
 
 		return helpCacheString;
 	}
@@ -274,14 +280,21 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
+	private String handleSetupInterfaceLocalization( String text ) {
+		if ( text.Left( 1 ) == "$" )
+			return ZCGlobal.Localize( text.Mid( 1, text.Length() - 1 ) );
+
+		return text;
+	}
+
 	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltipClass = NULL ) {
 		ccmdInterfaceData.neteventName = neteventname;
-		ccmdInterfaceData.helpHeader = helpheader;
-		ccmdInterfaceData.helpDesc = helpdesc;
+		ccmdInterfaceData.helpHeader = handleSetupInterfaceLocalization( helpheader );
+		ccmdInterfaceData.helpDesc = handleSetupInterfaceLocalization( helpdesc );
 
 		if ( tooltipClass ) {
 			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltipClass ) );
-			//ZCTooltipClass( ZCGlobal.Get().zcHandler.LocateZCConsoleClass( tooltipClass ) );
+			//ZCTooltipClass( ZCGlobal.GetHandler().LocateZCConsoleClass( tooltipClass ) );
 		}
 	} // of protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {}
 
@@ -298,6 +311,12 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	// Command itself:
 	virtual void DoCommand( void ) { }
 
+
+
+	// Useful for the messages like "Actor %s cannot be altered".
+	static play void LogLocalize2Str( EZCheckerLogLevels loglevel, String textid, String str2 ) {
+		ZCGlobal.Log( loglevel, String.Format( ZCGlobal.Localize( textid ), str2 ) );
+	}
 
 
 	private clearscope void printInitMissedWarning( String whatmissed ) {
@@ -337,7 +356,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	protected clearscope bool str2int_Ptr( in String str, out int converted, bool usesign = false ) {
 		bool isInteger = false;
 
-		if ( str && str.Length() ) {
+		if ( str.Length() ) {
 			bool isSigned = false;
 
 			int firstChar = str.CharCodeAt( 0 );
@@ -359,6 +378,41 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return isInteger;
 	}
 
+	// Returns "true" is string is a float-value; "converted" is a pointer:
+	protected clearscope bool str2double_Ptr( in String str, out double converted ) {
+		bool isDouble = false;
+
+		if ( str.Length() ) {
+			bool isSigned = false;
+
+			int firstChar = str.CharCodeAt( 0 );
+
+			if ( firstChar == 0x2D /* '-' */ ) {
+				isSigned = true;
+				str = str.Mid( 1, str.Length() - 1 );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			double tempConverted = str.ToDouble();
+			int tempStrlen = str.Length();
+
+			// Removing leading zeros:
+			while ( firstChar == 0x30 && tempStrlen > 1 ) {
+				tempStrlen--;
+				str = str.Mid( 1, tempStrlen );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			// Treat as a float-point digit if first char is '0'..'9' or '.':
+			if ( ( firstChar >= 0x30 && firstChar <= 0x39 ) || ( firstChar == 0x2E /* '.' */ ) ) {
+				isDouble = true;
+				converted = ( isSigned? -tempConverted : tempConverted );
+			}
+		}
+
+		return isDouble;
+	}
+
 	// Returns a linetarget actor (if one exists):
 	protected play Actor LinetraceActor( Actor from = NULL ) {
 		Actor outActor = NULL;
@@ -378,12 +432,13 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				if ( outActor.master ) {
 					outActor = outActor.master;
 				} else {
-					ZCGlobal.Log( LL_Normal, TEXTCOLOR_DARKGRAY .. "Skipped special class \"" .. outActor.GetClassName() .. "\"." );
+					// This branch will be executed if master had been removed from the world.
+					LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", outActor.GetClassName() .. "" );
 					outActor = NULL;
 				}
 			}
 		} else {
-			ZCGlobal.Log( LL_Normal, "No available linetarget actors found." );
+			ZCGlobal.Log( LL_Normal, ZCGlobal.Loc( "GETACTOR_LTNOACTORS" ) );
 		}
 
 		return outActor;
@@ -391,11 +446,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 
 	// Returns a position parse status depending of the string argument provided:
-	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {
+	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0, String specialstring = "" ) {
 		EPositionParseStatus newTesteePosStatus = PPS_Error;
 		newTestee = NULL;
 
-		String arg = ccmd.args[ argpos ];
+		String arg = ( specialstring != ""? specialstring : ccmd.args[ argpos ] );
 		arg.ToLower();
 
 		if ( arg == "self" || arg == "s" ) {			
@@ -409,16 +464,16 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		} else if ( str2int_Ptr( arg, +newTesteePosStatus ) ) {
 			if ( checkTesteePlace( --newTesteePosStatus ) ) {
 				if ( !( newTestee = ccmd.handler.Testee[ newTesteePosStatus ].mo ) )
-					ZCGlobal.Log( LL_Main, "No actor in position " .. ( newTesteePosStatus + 1 ) );
+					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "GETACTOR_EMPTYPOS" ), newTesteePosStatus + 1 ) );
 			} else {
-				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Wrong position " .. ( newTesteePosStatus + 1 ) .. LLCOLOR_MAIN .. " (must be in range [1.." .. MaxTestee .. "])." );
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "GETACTOR_WRONGPOS" ), newTesteePosStatus + 1, MaxTestee ) );
 				newTesteePosStatus = PPS_WrongPos;
 			}
 		} else if ( arg == "lt" || arg.Left( 5 ) == "linet" ) {
 			newTestee = LinetraceActor();
 			newTesteePosStatus = PPS_Linetarget;
 		} else {
-			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Unknown placeholder \"" .. arg .. "\" in position " .. ( argpos + 1 ) .. TEXTCOLOR_DARKGRAY .. ". Possible values: " .. LLCOLOR_MAIN .. "1.." .. MaxTestee .. ", s[elf], cam[era], lt" .. TEXTCOLOR_DARKGRAY .. "|" .. LLCOLOR_MAIN .. "linetarget" .. TEXTCOLOR_DARKGRAY .. "." );
+			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "GETACTOR_UNKNOWNKEYWORD" ), arg, argpos + 1, MaxTestee ) );
 		}
 
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getPlaceTestee(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg[ " .. argpos .. " ] == \"" .. arg .. "\"." );
@@ -526,7 +581,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			}
 
 			if ( preventiveChoice < 1 ) {
-				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Selection \"" .. preventiveChoiceStr .. "\" isn't a positive integer." );
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_WRONGSELECT" ), preventiveChoiceStr ) );
 				preventiveChoice = -1;
 			}
 
@@ -539,13 +594,13 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialActorName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
 
 			if ( classname == "" )
-				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Skipped " .. LLCOLOR_MAIN .. "empty placeholder \"" .. origValue .. "\". You may use \"%%null\" or \"%%none\" to override this." );
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_EMPTYKEYWORD" ), origValue ) );
 		} else if ( classname.CharAt( 0 ) == "$" ) {
 			classnameParseStatus = CPS_Variable;
 			classname = GetInternalZCheckerString( classname );
 
 			if ( classname == "" )
-				ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Skipped " .. LLCOLOR_MAIN .. "unset internal variable \"" .. origValue .. "\"." );
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_UNSETVAR" ), origValue ) );
 
 			isSpecial = true;
 		} else if ( ccmd && ccmd.handler && ( classname.IndexOf( "*" ) != -1 || classname.IndexOf( "-" ) != -1 ) ) {
@@ -588,7 +643,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			} // of for ( int i = 0; i < classname.Length(); i++ ) {}
 
 			if ( onlySpecialChars ) {
-				ZCGlobal.Log( LL_Main, "Not provided any class identifier character." );
+				ZCGlobal.Log( LL_Main, "$PARSENAME_NOCLASSCHARS" );
 			} else {
 				if ( lastpart != parts.Size() + 1 ) {
 					parts.Push( curpart );
@@ -686,8 +741,9 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				int nameCandidatesSize = nameCandidates.Size();
 
 				String filtertip = "";
+
 				if ( parentfilter != "Actor" )
-					filtertip = TEXTCOLOR_DARKGRAY .. " with filter " .. TEXTCOLOR_WHITE .. parentfilter.GetClassName() .. TEXTCOLOR_DARKGRAY .. "" .. LLCOLOR_MAIN;
+					filtertip = String.Format( ZCGlobal.Locz( "PARSENAME_WITHFILTER" ), parentfilter.GetClassName() );
 
 				if ( nameCandidatesSize == 1 ) {
 					classnameParseStatus = CPS_RegexFound;
@@ -696,10 +752,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				} else if ( nameCandidatesSize == 0 ) {
 					classname = "";
 					classnameParseStatus = CPS_RegexFailed;
-					ZCGlobal.Log( LL_Main, "Cannot find any suitable actor name candidates" .. filtertip .. "." );
+					ZCGlobal.Log( LL_Main, ZCGlobal.Locz( "PARSENAME_NOTFOUND" ) .. filtertip );
 				} else {
 					if ( preventiveChoice > nameCandidatesSize ) {
-						ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Selected index " .. TEXTCOLOR_LIGHTBLUE .. preventiveChoice .. LLCOLOR_WARNING .. " is out of range" .. LLCOLOR_MAIN .. " of the found candidates." );
+						ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_SELECTBOUNDS" ), preventiveChoice ) );
 						preventiveChoice = -1;
 					}
 
@@ -711,16 +767,17 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 						classname = "";
 						classnameParseStatus = CPS_RegexFailed;
 
-						ZCGlobal.Log( LL_Main, "Found more than one suitable actor name candidate" .. filtertip .. ":" );
+						ZCGlobal.Log( LL_Main, ZCGlobal.Locz( "PARSENAME_FOUNDSOME" ) .. filtertip .. ":" );
 
+						// Main output loop:
 						for ( int i = 0; i < nameCandidatesSize; i++ )
-							ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. ( i + 1 ) .. ". \"" .. TEXTCOLOR_WHITE .. nameCandidates[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
+							ZCGlobal.ClearscopeLog( LL_Main | LL_NoLocalize | LL_NoDot, String.Format( TEXTCOLOR_DARKGRAY .. "%i. \"" .. TEXTCOLOR_WHITE .. "%s" .. TEXTCOLOR_DARKGRAY .. "\".", i + 1, nameCandidates[ i ] ) );
 					}
 				}
 			} // of if ( parts.Size() > 1 ) {}
 
 		} else if ( preventiveChoice != -1 ) {
-			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Ignoring numerical selection " .. preventiveChoice .. LLCOLOR_MAIN );
+			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_IGNORESELECT" ), preventiveChoice ) );
 		}
 
 		return classname;
@@ -730,11 +787,16 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	// Less or greater safe wrapper around a "Thinker::Destroy()":
 	protected bool RemoveWorldThinker( Thinker th ) {
 		String thinkerName = th.GetClassName();
+		class<Thinker> thclass = th.GetClass();
 
 		Actor thing = Actor( th );
 
-		if ( thing && thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( "destroying live player" ) ) {
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKRED .. "It's better not to destroy a live player " .. ( thing.PlayerNumber() + 1 ) .. LLCOLOR_MAIN .. ". " .. LLCOLOR_WARNING .. "Terminated" .. LLCOLOR_MAIN .. "." );
+		if ( thing && thing.player && thing.player.mo == thing && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "REMOVEWARNING_LIVEPLAYER" ) ) ) {
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "REMOVEPREVENT_LIVEPLAYER" ), thing.PlayerNumber() + 1 ) );
+
+		} else if ( ( thclass == 'ZCGlobal' || thclass == 'ZCheckerSectorSetter' ) || ( thclass == 'ZCheckerActorInfo' && Actor( th ).master != Actor( th ) ) && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "REMOVEWARNING_ZCINTERNAL" ) ) ) {
+			LogLocalize2Str( LL_Main, "REMOVEPREVENT_ZCINTERNAL", "" .. th.GetClassName() );
+
 		} else {
 			if ( thing )
 				thing.ClearCounters();
@@ -867,8 +929,8 @@ class ZCBaseInfoPanelPart abstract {
 		return GetClassName() .. "::GetInfo(). Not overrided.";
 	}
 
-	ui virtual String GetSubmenuLabel( ZCOptionMenuItemInfopanel masterMenuItem, OptionMenuDescriptor submenuDesc ) {
-		String label = "Submenu. ";
+	ui virtual String GetSubmenuLabel( OptionMenuDescriptor submenuDesc ) {
+		String label = ZCGlobal.Locz( "MENU_SUBMENU_DFLTLABEL" );
 
 		int i = 0;
 
@@ -893,7 +955,7 @@ class ZCBaseInfoPanelPart abstract {
 		}
 
 		if ( i < submenuDesc.mItems.Size() )
-			label = label .. " [...more]";
+			label = label .. ZCGlobal.Locz( "MENU_SUBMENU_DFLTMORE" );
 
 		return label;
 	}

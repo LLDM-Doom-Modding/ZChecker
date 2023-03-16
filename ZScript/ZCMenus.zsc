@@ -36,7 +36,7 @@ class ZCOptionMenuPanels: OptionMenu {
 	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
 		desc.mItems.Push( NewStaticText( TEXTCOLOR_GOLD .. "Panels order reset" ) );
-		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset informational panels order", self ) );
+		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset informational panels order" ) );
 		desc.mItems.Push( NewStaticText() );
 	}
 
@@ -73,7 +73,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		return 1; // Items offset (+1, option only).
 	}
 
-	protected void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
+	protected void ReinitMenuPanelItems( OptionMenuDescriptor desc, ZCheckerHandler handler ) {
 		int addedItemsAmount = 0;
 
 		if ( handler.panels.panelsorderChanged )
@@ -90,16 +90,18 @@ class ZCOptionMenuPanels: OptionMenu {
 	} // of protected void ReinitMenuPanels( OptionMenuDescriptor desc, ZCheckerHandler handler ) {}
 
 	void ReinitMenuItems( OptionMenuDescriptor desc ) {
-        desc.mItems.Clear();
+        desc.mItems.Clear(); // For the "Reset infopanels order" button.
 		ReinitMenuHeaderPart( desc );
 
 		firstPanelItemPos = lastPanelItemPos = desc.mItems.Size();
 
 		if ( !handler ) {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
-			desc.mItems.Push( NewStaticText( TEXTCOLOR_FIRE .. "Cannot locate ZChecker static event handler." ) );
+			desc.mItems.Push( new( "OptionMenuItemZCHandlerExistenceCheckWarning" ).Init(
+					"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxInformational panels are not able to be initialized."
+				) );
 		} else {
-			ReinitMenuPanels( desc, handler );
+			ReinitMenuPanelItems( desc, handler );
 		}
 
 		ReinitMenuLastPart( desc );
@@ -109,7 +111,30 @@ class ZCOptionMenuPanels: OptionMenu {
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
-		ReinitMenuItems( desc );
+		if ( !desc.mItems.Size() ) {
+			ReinitMenuItems( desc );
+
+		} else {
+			// Items are saved between menu sessions but menu itself not.
+
+			for ( int i = 0; i < desc.mItems.Size(); i++ ) {
+				if ( desc.mItems[ i ] is "ZCOptionMenuItemInfopanel" ) {
+					firstPanelItemPos = i;
+					break;
+				}
+			}
+
+			if ( firstPanelItemPos != 0 ) {
+				for ( int i = desc.mItems.Size() - 1; i >= 0; i-- ) {
+					if ( desc.mItems[ i ] is "ZCOptionMenuItemInfopanel" ) {
+						i += 1;
+						lastPanelItemPos = i + !!( desc.mItems[ i ] is "ZCOptionMenuItemInfopanelSubmenu" );
+						break;
+					}
+				} // of for ( int i = desc.mItems.Size() - 1; i >= 0; i-- ) {}
+			} // of if ( firstPanelItemPos != 0 ) {}
+
+		} // of else of if ( !desc.mItems.Size() ) {}
 
 		Super.Init( parent, desc );
 	} // of override void Init( Menu parent, OptionMenuDescriptor desc ) {}
@@ -121,9 +146,6 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		EPanelMenuActionTypes actiontype = PMAT_None;
 		int key = e.KeyChar;
-
-		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
-		//console.printf( "curitem " .. curitem .. ", actiontype " .. actiontype .. "; pos " .. firstPanelItemPos .. " <= " .. curpos .. " < " .. lastPanelItemPos );
 
 
 		// Click-safe mouse pointing:
@@ -166,6 +188,10 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		if ( curpos > 0 )
 			curitem = ZCOptionMenuItemInfopanel( mDesc.mItems[ curpos ] );
+
+
+		//console.printf( "e.Type: " .. e.Type .. ", e.KeyChar: " .. e.KeyChar .. ", e.KeyString: \"" .. e.KeyString .. "\" (len " .. e.KeyString.Length() .. ")" );
+		//console.printf( "curitem " .. curitem .. ", actiontype " .. actiontype .. "; pos " .. firstPanelItemPos .. " <= " .. curpos .. " < " .. lastPanelItemPos );
 
 
 		if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {
@@ -274,12 +300,18 @@ class ZCOptionMenuPanels: OptionMenu {
 } // of class ZCOptionMenuPanels: OptionMenu {}
 
 
+
+
+// === Random option menu items:
+
+
 class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 	Name mSubmenu;
 	class<ZCBaseInfoPanelPart> panelclass;
 
 	ZCOptionMenuItemInfopanel Init( ZCBaseInfoPanelPart panel ) {
 		String panellabel = panel.optionLabel;
+
 		if ( panel is "ZCBaseInfoPanelPart_PlayScope" )
 			panellabel = "[play] >> " .. panellabel;
 
@@ -308,13 +340,18 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 	OptionMenuDescriptor subdesc;
 
+
+	private String GetSubmenuLabel( void ) {
+		return masterInfoPanel.GetSubmenuLabel( subdesc );
+	}
+
 	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuPanels curmenu, ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
 		masterMenu = curmenu;
 		masterMenuItem = masteritem;
 		masterInfoPanel = infopanel;
-		mLabel = "";
 
 		subdesc = OptionMenuDescriptor( MenuDescriptor.GetDescriptor( infopanel.optionSubmenuName ) );	
+		mLabel = GetSubmenuLabel();
 
 		return self;
 	}
@@ -324,7 +361,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 		if ( desc ) {
 			if ( desc.mSelectedItem > 0 ) {
-				mLabel = masterInfoPanel.GetSubmenuLabel( masterMenuItem, subdesc );
+				mLabel = GetSubmenuLabel();
 				masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
 			}
 		} else {
@@ -359,12 +396,8 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 } // of class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {}
 
 class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
-	ZCOptionMenuPanels zcparentmenu;
-
-	ZCOptionMenuItemRecreateInfopanels Init( String label, ZCOptionMenuPanels parentmenu ) {
+	ZCOptionMenuItemRecreateInfopanels Init( String label ) {
 		Super.Init( label, 'None' );
-		zcparentmenu = parentmenu;
-
 		return self;
 	}
 
@@ -375,18 +408,22 @@ class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
 	}
 
 	override bool Activate() {
-		if ( zcparentmenu.handler && zcparentmenu.handler.panels ) {
-			ZCPanelsStorage panels = zcparentmenu.handler.panels;
+		ZCOptionMenuPanels curmenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
+
+		if ( curmenu && curmenu.handler && curmenu.handler.panels ) {
+			ZCPanelsStorage panels = curmenu.handler.panels;
 
 			panels.panelsstr = "";
 			panels.UpdatePanels( false );
 
-			zcparentmenu.ReinitMenuItems( zcparentmenu.mDesc );
-			zcparentmenu.mDesc.mSelectedItem = zcparentmenu.lastPanelItemPos + 2;
+			curmenu.ReinitMenuItems( curmenu.mDesc );
+			curmenu.mDesc.mSelectedItem = curmenu.lastPanelItemPos + 2;
 
 			Menu.MenuSound( "menu/activate" );
 
 			ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The informational panels order has been reset." );
+		} else {
+			Menu.MenuSound( "menu/invalid" );
 		}
 
 		return true;
@@ -459,6 +496,83 @@ class OptionMenuItemZCPSpriteInputField: OptionMenuItemTextField {
 		}
 
 		return Super.MenuEvent( mkey, fromcontroller );
-	}
+	} // of override bool MenuEvent( int mkey, bool fromcontroller ) {}
 
 } // of class OptionMenuItemZCNumberTextField: OptionMenuItemTextField {}
+
+
+class OptionMenuItemZCHandlerExistenceCheckWarning: OptionMenuItemStaticText {
+	private String realLabel;
+	private OptionMenuDescriptor desc;
+	private bool isHandlerFound, isWarningInjected;
+
+	OptionMenuItemStaticText Init( String label, int cr = -1 ) {
+		isHandlerFound = !!ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
+		isWarningInjected = false;
+
+		realLabel = ( label.Left( 1 ) == "$"? StringTable.Localize( label ) : label );
+
+		return Super.Init( "", cr );
+	}
+
+	private int getSelfIndex( OptionMenuDescriptor desc ) {
+		int selfIndex = 0;
+
+		for ( int i = 0; i < desc.mItems.Size(); i++ ) {
+			if ( self == desc.mItems[ i ] )
+				return i;
+		}
+
+		// Impossible value, actually: "Ticker()" normally will be called 
+		//only from some valid menu.
+		return -1;
+	}
+
+	private void LocateMenuDescriptor( void ) {
+		if ( !desc ) {
+			OptionMenu curmenu = OptionMenu( Menu.GetCurrentMenu() );
+			desc = ( curmenu? OptionMenuDescriptor( curmenu.mDesc ) : NULL );
+
+			if ( !desc )
+				ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::LocateMenuDescriptor(). No menu descriptor; OptionMenu <" .. curmenu .. ">." );
+		}
+	}
+
+	// Seems like there's not so much more ways to inject a warning message to current opened menu.
+	override void Ticker() {
+		LocateMenuDescriptor();
+
+		if ( isHandlerFound && desc ) {
+			int removeIndex = getSelfIndex( desc );
+			desc.mItems.Delete( removeIndex, 1 );
+
+			if ( desc.mSelectedItem > removeIndex )
+				desc.mSelectedItem--;
+
+			Destroy();
+			return;
+		}
+
+		if ( !isHandlerFound && !isWarningInjected && desc ) {
+			int startInjectIndex = getSelfIndex( desc );
+
+			Array<String> labeldiv;
+			realLabel.Split( labeldiv, "\n" );
+			int labeldivSize = labeldiv.Size();
+			//console.printf( TEXTCOLOR_DARKGRAY .. "realLabel: \"" .. TEXTCOLOR_DARKGREEN .. realLabel .. TEXTCOLOR_DARKGRAY .. "\". labeldivSize: " .. labeldivSize .. "." );
+
+			for ( int i = labeldivSize - 1; i >= 0; i-- ) {
+				//labeldiv[ i ].Replace( "\\c", "\c" ); // [McM] Not required for the localized strings.
+				desc.mItems.Insert( startInjectIndex, new( "OptionMenuItemStaticText" ).Init( labeldiv[ i ] ) );
+			}
+
+			if ( desc.mSelectedItem > startInjectIndex )
+				desc.mSelectedItem += labeldivSize;
+
+			isWarningInjected = true;
+		}
+
+		Super.Ticker();
+	} // of override void Ticker() {}
+
+} // of class OptionMenuItemZCHandlerCheck: OptionMenuItemStaticText {}

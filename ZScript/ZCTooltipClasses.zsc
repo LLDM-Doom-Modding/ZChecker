@@ -8,47 +8,19 @@
 
 class ZCTooltipGeneralActorMasks: ZCTooltipClass {
 	override String GetTips() {
-		return IndentTabList( HighlightText(
-			"For the almost all commands which takes actor name argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\n" ..
-			"	'`2*`2' for any amount of any characters, including zero; `dand`x\n" ..
-			"	'`2-`2' for greater than 0 amount of any characters.\n" ..
-			"If there's more than one actor class candidate found, a `2numbered list`x just will be printed. A value may be selected from it by using `2:N`x or `2,N`x.\n" ..
-			"Also, a class inheriting filter is applied for some commands.\n\n" ..
-			"In general, you may substitute values from `1ZChecker variables`1 `d(must be started with \"`2$`d\" or \"`2%`d\")`x like:\n" ..
-			"	'`1$1`1', '`1$2`1', '`1$3`1' for the classname in specified panel. They will be kept until the next class overwrites them;\n" ..
-			"	'`1$last`1' for the last class added to any panel;\n" ..
-			"	Any other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".\n"
-		) );
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ACTORMASKS_TIPS" ) );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcsummon z`2-`Cman 4`x\" creates four Zombiemen;\n" ..
-			"\"`Czcsummon sta`2*`Cff`x\" will print a list with elements \"Staff\" and \"Staff`dPu`xff\";\n" ..
-			"\"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\n" ..
-			"\"`Czcsummon sta`2*`Cff`2:1`x\" summons also a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
-			"\"`Czcsummon $2 15`x\" summons fifteen actors of class in the second panel;\n" ..
-			"\"`Czcgive 1 `2*`Ccard`x\" will print a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel)`x;\n" ..
-			"\"`Czctake 1 z`2-`Cman`x\" will not take anything from actor in the first panel: \"Zombieman\" is not an Inventory class."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ACTORMASKS_EXAMPLES" );
 	}
 }
 
 class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 	override String GetPlaintext() {
-		return IndentTabs( HighlightText(
-			"A map named \"`2Everything`2\" is an universal card-index.\n" ..
-			"Right now there's two maps:\n" ..
-			LISTPREFIX .. "\"`2Everything`2\" by StormCatcher.77 requres included \"cc4-tex.wad\" (Community Chest 4 textures) and may be out-of-date in ZChecker beta versions; `dand`x\n" ..
-			LISTPREFIX .. "\"`2Everything_simpled`2\", lightweight, but fully functional variant.\n\n" ..
-			"	`gWarning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`g. `xThe consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well."
-		) );
+		return IndentTabs( ZCGlobal.Locz( "TOOLTIP_EVERYTHINGMAP_TEXT" ) );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Cmap everything_simpled`C\" changes the level to the Everything map (simplified version)."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_EVERYTHINGMAP_EXAMPLES" );
 	}
 }
 
@@ -58,25 +30,13 @@ class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 
 class ZCTooltipAddCommand: ZCTooltipClass {
 	override String GetPlaintext() {
-		return HighlightText(
-			"`yNote`x: actors in panels will not be saved after any level reloading. `~Maybe 'll rewrite this system later...`x"
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCADD_TEXT" );
 	}
-
 	override String GetTips() {
-		return HighlightText(
-			"Objects listed via \"`Czcaddlistget`x\" are just designated to the actors set (to the `2StatNum 100`x, actually). Some modifications may not use this rule."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCADD_TIPS" );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcadd 3`x\" adds a linetarget actor to the third panel;\n" ..
-			"\"`Czcadd weap`x\"`d/`x\"`Czcaddweap`x\" adds a currently selected weapon to the first empty panel (if it exists);\n" ..
-			"\"`Czcadd self 1`x\"`d/`x\"`Czcaddself 1`x\" adds a player actor to the first panel;\n" ..
-			"\"`Czcaddlistget`x\" prints out a list with all actors on the level;\n" ..
-			"\"`Czcaddlistget 13 2`x\" adds a 13th element from the list to the second informational panel."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCADD_EXAMPLES" );
 	}
 }
 
@@ -85,42 +45,19 @@ class ZCTooltipAddCommand: ZCTooltipClass {
 
 class ZCTooltipGiveCommand: ZCTooltipGeneralActorMasks {
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcgive shell 3`x\" gives 3 shells to the linetarget;\n" ..
-			"\"`Czcgive s clip 15`x\" gives 15 clips to `Gs`Yelf`x `d(to the caller player)`x;\n" ..
-			"\"`Czcgive 1 clip`x\" gives one clip to the actor in the `g1st`x panel;\n" ..
-			"\"`Czcgive 1 `2*`Ccard`x\" shows a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel); and\n" ..
-			"\"`Czcgive s `2*`Ccard`2:1 4`x\" gives to `Gs`Yelf`x four items of the first element from the list, in this case a \"BlueCard\"."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCGIVE_EXAMPLES" );
 	}
 }
 
 class ZCTooltipTakeCommand: ZCTooltipGeneralActorMasks {
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czctake shell 3`x\" takes 3 shells from the linetarget;\n" ..
-			"\"`Czctake s clip 15`x\" takes 15 clips from `Gs`Yelf`x `d(to the caller player)`x;\n" ..
-			"\"`Czctake 1 clip`x\" takes one clip from the actor in the `g1st`x panel;\n" ..
-			"\"`Czctake 1 `2*`Ccard`x\" shows a list of all Inventory classes ending with a \"card\" `d(while trying to take item from the actor in the first panel); and\n" ..
-			"\"`Czctake s `2*`Ccard`2:1 4`x\" takes from `Gs`Yelf`x four items of the first element from the list, in this case a \"BlueCard\"."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCTAKE_EXAMPLES" );
 	}
 }
 
 class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcsummon clip`C\" creates a Clip actor;\n" ..
-			"\"`Czcsummon r`2-`Claun`2-`x\" creates a R`~ocket`xLaun`~cher`x;\n" ..
-			"\"`Czcsummon z`2*`Cman 4`x\" creates four Zombiemen;\n" ..
-			"\"`Czcsummon $2 15`x\" summons fifteen actors of class in the second panel;\n" ..
-			"\"`Czcsummon `2*`Ccard`x\" will print a list of all classes ending with a \"card\";\n" ..
-			"\"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\n" ..
-			"\"`Czcsummon sta`2*`Cff`2:1`x\" will also summon a \"StaffPuff\" `d(by specifying a selection)`x;\n" ..
-			"\"`Czcsummon z`2*`Cman 3 f`x\" or \"`Czcsummon z`2*`Cman 3 friendly`x\" summons three `1friendly`x Zombiemen;\n" ..
-			"\"`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x\" summons `1friendly`x Zombieman and adds it to the `g3`xrd `gpanel position`x;\n" ..
-			"\"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" summons one faced from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCSUMMON_EXAMPLES" );
 	}
 }
 
@@ -129,93 +66,40 @@ class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
 
 class ZCTooltipThinkersControlCommand: ZCTooltipClass {
 	override String GetTips() {
-		return HighlightText( IndentNewlines(
-			"Use the \"`Czcthinkers <type> rm`x\" command `yonly if you know what you're doing`x; it can absolutely break levels and whole game up to the engine crash.\n" ..
-			"You may provide a direct StatNum value instead of its string alias.\n" ..
-			"All StatNums are conditional: some modification may use non-standard distribution on sets.\n" ..
-			"\"`Czcaddlistget`x\" is just a convenience alias which uses current CCMD in question;\n" ..
-			"Internal thinkers may be controlled by name if an argument \"rm:internal\" or its analogue is provided. But they may be freely specified in default \"rm\" by their index number in list."
-		) );
+		return ZCGlobal.Locz( "TOOLTIP_ZCTHINKERS_TIPS" );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcthinkers l`x\"/\"`Czclistthinkers`x\" prints out a help list with all recognizable StatNum types aliases;\n" ..
-			"\"`Czcthinkers a l`x\"/\"`Czclistthinkers actors`x\" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);\n" ..
-			"\"`Czcthinkers 100 l`x\" does the same as a command above: an `2actors`x alias actually converts to the value `y100`x;\n" ..
-			"\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level `d(same action as in the \"`Cremove zombieman`d\");\n" ..
-			"\"`Czcthinkers static rm 1`x\" removes a 1st element in the set of the static thinkers (`~STAT_STATIC`~);\n" ..
-			"\"`Czcthinkers a add`g:2`C 17`x\" adds a 17th actor from the list to the second informational panel;\n" ..
-			"\"`Czcthinkers sl rm`2:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~)."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCTHINKERS_EXAMPLES" );
 	}
 }
 
 class ZCTooltipPanelsControlCommand: ZCTooltipClass {
 	override String GetPlaintext() {
-		return HighlightText(
-			"`yNote`x: right now aliases system isn't convinience and I suggest not to use it."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCPANELCTL_TEXT" );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcpanel 1 m 3`x\" moves actor from the 1st panel to the 3rd panel;\n" ..
-			"\"`Czcpanel info 2`x\", \"`Czcpanel 2 info`x\" or \"`Czcinfo 2`x\" shows some info about specified (2nd) actor."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCPANELCTL_EXAMPLES" );
 	}
 }
 
 class ZCTooltipSetFlagCommand: ZCTooltipClass {
 	override String GetPlaintext() {
-		return IndentTabList( HighlightText(
-			"You may use next aliases as a target value:\n" ..
-			"	`g1`x, `gt`x, `gtrue`d or `gset`x: to set the flag;\n" ..
-			"	`g0`x, `gf`x, `gfalse`d or `greset`x: to clear the flag.\n" ..
-			"Note that only a few frequently used flags by default changes immediately. These include:\n" ..
-			"	`2Physics`x: SOLID, SHOOTABLE, NONSHOOTABLE, NOGRAVITY, NOINTERACTION, NOBLOCKMAP, NOSECTOR;\n" ..
-			"	`2Behaviour`x: FRIENDLY, FLOAT, NOTARGET, FORCEINFIGHTING, NOINFIGHTING;\n" ..
-			"	`2Defences`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x\n" ..
-			"	`2Other`x: BRIGHT.\n" ..
-			"You may disable their special handling by providing a \"ns\", \"nospec\", \"raw\" or \"acs\" keyword in the last argument (comma- or colon-separated if you want not to toggle a flag)."
-		) );
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCSETFLAG_TEXT" ) );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"\"`Czcsetflag friendly`x\", \"`Czcsetf friendly`x\" or \"`Czcsf friendly`x\" toggles the `2+FRIENDLY`x flag for the linetarget;\n" ..
-			"\"`Czcsetf 1 solid t`x\" or \"`Czcsetf 1 solid 1`x\" sets to \"true\" a `2+SOLID`x flag for the actor in 1st infopanel;\n" ..
-			"\"`Czcsetf s touchy`x\" sets a `2+TOUCHY`x flag to `1s`2elf`x, making player to die at the slightest touch. Note that this flag isn't in the quick access;\n" ..
-			"\"`Czcsetf solid raw`x\" toggles a flag with a one-delay tic, forcibly using an ACS machine;\n" ..
-			"\"`Czcsetf solid 1,nospec`x\", \"`Czcsetf solid acs:1`x\" sets a specified flag to \"true\", also forcibly using an ACS machine."
-		);
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCSETFLAG_EXAMPLES" ) );
 	}
 }
 
 
 class ZCTooltipExternalInterfaceCommand: ZCTooltipClass {
 	override String GetPlaintext() {
-		return HighlightText(
-			"`yCommand is mostly useful for the automation via the `x\"`Calias`x\"`y command`x and may be almost useless in other cases."
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCINTERFACE_TEXT" );
 	}
-
 	override String GetTips() {
-		return HighlightText( IndentNewlines(
-			"Command \"`Czcif`x\" is actually an abbreviation of the \"`Czcinterface`x\" and so not independent.\n"
-			"This command returns its integer result to the console variable \"`g" .. ZCExternalInterfaceCommand.const_interfaceCVarName .. "`x\". You may check it via built-in \"`Ctest`x\" command, see section \"`HExamples`x\" below.\n"
-			"Note that command result assigning will be delayed for one world tic to prevent desynchronizations in multiplayer. Built-in command \"`Cwait`x\" will be helpful."
-		) );
+		return IndentNewlines( String.Format( ZCGlobal.Locz( "TOOLTIP_ZCINTERFACE_TIPS" ), ZCExternalInterfaceCommand.const_interfaceCVarName ) );
 	}
-
 	override String GetExamples() {
-		return HighlightText(
-			"This alias will `yonly`x summon one specified actor (`g%%1`g) and add it to the first infopanel `yif this panel not yet linked`x:\n" ..
-			LISTPREFIX .. "`Calias zcsa1 `x\"`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \\\"zcsummon $tmp 1 add:1\\\"; zcvarsctl rm $tmp`x\";\n\n" ..
-			"The next alias will check if the last added to the panel is a DoomImp `~(via classname saved in the variable `1$last`~)`x:\n" ..
-			LISTPREFIX .. "`Calias testforimp3 `x\"`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\\"echo Imp.\\\" \\\"echo Not an Imp.\\\"`x\".\n\n" ..
-			"This alias will indefinitely check if the `1self`x pointer equals to the `1self.player.camera`x pointer:\n" ..
-			LISTPREFIX .. "`Calias isselfcamera `x\"`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \\\"echo Player camera view was changed from default.\\\"`~; `2wait 1`~; `2isselfcamera`x\".\n"
-		);
+		return ZCGlobal.Locz( "TOOLTIP_ZCINTERFACE_EXAMPLES" );
 	}
 }

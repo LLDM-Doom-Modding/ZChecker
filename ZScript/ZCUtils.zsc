@@ -31,11 +31,13 @@ enum EZCheckerLogLevels {
 	LL_Extra 	= LL_Detailed,
 
 	LL_FlagsMask	= 0xFFF0,
+	LL_NoLocalize	= 0x2000,
 	LL_NoDot		= 0x4000,
 	LL_NoPrefix		= 0x8000
 };
 
 const LLCOLOR_MAIN = "\c-";
+const LLCOLOR_DARK = TEXTCOLOR_DARKGRAY;
 const LLCOLOR_WARNING = TEXTCOLOR_YELLOW;
 const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
 const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
@@ -73,15 +75,19 @@ const LETTER_Z_LOWER = 122;
 
 
 class ZCGlobal: Thinker {
-	ZCheckerHandler zcHandler;
 	EZCheckerLogLevels zcCurLogLevel;
+	private ZCheckerHandler zcHandler;
+	private transient CVar zcLoglevelCVar;
 
 	Array<ZCInternalStringDictionaryCell> internalStrings;
 
 	/* === ZChecker utils === */
 
 	void UpdateLogLevel( void ) {
-		zcCurLogLevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+		if ( !zcLoglevelCVar )
+			zcLoglevelCVar = CVar.FindCVar( "mcm_zchecker_loglevel" );
+
+		zcCurLogLevel = zcLoglevelCVar.GetInt();
 	}
 
 	static clearscope ZCGlobal ClearscopeGet( void ) {
@@ -102,22 +108,44 @@ class ZCGlobal: Thinker {
 		return it;
 	} // of static play ZCGlobal Get( void ) {}
 
-	void InitZCheckerHandler( ZCheckerHandler inithandler ) {
-		zcHandler = inithandler;
-	} // of void InitZCheckerHandler( ZCheckerHandler inithandler ) {}
+	clearscope EZCheckerLogLevels _GetLoglevel( void ) {
+		return zcCurLogLevel;
+	}
+	static clearscope EZCheckerLogLevels GetLoglevelClearscope( void ) {
+		return ClearscopeGet().zcCurLogLevel;
+	}
+	static play EZCheckerLogLevels GetLoglevel( void ) {
+		return Get().zcCurLogLevel;
+	}
+
+	void SaveHandler( ZCheckerHandler inithandler ) {
+		if ( !zcHandler )
+			zcHandler = inithandler;
+	}
+
+	clearscope ZCheckerHandler _GetHandler( void ) {
+		return zcHandler;
+	}
+	static play ZCheckerHandler GetHandler( void ) {
+		return Get().zcHandler;
+	}
+	static clearscope ZCheckerHandler GetHandlerClearscope( void ) {
+		return ClearscopeGet().zcHandler;
+	}
 
 
 	// Prints well-decorated information string:
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
-		String logPrefix = "";
+		String logPrefix;
 
+		// Message prefix:
 		if ( !( loglevel & LL_NoPrefix ) ) {
 			switch ( loglevel & ~LL_FlagsMask ) {
 				case LL_Debug:
 					logPrefix = LLCOLOR_DEBUG .. "[ZC Debug] ";
 					break;
 				case LL_Emergency:
-					logPrefix = TEXTCOLOR_RED .. "[ZChecker emergency] " .. LLCOLOR_EMERGENCY;
+					logPrefix = String.Format( TEXTCOLOR_RED .. "%s " .. LLCOLOR_EMERGENCY, ZCGlobal.Localize( "LOG_EMERGENCY_PREFIX" ) );
 					break;
 				default:
 					logPrefix = TEXTCOLOR_GRAY .. "[ZC] " .. LLCOLOR_MAIN;
@@ -125,6 +153,13 @@ class ZCGlobal: Thinker {
 			} // of switch ( loglevel & ~LL_NoPrefix ) {
 		} // of if ( !( loglevel & LL_NoPrefix ) ) {
 
+
+		// Auto-localization (without a "ZCHECKER_" prefix in text):
+		if ( text.Left( 1 ) == "$" && !( loglevel & LL_NoLocalize ) )
+			text = ZCGlobal.Localize( text.Mid( 1, text.Length() - 1 ) );
+
+
+		// Dot at the end of the line:
 		if ( !( loglevel & LL_NoDot ) ) {
 			String lastch = text.Mid( text.Length() - 1 );
 
@@ -132,19 +167,28 @@ class ZCGlobal: Thinker {
 				text = text .. ".";
 		}
 
-		console.printf( logPrefix .. text );
+
+		// Replacing some colors:
+		text.Replace( "\034!", LLCOLOR_WARNING );
+		text.Replace( "\034~", LLCOLOR_DARK );
+		//text.Replace( "\034-", LLCOLOR_MAIN ); // Right now "\c-" replaces to the "\c-" here.
+
+
+		// Logging:
+		console.printf( "%s%s", logPrefix, text );
+
 	} // of static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {}
 
 	// A play-scope wrapper around a data-scope method (mostly used):
 	static play void Log( EZCheckerLogLevels loglevel, String text ) {
-		if ( ZCGlobal.Get().zcCurLogLevel >= ( loglevel & ~LL_FlagsMask ) )
+		if ( GetLoglevel() >= ( loglevel & ~LL_FlagsMask ) )
 			ClearscopeLog( loglevel, text );
 	}
 
 	static ui void UILog( EZCheckerLogLevels loglevel, String text ) {
 		ZCGlobal it = ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
 
-		if ( it && ( it.zcCurLogLevel >= ( loglevel & ~LL_FlagsMask ) ) )
+		if ( it && ( it._GetLoglevel() >= ( loglevel & ~LL_FlagsMask ) ) )
 			ClearscopeLog( loglevel, text );
 	}
 
@@ -155,6 +199,16 @@ class ZCGlobal: Thinker {
 			ClearscopeLog( loglevel, text );
 	}
 
+	static clearscope String Localize( String textid ) {
+		return StringTable.Localize( "$ZCHECKER_" .. textid );
+	}
+	static clearscope String Locz( String textid ) {
+		return StringTable.Localize( "$ZCHECKER_" .. textid );
+	}
+	static clearscope String Loc( String textid ) {
+		return StringTable.Localize( "$ZCHECKER_" .. textid );
+	}
+
 
 
 	// Test for the special ZChecker level:
@@ -162,7 +216,7 @@ class ZCGlobal: Thinker {
 		// Got from "mapchecksum everything" CCMD:
 		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
 
-		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLED" )
+		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLE" )
 			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
 	}
 
@@ -170,7 +224,7 @@ class ZCGlobal: Thinker {
 		bool isallowed = CVar.FindCVar( "mcm_zchecker_allowdangerccmds" ).GetBool();
 
 		if ( isallowed && desc != "" )
-			ClearscopeLog( LL_Main, LLCOLOR_WARNING .. "Warning: " .. LLCOLOR_MAIN .. desc );
+			DataLog( LL_Main, LLCOLOR_WARNING .. ZCGlobal.Locz( "CCMDS_DANGERALLOWEDWARN" ) .. ": " .. LLCOLOR_MAIN .. desc );
 
 		return isallowed;
 	}

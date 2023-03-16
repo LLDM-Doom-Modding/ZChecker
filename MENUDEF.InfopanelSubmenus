@@ -142,3 +142,10 @@ OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	StaticText "maximal sector/line tag search setting.", 1
 	Option "Line action", "mcm_zchecker_infovar_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
 }
+
+OptionMenu "mcm_ZCheckerSubmenu_sound"
+{
+	Title "ZChecker panel: Sound"
+	StaticText " "
+	Option "Output rare sounds", "mcm_zchecker_infovar_soundsrare", "YesNo"
+}

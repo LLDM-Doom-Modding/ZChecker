@@ -7,8 +7,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_help",
-			"zchelp [<command> | a[ll]|-a|-v]",
-			"This help. If <command> is provided, prints out a help for a specific command (in most cases with examples). Else, if <all> output is enabled, displays general complete help."
+			"$ZCHELP_HELP_TITLE",
+			"$ZCHELP_HELP_DESC"
 		);
 	}
 
@@ -21,7 +21,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			String arg = ccmd.args[ 0 ];
 			arg.ToLower();
 
-			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" ) {
+			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" || arg == "-all" || arg == "--all" ) {
 				verboseHelp = outValue = true;
 			} else {
 
@@ -60,7 +60,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {}
 
 				if ( !outValue )
-					ZCGlobal.Log( LL_Main | LL_NoDot, TEXTCOLOR_TEAL .. "ZChecker help: " .. TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"." );
+					LogLocalize2Str( LL_Main | LL_NoDot, "ZCHELP_CANNOTFIND", ccmd.args[ 0 ] );
 
 				/*ZCGlobal.Log( LL_Main | LL_NoDot, TEXTCOLOR_TEAL .. "ZChecker help: " .. ( outValue
 						? TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n\n"
@@ -75,9 +75,11 @@ class ZCHelpCommand: ZCConsoleCommand {
 	override void DoCommand( void ) {
 		// Description and credits:
 		if ( verboseHelp ) {
-			console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADER .. ".\n" ..
-					"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADER .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADER .. ";\n" ..
-					"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADER .. " team" .. ".\n\n" );
+			console.printf( ZCGlobal.Locz( "ZCHELP_VERBOSETITLE" ), ZCheckerVersion );
+
+			//console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADER .. ".\n" ..
+			//		"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADER .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADER .. ";\n" ..
+			//		"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADER .. " team" .. ".\n\n" );
 		}
 
 		if ( infoclass ) {
@@ -94,7 +96,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			}
 
 		} else {
-			console.printf( TEXTCOLOR_WHITE .. "Available commands, " .. ( verboseHelp ? "complete list" : "common used" ) .. ":\n\n" );
+			console.printf( ZCGlobal.Locz( verboseHelp? "ZCHELP_HEADERALLCCMDS" : "ZCHELP_HEADERCOMMONCCMDS" ) );
 
 			ZCConsoleClass curCC = NULL; // Also separators.
 
@@ -104,8 +106,10 @@ class ZCHelpCommand: ZCConsoleCommand {
 				if ( verboseHelp || ( curCC.zcFlags & CCF_Important ) )
 					console.printf( curCC.GetHelpString() .. "\n\n" );
 			}
-		}
-	}
+		} // of else of if ( infoclass ) {}
+
+	} // of override void DoCommand( void ) {}
+
 } // of class ZCHelpCommand: ZCConsoleCommand {}
 
 
@@ -115,6 +119,7 @@ class ZCAddCommand: ZCConsoleCommand {
 		SAT_Normal,
 		SAT_Self,
 		SAT_Weapon,
+		SAT_Camera,
 		SAT_Force
 	};
 
@@ -124,8 +129,8 @@ class ZCAddCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_add",
-			"zcadd [self|weap[on]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddf [<pos>];zcaddlistget [<index>] [<pos>]",
-			"Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.",
+			"$ZCADD_HELP_TITLE",
+			"$ZCADD_HELP_DESC",
 			'ZCTooltipAddCommand'
 		);
 	}
@@ -164,7 +169,7 @@ class ZCAddCommand: ZCConsoleCommand {
 			if ( field.mo == testthing && i != newSupposedPlace ) {
 				// Warn cases (2 and 3):
 				if ( sameActorBehaviourSetting >= 2 )
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Found " .. LLCOLOR_WARNING .. "duplicate link" .. TEXTCOLOR_DARKGRAY .. " for actor " .. LLCOLOR_MAIN .. testthing.GetClassName() .. TEXTCOLOR_DARKGRAY .. " in panel " .. ( i + 1 ) .. "." );
+					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ADD_DUPLICATELINK" ), testthing.GetClassName(), i + 1 ) );
 
 				// Move (preserve unique pointer) cases (0 and 2):
 				if ( !( sameActorBehaviourSetting & 1 ) ) {
@@ -194,15 +199,18 @@ class ZCAddCommand: ZCConsoleCommand {
 		if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
 			String arg0 = ccmd.args[ 0 ];
 			arg0.ToLower();
+			String arg0left1 = arg0.Left( 1 );
 
 			zcSpecialAddType = SAT_Error;
 
-			if ( arg0 == "self" || arg0 == "s" )
+			if ( arg0left1 == "s" )
 				zcSpecialAddType = SAT_Self;
-			else if ( arg0 == "weap" || arg0 == "weapon" )
+			else if ( arg0left1 == "w" )
 				zcSpecialAddType = SAT_Weapon;
-			else if ( arg0 == "force" )
+			else if ( arg0left1 == "f" )
 				zcSpecialAddType = SAT_Force;
+			else if ( arg0.Left( 3 ) == "cam" )
+				zcSpecialAddType = SAT_Camera;
 
 			if ( zcSpecialAddType != SAT_Error ) {
 				// "zcadd self|weap[on]|force [pos]":
@@ -227,7 +235,7 @@ class ZCAddCommand: ZCConsoleCommand {
 
 	override void DoCommand( void ) {
 		if ( -1 == zcPos && -1 == FindFreeTesteePlace( ccmd ) ) {
-			ZCGlobal.Log( LL_Normal, "Cannot add target to list, insufficient place. Try set target to list directly via \"zcadd [1.." .. MaxTestee .. "]\"." );
+			ZCGlobal.Log( LL_Normal, String.Format( ZCGlobal.Locz( "ZCADD_ADDINSUFFPLACE" ), MaxTestee ) );
 			return;
 		}
 
@@ -250,11 +258,11 @@ class ZCAddCommand: ZCConsoleCommand {
 				if ( player.ReadyWeapon )
 					newtestee = player.ReadyWeapon;
 				else
-					ZCGlobal.Log( LL_Main, "No weapon, cannot add." );
+					ZCGlobal.Log( LL_Main, "$ZCADD_NOWEAPON" );
 				break;
 
 			case SAT_Force:
-				ZCGlobal.Log( LL_Main, "[Work-in-progress command, may behave strangely]." );
+				ZCGlobal.Log( LL_Main, "$CCMD_WIP" );
 
 				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 				Actor locatedActor = NULL, cur = NULL;
@@ -284,7 +292,7 @@ class ZCAddCommand: ZCConsoleCommand {
 					//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
 					double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
 
-					if ( ZCGlobal.Get().zcCurLogLevel >= LL_Debug ) {
+					if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {
 						ZCGlobal.Log( LL_Debug, "Cur " .. TEXTCOLOR_OLIVE .. cur.GetClassName() .. LLCOLOR_DEBUG .. ": " ..
 								String.Format( "plr.pos %s, cur.pos %s, plr.angle %.3f, k %.3f, cur.radius %.3f;  = sqrt( " .. TEXTCOLOR_GRAY .. "%+.3f" .. LLCOLOR_DEBUG .. " ), prev& " .. locatedActor,
 								ZCGlobal.squeezeVector2( plpos ), ZCGlobal.squeezeVector2( curpos ), player.mo.angle, k, r, underSqrt )
@@ -297,11 +305,30 @@ class ZCAddCommand: ZCConsoleCommand {
 					}
 				}
 
-                if ( locatedActor )
-					newtestee = locatedActor;
-				else
-					ZCGlobal.Log( LL_Detailed, "Cannot find any suitable actors." );
+                if ( locatedActor ) {
+					if ( ZCGlobal.SpecialZCActorsHandling() ) {
+						class<Actor> locatedActorClass = locatedActor.GetClass();
 
+						if ( locatedActorClass == "ZCheckerActorInfo" ) {
+							locatedActor = locatedActor.master;
+						} else if ( locatedActorClass == "ZCheckerSectorSetter" ) {
+							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", locatedActor.GetClassName() .. "" );
+							locatedActor = NULL;
+						}
+					}
+
+					newtestee = locatedActor;
+				} else {
+					ZCGlobal.Log( LL_Main, "$ZCADD_FORCENOTFOUND" );
+				}
+
+				break;
+
+			case SAT_Camera:
+				if ( player.Camera == player.mo )
+					ZCGlobal.Log( LL_Detailed, "$ZCADD_CAMERAISPLAYER" );
+
+				newtestee = player.Camera;
 				break;
 
 			default:
@@ -325,23 +352,26 @@ class ZCAddCommand: ZCConsoleCommand {
 
 				switch ( zcSpecialAddType ) {
 					case SAT_Normal:
-						ZCGlobal.Log( LL_Detailed, "Added actor " .. testeeIdentifier );
+						LogLocalize2Str( LL_Detailed, "ZCADD_SUCCESSCOMMON", testeeIdentifier );
 						break;
 					case SAT_Self:
-						ZCGlobal.Log( LL_Detailed, "Added a PlayerPawn actor " .. testeeIdentifier );
+						LogLocalize2Str( LL_Detailed, "ZCADD_SUCCESSPLAYER", testeeIdentifier );
 						break;
 					case SAT_Weapon:
-						ZCGlobal.Log( LL_Detailed, "Added a StateProvider actor " .. testeeIdentifier );
+						LogLocalize2Str( LL_Detailed, "ZCADD_SUCCESSWEAPON", testeeIdentifier );
 						break;
 					case SAT_Force:
-						ZCGlobal.Log( LL_Detailed, "Added an arbitrary actor " .. testeeIdentifier );
+						LogLocalize2Str( LL_Detailed, "ZCADD_SUCCESSFORCED", testeeIdentifier );
+						break;
+					case SAT_Camera:
+						LogLocalize2Str( LL_Detailed, "ZCADD_SUCCESSCAMERA", testeeIdentifier );
 						break;
 					default:
 						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown add type \"" .. zcSpecialAddType .. "\". Identifier \"" .. testeeIdentifier .. "\"" );
 						break;
 				}
 			} else {
-				ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "Using previous link in panel " .. TEXTCOLOR_WHITE .. ( newPanelPos + 1 ) .. TEXTCOLOR_DARKGRAY .. " for actor " .. TEXTCOLOR_GRAY .. testeeIdentifier .. TEXTCOLOR_DARKGRAY );
+				ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCADD_USINGPREVLINK" ), newPanelPos + 1, testeeIdentifier ) );
 			}
 
 		} // of if ( newtestee ) {}
@@ -363,8 +393,8 @@ class ZCRemCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_rem",
-			"zcrem [<pos>];zcclear [<pos>]",
-			"Remove testee from <pos>; removes the whole list if no argument provided."
+			"$ZCREM_HELP_TITLE",
+			"$ZCREM_HELP_DESC"
 		);
 	}
 
@@ -384,18 +414,18 @@ class ZCRemCommand: ZCConsoleCommand {
 		if ( zcPos != -1 ) {
 			Actor testee = ccmd.handler.Testee[ zcPos ].mo;
 			if ( testee ) {
-				ZCGlobal.Log( LL_Detailed, "Removed actor \"" .. testee.GetClassName() .. "\" <" .. testee .. "> from position " .. zcPos + 1 .. "." );
+				ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCREM_SUCCESS" ), testee.GetClassName(), "" .. testee, zcPos + 1 ) );
 				ccmd.handler.Testee[ zcPos ].mo = NULL;
 
 				ccmd.handler.UpdateInternalClassnameByField( zcPos );
 			} else {
-				ZCGlobal.Log( LL_Detailed, "Cannot remove, there's no actor in position " .. zcPos + 1 .. "." );
+				ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCREM_EMPTYPOS" ), zcPos + 1 ) );
 			}
 		} else {
 			for ( int i = 0; i < MaxTestee; i++ )
 				ccmd.handler.Testee[ i ].mo = NULL;
 
-			ZCGlobal.Log( LL_Detailed, "All actors cleared from the hotbar." );
+			ZCGlobal.Log( LL_Detailed, "$ZCREM_SUCCESSTOTAL" );
 		}
 	}
 } // of class ZCRemCommand: ZCConsoleCommand {}

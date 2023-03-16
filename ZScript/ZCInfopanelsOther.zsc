@@ -83,25 +83,86 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 	{
 		optionCVarName = "mcm_zchecker_info_sounddefs";
 		optionLabel = "Sound definitions";
-		//optionSubmenuName = "mcm_ZCheckerSubmenu_some";
+		optionSubmenuName = "mcm_ZCheckerSubmenu_sound";
+	}
+
+	String FormatSoundName( Sound sndname ) 
+	{
+		// [McM] Compatibility for all engine versions from GZDoom 3.3.0:
+		if ( sndname == "" || sndname == " No sound " )
+			return "-";
+    
+		return sndname;
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) 
 	{
 		String info = "";
+		
+		int soundsVariantModeExtra = CVar.GetCVar( "mcm_zchecker_infovar_soundsrare", players[ consoleplayer ] ).GetInt();
 
 		info = info .. TEXTCOLOR_WHITE .. "Sounds:";
-		info = info .. TEXTCOLOR_RED .. "\n Attack: " .. Thing.AttackSound;
-		info = info .. TEXTCOLOR_RED .. "\n Pain: " .. Thing.PainSound;
-		info = info .. TEXTCOLOR_RED .. "\n Death: " .. Thing.DeathSound;
-		info = info .. TEXTCOLOR_PURPLE .. "\n See: " .. Thing.SeeSound;
-		info = info .. TEXTCOLOR_PURPLE .. "\n Active: " .. Thing.ActiveSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Use: " .. Thing.UseSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Bounce: " .. Thing.BounceSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. Thing.WallBounceSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. Thing.CrushPainSound;
-		info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. Thing.HowlSound;
+		info = info .. TEXTCOLOR_RED .. "\n Attack: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.AttackSound);
+		info = info .. TEXTCOLOR_RED .. "\n Pain: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.PainSound);
+		info = info .. TEXTCOLOR_RED .. "\n Death: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.DeathSound);
+		info = info .. TEXTCOLOR_SAPPHIRE .. "\n See: " .. TEXTCOLOR_TEAL .. FormatSoundName(Thing.SeeSound);
+		info = info .. TEXTCOLOR_SAPPHIRE .. "\n Active: " .. TEXTCOLOR_TEAL .. FormatSoundName(Thing.ActiveSound);
+
+		if ( soundsVariantModeExtra )
+		{
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Use: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.UseSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Bounce: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.BounceSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Wall bounce: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.WallBounceSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Crush pain: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.CrushPainSound);
+			info = info .. TEXTCOLOR_DARKGRAY .. "\n Howl: " .. TEXTCOLOR_TAN .. FormatSoundName(Thing.HowlSound);
+		}
 
 		return info;
 	}
 } // of class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart {}
+
+
+class ZCCheatsInfoPanel: ZCBaseInfoPanelPart {
+
+	// [McM] This class is being developed by @InfernalSky, so I decided not to alter it heavily.
+
+	override void OnCreate( void ) {
+		optionCVarName = "mcm_zchecker_info_cheatsdefs";
+		optionLabel = "Cheats panel";
+	}
+
+	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		String outStr = "";
+
+		if ( thing.player ) {
+
+			static const String cheatcodes_1[] = {
+				"No clipping", "Godmode", "No velocity", "No Target", "",
+				"Chasecam", "Frozen", "Revertplease", "", "Stepleft", "Frightening",
+				"Instant Weapon Switch", "Totally Frozen", "Predicting",  "Interpview"
+			};
+			static const String cheatcodes_2[] = {
+				"ExtremelyDead", "", "Buddha 2", "Godmode 2", "", "Buddha", "", "", "No clipping 2"
+			}; // array of string descriptions with the corresponding indexes
+
+			outStr.AppendFormat(TEXTCOLOR_CYAN .. "Cheats mask = " .. TEXTCOLOR_DARKGRAY .. "0x" .. TEXTCOLOR_WHITE .. "%X", thing.player.cheats);
+
+			for ( int i = 0; i < cheatcodes_1.Size(); i++ ) {
+				if ( thing.player.cheats & ( 1 << i ) ) {
+					outStr.AppendFormat(TEXTCOLOR_RED .. "\n  %s: " .. TEXTCOLOR_DARKGRAY .. "(1 << %d)", cheatcodes_1[i], i);
+				}
+			}
+			for ( int i = 0; i < cheatcodes_2.Size(); i++ ) {
+				if ( thing.player.cheats & ( 1 << ( i + 22 ) ) ) {
+					outStr.AppendFormat(TEXTCOLOR_RED .. "\n  %s: " .. TEXTCOLOR_DARKGRAY .. "(1 << %d)", cheatcodes_2[i], i+24);
+				}
+			}
+			if ( thing.bFLYCHEAT ){
+				outStr.AppendFormat(TEXTCOLOR_RED .. "\n  Fly: " .. TEXTCOLOR_DARKGRAY .. "(%X)", thing.bFLYCHEAT);
+			}
+		} // of if ( thing.player ) {}
+
+		return outStr;
+	} // of override String GetInfo( Actor thing, ZCheckerField thingfield ) {}
+
+} // of class ZCCheatsDefinitionsInfoPanel: ZCBaseInfoPanelPart {}

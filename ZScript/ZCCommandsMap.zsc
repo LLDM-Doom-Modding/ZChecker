@@ -3,19 +3,15 @@
 //
 
 class ZCEvmapCommand: ZCConsoleCommand {
-	protected void InitEvmapCCMD( String helpheader, String helpdesc, int extraflags = CCF_None, class<ZCTooltipClass> helptooltip = NULL ) {
+	protected void InitEvmapCCMD( String helpheader, String helpdesc, class<ZCTooltipClass> helptooltip = NULL ) {
 		zcFlags = CCF_NonblockingFailure;
-		if ( !!extraflags )
-			zcFlags |= extraflags;
-
 		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, helptooltip );
 	}
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev add|new|goto|pause|optimize|recreate|reload",
-			"Operates with world on the Everything map.",
-			CCF_Unreleased
+			"$ZCEV_HELP_TITLE",
+			"$ZCEV_HELP_DESC"
 		);
 	}
 
@@ -24,7 +20,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		bool isEverythingLevel = ZCGlobal.IsEverythingLevel();
 
 		if ( !isEverythingLevel )
-			ZCGlobal.Log( LL_Main, "Cannot use command not on Everything map." );
+			ZCGlobal.Log( LL_Main, "$ZCEV_NOTEVMAP" );
 
 		return isEverythingLevel;
 	}
@@ -49,6 +45,13 @@ class ZCEvmapCommand: ZCConsoleCommand {
 class ZCEvmapCommand_goto: ZCEvmapCommand {
 	String zcDestinationWord; // Actor class, category or a "start" keyword.
 
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"$ZCEVGOTO_HELP_TITLE",
+			"$ZCEVGOTO_HELP_DESC"
+		);
+	}
+
 	override bool HandleArguments() {
 		bool outValue = false;
 		int ccmdArgsSize = complexArgsTest( "g" );
@@ -66,12 +69,13 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 	}
 
 	protected void gotoCCMDPlayerTeleport( vector3 newpos, double newangle ) {
-		PlayerPawn player = players[ ccmd.e.Player ].mo;
+		PlayerPawn pl = players[ ccmd.e.Player ].mo;
 
-		player.SetOrigin( newpos, false );
-		player.SetZ( player.floorz );
-		player.angle = newangle;
-		player.vel.xy = (0.0, 0.0);
+		pl.SetOrigin( newpos, false );
+		pl.SetZ( pl.floorz );
+		pl.angle = newangle;
+		pl.vel.xy = (0.0, 0.0);
+		pl.player.vel = (0.0, 0.0);
 	}
 
 	override void DoCommand( void ) {
@@ -93,46 +97,28 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 			class<Actor> destActorClass = zcDestinationWord;
 
 			if ( !destActorClass ) {
-				ZCGlobal.Log( LL_Normal, "\"" .. zcDestinationWord .. "\" is not an Actor class." );
+				LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTACTOR", zcDestinationWord );
 			} else {
 				while ( ( curActor = ZCheckerActorInfo( it.Next( true ) ) ) && ( curActor.masterClass != destActorClass ) );
 
 				if ( curActor ) {
 					double newPlayerAngle = ( curActor.master? curActor.AngleTo( curActor.master, true ) : atan2( -curActor.masterOffset.y, -curActor.masterOffset.x ) );
 					gotoCCMDPlayerTeleport( curActor.pos, newPlayerAngle );
-					ZCGlobal.Log( LL_Detailed, "Found actor " .. curActor.masterClass.GetClassName() .. " at " .. curActor.pos .. "." );
+					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCEVGOTO_SUCCESS" ), curActor.masterClass.GetClassName(), "" .. curActor.pos ) );
 				} else {
-					ZCGlobal.Log( LL_Normal, "Actor \"" .. zcDestinationWord .. "\" does not exist on this map." );
+					// No this actor at the map.
+					LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTFOUND", zcDestinationWord );
 				}
 			}
 		}
 	} // of override void DoCommand( void ) {}
-
-	override void InitCCMD() {
-		InitEvmapCCMD(
-			"zcev goto <class>|start;zcevg <class>|start",
-			"On the Everything map, go to the specific actor definition/to start"
-		);
-	}
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
-
-
-class ZCEvmapCommand_add: ZCEvmapCommand {
-	override void InitCCMD() {
-		InitEvmapCCMD(
-			"zcev add [<class=linetarget>] [<amount=1>] [safe];zcev new [<class=linetarget>] [<amount=1>] [safe]",
-			"Summon <amount> actors of type <class/linetarget> on the Everything map arena. Keyword \"safe\" means summoning without collision.",
-			CCF_Unreleased
-		);
-	}
-} // of class ZCEvmapCommand_add: ZCEvmapCommand {}
-
 
 class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev recreate|reload;zcevre",
-			"Delete and recreate again all actors on the Everything map, like on start"
+			"$ZCEVRE_HELP_TITLE",
+			"$ZCEVRE_HELP_DESC"
 		);
 	}
 
@@ -150,17 +136,41 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 		return outValue;
 	}
 	override void DoCommand( void ) {
-		EventHandler.SendNetworkEvent( "zcheckermap_recreate" );
+		EventHandler.SendNetworkEvent( "zc_evmap_recreate" );
 	}
 } // of class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {}
 
-
-class ZCEvmapCommand_pause: ZCEvmapCommand {
+class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 	override void InitCCMD() {
 		InitEvmapCCMD(
-			"zcev pause;zcev optimize",
-			"Unload all actors from the main location on the Everything map",
-			CCF_Unreleased
+			"$ZCEVMAPWARP_HELP_TITLE",
+			"$ZCEVMAPWARP_HELP_DESC"
 		);
 	}
-} // of class ZCEvmapCommand_pause: ZCEvmapCommand {}
+
+	override bool HandleArguments() {
+		bool outValue = false;
+		int ccmdArgsSize = complexArgsTest( "map" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "level" );
+
+		if ( ccmdArgsSize ) {
+			if ( ccmdArgsSize == 1 )
+				outValue = true;
+			else
+				SetNonblockingUsageMessage();
+		}
+
+		return outValue;
+	}
+	override void DoCommand( void ) {
+		// [McM] Compatibility. Again.
+		//LevelLocals.ChangeLevel( "Everything", 0, 0 );
+
+		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) != -1 );
+
+		ACS_ExecuteAlways( -int( 'ZChecker_WarpToEverything' ), 0, isSimplified );
+		console.HideConsole();
+	}
+} // of class ZCEvmapCommand_warptomap: ZCEvmapCommand {}
