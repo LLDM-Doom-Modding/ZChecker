@@ -4,15 +4,16 @@ A universal debugger and actors card-index assistant for G-/Q-/LZDoom written in
 
 Separated into three large, interdependent parts:
 
+
 ### 1. Console commands (CCMDs)
 
 The main control tool in the game world. All console commands begin with the prefix "zc," so you can type "zc`<tab>`" to show them all. The most commonly used ones are:
 
-- `zchelp [<command>|all]`. Prints a ZChecker help text:
+- `zchelp [<command>|all]`. Prints a ZChecker help text to the console:
   
-  - No arguments: Prints a short ZChecker help text
+  - No arguments: Prints a short ZChecker help test;
   
-  - `all`: Prints the full help text
+  - `all`: Prints the full help text;
   
   - If the argument is a `<command>`: Prints a large help text with examples. Command names can be written without the "zc" prefix: for example, both `zchelp zcadd` and `zchelp add` are valid.
 
@@ -32,11 +33,13 @@ The main control tool in the game world. All console commands begin with the pre
 
 There are many other CCMDs that include a wide range of options of controlling the Actors and Thinkers.
 
+
 ### 2. Information panels (infopanels)
 
 The main supervision and monitoring tool. Up to 3 infopanels can be displayed on the screen at a time. All settings for them can be found in the ZChecker panels menu.
 
 Generally, actors are added to the infopanels via CCMDs like `zcadd`.
+
 
 ### 3. The "Everything" maps
 
@@ -54,6 +57,7 @@ These maps add CCMDs with the "zcev" prefix:
 
 Note: the Everything map may be outdated in the beta versions of the project. It's recommended to use `Everything_simple` instead.
 
+
 ## General notes
 
 Wildcards in actor names are `*` (asterisk) and `-` (hyphen).
@@ -63,6 +67,7 @@ Wildcards in actor names are `*` (asterisk) and `-` (hyphen).
 Wildcards may be used anywhere and more than once in the mask, so a string like "a-a-a-a" will be parsed as "ArachnotronPlasma", and string "*card" will list all actors whose names end with with "card". To select a specific classname from the list, you can use the `:<index>` or `,<index>` postfixes. For example, "`shot*:2`" will resolve to "Shotgun" (because first element in the list is a "ShotgunGuy" and second is a "Shotgun").
 
 Due to the internal netevent resolution restrictions, you won't be able to provide arbitrary number of space-delimited (" ") arguments for CCMDs. So, if you want to summon a ShotgunGuy that faces away from the player, will not infight others, has a TID of 4, and a great health value, you must specify all of the extra parameters in the comma-separated list: `zcsummon shotgunguy noinfight,relang:180,tid:4,hp:99999`.
+
 
 ---
 
@@ -90,4 +95,4 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 
 - **m8f**, for the GUI code from his [Hellscape Navigator](https://forum.zdoom.org/viewtopic.php?t=61643);
 
-- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Agent_Ash**, **Chameleon_111**, **Il Str**, **Dezette**.
+- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Agent_Ash**, **N00b2015**, **Dron12261**, **Chameleon_111**, **Dezette**, **Il Str**.
