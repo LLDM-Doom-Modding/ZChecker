@@ -272,35 +272,21 @@ class ZCAddCommand: ZCConsoleCommand {
 					//1) A caller (player) himself;
 					//2) Is not in the player field of view; and
 					//3) Is an item in someone's inventory.
-					if ( cur == player.mo || ( abs( player.mo.AngleTo( cur ) - player.mo.angle ) >= 45.0 ) || ( Inventory( cur ) && Inventory( cur ).owner ) )
+					if ( cur == player.mo || cur.radius < 1 || ( Inventory( cur ) && Inventory( cur ).owner ) )
 						continue;
-
 					// Grab the potential testee actor if the line of 
 					//sight intersects or touches its radius (circle).
 					// Funny, but right now I haven't written the 
 					//Z-exclusion despite of the realisation easiness.
-					vector2 plpos = player.mo.pos.xy;
-					vector2 curpos = cur.pos.xy;
-					double k = tan( player.mo.angle );
-					double r = cur.radius;
-
-					double kk = k * k;
-					double rr = r * r;
-					vector2 plpos2 = ( plpos.x * plpos.x, plpos.y * plpos.y );
-					vector2 curpos2 = ( curpos.x * curpos.x, curpos.y * curpos.y );
-
-					//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
-					double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
-
-					if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {
-						ZCGlobal.Log( LL_Debug, "Cur " .. TEXTCOLOR_OLIVE .. cur.GetClassName() .. LLCOLOR_DEBUG .. ": " ..
-								String.Format( "plr.pos %s, cur.pos %s, plr.angle %.3f, k %.3f, cur.radius %.3f;  = sqrt( " .. TEXTCOLOR_GRAY .. "%+.3f" .. LLCOLOR_DEBUG .. " ), prev& " .. locatedActor,
-								ZCGlobal.squeezeVector2( plpos ), ZCGlobal.squeezeVector2( curpos ), player.mo.angle, k, r, underSqrt )
-							);
-					}
-
-					if ( underSqrt >= 0 && ( !locatedActor || ( cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) ) ) {
-						locatedActor = cur;
+					
+					vector2 diff = cur.pos.xy - player.mo.pos.xy;
+					double l = diff.length();
+					vector2 perp = ( - diff.y, diff.x ) / l;
+					if ( l >= mindist ) { continue; }
+					vector2 a1 = diff + perp * cur.radius, a2 = diff - perp * cur.radius;
+					vector2 coeff = ZCGlobal.BasisCoefficients2( a1, a2, ( cos( player.mo.angle ), sin( player.mo.angle ) ) );
+					if ( coeff.x >= 0 && coeff.y >= 0 ) {
+						locatedActor = cur; mindist = l;
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
 					}
 				}
