@@ -266,6 +266,7 @@ class ZCAddCommand: ZCConsoleCommand {
 
 				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 				Actor locatedActor = NULL, cur = NULL;
+				double mindist = 1e9; // can't be larger than 65536 * sqrt(3) in GZDoom anyway -- N00b
 
 				while ( ( cur = Actor( it.Next() ) ) ) {
 					// Skip next actor if it:
