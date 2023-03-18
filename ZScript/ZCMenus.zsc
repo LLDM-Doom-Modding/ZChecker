@@ -27,7 +27,7 @@ class ZCOptionMenuPanels: OptionMenu {
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
 		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings:" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "', '" .. GRAY .. "S" .. DARKGRAY .. "', " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F3>" .. DARKGRAY .. ", " .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
 		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "'/" .. GRAY .. "<KP+>" .. DARKGRAY .. ", '" .. GRAY .. "-" .. DARKGRAY .. "'/" .. GRAY .. "<KP->" .. DARKGRAY .. " and " .. GRAY .. "mouse wheel" .. DARKGRAY .. "." ) );
 		desc.mItems.Push( NewStaticText( DARKGRAY .. "Note: order will be saved after one play tic." ) );
 		desc.mItems.Push( NewStaticText() );
@@ -162,14 +162,11 @@ class ZCOptionMenuPanels: OptionMenu {
 				actiontype = PMAT_EnterSubmenu;
 
 		} else if ( e.Type == e.Type_Char ) {
-			// 'E'/'e', 'S'/'s':
-			if ( key == 0x45 || key == 0x65 || key == 0x53 || key == 0x73 )
-				actiontype = PMAT_EnterSubmenu;
-			else if ( key == 0x2D )
+			if ( key == 0x2D ) // '-'.
 				actiontype = PMAT_MoveItemUp;
-			else if ( key == 0x2B )
+			else if ( key == 0x2B ) // '+'.
 				actiontype = PMAT_MoveItemDown;
-			else if ( key == 0x20 )
+			else if ( key == 0x20 ) // A space.
 				actiontype = PMAT_SwitchOption;
 
 		} else if ( e.Type == e.Type_WheelUp ) {
@@ -265,7 +262,33 @@ class ZCOptionMenuPanels: OptionMenu {
 			}
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
 
-		return Super.OnUIEvent( e );
+
+		// Hotkey (brutally grabbed from the QZDoom g4.5.0's "qzdoom.pk3:/zscript/engine/ui/listmenu.zs"):
+		if ( actiontype == PMAT_None && e.Type == UIEvent.Type_KeyDown && e.KeyChar > 32 ) {
+			int ch = e.KeyChar;
+
+			// Converting to lowercase:
+			if ( ch >= LETTER_A_UPPER && ch <= LETTER_Z_UPPER )
+				ch |= 0x20;
+
+			for ( int i = mDesc.mSelectedItem + 1; i < mDesc.mItems.Size(); i++ ) {
+				if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
+					mDesc.mSelectedItem = i;
+					MenuSound( "menu/cursor" );
+					return true;
+				}
+			}
+
+			for ( int i = 0; i < mDesc.mSelectedItem; i++ ) {
+				if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
+					mDesc.mSelectedItem = i;
+					MenuSound( "menu/cursor" );
+					return true;
+				}
+			}
+		}
+
+		return false;
 	} // of override bool OnUIEvent( UIEvent e ) {}
 
 	override bool MouseEvent( int type, int x, int y ) {
@@ -306,16 +329,18 @@ class ZCOptionMenuPanels: OptionMenu {
 
 
 class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
+	String panelLowercasedLabel;
 	Name mSubmenu;
 	class<ZCBaseInfoPanelPart> panelclass;
 
 	ZCOptionMenuItemInfopanel Init( ZCBaseInfoPanelPart panel ) {
-		String panellabel = panel.optionLabel;
+		String label = panelLowercasedLabel = panel.optionLabel;
+		panelLowercasedLabel.ToLower();
 
 		if ( panel is "ZCBaseInfoPanelPart_PlayScope" )
-			panellabel = "[play] >> " .. panellabel;
+			label = "[play] >> " .. label;
 
-		Super.Init( panellabel, panel.optionCVarName, 'OnOff' );
+		Super.Init( label, panel.optionCVarName, 'OnOff' );
 
 		mSubmenu = panel.optionSubmenuName;
 		panelclass = panel.GetClass();
@@ -330,6 +355,10 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 		} else {
 			Menu.MenuSound( "menu/invalid" );
 		}
+	}
+
+	override bool CheckHotkey( int c ) {
+		return ( panelLowercasedLabel.CharCodeAt( 0 ) == c );
 	}
 } // of class ZCOptionMenuItemInfopanel: OptionMenuItemOption {}
 
