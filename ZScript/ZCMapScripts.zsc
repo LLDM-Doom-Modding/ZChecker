@@ -147,10 +147,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "ParticleFountain"	// Crashes the game on first tic.
 			||  cur is "BossBrain"			// Spawns next to the "ExplosiveBarrel"...
 			||  cur == "Bat" 				// Tries to use a NULL "target" field.
-			||  cur is "ProgLevelEnder" 	// Just end the level almost immediately.
+			||  cur is "ProgLevelEnder" 	// Just ends the level almost immediately.
 			||  cur is "SlideshowStarter" 	// Calls a "level.StartSlideshow()".
 			||  cur is "SpectralLightningBigBall1" 	// "Tried to read from address zero. Called from Actor.SpawnSubMissile(); called from SpectralLightningBigBall1.A_SpectralBigBallLightning()".
-			||  cur is "LittleFly" 			// Recursive thing search on neighbour sectors.
+			||  cur is "LittleFly" 			// Recursive thing search on neighbour sectors (freezes the engine).
 		);
 	}
 

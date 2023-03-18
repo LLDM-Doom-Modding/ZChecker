@@ -64,7 +64,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		if ( panel.optionSubmenuName ) {
 			submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
-			submenuItem.Init( self, item, panel );
+			submenuItem.Init( item, panel );
 
 			desc.mItems.Push( submenuItem );
 			return 2; // Items offset (+2, option and its submenu);
@@ -334,7 +334,6 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 } // of class ZCOptionMenuItemInfopanel: OptionMenuItemOption {}
 
 class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
-	ZCOptionMenuPanels masterMenu;
 	ZCOptionMenuItemInfopanel masterMenuItem;
 	ZCBaseInfoPanelPart masterInfoPanel;
 
@@ -345,8 +344,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 		return masterInfoPanel.GetSubmenuLabel( subdesc );
 	}
 
-	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuPanels curmenu, ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
-		masterMenu = curmenu;
+	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
 		masterMenuItem = masteritem;
 		masterInfoPanel = infopanel;
 
@@ -374,6 +372,8 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	}
 
 	override bool MouseEvent( int type, int x, int y ) {
+		ZCOptionMenuPanels masterMenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
+
 		if ( masterMenu && masterMenuItem ) {
 			// Highlight the master item position instead of submenu item:
 			for ( int i = 0; i < masterMenu.mDesc.mItems.Size(); i++ ) {
