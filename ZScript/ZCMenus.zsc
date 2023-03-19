@@ -288,7 +288,8 @@ class ZCOptionMenuPanels: OptionMenu {
 			}
 		}
 
-		return false;
+		// Exist here just for mouse handling.
+		return Super.OnUIEvent( e );
 	} // of override bool OnUIEvent( UIEvent e ) {}
 
 	override bool MouseEvent( int type, int x, int y ) {
