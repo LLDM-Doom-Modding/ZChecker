@@ -271,17 +271,21 @@ class ZCAddCommand: ZCConsoleCommand {
 				while ( ( cur = Actor( it.Next() ) ) ) {
 					// Skip next actor if it:
 					//1) Is the caller (player) himself;
-					//2) Is very close to the center of the player;
+					//2) Is too close to the player's 3D position;
 					//3) Has a very small radius;
 					//4) Is an item in someone's inventory.
-					if ( cur == player.mo || (cur.pos - player.mo.pos).LengthSquared() < 1 || cur.radius < 1 || ( Inventory( cur ) && Inventory( cur ).owner ) )
+
+					// [McM] "DVector3::SquaredLength()" is absent in the GZDooms up to v4.5.0.
+					if ( cur == player.mo || cur.radius < 1.0 || ( cur.pos - player.mo.pos ).Length() < 1.0 || ( Inventory( cur ) && Inventory( cur ).owner ) )
 						continue;
 					
 					// The following will not work with portals, portal-specific functions will need to be used. --N00b
 					vector2 diff = cur.pos.xy - player.mo.pos.xy; // Radius vector of 'cur' in the player's coordinate system, projected on the XY plane.
 					double l = diff.length();
-					vector2 perp = ( - diff.y, diff.x ) / l; // Unit plane vector normal to 'diff'.
 					if ( l >= mindist ) { continue; } // If the actor is more distant than 'locatedActor' (the already recorded one), stop calculations & discard the new actor right away.
+
+					vector2 perp = (-diff.y, diff.x) / l; // Unit plane vector normal to 'diff'.
+
 					vector2 a1 = diff + perp * cur.radius, a2 = diff - perp * cur.radius; // Boundary points on the circular 2D hitbox of 'cur'.
 					
 					// Since points 2) and 3) of the above conditional do not hold, 'a1' and 'a2' form a basis.
@@ -290,11 +294,12 @@ class ZCAddCommand: ZCConsoleCommand {
 					// Now a1 * coeff.x + a2 * coeff.y = (cos alpha, sin alpha).
 					
 					// Also check whether 'cur' as a segment parallel to Z intersects the ray or not in the lateral projection. This is more simple.
-					double dh = l * tan( - player.mo.pitch ) + (player.mo.pos.z + player.viewheight /*this does not account for e.g. crouching*/) - cur.pos.z;
+					double dh = l * tan( -player.mo.pitch ) + ( player.mo.pos.z + player.viewheight /*this does not account for e.g. crouching*/ ) - cur.pos.z;
 					
 					// To intersect the hitbox diameter (the segment from 'a1' to 'a2'), the view ray must have nonnegative coefficients.
-					if ( coeff.x >= 0 && coeff.y >= 0 && dh >= 0 && dh <= cur.height) {
-						locatedActor = cur; mindist = l;
+					if ( coeff.x >= 0 && coeff.y >= 0 && dh >= 0 && dh <= cur.height + 4.0 ) {
+						locatedActor = cur;
+						mindist = l;
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
 					}
 				}
@@ -306,7 +311,7 @@ class ZCAddCommand: ZCConsoleCommand {
 						if ( locatedActorClass == "ZCheckerActorInfo" ) {
 							locatedActor = locatedActor.master;
 						} else if ( locatedActorClass == "ZCheckerSectorSetter" ) {
-							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", locatedActor.GetClassName() .. "" );
+							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", "" .. locatedActor.GetClassName() );
 							locatedActor = NULL;
 						}
 					}
