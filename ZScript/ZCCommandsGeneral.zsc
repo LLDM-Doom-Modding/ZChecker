@@ -266,27 +266,34 @@ class ZCAddCommand: ZCConsoleCommand {
 
 				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 				Actor locatedActor = NULL, cur = NULL;
-				double mindist = 1e9; // can't be larger than 65536 * sqrt(3) in GZDoom anyway -- N00b
+				double mindist = 1e9; // Can't be larger than 65536 * sqrt(3) in GZDoom anyway --N00b
 
 				while ( ( cur = Actor( it.Next() ) ) ) {
 					// Skip next actor if it:
-					//1) A caller (player) himself;
-					//2) Is not in the player field of view; and
-					//3) Is an item in someone's inventory.
-					if ( cur == player.mo || cur.radius < 1 || ( Inventory( cur ) && Inventory( cur ).owner ) )
+					//1) Is the caller (player) himself;
+					//2) Is very close to the center of the player;
+					//3) Has a very small radius;
+					//4) Is an item in someone's inventory.
+					if ( cur == player.mo || (cur.pos - player.mo.pos).LengthSquared() < 1 || cur.radius < 1 || ( Inventory( cur ) && Inventory( cur ).owner ) )
 						continue;
-					// Grab the potential testee actor if the line of 
-					//sight intersects or touches its radius (circle).
-					// Funny, but right now I haven't written the 
-					//Z-exclusion despite of the realisation easiness.
 					
-					vector2 diff = cur.pos.xy - player.mo.pos.xy;
+					// The following will not work with portals, portal-specific functions will need to be used. --N00b
+					vector2 diff = cur.pos.xy - player.mo.pos.xy; // Radius vector of 'cur' in the player's coordinate system, projected on the XY plane.
 					double l = diff.length();
-					vector2 perp = ( - diff.y, diff.x ) / l;
-					if ( l >= mindist ) { continue; }
-					vector2 a1 = diff + perp * cur.radius, a2 = diff - perp * cur.radius;
+					vector2 perp = ( - diff.y, diff.x ) / l; // Unit plane vector normal to 'diff'.
+					if ( l >= mindist ) { continue; } // If the actor is more distant than 'locatedActor' (the already recorded one), stop calculations & discard the new actor right away.
+					vector2 a1 = diff + perp * cur.radius, a2 = diff - perp * cur.radius; // Boundary points on the circular 2D hitbox of 'cur'.
+					
+					// Since points 2) and 3) of the above conditional do not hold, 'a1' and 'a2' form a basis.
+					// Using Cramer's formula, find an expression of the player's 2D view ray as a linear combination of 'a1' and 'a2'.
 					vector2 coeff = ZCGlobal.BasisCoefficients2( a1, a2, ( cos( player.mo.angle ), sin( player.mo.angle ) ) );
-					if ( coeff.x >= 0 && coeff.y >= 0 ) {
+					// Now a1 * coeff.x + a2 * coeff.y = (cos alpha, sin alpha).
+					
+					// Also check whether 'cur' as a segment parallel to Z intersects the ray or not in the lateral projection. This is more simple.
+					double dh = l * tan( - player.mo.pitch ) + (player.mo.pos.z + player.viewheight /*this does not account for e.g. crouching*/) - cur.pos.z;
+					
+					// To intersect the hitbox diameter (the segment from 'a1' to 'a2'), the view ray must have nonnegative coefficients.
+					if ( coeff.x >= 0 && coeff.y >= 0 && dh >= 0 && dh <= cur.height) {
 						locatedActor = cur; mindist = l;
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
 					}
