@@ -35,8 +35,10 @@ ZCHECKER_NETEVENTINTC_FROMPLAYER= "from player #";
 // === Menus ===
 //     [WIP]
 
-ZCHECKER_MENU_SUBMENU_DFLTLABEL	= "Submenu. ";
-ZCHECKER_MENU_SUBMENU_DFLTMORE	= "[...more]";
+ZCHECKER_PANELSMENU_SUBMENULABEL= "Submenu. ";
+ZCHECKER_PANELSMENU_SUBMENUMORE	= "[...more]";
+ZCHECKER_PANELSMENU_INALLPANELS	= "All";
+ZCHECKER_PANELSMENU_NOTINPANELS	= "None";
 
 ZCHECKER_MAINMENU_TITLE			= "ZChecker control";
 ZCHECKER_OPTIONSMENU_NOHANDLER	= "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in options menu above.";

@@ -148,11 +148,23 @@ class ZCheckerField {
 
 // Auxiliary class linking the panel parts and an associated CVars.
 class ZCInfoPanelNode {
+	const const_WrongCVar = -1;
+
 	ZCBaseInfoPanelPart panel;
 	transient CVar panelCVar;
 
 	void InitCVar( void ) {
 		panelCVar = CVar.GetCVar( panel.optionCVarName, players[ consoleplayer ] );
+	}
+
+	// "panelnumber" must be in range [0; MaxTestee - 1].
+	bool EnabledForPanel( int panelnumber ) {
+		bool outval = false;
+
+		if ( panelCVar )
+			outval = !!( panelCVar.GetInt() & ( 1 << panelnumber ) );
+
+		return outval;
 	}
 }
 

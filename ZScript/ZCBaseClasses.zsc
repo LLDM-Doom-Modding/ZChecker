@@ -930,7 +930,7 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 	ui virtual String GetSubmenuLabel( OptionMenuDescriptor submenuDesc ) {
-		String label = ZCGlobal.Locz( "MENU_SUBMENU_DFLTLABEL" );
+		String label = ZCGlobal.Locz( "PANELSMENU_SUBMENULABEL" );
 
 		int i = 0;
 
@@ -955,7 +955,7 @@ class ZCBaseInfoPanelPart abstract {
 		}
 
 		if ( i < submenuDesc.mItems.Size() )
-			label = label .. ZCGlobal.Locz( "MENU_SUBMENU_DFLTMORE" );
+			label = label .. ZCGlobal.Locz( "PANELSMENU_SUBMENUMORE" );
 
 		return label;
 	}

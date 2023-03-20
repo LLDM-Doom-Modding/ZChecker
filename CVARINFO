@@ -54,19 +54,19 @@ user string mcm_zchecker_infopanelsorder_part9;
 
 
 // Information panel parts settings.
-user bool mcm_zchecker_info_main			= true;	 // Classname, pointer.
+user int  mcm_zchecker_info_main			= 0xFF;	 // Classname, pointer.
 user int  mcm_zchecker_infovar_maintags		= 2;	 //  \_ "Never", "If different from classname", "Always"
 user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
 user bool mcm_zchecker_infovar_mainplayers	= false; //  \_ Player information.
 
-user bool mcm_zchecker_info_worldpos		= true;  // Tilts, position, velocity.
+user int  mcm_zchecker_info_worldpos		= 0xFF;	 // Tilts, position, velocity.
 user int  mcm_zchecker_infovar_wpostiltdcma	= 2;	 //  \_ Tilts decimals amount.
 user bool mcm_zchecker_infovar_wposnoroll 	= false; //  \_ Remove roll tilt displaying.
 user bool mcm_zchecker_infovar_wposplbuttons= false; //  \_ Show player buttons.
 
-user bool mcm_zchecker_info_maininteract	= true;	 // Health, mass, etc.
+user int  mcm_zchecker_info_maininteract	= 0xFF;	 // Health, mass, etc.
 
-user bool mcm_zchecker_info_geomsectors		= false; // Sectors linked to the actor.
+user int  mcm_zchecker_info_geomsectors		= 0x00;	 // Sectors linked to the actor.
 user bool mcm_zchecker_infovar_geomsecdiffers = false;// \_ Show "floorsector"/"ceilingsector" only if they differs from the "cursector".
 user bool mcm_zchecker_infovar_geomseclight	= true;	 //  \_ Sector light level.
 user int  mcm_zchecker_infovar_geomsecflags	= 0;	 //  \_ Sector flags: "Disabled", "Short names", "Long names".
@@ -79,19 +79,19 @@ user bool mcm_zchecker_infovar_geomsecterrain = false;// \_ Shows floorsector te
 user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (special, ...).
 // Something about sector normals?
 
-user bool mcm_zchecker_info_geomlines		= false; // Lines linked to the actor.
+user int  mcm_zchecker_info_geomlines		= 0x00;	 // Lines linked to the actor.
 user int  mcm_zchecker_infovar_geomlinetype	= 1;	 //  \_ "On line of sight", "Blocking line", "Both" (a mask).
 user int  mcm_zchecker_infovar_geomlnmain	= 0;	 //  \_ Length and flags: "Disabled", "Short names", "Long names".
 user bool mcm_zchecker_infovar_geomlntex	= true;	 //  \_ Line textures.
 user int  mcm_zchecker_infovar_geomlnaction	= 1;	 //  \_ Line action info: "Disabled", "Action & tag", "Action, args & tag", "Everything".
 user bool mcm_zchecker_infovar_geomlnportal	= false; //  \_ Line portal info.
 
-user bool mcm_zchecker_info_inventory		= true;  // Inventory.
+user int  mcm_zchecker_info_inventory		= 0xFF;	 // Inventory.
 user int  mcm_zchecker_infovar_invamount	= 40;    //  \_ Maximal amount of elements in output.
 user int  mcm_zchecker_infovar_invsorttype	= 0;	 //  \_ Sorting type: "Unsorted", "By names", "By amount", "By max amount".
 user bool mcm_zchecker_infovar_invsortascend= false; //  \_ Descending (false) or ascending (true) order.
 
-user bool mcm_zchecker_info_states			= true;	 // States and frames.
+user int  mcm_zchecker_info_states			= 0xFF;	 // States and frames.
 user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states: "Unlimited", 1, 2, ..., 25.
 user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information;
 user int  mcm_zchecker_infovar_stateflags 	= 0;	 //  \_ Current state flags: "Disabled", "Short names", "Long names";
@@ -100,20 +100,22 @@ user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite lay
 user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer;
 user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
 
-user bool mcm_zchecker_info_visual			= false; // Sprite, alpha, RenderStyle, etc.
+user int  mcm_zchecker_info_visual			= 0x00;	 // Sprite, alpha, RenderStyle, etc.
 
-user bool mcm_zchecker_info_mainpointers	= true;  // master, target, tracer.
-user bool mcm_zchecker_info_levelpointers 	= false; // Linetarget, BlockingMobj.
-user bool mcm_zchecker_info_dfrlinkpointers	= false; // LastHeard, LastEnemy, LastLookActor, Poisoner.
-user bool mcm_zchecker_info_otherpointers	= false; // alternative, &inv, goal, &snext.
+user int  mcm_zchecker_info_mainpointers	= 0xFF;	 // master, target, tracer.
+user int  mcm_zchecker_info_levelpointers 	= 0x00;	 // Linetarget, BlockingMobj.
+user int  mcm_zchecker_info_dfrlinkpointers	= 0x00;	 // LastHeard, LastEnemy, LastLookActor, Poisoner.
+user int  mcm_zchecker_info_otherpointers	= 0x00;	 // alternative, &inv, goal, &snext.
 
-user bool mcm_zchecker_info_args			= false; // TIDs, arguments, special.
-user bool mcm_zchecker_info_players			= false; // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
+user int  mcm_zchecker_info_args			= 0x00;	 // TIDs, arguments, special.
+user int  mcm_zchecker_info_players			= 0x00;	 // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
-//user bool mcm_zchecker_info_other			= false; // "PainThreshold", "WoundHealth", ...
-user bool mcm_zchecker_info_sounddefs		= false;
+//user int  mcm_zchecker_info_other			= 0x00;	 // "PainThreshold", "WoundHealth", ...
+
+user int  mcm_zchecker_info_sounddefs		= 0x00;
 user bool mcm_zchecker_infovar_soundsrare	= true;
-user bool mcm_zchecker_info_cheatsdefs      = false;
+
+user int  mcm_zchecker_info_cheatsdefs      = 0x00;
 
 
 // The "Everything" map console variables.
