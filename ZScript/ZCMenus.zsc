@@ -280,30 +280,43 @@ class ZCOptionMenuPanels: OptionMenu {
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
 
 
-		// Hotkey (brutally grabbed from the QZDoom g4.5.0's "qzdoom.pk3:/zscript/engine/ui/listmenu.zs"):
-		if ( actiontype == PMAT_None && e.Type == UIEvent.Type_KeyDown && e.KeyChar > 32 ) {
-			int ch = e.KeyChar;
+		// Hotkey (in general brutally grabbed from the QZDoom g4.5.0's "qzdoom.pk3:/zscript/engine/ui/listmenu.zs"):
+		int ch = e.KeyChar;
 
+		if ( actiontype == PMAT_None && e.Type == UIEvent.Type_Char && ch > 0x20 && ch < 0x7F ) {
 			// Converting to lowercase:
 			if ( ch >= LETTER_A_UPPER && ch <= LETTER_Z_UPPER )
 				ch |= 0x20;
 
-			for ( int i = mDesc.mSelectedItem + 1; i < mDesc.mItems.Size(); i++ ) {
+			int foundindex = -1;
+
+			for ( int i = mDesc.mSelectedItem + 1; i <= lastPanelItemPos; i++ ) {
 				if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
-					mDesc.mSelectedItem = i;
-					MenuSound( "menu/cursor" );
-					return true;
+					foundindex = i;
+					break;
 				}
 			}
 
-			for ( int i = 0; i < mDesc.mSelectedItem; i++ ) {
-				if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
-					mDesc.mSelectedItem = i;
-					MenuSound( "menu/cursor" );
-					return true;
+			if ( foundindex == -1 ) {
+				for ( int i = firstPanelItemPos; i < mDesc.mSelectedItem; i++ ) {
+					if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
+						foundindex = i;
+						break;
+					}
 				}
+			} // of if ( foundindex == -1 ) {}
+
+
+			if ( foundindex != -1 ) {
+				mDesc.mSelectedItem = foundindex;
+				MenuSound( "menu/cursor" );
+
+				if ( ( mDesc.mSelectedItem <= mDesc.mScrollTop + mDesc.mScrollPos ) || ( mDesc.mSelectedItem >= VisBottom ) )
+					mDesc.mScrollPos = max( mDesc.mSelectedItem - mDesc.mScrollTop - 1, 0 );
+
+				return true;
 			}
-		}
+		} // of if ( actiontype == PMAT_None && e.Type == UIEvent.Type_Char && e.KeyChar > 32 ) {}
 
 		// Exists here just for mouse handling.
 		return Super.OnUIEvent( e );
