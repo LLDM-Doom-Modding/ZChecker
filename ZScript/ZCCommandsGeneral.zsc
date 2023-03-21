@@ -7,8 +7,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_help",
-			"zchelp [<command> | a[ll]|-a|-v]",
-			"This help. If <command> is provided, prints out a help for a specific command (in most cases with examples). Else, if <all> output is enabled, displays general complete help."
+			"$ZCHELP_HELP_TITLE",
+			"$ZCHELP_HELP_DESC"
 		);
 	}
 
@@ -21,7 +21,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 			String arg = ccmd.args[ 0 ];
 			arg.ToLower();
 
-			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" ) {
+			if ( arg == "a" || arg == "all" || arg == "-a" || arg == "-v" || arg == "-all" || arg == "--all" ) {
 				verboseHelp = outValue = true;
 			} else {
 
@@ -129,8 +129,8 @@ class ZCAddCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_add",
-			"zcadd [s[elf]|w[eapon]|cam[era]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddforce [<pos>];zcaddlistget [<index>] [<pos>]",
-			"Add a linetarget/current player/current weapon/non-solid linetarget into list. [<pos>] is a place number to set to; if omitted, first empty slot will be used.",
+			"$ZCADD_HELP_TITLE",
+			"$ZCADD_HELP_DESC",
 			'ZCTooltipAddCommand'
 		);
 	}
@@ -262,45 +262,42 @@ class ZCAddCommand: ZCConsoleCommand {
 				break;
 
 			case SAT_Force:
-				ZCGlobal.Log( LL_Main, "$CCMD_WIP" );
-
 				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 				Actor locatedActor = NULL, cur = NULL;
+				double mindist = 1e9; // Can't be larger than 65536 * sqrt(3) in GZDoom anyway --N00b
 
 				while ( ( cur = Actor( it.Next() ) ) ) {
 					// Skip next actor if it:
-					//1) A caller (player) himself;
-					//2) Is not in the player field of view; and
-					//3) Is an item in someone's inventory.
-					if ( cur == player.mo || ( abs( player.mo.AngleTo( cur ) - player.mo.angle ) >= 45.0 ) || ( Inventory( cur ) && Inventory( cur ).owner ) )
+					//1) Is the caller (player) himself;
+					//2) Is too close to the player's 3D position;
+					//3) Has a very small radius;
+					//4) Is an item in someone's inventory.
+
+					// [McM] "DVector3::SquaredLength()" is absent in the GZDooms up to v4.5.0.
+					if ( cur == player.mo || cur.radius < 1.0 || ( cur.pos - player.mo.pos ).Length() < 1.0 || ( Inventory( cur ) && Inventory( cur ).owner ) )
 						continue;
+					
+					// The following will not work with portals, portal-specific functions will need to be used. --N00b
+					vector2 diff = cur.pos.xy - player.mo.pos.xy; // Radius vector of 'cur' in the player's coordinate system, projected on the XY plane.
+					double l = diff.length();
+					if ( l >= mindist ) { continue; } // If the actor is more distant than 'locatedActor' (the already recorded one), stop calculations & discard the new actor right away.
 
-					// Grab the potential testee actor if the line of 
-					//sight intersects or touches its radius (circle).
-					// Funny, but right now I haven't written the 
-					//Z-exclusion despite of the realisation easiness.
-					vector2 plpos = player.mo.pos.xy;
-					vector2 curpos = cur.pos.xy;
-					double k = tan( player.mo.angle );
-					double r = cur.radius;
+					vector2 perp = (-diff.y, diff.x) / l; // Unit plane vector normal to 'diff'.
 
-					double kk = k * k;
-					double rr = r * r;
-					vector2 plpos2 = ( plpos.x * plpos.x, plpos.y * plpos.y );
-					vector2 curpos2 = ( curpos.x * curpos.x, curpos.y * curpos.y );
-
-					//sqrt( k^2 r^2 - k^2 x_c^2 - k^2 x_p^2 + 2 k^2 x_c x_p + 2 k (x_p - x_c) y_p + 2 y_c (k (x_c - x_p) + y_p) + r^2 - y_c^2 - y_p^2 )
-					double underSqrt = ( kk * rr - kk * curpos2.x - kk * plpos2.x + 2 * kk * curpos.x * plpos.x + 2 * k * ( plpos.x - curpos.x ) * plpos.y + 2 * curpos.y * ( k * ( curpos.x - plpos.x ) + plpos.y ) );
-
-					if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {
-						ZCGlobal.Log( LL_Debug, "Cur " .. TEXTCOLOR_OLIVE .. cur.GetClassName() .. LLCOLOR_DEBUG .. ": " ..
-								String.Format( "plr.pos %s, cur.pos %s, plr.angle %.3f, k %.3f, cur.radius %.3f;  = sqrt( " .. TEXTCOLOR_GRAY .. "%+.3f" .. LLCOLOR_DEBUG .. " ), prev& " .. locatedActor,
-								ZCGlobal.squeezeVector2( plpos ), ZCGlobal.squeezeVector2( curpos ), player.mo.angle, k, r, underSqrt )
-							);
-					}
-
-					if ( underSqrt >= 0 && ( !locatedActor || ( cur.Distance3D( player.mo ) < locatedActor.Distance3D( player.mo ) ) ) ) {
+					vector2 a1 = diff + perp * cur.radius, a2 = diff - perp * cur.radius; // Boundary points on the circular 2D hitbox of 'cur'.
+					
+					// Since points 2) and 3) of the above conditional do not hold, 'a1' and 'a2' form a basis.
+					// Using Cramer's formula, find an expression of the player's 2D view ray as a linear combination of 'a1' and 'a2'.
+					vector2 coeff = ZCGlobal.BasisCoefficients2( a1, a2, ( cos( player.mo.angle ), sin( player.mo.angle ) ) );
+					// Now a1 * coeff.x + a2 * coeff.y = (cos alpha, sin alpha).
+					
+					// Also check whether 'cur' as a segment parallel to Z intersects the ray or not in the lateral projection. This is more simple.
+					double dh = l * tan( -player.mo.pitch ) + ( player.mo.pos.z + player.viewheight /*this does not account for e.g. crouching*/ ) - cur.pos.z;
+					
+					// To intersect the hitbox diameter (the segment from 'a1' to 'a2'), the view ray must have nonnegative coefficients.
+					if ( coeff.x >= 0 && coeff.y >= 0 && dh >= 0 && dh <= cur.height + 4.0 ) {
 						locatedActor = cur;
+						mindist = l;
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Force. " .. TEXTCOLOR_GREEN .. "Actor updated to " .. cur.GetClassName() );
 					}
 				}
@@ -312,7 +309,7 @@ class ZCAddCommand: ZCConsoleCommand {
 						if ( locatedActorClass == "ZCheckerActorInfo" ) {
 							locatedActor = locatedActor.master;
 						} else if ( locatedActorClass == "ZCheckerSectorSetter" ) {
-							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", locatedActor.GetClassName() .. "" );
+							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", "" .. locatedActor.GetClassName() );
 							locatedActor = NULL;
 						}
 					}
@@ -382,19 +379,11 @@ class ZCAddCommand: ZCConsoleCommand {
 class ZCRemCommand: ZCConsoleCommand {
 	int zcPos;
 
-	enum ERemoveSpecial {
-		RMSPC_Error = -3,
-		RMSPC_Skip = -2,
-		RMSPC_All = -1,
-		RMSPC_PosFirst = 0,
-		RMSPC_PosLast = MaxTestee - 1
-	};
-
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_rem",
-			"zcrem [<pos>];zcclear [<pos>]",
-			"Remove testee from <pos>; removes the whole list if no argument provided."
+			"$ZCREM_HELP_TITLE",
+			"$ZCREM_HELP_DESC"
 		);
 	}
 

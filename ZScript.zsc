@@ -42,7 +42,7 @@ version "3.3.0"
 #include "ZScript/ZCInfopanelsOther.zsc"
 
 
-const ZCheckerVersionNumber = "0.82";
+const ZCheckerVersionNumber = "0.83";
 
 const ZCheckerVersion = ZCheckerVersionNumber .. ", branch \"" .. ZCheckerVersionBranch .. "\"";
 
@@ -321,7 +321,7 @@ class ZCheckerHandler: StaticEventHandler {
 	override void RenderOverlay( RenderEvent e ) {
 		// Pointers to the all of the used CVars are pre-cached in this method.
 
-		Array<ZCBaseInfoPanelPart> infoPanelParts;
+		Array<ZCInfoPanelNode> infopanelNodes;
 		PlayerInfo pl = players[ consoleplayer ];
 
 		panels.UpdateFont();
@@ -329,8 +329,8 @@ class ZCheckerHandler: StaticEventHandler {
 		for ( int iCurInfoPanel = 0; iCurInfoPanel < panels.curPanels.Size(); iCurInfoPanel++ ) {
 			ZCInfoPanelNode panelnode = panels.curPanels.nodes[ iCurInfoPanel ];
 
-			if ( panelnode.panelCVar && panelnode.panelCVar.GetBool() )
-				infoPanelParts.Push( panelnode.panel );
+			if ( panelnode.panelCVar && !!panelnode.panelCVar.GetInt() )
+				infopanelNodes.Push( panelnode );
 		}
 
 		if ( !datascoped.infopanelStartXCVar ) {
@@ -385,23 +385,30 @@ class ZCheckerHandler: StaticEventHandler {
 			panelsstr.Clear();
 			panelsheights.Clear();
 
-			for ( int j = 0; j < infoPanelParts.Size(); j++ ) {
+			for ( int j = 0; j < infopanelNodes.Size(); j++ ) {
+				// Skipping locally disabled panel parts:
+				if ( !infopanelNodes[ j ].EnabledForPanel( i ) )
+					continue;
+
+				ZCBaseInfoPanelPart curinfopart = infopanelNodes[ j ].panel;
 				String outStr;
 
-				if ( infoPanelParts[ j ].IsPlayScope() )
-					outStr = ZCBaseInfoPanelPart_PlayScope( infoPanelParts[ j ] ).InternalGetInfo_clearscope( i );
+				// Getting the information:
+				if ( curinfopart.IsPlayScope() )
+					outStr = ZCBaseInfoPanelPart_PlayScope( curinfopart ).InternalGetInfo_clearscope( i );
 				else
-					outStr = infoPanelParts[ j ].GetInfo( curTestee, Testee[ i ] );
+					outStr = curinfopart.GetInfo( curTestee, Testee[ i ] );
 
+				// Skipping empty panel parts:
 				if ( outStr == "" )
 					continue;
 
 
-				panelsstr.Push( String.Format( "\c-%s\n", outStr ) );
-
-				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
+				panelsstr.Push( String.Format( TEXTCOLOR_GRAY .. "%s\n", outStr ) );
 
 				// Push the text out from the borders:
+				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
+
 				if ( x < bordersXMargin )
 					x = bordersXMargin;
 				else if ( x > width - stringWidth - bordersXMargin )

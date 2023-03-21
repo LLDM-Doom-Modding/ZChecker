@@ -7,6 +7,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		PMAT_MoveItemUp,
 		PMAT_MoveItemDown,
 		PMAT_SwitchOption,
+		PMAT_SwitchOptionBit,
 
 		PMAT_Quantity
 	};
@@ -27,9 +28,14 @@ class ZCOptionMenuPanels: OptionMenu {
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
 		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings:" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F4>" .. DARKGRAY .. ", '" .. GRAY .. "E" .. DARKGRAY .. "', '" .. GRAY .. "S" .. DARKGRAY .. "', " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "'/" .. GRAY .. "<KP+>" .. DARKGRAY .. ", '" .. GRAY .. "-" .. DARKGRAY .. "'/" .. GRAY .. "<KP->" .. DARKGRAY .. " and " .. GRAY .. "mouse wheel" .. DARKGRAY .. "." ) );
-		desc.mItems.Push( NewStaticText( DARKGRAY .. "Note: order will be saved after one play tic." ) );
+
+		String panelbitsStr = DARKGRAY .. "'" .. GRAY .. "1" .. DARKGRAY .. "'";
+		for ( int i = 1; i < MaxTestee; i++ )
+			panelbitsStr.AppendFormat( DARKGRAY .. ", '" .. GRAY .. "%i" .. DARKGRAY .. "'", i + 1 );
+
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TAN .. "Switch info" .. DARKGRAY .. " with " .. GRAY .. "<Space>" .. DARKGRAY .. "/" .. GRAY .. "<Enter>" .. DARKGRAY .. ", " .. panelbitsStr .. " or " .. GRAY .. "<L/R>" .. DARKGRAY .. ";" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F3>" .. DARKGRAY .. ", " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "'/" .. GRAY .. "<KP+>" .. DARKGRAY .. ", '" .. GRAY .. "-" .. DARKGRAY .. "'/" .. GRAY .. "<KP->" .. DARKGRAY .. " or " .. GRAY .. "mouse wheel" .. DARKGRAY .. "." ) );
 		desc.mItems.Push( NewStaticText() );
 	}
 
@@ -64,7 +70,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		if ( panel.optionSubmenuName ) {
 			submenuItem = new( "ZCOptionMenuItemInfopanelSubmenu" );
-			submenuItem.Init( self, item, panel );
+			submenuItem.Init( item, panel );
 
 			desc.mItems.Push( submenuItem );
 			return 2; // Items offset (+2, option and its submenu);
@@ -98,7 +104,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		if ( !handler ) {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
 			desc.mItems.Push( new( "OptionMenuItemZCHandlerExistenceCheckWarning" ).Init(
-					"\cxCannot locate ZChecker static event handler.\\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\\n\ciin MAPINFO on GZDoom older than 4.8.0.\\n\cxInformational panels are not able to be initialized."
+					"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxInformational panels are not able to be initialized."
 				) );
 		} else {
 			ReinitMenuPanelItems( desc, handler );
@@ -162,15 +168,17 @@ class ZCOptionMenuPanels: OptionMenu {
 				actiontype = PMAT_EnterSubmenu;
 
 		} else if ( e.Type == e.Type_Char ) {
-			// 'E'/'e', 'S'/'s':
-			if ( key == 0x45 || key == 0x65 || key == 0x53 || key == 0x73 )
-				actiontype = PMAT_EnterSubmenu;
-			else if ( key == 0x2D )
+			if ( key == 0x2D ) // '-'.
 				actiontype = PMAT_MoveItemUp;
-			else if ( key == 0x2B )
+
+			else if ( key == 0x2B ) // '+'.
 				actiontype = PMAT_MoveItemDown;
-			else if ( key == 0x20 )
+
+			else if ( key == 0x20 ) // A space.
 				actiontype = PMAT_SwitchOption;
+
+			else if ( key >= 0x31 && key <= ( 0x30 + MaxTestee ) ) // A digit, from 1 to MaxTestee.
+				actiontype = PMAT_SwitchOptionBit;
 
 		} else if ( e.Type == e.Type_WheelUp ) {
 			actiontype = PMAT_MoveItemUp;
@@ -258,13 +266,59 @@ class ZCOptionMenuPanels: OptionMenu {
 				return true;
 
 			} else if ( actiontype == PMAT_SwitchOption ) {
-				// Space switches the value, same as Enter or L/R arrows.
+				// Space switches the value, same as Enter.
 				Menu.GetCurrentMenu().MenuEvent( MKEY_Enter, false );
 				return true;
 
+			} else if ( actiontype == PMAT_SwitchOptionBit ) {
+				// Digits in range [1; MaxTestee] toggles panel part in the specified infopanel.
+				curitem.SwitchBitEvent( key - 0x30 - 1 );
+				return true;
+
 			}
+
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
 
+
+		// Hotkey (in general brutally grabbed from the QZDoom g4.5.0's "qzdoom.pk3:/zscript/engine/ui/listmenu.zs"):
+		int ch = e.KeyChar;
+
+		if ( actiontype == PMAT_None && e.Type == UIEvent.Type_Char && ch > 0x20 && ch < 0x7F ) {
+			// Converting to lowercase:
+			if ( ch >= LETTER_A_UPPER && ch <= LETTER_Z_UPPER )
+				ch |= 0x20;
+
+			int foundindex = -1;
+
+			for ( int i = mDesc.mSelectedItem + 1; i <= lastPanelItemPos; i++ ) {
+				if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
+					foundindex = i;
+					break;
+				}
+			}
+
+			if ( foundindex == -1 ) {
+				for ( int i = firstPanelItemPos; i < mDesc.mSelectedItem; i++ ) {
+					if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
+						foundindex = i;
+						break;
+					}
+				}
+			} // of if ( foundindex == -1 ) {}
+
+
+			if ( foundindex != -1 ) {
+				mDesc.mSelectedItem = foundindex;
+				MenuSound( "menu/cursor" );
+
+				if ( ( mDesc.mSelectedItem <= mDesc.mScrollTop + mDesc.mScrollPos ) || ( mDesc.mSelectedItem >= VisBottom ) )
+					mDesc.mScrollPos = max( mDesc.mSelectedItem - mDesc.mScrollTop - 1, 0 );
+
+				return true;
+			}
+		} // of if ( actiontype == PMAT_None && e.Type == UIEvent.Type_Char && e.KeyChar > 32 ) {}
+
+		// Exists here just for mouse handling.
 		return Super.OnUIEvent( e );
 	} // of override bool OnUIEvent( UIEvent e ) {}
 
@@ -305,20 +359,29 @@ class ZCOptionMenuPanels: OptionMenu {
 // === Random option menu items:
 
 
-class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
+class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
+	const const_WrongCVar = ZCInfoPanelNode.const_WrongCVar;
+	const const_AllDisabled = 0x00;
+
 	Name mSubmenu;
 	class<ZCBaseInfoPanelPart> panelclass;
 
+	private String panelLowercasedLabel;
+	private CVar mCVar;
+	private transient Font enginefont;
+
 	ZCOptionMenuItemInfopanel Init( ZCBaseInfoPanelPart panel ) {
-		String panellabel = panel.optionLabel;
+		String label = panelLowercasedLabel = panel.optionLabel;
+		panelLowercasedLabel.ToLower();
 
 		if ( panel is "ZCBaseInfoPanelPart_PlayScope" )
-			panellabel = "[play] >> " .. panellabel;
-
-		Super.Init( panellabel, panel.optionCVarName, 'OnOff' );
+			label = "[play] >> " .. label;
 
 		mSubmenu = panel.optionSubmenuName;
 		panelclass = panel.GetClass();
+
+		Super.Init( label, panel.optionCVarName, 'None', NULL, 0 );
+		mCVar = CVar.FindCVar( mAction );
 
 		return self;
 	}
@@ -331,10 +394,119 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOption {
 			Menu.MenuSound( "menu/invalid" );
 		}
 	}
+
+	private int getvalueAllEnabled( void ) const {
+		return ( 1 << MaxTestee ) - 1;
+	}
+
+	private int getvalueLeftmostBit( void ) const {
+		return 1 << ( MaxTestee - 1 );
+	}
+
+	override bool MenuEvent( int mkey, bool fromcontroller ) {
+		int selection = GetSelection();
+
+		int const_AllEnabled = getvalueAllEnabled();
+		int const_LeftmostBit = getvalueLeftmostBit();
+
+		if ( mkey == Menu.MKEY_Left || mkey == Menu.MKEY_Right || mkey == Menu.MKEY_Enter ) {
+			if ( selection > const_AllDisabled && selection < const_AllEnabled ) {
+				// Bitwise cyclic right shift:
+				if ( mkey == Menu.MKEY_Left ) {
+					int rightmost = selection & 0x01;
+					selection = ( selection >> 1 ) | ( const_LeftmostBit * !!rightmost );
+
+				// Bitwise cyclic left shift:
+				} else if ( mkey == Menu.MKEY_Right ) {
+					int leftmost = selection & const_LeftmostBit;
+					selection = ( ( selection << 1 ) & const_AllEnabled ) | ( 0x01 * !!leftmost );
+
+				// Set to const_AllDisabled when Enter or Space pressed:
+				} else {
+					selection = const_AllDisabled;
+				}
+
+			} else if ( selection == const_AllDisabled || selection == const_AllEnabled ) {
+				// Switch the extreme values to the opposite:
+				selection ^= const_AllDisabled ^ const_AllEnabled;
+
+			}
+
+			if ( selection != const_WrongCVar )
+				SetSelection( selection ); // Any wrong value will be clamped automatically inside this method.
+			else
+				ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::MenuEvent(). Unknown CVar \"" .. TEXTCOLOR_WHITE .. mAction .. LLCOLOR_EMERGENCY .. "\"." );
+
+			Menu.MenuSound( "menu/change" );
+
+			return true;
+		} // of if ( mkey == Menu.MKEY_Left || mkey == Menu.MKEY_Right || mkey == Menu.MKEY_Enter ) {}
+
+		return Super.MenuEvent( mkey, fromcontroller );
+	} // of override bool MenuEvent( int mkey, bool fromcontroller ) {}
+
+	void SwitchBitEvent( int optionbit ) {
+		// Option bit is in range [0; MaxTestee - 1].
+
+		if ( optionbit >= 0 && optionbit < MaxTestee ) {
+			SetSelection( GetSelection() ^ ( 1 << optionbit ) );
+		} else {
+			ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::SwitchBitEvent(). Option bit index " .. optionbit .. " not in range [0; " .. ( MaxTestee - 1 ) .. "]." );
+		}
+	} // of void SwitchBitEvent( int optionbit ) {}
+
+
+	override int GetSelection() {
+		return ( mCVar? mCVar.GetInt() : const_WrongCVar );
+	}
+
+	override void SetSelection( int selection ) {
+		if ( mCVar ) {
+			selection = clamp( selection, const_AllDisabled, getvalueAllEnabled() );
+			mCVar.SetInt( selection );
+		}
+	}
+
+	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
+		drawLabel( indent, y, ( selected? OptionMenuSettings.mFontColorSelection : OptionMenuSettings.mFontColor ) );
+
+		int selection = GetSelection();
+		int const_AllEnabled = getvalueAllEnabled();
+
+		String text;
+
+		if ( selection & const_AllEnabled == const_AllEnabled ) {
+			text = TEXTCOLOR_GRAY .. ZCGlobal.Locz( "PANELSMENU_INALLPANELS" );
+
+		} else if ( selection == const_AllDisabled ) {
+			text = TEXTCOLOR_BLACK .. ZCGlobal.Locz( "PANELSMENU_NOTINPANELS" );
+
+		} else {
+			for ( int i = 0; i < MaxTestee; i++ ) {
+				text.AppendFormat( "%s%i ", ( selection & ( 1 << i )? TEXTCOLOR_GRAY : TEXTCOLOR_BLACK ), i + 1 );
+
+				//if ( selection & ( 1 << i ) )
+				//	text = text .. ( i + 1 ) .. " ";
+			}
+		}
+
+		if ( !enginefont ) {
+			enginefont = Font.FindFont( "newsmallfont" );
+
+			if ( !enginefont )
+				enginefont = smallfont;
+		}
+
+		Screen.DrawText( enginefont, OptionMenuSettings.mFontColorValue, indent + CursorSpace(), y, text, DTA_CleanNoMove_1, true );
+		return indent;
+	}
+
+	override bool CheckHotkey( int c ) {
+		return ( panelLowercasedLabel.CharCodeAt( 0 ) == c );
+	}
 } // of class ZCOptionMenuItemInfopanel: OptionMenuItemOption {}
 
 class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
-	ZCOptionMenuPanels masterMenu;
 	ZCOptionMenuItemInfopanel masterMenuItem;
 	ZCBaseInfoPanelPart masterInfoPanel;
 
@@ -345,8 +517,7 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 		return masterInfoPanel.GetSubmenuLabel( subdesc );
 	}
 
-	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuPanels curmenu, ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
-		masterMenu = curmenu;
+	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
 		masterMenuItem = masteritem;
 		masterInfoPanel = infopanel;
 
@@ -374,6 +545,8 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 	}
 
 	override bool MouseEvent( int type, int x, int y ) {
+		ZCOptionMenuPanels masterMenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
+
 		if ( masterMenu && masterMenuItem ) {
 			// Highlight the master item position instead of submenu item:
 			for ( int i = 0; i < masterMenu.mDesc.mItems.Size(); i++ ) {
@@ -509,7 +682,8 @@ class OptionMenuItemZCHandlerExistenceCheckWarning: OptionMenuItemStaticText {
 	OptionMenuItemStaticText Init( String label, int cr = -1 ) {
 		isHandlerFound = !!ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 		isWarningInjected = false;
-		realLabel = label;
+
+		realLabel = ( label.Left( 1 ) == "$"? StringTable.Localize( label ) : label );
 
 		return Super.Init( "", cr );
 	}
@@ -556,11 +730,12 @@ class OptionMenuItemZCHandlerExistenceCheckWarning: OptionMenuItemStaticText {
 			int startInjectIndex = getSelfIndex( desc );
 
 			Array<String> labeldiv;
-			realLabel.Split( labeldiv, "\\n" );
+			realLabel.Split( labeldiv, "\n" );
 			int labeldivSize = labeldiv.Size();
+			//console.printf( TEXTCOLOR_DARKGRAY .. "realLabel: \"" .. TEXTCOLOR_DARKGREEN .. realLabel .. TEXTCOLOR_DARKGRAY .. "\". labeldivSize: " .. labeldivSize .. "." );
 
 			for ( int i = labeldivSize - 1; i >= 0; i-- ) {
-				labeldiv[ i ].Replace( "\\c", "\c" );
+				//labeldiv[ i ].Replace( "\\c", "\c" ); // [McM] Not required for the localized strings.
 				desc.mItems.Insert( startInjectIndex, new( "OptionMenuItemStaticText" ).Init( labeldiv[ i ] ) );
 			}
 

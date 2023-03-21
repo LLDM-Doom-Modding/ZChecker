@@ -148,11 +148,23 @@ class ZCheckerField {
 
 // Auxiliary class linking the panel parts and an associated CVars.
 class ZCInfoPanelNode {
+	const const_WrongCVar = -1;
+
 	ZCBaseInfoPanelPart panel;
 	transient CVar panelCVar;
 
 	void InitCVar( void ) {
 		panelCVar = CVar.GetCVar( panel.optionCVarName, players[ consoleplayer ] );
+	}
+
+	// "panelnumber" must be in range [0; MaxTestee - 1].
+	bool EnabledForPanel( int panelnumber ) {
+		bool outval = false;
+
+		if ( panelCVar )
+			outval = !!( panelCVar.GetInt() & ( 1 << panelnumber ) );
+
+		return outval;
 	}
 }
 
@@ -294,7 +306,7 @@ class ZCPanelsStorage {
 			panelnode.InitCVar();
 
 			if ( !panelnode.panelCVar )
-				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::UpdatePanels(). Panel \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to unknown CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
+				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::UpdatePanels(). Panel \"" .. TEXTCOLOR_RED .. panelnode.panel.GetClassName() .. LLCOLOR_EMERGENCY .. "\" refers to the unknown CVar \"" .. TEXTCOLOR_RED .. panelnode.panel.optionCVarName .. LLCOLOR_EMERGENCY .."\"." );
 
 			panelsstr = panelsstr .. panelnode.panel.GetClassName() .. ",";
 		}
@@ -356,19 +368,29 @@ class ZCPanelsStorage {
 
 		if ( fonttype != lastFontType ) {
 			bool updateLastFontType = true;
+			Font newfont;
+			String newfontName;
 
 			switch ( fonttype ) {
 				case 0:
-					infopanelsFont = smallfont;
+					newfont = smallfont;
 					break;
 				case 1:
-					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono_shortspace" );
+					newfont = Font.FindFont( "zchecker_smallfont_mono_shortspace" );
 					break;
 				case 2:
-					infopanelsFont = Font.FindFont( "zchecker_smallfont_mono" );
+					newfont = Font.FindFont( "zchecker_smallfont_mono" );
 					break;
 				case 3:
-					infopanelsFont = confont;
+					newfont = confont;
+					break;
+				case 4:
+					newfontName = "newsmallfont";
+					newfont = Font.FindFont( newfontName );
+					break;
+				case 5:
+					newfontName = "newconsolefont";
+					newfont = Font.FindFont( newfontName );
 					break;
 				default:
 					updateLastFontType = false;
@@ -376,8 +398,14 @@ class ZCPanelsStorage {
 					break;
 			}
 
-			if ( infopanelsFont )
-				infopanelsFontSpaceWidth = infopanelsFont.GetCharWidth( 32 );
+			if ( !newfont ) {
+				ZCGlobal.DataLog( LL_Main, String.Format( ZCGlobal.Locz( "MAINMENUOPT_NOFONTMSG" ), newfontName ) );
+				infopanelsFont = smallfont;
+			} else {
+				infopanelsFont = newfont;
+			}
+
+			infopanelsFontSpaceWidth = infopanelsFont.GetCharWidth( 32 );
 
 			ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::UpdateFont(). Font type changed to " .. fonttype .. ", space width is " .. infopanelsFontSpaceWidth .. "." );
 

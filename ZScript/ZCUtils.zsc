@@ -368,9 +368,17 @@ class ZCGlobal: Thinker {
 		return String.Format( formatted, vec.x, vec.y, vec.z );
 	}
 
+	static clearscope double det2( Vector2 a, Vector2 b ) {
+		return a.x * b.y - a.y * b.x;
+	}
 
-	static double, double vector3ToAnglePitch( vector3 vec ) {
-		return atan2( vec.y, vec.x ), -90.0 * sin( vec.z );
+	static clearscope Vector2 BasisCoefficients2( Vector2 a1, Vector2 a2, Vector2 b ) {
+		double det = det2( a1, a2 );
+		return ( det2( b, a2 ) / det, det2( a1, b ) / det );
+	}
+
+	static clearscope double, double vector3ToAnglePitch( vector3 vec ) {
+		return atan2( vec.y, vec.x ), -atan2( vec.z, vec.xy.length() );
 	}
 
 	static vector3 anglePitchToVector3( double angle, double pitch ) {
