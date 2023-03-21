@@ -48,7 +48,7 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {
-    Title "$ZCHECKER_PANELS_TITLE"
+    Title "$ZCHECKER_INFOPANELSMENU_TITLE"
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
     class "ZCOptionMenuPanels"

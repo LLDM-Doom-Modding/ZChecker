@@ -280,32 +280,41 @@ class ZCOptionMenuPanels: OptionMenu {
 		} // of if ( curitem && actiontype != PMAT_None && curpos < lastPanelItemPos && curpos >= firstPanelItemPos ) {}
 
 
-		// Hotkey (in general brutally grabbed from the QZDoom g4.5.0's "qzdoom.pk3:/zscript/engine/ui/listmenu.zs"):
+		// Hotkey (originally grabbed from the QZDoom g4.5.0's "qzdoom.pk3:/zscript/engine/ui/listmenu.zs" and heavily reworked):
+		bool isSearchEventType = ( e.Type == UIEvent.Type_Char || ( e.Type == UIEvent.Type_KeyDown && e.IsCtrl ) );
 		int ch = e.KeyChar;
 
-		if ( actiontype == PMAT_None && e.Type == UIEvent.Type_Char && ch > 0x20 && ch < 0x7F ) {
+		if ( actiontype == PMAT_None && isSearchEventType && ch > 0x20 && ch < 0x7F ) {
 			// Converting to lowercase:
 			if ( ch >= LETTER_A_UPPER && ch <= LETTER_Z_UPPER )
 				ch |= 0x20;
 
-			int foundindex = -1;
+			int foundIndex = -1;
+			int errorCountdown = 1000;
+			int searchdir = ( (e.IsCtrl || e.IsAlt)? -1 : 1 );
 
-			for ( int i = mDesc.mSelectedItem + 1; i <= lastPanelItemPos; i++ ) {
-				if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
+			for ( int i = mDesc.mSelectedItem + searchdir; i != mDesc.mSelectedItem; i += searchdir ) {
+				if ( errorCountdown-- <= 0 ) {
+					ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::OnUIEvent(). Runaway char search terminated (1000 iterations). i == " .. i .. ", items range [" .. firstPanelItemPos .. "; " .. lastPanelItemPos .. "], mDesc.mItems.Size() == " .. mDesc.mItems.Size() .. ", searchdir == " .. searchdir );
+					break;
+				}
+
+				// Looping the search:
+				if ( i >= lastPanelItemPos )
+					i = firstPanelItemPos;
+				else if ( i <= firstPanelItemPos )
+					i = lastPanelItemPos;
+
+				// Skipping submenus:
+				if ( !( mDesc.mItems[ i ] is "ZCOptionMenuItemInfopanel" ) )
+					continue;
+
+				// Main check:
+				if ( mDesc.mItems[ i ].CheckHotkey( ch ) ) {
 					foundindex = i;
 					break;
 				}
-			}
-
-			if ( foundindex == -1 ) {
-				for ( int i = firstPanelItemPos; i < mDesc.mSelectedItem; i++ ) {
-					if ( mDesc.mItems[ i ].Selectable() && mDesc.mItems[ i ].CheckHotkey( ch ) ) {
-						foundindex = i;
-						break;
-					}
-				}
-			} // of if ( foundindex == -1 ) {}
-
+			} // of for ( int i = mDesc.mSelectedItem + searchdir; i != mDesc.mSelectedItem; i += searchdir ) {}
 
 			if ( foundindex != -1 ) {
 				mDesc.mSelectedItem = foundindex;
@@ -316,7 +325,8 @@ class ZCOptionMenuPanels: OptionMenu {
 
 				return true;
 			}
-		} // of if ( actiontype == PMAT_None && e.Type == UIEvent.Type_Char && e.KeyChar > 32 ) {}
+		} // of if ( actiontype == PMAT_None && isSearchEventType && ch > 0x20 && ch < 0x7F ) {}
+
 
 		// Exists here just for mouse handling.
 		return Super.OnUIEvent( e );
