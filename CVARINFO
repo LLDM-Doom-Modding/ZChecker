@@ -22,7 +22,7 @@ user noarchive string mcm_zchecker_internal_metastring; // Internal string for t
 // General information panel variables.
 user float mcm_zchecker_infopanel_startx	= 8.0;
 user float mcm_zchecker_infopanel_starty	= 8.0;
-user float mcm_zchecker_infopanel_offsetx	= 33.0;
+user float mcm_zchecker_infopanel_offsetx	= 30.0;
 user float mcm_zchecker_infopanel_scale		= 1.0;
 user float mcm_zchecker_infopanelparts_y_gap= 0.55;
 user int mcm_zchecker_infopanel_fonttype	= 0;

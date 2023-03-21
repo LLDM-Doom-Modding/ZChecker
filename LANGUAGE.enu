@@ -77,6 +77,9 @@ ZCHECKER_MAINMENUOPT_FONTS_SMALL	= "Built-in smallfont";
 ZCHECKER_MAINMENUOPT_FONTS_SHORT	= "Mono smallfont, short space";
 ZCHECKER_MAINMENUOPT_FONTS_FULL		= "Mono smallfont, full space";
 ZCHECKER_MAINMENUOPT_FONTS_CONFONT	= "Built-in confont";
+ZCHECKER_MAINMENUOPT_FONTS_NEWSMALL	= "Built-in new smallfont";
+ZCHECKER_MAINMENUOPT_FONTS_NEWCON	= "Built-in new confont";
+ZCHECKER_MAINMENUOPT_NOFONTMSG		= "\c~Font \"\c-%s\c~\" isn't available. Maybe you're using an old GZDoom engine version.";
 
 ZCHECKER_MAINMENUOPT_NETEVENS_DISABLED	= "Disabled";
 ZCHECKER_MAINMENUOPT_NETEVENS_NA		= "Names and args";

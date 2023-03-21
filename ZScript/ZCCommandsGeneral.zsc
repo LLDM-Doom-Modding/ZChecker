@@ -262,8 +262,6 @@ class ZCAddCommand: ZCConsoleCommand {
 				break;
 
 			case SAT_Force:
-				ZCGlobal.Log( LL_Main, "$CCMD_WIP" );
-
 				ThinkerIterator it = ThinkerIterator.Create( "Actor" );
 				Actor locatedActor = NULL, cur = NULL;
 				double mindist = 1e9; // Can't be larger than 65536 * sqrt(3) in GZDoom anyway --N00b
@@ -380,14 +378,6 @@ class ZCAddCommand: ZCConsoleCommand {
 
 class ZCRemCommand: ZCConsoleCommand {
 	int zcPos;
-
-	enum ERemoveSpecial {
-		RMSPC_Error = -3,
-		RMSPC_Skip = -2,
-		RMSPC_All = -1,
-		RMSPC_PosFirst = 0,
-		RMSPC_PosLast = MaxTestee - 1
-	};
 
 	override void InitCCMD() {
 		SetupCCMDInterface(
