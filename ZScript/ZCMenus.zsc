@@ -471,12 +471,27 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 
 
 	override int GetSelection() {
-		return ( mCVar? mCVar.GetInt() : const_WrongCVar );
+		int outval = const_WrongCVar;
+
+		if ( mCVar ) {
+			outval = mCVar.GetInt();
+
+			if ( outval >= 0xFF )
+				outval = getvalueAllEnabled();
+		}
+
+		return outval;
 	}
 
 	override void SetSelection( int selection ) {
 		if ( mCVar ) {
-			selection = clamp( selection, const_AllDisabled, getvalueAllEnabled() );
+			int const_AllEnabled = getvalueAllEnabled();
+
+			if ( selection >= const_AllEnabled )
+				selection = 0xFF;
+			else
+				selection = clamp( selection, const_AllDisabled, const_AllEnabled );
+
 			mCVar.SetInt( selection );
 		}
 	}
