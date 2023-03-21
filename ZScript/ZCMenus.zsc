@@ -366,13 +366,17 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 	Name mSubmenu;
 	class<ZCBaseInfoPanelPart> panelclass;
 
-	private String panelLowercasedLabel;
+	private String panelHotkeyChars;
 	private CVar mCVar;
 	private transient Font enginefont;
 
 	ZCOptionMenuItemInfopanel Init( ZCBaseInfoPanelPart panel ) {
-		String label = panelLowercasedLabel = panel.optionLabel;
-		panelLowercasedLabel.ToLower();
+		String label;
+
+		label = ZCGlobal.FreeLocalize( panel.optionLabel );
+
+		panelHotkeyChars = String.Format( "%s%s", label.Left( 1 ), ZCGlobal.FreeLocalize( panel.optionLabelExtraHotkeys ) );
+		panelHotkeyChars.ToLower();
 
 		if ( panel is "ZCBaseInfoPanelPart_PlayScope" )
 			label = "[play] >> " .. label;
@@ -502,7 +506,9 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 	}
 
 	override bool CheckHotkey( int c ) {
-		return ( panelLowercasedLabel.CharCodeAt( 0 ) == c );
+		String testchar = String.Format( "%c", c );
+
+		return ( panelHotkeyChars.IndexOf( testchar ) != -1 );
 	}
 } // of class ZCOptionMenuItemInfopanel: OptionMenuItemOption {}
 

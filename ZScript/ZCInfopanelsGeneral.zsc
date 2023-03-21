@@ -3,7 +3,8 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_main";
-		optionLabel = "General info (name, pointer, ...)";
+		optionLabel = "$INFOPANELS_MAIN";
+		optionLabelExtraHotkeys = "$INFOPANELKEYS_MAIN";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_main";
 	}
 
@@ -54,7 +55,8 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_worldpos";
-		optionLabel = "World positioning";
+		optionLabel = "$INFOPANELS_WORLDPOS";
+		optionLabelExtraHotkeys = "$INFOPANELKEYS_WORLDPOS";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_worldpos";
 	}
 
@@ -171,7 +173,8 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_maininteract";
-		optionLabel = "Interaction properties";
+		optionLabel = "$INFOPANELS_INTERACTION";
+		optionLabelExtraHotkeys = "$INFOPANELKEYS_INTERACTION";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {

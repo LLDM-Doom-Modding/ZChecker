@@ -3,7 +3,8 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_mainpointers";
-		optionLabel = "Common pointers";
+		optionLabel = "$ZCHECKER_INFOPANELS_PTRCOMMON";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTRCOMMON";
 	}
 
 	static clearscope String DecoratePointerString( Actor testee, ZCheckerHandler zchandler, Actor ptr, String desc, String ptrcolor = WHITE ) {
@@ -66,7 +67,8 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 class ZCInteractionPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_levelpointers";
-		optionLabel = "Interaction pointers";
+		optionLabel = "$ZCHECKER_INFOPANELS_PTRINTERACT";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTRINTERACT";
 	}
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
@@ -84,7 +86,8 @@ class ZCInteractionPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 class ZCDeferredLinksPointersInfoPanel: ZCCommonPointersInfoPanel {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_dfrlinkpointers";
-		optionLabel = "Deferred link pointers";
+		optionLabel = "$ZCHECKER_INFOPANELS_PTRDEFLINKS";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTRDEFLINKS";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -101,7 +104,8 @@ class ZCDeferredLinksPointersInfoPanel: ZCCommonPointersInfoPanel {
 class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_otherpointers";
-		optionLabel = "Other pointers";
+		optionLabel = "$ZCHECKER_INFOPANELS_PTROTHER";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTROTHER";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {

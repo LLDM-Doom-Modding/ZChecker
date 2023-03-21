@@ -7,7 +7,8 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 
 	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_geomsectors";
-		optionLabel = "Actor sectors";
+		optionLabel = "$ZCHECKER_INFOPANELS_GEOMSECTORS";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_GEOMSECTORS";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
 
 		printSecLights = printSecTextures = printSecOther = printSecPortal = printSecTerrain = false;
@@ -344,7 +345,8 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {
 		optionCVarName = "mcm_zchecker_info_geomlines";
-		optionLabel = "Actor lines";
+		optionLabel = "$ZCHECKER_INFOPANELS_GEOMLINES";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_GEOMLINES";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomlines";
 	}
 

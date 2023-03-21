@@ -209,6 +209,21 @@ class ZCGlobal: Thinker {
 		return StringTable.Localize( "$ZCHECKER_" .. textid );
 	}
 
+	// Much more convenient method to localize ZChecker (and maybe user) strings.
+	static clearscope String FreeLocalize( String text ) {
+		if ( text.Left( 10 ) == "$ZCHECKER_" )
+			return StringTable.Localize( text );
+
+		String textLeft2 = text.Left( 2 );
+		if ( textLeft2 == "$$" || textLeft2 == "\\$" )
+			return StringTable.Localize( text.Mid( 1, text.Length() - 1 ) );
+
+		if ( text.Left( 1 ) == "$" )
+			return ZCGlobal.Localize( text.Mid( 1, text.Length() - 1 ) );
+
+		return text;
+	}
+
 
 
 	// Test for the special ZChecker level:

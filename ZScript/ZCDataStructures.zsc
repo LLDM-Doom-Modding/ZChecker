@@ -279,7 +279,6 @@ class ZCPanelsStorage {
 					warningsAmount++;
 					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
 				} else {
-					warningsAmount++;
 					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"." );
 				}
 			}

@@ -91,11 +91,45 @@ ZCHECKER_MAINMENUOPT_TWICE_SCOPY	= "Silently copy";
 ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN	= "Move and warn (default)";
 ZCHECKER_MAINMENUOPT_TWICE_COPYWARN	= "Copy and warn";
 
-// === Control menu panels ===
+// === Infopanels control menu ===
 
-ZCHECKER_PANELS_TITLE	= "ZChecker panels";
+ZCHECKER_INFOPANELSMENU_TITLE		= "ZChecker panels";
 
-// === Control menu Visual Settings ===
+ZCHECKER_INFOPANELS_MAIN			= "General/main info (index, name, ...)";
+ZCHECKER_INFOPANELKEYS_MAIN			= "M";
+ZCHECKER_INFOPANELS_WORLDPOS		= "World positioning";
+ZCHECKER_INFOPANELKEYS_WORLDPOS		= "P";
+ZCHECKER_INFOPANELS_INTERACTION		= "Interaction properties";
+ZCHECKER_INFOPANELKEYS_INTERACTION	= "";
+ZCHECKER_INFOPANELS_GEOMSECTORS		= "Geometry: actor sectors";
+ZCHECKER_INFOPANELKEYS_GEOMSECTORS	= "S";
+ZCHECKER_INFOPANELS_GEOMLINES		= "Geometry: actor lines";
+ZCHECKER_INFOPANELKEYS_GEOMLINES	= "L";
+ZCHECKER_INFOPANELS_INVENTORY		= "Inventory";
+ZCHECKER_INFOPANELKEYS_INVENTORY	= "";
+ZCHECKER_INFOPANELS_STATES			= "States";
+ZCHECKER_INFOPANELKEYS_STATES		= "";
+ZCHECKER_INFOPANELS_VISUAL			= "Visual";
+ZCHECKER_INFOPANELKEYS_VISUAL		= "";
+ZCHECKER_INFOPANELS_PTRCOMMON		= "Common pointers";
+ZCHECKER_INFOPANELKEYS_PTRCOMMON	= "P";
+ZCHECKER_INFOPANELS_PTRINTERACT		= "Interaction pointers";
+ZCHECKER_INFOPANELKEYS_PTRINTERACT	= "P";
+ZCHECKER_INFOPANELS_PTRDEFLINKS		= "Deferred link pointers";
+ZCHECKER_INFOPANELKEYS_PTRDEFLINKS	= "PL";
+ZCHECKER_INFOPANELS_PTROTHER		= "Other pointers";
+ZCHECKER_INFOPANELKEYS_PTROTHER		= "P";
+ZCHECKER_INFOPANELS_ARGSTIDS		= "Args, special & TIDs";
+ZCHECKER_INFOPANELKEYS_ARGSTIDS		= "TS";
+ZCHECKER_INFOPANELS_FRIENDPLAYERS	= "Friend players & teams";
+ZCHECKER_INFOPANELKEYS_FRIENDPLAYERS= "PT";
+ZCHECKER_INFOPANELS_SOUNDDEFS		= "Sound definitions";
+ZCHECKER_INFOPANELKEYS_SOUNDDEFS	= "";
+ZCHECKER_INFOPANELS_CHEATS			= "Cheats";
+ZCHECKER_INFOPANELKEYS_CHEATS		= "";
+
+
+// === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE		= "ZChecker: HUD and visual settings";
 ZCHECKER_VISUAL_POSITIONING	= "Panels positioning";
@@ -120,7 +154,7 @@ ZCHECKER_VISUAL_INFOSTR_SCALE	= "Actor info string scale";
 ZCHECKER_VISUAL_OTHER		= "Other";
 ZCHECKER_VISUAL_FONTTYPES	= "General font";
 
-// === Control menu "Everything" map ===
+// === Control menu for the "Everything" map ===
 
 ZCHECKER_EVMAPMENU_TITLE		= "ZChecker: \"Everything\" map settings";
 ZCHECKER_EVMAPMENU_SPAWNOPTIONS	= "Spawning options";
@@ -152,7 +186,7 @@ ZCHECKER_EVMAPMENU_RELATEDCCMD	= "Related CCMDs (closes menu)";
 ZCHECKER_EVMAPMENU_RECREATEACTORS = "Recreate actors: \"zcevre\"";
 ZCHECKER_EVMAPMENU_TELEPORTSTART= "Teleport to start: \"zcevg start\"";
 
-// === Control menu CallCCMD ===
+// === Console commands control menu ===
 
 ZCHECKER_CCMDMENU_TITLE = "ZChecker: call console command";
 ZCHECKER_CCMDMENU_WIP = "[WIP] Some frequently used commands will be here.";
@@ -163,6 +197,7 @@ ZCHECKER_CCMDMENU_EXAMPLES = "Command examples:";
 ZCHECKER_CCMDMENU_ZCADD = "\"zcadd\": Add linetarget to panel";
 ZCHECKER_CCMDMENU_ZCADD_SELF = "\"zcadd self\": Add self to panel";
 ZCHECKER_CCMDMENU_ZCREM = "\"zcrem\": Clear all panels";
+
 
 // === An "Everything" maps ===
 

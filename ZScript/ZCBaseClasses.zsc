@@ -280,17 +280,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
-	private String handleSetupInterfaceLocalization( String text ) {
-		if ( text.Left( 1 ) == "$" )
-			return ZCGlobal.Localize( text.Mid( 1, text.Length() - 1 ) );
-
-		return text;
-	}
-
 	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltipClass = NULL ) {
 		ccmdInterfaceData.neteventName = neteventname;
-		ccmdInterfaceData.helpHeader = handleSetupInterfaceLocalization( helpheader );
-		ccmdInterfaceData.helpDesc = handleSetupInterfaceLocalization( helpdesc );
+		ccmdInterfaceData.helpHeader = ZCGlobal.FreeLocalize( helpheader );
+		ccmdInterfaceData.helpDesc = ZCGlobal.FreeLocalize( helpdesc );
 
 		if ( tooltipClass ) {
 			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltipClass ) );
@@ -915,6 +908,7 @@ class ZCBaseInfoPanelPart abstract {
 	String optionCVarName;
 	String optionLabel;
 	String optionSubmenuName;
+	String optionLabelExtraHotkeys; // Automatically picked up only a first character in localized string.
 
 
 	/* API section */
@@ -923,6 +917,7 @@ class ZCBaseInfoPanelPart abstract {
 		optionCVarName = "mcm_zchecker_info_...";
 		optionLabel = "<" .. GetClassName() .. ">";
 		optionSubmenuName = "";
+		optionLabelExtraHotkeys = "";
 	}
 
 	ui virtual String GetInfo( Actor thing, ZCheckerField thingfield ) {
