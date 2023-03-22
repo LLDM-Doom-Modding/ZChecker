@@ -274,12 +274,12 @@ class ZCPanelsStorage {
     				}
 
 					if ( !found && curloglevel >= LL_Detailed )
-						ZCGlobal.ClearscopeLog( LL_Detailed, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" vanished." );
+						ZCGlobal.ClearscopeLog( LL_Detailed, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). Class \"" .. LLCOLOR_NORMAL .. neworder[ i ] .. LLCOLOR_DARK .. "\" vanished." );
     			} else if ( curclass ) {
 					warningsAmount++;
-					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\" isn't a Panel." );
+					ZCGlobal.ClearscopeLog( LL_Main, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). Class \"" .. LLCOLOR_NORMAL .. neworder[ i ] .. LLCOLOR_DARK .. "\" isn't a Panel." );
 				} else {
-					ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). " .. TEXTCOLOR_DARKGRAY .. "Cannot find Panel class \"" .. TEXTCOLOR_GRAY .. neworder[ i ] .. TEXTCOLOR_DARKGRAY .. "\"" );
+					ZCGlobal.ClearscopeLog( LL_Main, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). Cannot find Panel class \"" .. LLCOLOR_NORMAL .. neworder[ i ] .. LLCOLOR_DARK .. "\"" );
 				}
 			}
 		} // of if ( panelsOrderCVar.GetString() != "" ) {}
