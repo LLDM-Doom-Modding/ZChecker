@@ -583,6 +583,16 @@ ZCHECKER_TOOLTIP_ZCTAKE_EXAMPLES =
 \"`Czctake s `2*`Ccard`2:1 4`x\" takes from `Gs`Yelf`x four items of the first element from the list, in this case a \"BlueCard\".";
 
 
+ZCHECKER_TOOLTIP_ZCACT_TIPS =
+"Not all of the actors may be killed or resurrected. If this happens, a message will be printed.\
+Resurrection of the dead player not supported, use \"`Cresurrect`C\" built-in command instead.";
+ZCHECKER_TOOLTIP_ZCACT_EXAMPLES =
+"\"`Czcact rm`C\" deletes the linetarget actor from the memory (like a \"`Cremove`C\" built-in CCMD, but with only one actor);\
+\"`Czcact kill`C\" kills a linetarget;\
+\"`Czcact 1 res`C\" tries to revive/resurrect the Actor in the first infopanel;\
+\"`Czcact s xkill`C\" kills caller player (`Gs`Yelf`x), like a built-in \"`Cmdk`C\" used on self.";
+
+
 ZCHECKER_TOOLTIP_ZCSUMMON_EXAMPLES =
 "\"`Czcsummon clip`C\" creates a Clip actor;\
 \"`Czcsummon r`2-`Claun`2-`x\" creates a R`~ocket`xLaun`~cher`x;\
@@ -594,6 +604,25 @@ ZCHECKER_TOOLTIP_ZCSUMMON_EXAMPLES =
 \"`Czcsummon z`2*`Cman 3 f`x\" or \"`Czcsummon z`2*`Cman 3 friendly`x\" summons three `1friendly`x Zombiemen;\
 \"`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x\" summons `1friendly`x Zombieman and adds it to the `g3`xrd `gpanel position`x;\
 \"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" summons one faced from the player ShotgunGuy which will not infight others, has a TID of 4 and a great health value.";
+
+
+ZCHECKER_TOOLTIP_ZCSETPROP_EXAMPLES =
+"\"`Czcsetprop hp:255`C\" `~or`x \"`Czcsetprop health:255`C\" sets a health for the linetarget to the value `g255`x;\
+\"`Czcsetp s hp:255`C\" sets a health for the caller player (for `Gs`Yelf`x) to `g255`x;\
+\
+\"`Czcsetp 1 add x:10`C\" moves an Actor in the `G1`xst infopanel to 10 mappixels by X axis;\
+\"`Czcsetp 3 add x:0.5`~,`Cy:0.333`C\" moves an actor in the `G3`xrd infopanel diagonally, by X and Y axis;\
+\"`Czcsetp 1 add alpha:-0.2`C\" reduces the opaqueness amount for the actor in the `G1`xst panel. `YNote that actor must have proper RenderStyle`x;\
+\
+\"`Czcsetp 1 relative:1 alpha:-0.2`C\" actually does the same as the command on previous line;\
+\"`Czcsetp 1 rel:s hp:0`C\" sets a health of the actor in the `G1`xst infopanel to the caller player's health `~(as sum of `xplayer.health`~ and `x0`~)`x;\
+\"`Czcsetp 1 rel hp:0`C\" also does the same as the command above: \"`Yrel`x\" without argument treated as \"`Yrel`~:`Gself`x\";\
+\"`Czcsetp 2 master:self,scalex:0.75,scaley:2`C\" sets the `Gmaster pointer `xto the caller player and `Gscale `xseparately for the `GX and Y`x for the actor in `G2`xnd panel;\
+\
+\"`Czcsetp hp:spawn`C\" `~or`x \"`Czcsetprop hp:s`C\" resets a linetarget health to the spawn value;\
+\"`Czcsetp z:ceil`C\" moves a linetarget to the ceiling;\
+\"`Czchate`C\" angers the linetarget actor to the caller player `~(alias to the \"`Czcsetprop target:self`~\")`x;\
+\"`Czchate 2 none`C\" `~or`x \"`Czchate 2 null`C\" clears the current target for the actor in `G2`xnd panel `~(alias to the \"`Czcsetprop 2 target:null`~\")`x.";
 
 
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS =
