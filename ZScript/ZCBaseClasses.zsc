@@ -943,13 +943,14 @@ class ZCBaseInfoPanelPart abstract {
 
 				if ( addlabel.Length() == 0 )
 					addlabel = "Unknown";
+
 			} else if ( cur is 'OptionMenuItemSlider' ) {
 				OptionMenuItemSlider curslider = OptionMenuItemSlider( cur );
 				addlabel = String.Format( String.Format( "%%.%df", curslider.mShowValue ), curslider.GetSliderValue() );
 			}
 
 			if ( addlabel != "" )
-				label = label .. "\"" .. cur.mLabel .. ":" .. addlabel .. "\" ";
+				label = label .. "\"" .. StringTable.Localize( cur.mLabel ) .. ":" .. addlabel .. "\" ";
 		}
 
 		if ( i < submenuDesc.mItems.Size() )

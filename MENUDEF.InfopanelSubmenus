@@ -4,129 +4,130 @@
 // Submenu options:
 
 OptionValue "mcm_ZCheckerOption_flags_names" {
-	0, "Disabled"
-	1, "Shorten"
-	2, "Long"
+	0, "$ZCHECKER_PANELSOPT_FLAGS_OFF"
+	1, "$ZCHECKER_PANELSOPT_FLAGS_SHORT"
+	2, "$ZCHECKER_PANELSOPT_FLAGS_LONG"
 }
 
 OptionValue "mcm_ZCheckerOption_panelmain_tags" {
-	0, "Never"
-	1, "If different from classname"
-	2, "Always"
+	0, "$ZCHECKER_PANELMAINOPT_TAGS_OFF"
+	1, "$ZCHECKER_PANELMAINOPT_TAGS_AUTO"
+	2, "$ZCHECKER_PANELMAINOPT_TAGS_ON"
 }
 
 OptionValue "mcm_ZCheckerOption_panelinv_sorttypes" {
-	0, "(Unsorted)"
-	1, "Names"
-	2, "Current amount"
-	3, "Max amount"
+	0, "$ZCHECKER_PANELINVOPT_SORT_UNSORTED"
+	1, "$ZCHECKER_PANELINVOPT_SORT_NAMES"
+	2, "$ZCHECKER_PANELINVOPT_SORT_CURAMOUNT"
+	3, "$ZCHECKER_PANELINVOPT_SORT_MAXAMOUNT"
 }
 
 OptionValue "mcm_ZCheckerOption_panelgeom_secheights" {
-	0, "Disabled"
-	1, "Z coordinates"
-	2, "Z coord + actor delta"
+	0, "$ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF"
+	1, "$ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY"
+	2, "$ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA"
 }
 OptionValue "mcm_ZCheckerOption_panelgeom_linetype" {
-	1, "On line of sight"
-	2, "Blocking line"
-	3, "Both (LOS & blocking)" // Bitmask.
+	1, "$ZCHECKER_PANELGEOMLNOPT_TYPE_LOS"
+	2, "$ZCHECKER_PANELGEOMLNOPT_TYPE_BLOCK"
+	3, "$ZCHECKER_PANELGEOMLNOPT_TYPE_BOTH" // Bitmask.
 }
 OptionValue "mcm_ZCheckerOption_panelgeom_lineaction" {
-	0, "Disabled"
-	1, "Action and tag"
-	2, "Action, args and tag"
-	3, "Everything"
+	0, "$ZCHECKER_PANELGEOMLNOPT_SPEC_OFF"
+	1, "$ZCHECKER_PANELGEOMLNOPT_SPEC_TAG"
+	2, "$ZCHECKER_PANELGEOMLNOPT_SPEC_ARGS"
+	3, "$ZCHECKER_PANELGEOMLNOPT_SPEC_ALL"
 }
 
 OptionValue "mcm_ZCheckerOption_panelstates_psprite_type" {
-	0, "Disabled"
-	1, "Main only"
-	2, "Main + flash"
-	3, "Special only"
-	4, "Main + special"
-	5, "All overlays"
+	0, "$ZCHECKER_PANELSTATESOPT_PSPR_OFF"
+	1, "$ZCHECKER_PANELSTATESOPT_PSPR_M"
+	2, "$ZCHECKER_PANELSTATESOPT_PSPR_MFLASH"
+	3, "$ZCHECKER_PANELSTATESOPT_PSPR_SPEC"
+	4, "$ZCHECKER_PANELSTATESOPT_PSPR_MSPEC"
+	5, "$ZCHECKER_PANELSTATESOPT_PSPR_ALL"
 }
 
 
 // Submenus:
 
 OptionMenu "mcm_ZCheckerSubmenu_main" {
-	Title "ZChecker panel: General info"
+	Title "$ZCHECKER_PANELSUBMENU_MAIN_TITLE"
 	StaticText " "
 
-	Option "Actor tag", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
-	Option "Self pointer", "mcm_zchecker_infovar_mainselfptr", "YesNo"
-	Option "Player information", "mcm_zchecker_infovar_mainplayers", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_MAIN_TAG", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
+	Option "$ZCHECKER_PANELSUBMENU_MAIN_SELFPTR", "mcm_zchecker_infovar_mainselfptr", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_MAIN_PLAYERINFO", "mcm_zchecker_infovar_mainplayers", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
-	Title "ZChecker panel: World positioning"
+	Title "$ZCHECKER_PANELSUBMENU_WPOS_TITLE"
 	StaticText " "
 
-	StaticText "Tilts", 1
-	Slider "Amount of decimals", "mcm_zchecker_infovar_wpostiltdcma", 0, 5, 1, 0
-	Option "Remove roll", "mcm_zchecker_infovar_wposnoroll", "YesNo"
+	StaticText "$ZCHECKER_PANELSUBMENU_WPOSDIV_TILTS", 1
+	Slider "$ZCHECKER_PANELSUBMENU_WPOS_DECIMAMNT", "mcm_zchecker_infovar_wpostiltdcma", 0, 5, 1, 0
+	Option "$ZCHECKER_PANELSUBMENU_WPOS_NOROLL", "mcm_zchecker_infovar_wposnoroll", "YesNo"
 
 	StaticText " "
-	StaticText "Other", 1
-	Option "Player buttons", "mcm_zchecker_infovar_wposplbuttons", "YesNo"
+	StaticText "$ZCHECKER_PANELSUBMENU_WPOSDIV_OTHER", 1
+	Option "$ZCHECKER_PANELSUBMENU_WPOS_PLAYERBUTTONS", "mcm_zchecker_infovar_wposplbuttons", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_inventory" {
-	Title "ZChecker panel: Inventory"
+	Title "$ZCHECKER_PANELSUBMENU_INV_TITLE"
 	StaticText " "
 
-	Slider "Amount of elements", "mcm_zchecker_infovar_invamount", 8, 80, 2, 0
-	Option "Sort output by", "mcm_zchecker_infovar_invsorttype", "mcm_ZCheckerOption_panelinv_sorttypes"
-	Option "Ascending (reversed) output", "mcm_zchecker_infovar_invsortascend", "YesNo"
+	Slider "$ZCHECKER_PANELSUBMENU_INV_ITEMSAMNT", "mcm_zchecker_infovar_invamount", 8, 80, 2, 0
+	Option "$ZCHECKER_PANELSUBMENU_INV_SORTBY", "mcm_zchecker_infovar_invsorttype", "mcm_ZCheckerOption_panelinv_sorttypes"
+	Option "$ZCHECKER_PANELSUBMENU_INV_REVERSE", "mcm_zchecker_infovar_invsortascend", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_states" {
-	Title "ZChecker panel: States"
+	Title "$ZCHECKER_PANELSUBMENU_STATES_TITLE"
 	StaticText " "
 
-	StaticText "General", 1
-	ScaleSlider "Amount", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
-	Option "Log to console", "mcm_zchecker_infovar_stateslogging", "YesNo"
-	StaticText "Note: amount of 0 is an unlimited output", DARKGRAY
+	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_GENERAL", 1
+	ScaleSlider "$ZCHECKER_PANELSUBMENU_STATES_AMNT", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "Unlimited"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_CONLOG", "mcm_zchecker_infovar_stateslogging", "YesNo"
+	StaticText "$ZCHECKER_PANELSUBMENU_STATESNOTE_CONLOG", DARKGRAY
 
 	StaticText " "
-	StaticText "For current state", 1
-	Option "Tics left bar", "mcm_zchecker_infovar_statetic", "YesNo"
-	Option "Flags", "mcm_zchecker_infovar_stateflags", "mcm_ZCheckerOption_flags_names"
-	Option "Extra info", "mcm_zchecker_infovar_stateextras", "YesNo"
+	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_CUR", 1
+	Option "$ZCHECKER_PANELSUBMENU_STATES_TICSBAR", "mcm_zchecker_infovar_statetic", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_FLAGS", "mcm_zchecker_infovar_stateflags", "mcm_ZCheckerOption_flags_names"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_EXTRAINFO", "mcm_zchecker_infovar_stateextras", "YesNo"
 
 	StaticText " "
-	StaticText "For ready weapon state/PSprite", 1
-	Option "Active overlay(s)", "mcm_zchecker_infovar_statepsprlayersmode", "mcm_ZCheckerOption_panelstates_psprite_type"
-	ZCPSpriteInputField "Special overlay ID", "mcm_zchecker_infovar_statepsprlayerid"
+	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_PSPRITE", 1
+	Option "$ZCHECKER_PANELSUBMENU_STATES_OVERLAYS", "mcm_zchecker_infovar_statepsprlayersmode", "mcm_ZCheckerOption_panelstates_psprite_type"
+	ZCPSpriteInputField "$ZCHECKER_PANELSUBMENU_STATES_SPECIALID", "mcm_zchecker_infovar_statepsprlayerid"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
-	Title "ZChecker panel: Sectors geometry"
+	Title "$ZCHECKER_PANELSUBMENU_GSEC_TITLE"
 	StaticText " "
 
-	StaticText "Play-scoped class. Will be updated in world tick.", FIRE
+	StaticText "$ZCHECKER_PANELSUBMENUNOTE_PLAYSCOPE", FIRE
 	StaticText " "
 
-	Option "Separated floor and ceiling", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_SEPARATE", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
 	StaticText " "
-	Option "Heights", "mcm_zchecker_infovar_geomsecheights", "mcm_ZCheckerOption_panelgeom_secheights"
-	Option "Light level", "mcm_zchecker_infovar_geomseclight", "YesNo"
-	Option "Textures", "mcm_zchecker_infovar_geomsectex", "YesNo"
-	Option "Flags", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
-	Option "Damage (also for terrain)", "mcm_zchecker_infovar_geomsecdamage", "YesNo"
-	Option "Interaction/Physics", "mcm_zchecker_infovar_geomsecphysics", "YesNo"
-	Option "Portals", "mcm_zchecker_infovar_geomsecportal", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_HEIGHTS", "mcm_zchecker_infovar_geomsecheights", "mcm_ZCheckerOption_panelgeom_secheights"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_LIGHT", "mcm_zchecker_infovar_geomseclight", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_TEXTURES", "mcm_zchecker_infovar_geomsectex", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_FLAGS", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_DAMAGE", "mcm_zchecker_infovar_geomsecdamage", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_PHYSICS", "mcm_zchecker_infovar_geomsecphysics", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_PORTALS", "mcm_zchecker_infovar_geomsecportal", "YesNo"
 	StaticText " "
-	Option "Floor terrain data", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_TERRAIN", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
 	StaticText " "
-	StaticText "(Not released yet):", DARKGRAY
-	Option "Other: water level, special, ...", "mcm_zchecker_infovar_geomsecother", "YesNo"
+	StaticText "$ZCHECKER_PANELSUBMENU_GSECNOTE_WIP", DARKGRAY
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_OTHER", "mcm_zchecker_infovar_geomsecother", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
+	// [McM] Geometry lines right now is a dummy placeholder infopanel, without content.
 	Title "ZChecker panel: Lines geometry"
 	StaticText " "
 
@@ -143,9 +144,8 @@ OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	Option "Line action", "mcm_zchecker_infovar_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_sound"
-{
-	Title "ZChecker panel: Sound"
+OptionMenu "mcm_ZCheckerSubmenu_sound" {
+	Title "$ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE"
 	StaticText " "
-	Option "Output rare sounds", "mcm_zchecker_infovar_soundsrare", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_SNDDEFS_RARE", "mcm_zchecker_infovar_soundsrare", "YesNo"
 }
