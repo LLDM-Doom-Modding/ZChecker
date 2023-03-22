@@ -434,6 +434,12 @@ ZCHECKER_ZCVARSCTL_HELP_DESC		= "Perform control on internal ZChecker class vari
 ZCHECKER_ZCVARSCTL_SETSUCCESS		= "Internal variable \"\cn%s\c-\" is \cdset\c- to \"%s\".";
 ZCHECKER_ZCVARSCTL_LISTHEADER		= "\cyInternal variables \c~(total \c-%i\c~): ";
 
+// "zcinterface"/"zcif":
+ZCHECKER_ZCIF_HELP_TITLE			= "zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree";
+ZCHECKER_ZCIF_HELP_DESC				= "Provide an external interface for the user-defined aliases and same other stuff. On return sets an integer console variable \"%s\".";
+ZCHECKER_ZCIF_TRACEPREFIX			= "\csExternal interface\c~. \c-";
+
+
 
 // File "ZCTooltipClasses.zsc":
 

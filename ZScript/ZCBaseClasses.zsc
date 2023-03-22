@@ -407,7 +407,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	}
 
 	// Returns a linetarget actor (if one exists):
-	protected play Actor LinetraceActor( Actor from = NULL ) {
+	protected play Actor LinetraceActor( Actor from = NULL, bool quiet = false ) {
 		Actor outActor = NULL;
         FLineTraceData remoteRay;
 
@@ -426,11 +426,14 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					outActor = outActor.master;
 				} else {
 					// This branch will be executed if master had been removed from the world.
-					LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", outActor.GetClassName() .. "" );
 					outActor = NULL;
+
+					if ( !quiet )
+						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", outActor.GetClassName() .. "" );
 				}
 			}
-		} else {
+
+		} else if ( !quiet ) {
 			ZCGlobal.Log( LL_Normal, ZCGlobal.Loc( "GETACTOR_LTNOACTORS" ) );
 		}
 

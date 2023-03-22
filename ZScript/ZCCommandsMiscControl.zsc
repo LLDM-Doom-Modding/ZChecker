@@ -833,6 +833,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 		ICT_PanelEqual,
 		ICT_ValidPlacePos,
 		ICT_ValidRawPos,
+		ICT_LinetargetCheck,
 
 		// Returns 1..MaxTestee:
 		ICT_FindInPanels,
@@ -846,8 +847,8 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_external_interface",
-			"zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree",
-			"Provide an external interface for the user-defined aliases and same other stuff. On return sets an integer console variable \"" .. const_interfaceCVarName .. "\".",
+			"$ZCIF_HELP_TITLE",
+			String.Format( ZCGlobal.Locz( "ZCIF_HELP_DESC" ), const_interfaceCVarName ),
 			'ZCTooltipExternalInterfaceCommand'
 		);
 	}
@@ -912,6 +913,12 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				zcSubcommand = ( argcmd == "validpos"? ICT_ValidRawPos : ICT_ValidPlacePos );
 			}
 
+		} else if ( argcmd == "lt" || argcmd == "linetarget" || argcmd == "linetrace" ) {
+			if ( ccmdArgsSize == 0 ) {
+				outval = true;
+				zcSubcommand = ICT_LinetargetCheck;
+			}
+
 		} else if ( argcmd == "panelfind" ) {
 			if ( ccmdArgsSize == 1 ) {
 				outval = true;
@@ -930,7 +937,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	} // of override bool HandleArguments() {}
 
 	void InterfaceDebugLog( String message ) {
-		ZCGlobal.Log( LL_Debug, TEXTCOLOR_DARKBROWN .. "External interface" .. LLCOLOR_DEBUG .. ". " .. LLCOLOR_MAIN .. message );
+		ZCGlobal.Log( LL_Debug, ZCGlobal.Locz( "ZCIF_TRACEPREFIX" ) .. message );
 	}
 
 	override void DoCommand() {
@@ -1008,6 +1015,12 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				InterfaceDebugLog( "Place validation: \"" .. ccmd.args[ 1 ] .. "\" is" .. ( outval
 							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_DEBUG .. " (true)."
 							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_DEBUG .. " (false)." ) );
+				break;
+			case ICT_LinetargetCheck:
+				outval = !!LinetraceActor( quiet: true );
+				InterfaceDebugLog( "Linetarget actor " .. ( outval
+							? TEXTCOLOR_GREEN .. " exists" .. LLCOLOR_DEBUG .. " (true)."
+							: TEXTCOLOR_BRICK .. " not exists" .. LLCOLOR_DEBUG .. " (false)." ) );
 				break;
 			case ICT_FindInPanels:
 				class<Actor> compareClass = ParseSpecialActorName( ccmd.args[ 1 ] );
