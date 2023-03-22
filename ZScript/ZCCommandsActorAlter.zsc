@@ -839,7 +839,7 @@ struct ZCSetPropertyParameterDouble {
 		double tmpfloat = clamp( value, minlimit, maxlimit );
 
 		if ( value != tmpfloat ) {
-			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPINT" ), valuedesc, value, minlimit, maxlimit, tmpfloat ) );
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPFLOAT" ), valuedesc, value, minlimit, maxlimit, tmpfloat ) );
 			value = tmpfloat;
 		}
 
@@ -865,11 +865,11 @@ struct ZCSetPropertyParameterInteger {
 		if ( !changed )
 			return value;
 
-		int tmpfloat = clamp( value, minlimit, maxlimit );
+		int tmpint = clamp( value, minlimit, maxlimit );
 
-		if ( value != tmpfloat ) {;
-			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPFLOAT" ), valuedesc, value, minlimit, maxlimit, tmpfloat ) );
-			value = tmpfloat;
+		if ( value != tmpint ) {
+			ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_CLAMPINT" ), valuedesc, value, minlimit, maxlimit, tmpint ) );
+			value = tmpint;
 		}
 
 		return value;
@@ -954,6 +954,8 @@ struct ZCSetPropertyExtraParameters play {
 	ZCSetPropertyParameterInteger[ PFI_Quantity ] integers;
 	ZCSetPropertyParameterPointer[ PFP_Quantity ] pointers;
 
+	bool rawhealth;
+
 
 	void Clear( void ) {
 		for ( int i = 0; i < PFD_Quantity; i++ )
@@ -964,6 +966,8 @@ struct ZCSetPropertyExtraParameters play {
 
 		for ( int i = 0; i < PFP_Quantity; i++ )
 			pointers[ i ].changed = false;
+
+		rawhealth = false;
 	}
 
 	void AdjustValues( void ) {
@@ -1205,6 +1209,10 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 							int propnamelen = prop.Length();
 
 							if ( prop == "health" || prop == "hp" || prop == "h" ) {
+								params.rawhealth = false;
+								params.integers[ params.PFI_Health ].set( paramint );
+							} else if ( prop.Left( 4 ) == "rawh" ) {
+								params.rawhealth = true;
 								params.integers[ params.PFI_Health ].set( paramint );
 							} else if ( prop == "mass" ) {
 								params.integers[ params.PFI_Mass ].set( paramint );
@@ -1232,7 +1240,10 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 					} else {
 						Actor baseactor = ( relativeTo? relativeTo : alteree );
 
-						if ( prop == "z" || prop == "posz" ) {
+						if ( pvalue == "" ) {
+							LogLocalize2Str( LL_Main, "ZCSETP_EMPTYPROP", prop );
+
+						} else if ( prop == "z" || prop == "posz" ) {
 							String pvalueLeft1 = pvalue.Left( 1 );
 
 							if ( pvalueLeft1 == "f" )
@@ -1252,11 +1263,8 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 							else
 								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDHP", pvalue ); 
 
-						} else if ( prop == "tid" && ( pvalue.Left( 2 ) == "un" || pvalue == "new" ) ) {
+						} else if ( prop == "tid" && ( pvalue.Left( 1 ) == "u" || pvalue == "new" ) ) {
 							params.integers[ params.PFI_TID ].set( Actor.FindUniqueTid() );
-
-						} else if ( pvalue == "" ) {
-							LogLocalize2Str( LL_Main, "ZCSETP_EMPTYPROP", prop ); 
 
 						} else {
 							// In fast, this line is a last frontier when no input matches found at all.
@@ -1334,7 +1342,44 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.pointers[ params.PFP_Master ].setfor( alteree.master );
 		params.pointers[ params.PFP_Tracer ].setfor( alteree.tracer );
 
-		params.integers[ params.PFI_Health ].setfor( alteree.health );
+		if ( params.integers[ params.PFI_Health ].changed ) {
+			int newhp = params.integers[ params.PFI_Health ].value;
+
+			if ( !params.rawhealth ) {
+
+				if ( !alteree.player ) {
+					if ( newhp <= 0 )
+						alteree.A_Die();
+
+					alteree.health = newhp;
+
+				} else {
+					PlayerPawn pawn = PlayerPawn( alteree );
+
+					if ( newhp <= 0 && pawn ) {
+						// See "/src/m_cheat.cpp", class with disgusting name "DSuicider".
+						// Strangely, but "pawn.CheatSuicide()" doesn't work properly.
+						pawn.bSHOOTABLE = true;
+						pawn.bINVULNERABLE = false;
+
+						double savedDamageFactor = pawn.DamageFactor;
+						pawn.DamageFactor = 1.0;
+						pawn.DamageMobj( pawn, pawn, pawn.health, 'Suicide' );
+						pawn.DamageFactor = savedDamageFactor;
+
+						if ( pawn.health <= 0 )
+							pawn.bSHOOTABLE = false;
+					}
+
+					alteree.player.health = alteree.health = newhp;
+				}
+
+			} else {
+				alteree.health = newhp;
+			} // of else of if ( !params.rawhealth ) {}
+
+		} // of if ( params.integers[ params.PFI_Health ].changed ) {}
+
 		params.integers[ params.PFI_Mass ].setfor( alteree.mass );
 		params.integers[ params.PFI_Special ].setfor( alteree.special );
 
