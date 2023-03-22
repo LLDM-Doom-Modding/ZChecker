@@ -1284,11 +1284,6 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			params.integers[ params.PFI_Health ].value += relativeTo.health;
 			params.integers[ params.PFI_Mass ].value += relativeTo.health;
 
-			//params.integers[ params.PFI_Special ].value += relativeTo.special;
-			//params.integers[ params.PFI_TID ].value += relativeTo.tid;
-			//for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
-			//	params.integers[ params.PFI_Args_Start + i ].value += relativeTo.args[ i ];
-
 			params.doubles[ params.PFD_X ].value += relativeTo.pos.x;
 			params.doubles[ params.PFD_Y ].value += relativeTo.pos.y;
 			params.doubles[ params.PFD_Z ].value += relativeTo.pos.z;
@@ -1307,6 +1302,24 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			params.doubles[ params.PFD_ScaleX ].value += relativeTo.scale.x;
 			params.doubles[ params.PFD_ScaleY ].value += relativeTo.scale.y;
 			params.doubles[ params.PFD_Alpha ].value += relativeTo.alpha;
+
+			// Note about properties that do not make sense to alter relative to something:
+			if ( params.integers[ params.PFI_Special ].changed )
+				LogLocalize2Str( LL_Main, "ZCSETP_NONRELATIVEPROP", "Special" );
+
+			if ( params.integers[ params.PFI_TID ].changed )
+				LogLocalize2Str( LL_Main, "ZCSETP_NONRELATIVEPROP", "TID" );
+
+			for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
+				if ( params.integers[ params.PFI_Args_Start + i ].changed )
+					LogLocalize2Str( LL_Main, "ZCSETP_NONRELATIVEPROP", "arg" .. i );
+
+			if ( params.pointers[ params.PFP_Target ].changed )
+				LogLocalize2Str( LL_Detailed, "ZCSETP_NONRELATIVEPROP", "target" );
+			if ( params.pointers[ params.PFP_Master ].changed )
+				LogLocalize2Str( LL_Detailed, "ZCSETP_NONRELATIVEPROP", "master" );
+			if ( params.pointers[ params.PFP_Tracer ].changed )
+				LogLocalize2Str( LL_Detailed, "ZCSETP_NONRELATIVEPROP", "tracer" );
 		}
 
 

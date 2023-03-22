@@ -445,6 +445,7 @@ ZCHECKER_ZCSETP_WRONGKEYWORDZ	= "\c!Unknown placeholder \"\c-%s\c!\" for the Z c
 ZCHECKER_ZCSETP_WRONGKEYWORDHP	= "\c!Unknown placeholder \"\c-%s\c!\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ or \c-s[pawn]\c~";
 ZCHECKER_ZCSETP_EMPTYPROP		= "\c~Skipped empty property \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP		= "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
+ZCHECKER_ZCSETP_NONRELATIVEPROP	= "\c~Value of the non-relative property \c-%s\c~ not altered.";
 ZCHECKER_ZCSETP_SUCCESS			= "Properties for actor \"%s\" succesfully changed.";
 
 
