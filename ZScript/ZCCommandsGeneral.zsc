@@ -309,9 +309,6 @@ class ZCAddCommand: ZCConsoleCommand {
 
 						if ( locatedActorClass == "ZCheckerActorInfo" ) {
 							locatedActor = locatedActor.master;
-						} else if ( locatedActorClass == "ZCheckerSectorSetter" ) {
-							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", "" .. locatedActor.GetClassName() );
-							locatedActor = NULL;
 						}
 					}
 

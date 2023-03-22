@@ -159,7 +159,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		return cur && (
 			  ( cur is "Inventory" && Inventory( cur ).owner )
 			||( cur is "PlayerPawn" && cur.player )
-			||( cur.GetClass() == "ZCheckerSectorSetter" )
 			||  IsClassRestricted( cur.GetClass() )
 		);
 	}
@@ -209,7 +208,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ i ] );
 
 			evSectors[ i ].curSegment = 0;
-			evSectors[ i ].setter.SetOrigin( ( evSectors[ i ].startSectors[ firstExistingSectorIndex ].centerspot, 0 ), false );
+			evSectors[ i ].setter.xypos = evSectors[ i ].startSectors[ firstExistingSectorIndex ].centerspot;
 			evSectors[ i ].setter.curJumpAmount = 0;
 		}
 
@@ -389,11 +388,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						int firstExistingSectorIndex = FindNextExistingSectorIndex( evSectors[ j ] );
 
 						if ( firstExistingSectorIndex != -1 ) {
-							vector3 setterPos = ( evSectors[ j ].startSectors[ firstExistingSectorIndex ].centerspot, 0 );
+							ZCheckerSectorSetter newsetter = new( 'ZCheckerSectorSetter' );
 
-							evSectors[ j ].setter = ZCheckerSectorSetter( Actor.Spawn( "ZCheckerSectorSetter", setterPos ) );
-							evSectors[ j ].setter.evSectorDef = evSectors[ j ];
-							evSectors[ j ].setter.InitFromPos();
+							newsetter.evSectorDef = evSectors[ j ];
+							newsetter.xypos = evSectors[ j ].startSectors[ firstExistingSectorIndex ].centerspot;
+							newsetter.InitFromPos();
+
+							evSectors[ j ].setter = newsetter;
 
 							//ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Spawned ev-setter for the sector type \"" .. GetESectorName( j ) .. "\"." );
 						} else {
@@ -554,24 +555,23 @@ class ZCheckerEverythingMapHandler: EventHandler {
 } // of class ZCheckerEverythingMapHandler: EventHandler {}
 
 
-class ZCheckerSectorSetter: Actor {
+class ZCheckerSectorSetter play {
 	const ZCUDMF_Type = ZCheckerEverythingMapHandler.ZCUDMF_Type;
 	ZCheckerSectorSetterData evSectorDef;
+
+	vector2 xypos;
 
 	vector2 jumpLen;
 	int jumpMaxAmount;
 	vector2 infoActorOffset;
 
 	int curJumpAmount;
-
-	Default {
-		+NOINTERACTION;
-		+NOBLOCKMAP;
-		FloatBobPhase 0;
-	}
+	Sector floorsector;
 
 	void InitFromPos( void ) {
 		bool continueFlag = true;
+
+		floorsector = Sector.PointInSector( xypos );
 
 		if ( !floorsector ) {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::InitFromPos(). " .. LLCOLOR_WARNING .. "Warning: initialization of the sector setter of type \"" .. ZCheckerEverythingMapHandler.GetESectorName( evSectorDef.evType ) .. "\" performed outside the map\c-." );
@@ -591,8 +591,6 @@ class ZCheckerSectorSetter: Actor {
 		}
 	} // of void InitFromPos( void ) {}
 
-	override void Tick() {}
-
 	protected bool jumpToNextTypeSegment( void ) {
 		bool success = true;
 
@@ -603,7 +601,7 @@ class ZCheckerSectorSetter: Actor {
 				success = false;
 			} else {
 				evSectorDef.curSegment = nextSegment;
-				SetOrigin( ( evSectorDef.startSectors[ evSectorDef.curSegment ].centerspot, 0 ), false );
+				xypos = evSectorDef.startSectors[ evSectorDef.curSegment ].centerspot;
 				InitFromPos();
 			}
 		}
@@ -613,6 +611,7 @@ class ZCheckerSectorSetter: Actor {
 
 	void DoJump( class<Actor> cls ) {
 		if ( jumpToNextTypeSegment() ) {
+			vector3 pos = (xypos, floorsector.floorplane.ZAtPoint( xypos ));
 			Actor testeeActor = Actor.Spawn( cls, pos );
 
 			if ( testeeActor ) {
@@ -625,7 +624,7 @@ class ZCheckerSectorSetter: Actor {
 
 				infoActor.SetMasterZ();
 
-				SetOrigin( pos + ( jumpLen.x, jumpLen.y, 0 ), false );
+				xypos += ( jumpLen.x, jumpLen.y );
 				curJumpAmount++;
 			} else {
 				ZCGlobal.Log( LL_Detailed, GetClassName() .. "::DoJump(). " .. TEXTCOLOR_DARKBROWN .. "Cannot spawn actor \"" .. TEXTCOLOR_WHITE .. cls.GetClassName() .. TEXTCOLOR_DARKBROWN .. "\". It may be abstract or immediately destroyed in the BeginPlay() override." );
@@ -636,7 +635,7 @@ class ZCheckerSectorSetter: Actor {
 
 	} // of void DoJump( class<Actor> cls ) {}
 
-} // of class ZCheckerSectorSetter: Actor {}
+} // of class ZCheckerSectorSetter play {}
 
 
 

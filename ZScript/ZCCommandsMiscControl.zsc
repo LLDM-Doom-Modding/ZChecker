@@ -287,7 +287,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				} else {
 					class<Actor> locatedActorClass = Actor( curThinker ).GetClass();
 
-					if ( ZCGlobal.SpecialZCActorsHandling() && ( locatedActorClass == "ZCheckerActorInfo" || locatedActorClass == "ZCheckerSectorSetter" ) ) {
+					if ( ZCGlobal.SpecialZCActorsHandling() && ( locatedActorClass == "ZCheckerActorInfo" ) ) {
 						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", curThinker.GetClassName() .. "" );
 					} else {
 						int newPanelPos = ZCAddCommand.HandleDuplicateActorFields( ccmd, Actor( curThinker ), zcActionArg );
