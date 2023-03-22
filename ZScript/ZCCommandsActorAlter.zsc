@@ -23,16 +23,18 @@ class ZCGiveCommand: ZCConsoleCommand {
 		itemName = "";
 
 		bool outValue = false;
+		int ccmdArgsSize = ccmd.args.Size();
 
-		if ( ccmd.args.Size() == 2 || ccmd.args.Size() == 3 )
-			if ( !str2int_Ptr( ccmd.args[ ccmd.args.Size() - 1 ], +itemAmount ) )
+		if ( ccmdArgsSize == 2 || ccmdArgsSize == 3 )
+			if ( !str2int_Ptr( ccmd.args[ ccmdArgsSize - 1 ], +itemAmount ) )
 				itemAmount = -1;
 
-		if ( ccmd.args.Size() == 1 ) {
+		if ( ccmdArgsSize == 1 ) {
 			itemName = ccmd.args[ 0 ];
 			testee = LinetraceActor();
 			outValue = true;
-		} else if ( ccmd.args.Size() == 2 ) {
+
+		} else if ( ccmdArgsSize == 2 ) {
 			if ( itemAmount != -1 ) {
 				itemName = ccmd.args[ 0 ];
 				outValue = true;
@@ -42,6 +44,7 @@ class ZCGiveCommand: ZCConsoleCommand {
 				itemName = ccmd.args[ 1 ];
 				outValue = true;
 			}
+
 		} else if ( ( ccmd.args.Size() == 3 ) && PPS_Error != ( testeeStatus = getPlaceTestee( testee ) ) ) {
 			itemName = ccmd.args[ 1 ];
 			outValue = true;
@@ -147,33 +150,34 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	override bool HandleArguments() {
 		testeeStatus = PPS_Error;
 		bool outValue = false;
+		int ccmdArgsSize = ccmd.args.Size();
 
-		if ( ccmd.args.Size() == 1 || ccmd.args.Size() == 2 ) {
+		if ( ccmdArgsSize == 1 || ccmdArgsSize == 2 ) {
 			outValue = true;
-			String what = ccmd.args[ ccmd.args.Size() - 1 ];
+			String what = ccmd.args[ ccmdArgsSize - 1 ];
 			what.ToLower();
-			String what3chars = what.Left( 3 );
+			String whatLeft3 = what.Left( 3 );
 
-			if ( what3chars == "res" || what3chars == "rev" )
+			if ( whatLeft3 == "res" || whatLeft3 == "rev" )
 				actoraction = AC_Revive;
 			else if ( what == "kill" || what == "k" || what == "die" )
 				actoraction = AC_Kill;
 			else if ( what == "xk" || what == "xkill" || what == "mdk" )
 				actoraction = AC_XKill;
-			else if ( what == "destroy" || what3chars == "rem" || what == "rm" || what3chars == "del" )
+			else if ( what == "destroy" || whatLeft3 == "rem" || what == "rm" || whatLeft3 == "del" )
 				actoraction = AC_Destroy;
 			else
 				outValue = false;
 
 			if ( outValue ) {
-				if ( ccmd.args.Size() == 1 ) {
+				if ( ccmdArgsSize == 1 ) {
 					thing = LinetraceActor();
 					outValue = true;
 				} else {
 					outValue = ( PPS_Error != ( testeeStatus = getPlaceTestee( thing ) ) );
 				}
 			}
-		} // of if ( ccmd.args.Size() == 1 || ccmd.args.Size() == 2 ) {}
+		} // of if ( ccmdArgsSize == 1 || ccmdArgsSize == 2 ) {}
 
 		return outValue;
 	}
@@ -356,15 +360,15 @@ class ZCSummonCommand: ZCConsoleCommand {
 		params.Clear();
 
 		bool outValue = false;
-		int argsSize = ccmd.args.Size();
+		int ccmdArgsSize = ccmd.args.Size();
 		String paramstr = "";
 
-		if ( argsSize > 0 ) {
+		if ( ccmdArgsSize > 0 && ccmdArgsSize < 4 ) {
 			summonee = ccmd.args[ 0 ];
 
-			if ( argsSize > 1 ) {
+			if ( ccmdArgsSize > 1 ) {
 				if ( str2int_Ptr( ccmd.args[ 1 ], +summoneeAmount ) ) {
-					if ( argsSize == 3 )
+					if ( ccmdArgsSize == 3 )
 						paramstr = ccmd.args[ 2 ];
 				} else {
 					paramstr = ccmd.args[ 1 ];
@@ -482,7 +486,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 				} // of for ( int i = 0; i < paramlist.Size(); i++ ) {}
 			} // of if ( paramstr != "" ) {}
 
-		} // of if ( argsSize > 0 ) {}
+		} // of if ( ccmdArgsSize > 0 && ccmdArgsSize < 4 ) {}
 
 
 		if ( outValue ) {
@@ -1029,7 +1033,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		);
 	}
 
-	private void handlePointer( int pointer_id, String propvalue ) {
+	protected void handlePointer( int pointer_id, String propvalue ) {
 		if ( propvalue != "" ) {
 			Actor newptr;
 
@@ -1050,19 +1054,18 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		bool outValue = false;
 		int ccmdArgsSize = ccmd.args.Size();
 		alteree = relativeTo = NULL;
+		setmode = PSM_Raw;
 
 		if ( ccmdArgsSize == 1 ) {
 			// Set properties for the linetarget.
 			alteree = LinetraceActor();
 			outValue = true;
 
-		} else if ( ccmdArgsSize > 1 ) {
+		} else if ( ccmdArgsSize > 1 && ccmdArgsSize < 4 ) {
 			String modeargstr = ccmd.args[ ccmdArgsSize - 2 ];
 			modeargstr.ToLower();
 
 			// Set mode parsing:
-			setmode = PSM_Raw;
-
 			if ( modeargstr == "add" || modeargstr == "+" ) {
 				setmode = PSM_Add;
 

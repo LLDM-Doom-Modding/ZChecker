@@ -52,6 +52,10 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 			return true;
 		}
 
+		if ( ccmdArgsSize > 3 )
+			return false;
+
+
 		String origarg0 = ccmd.args[ 0 ];
 		origarg0.ToLower();
 
@@ -849,12 +853,11 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	}
 
 	override bool HandleArguments() {
-		bool outval = false;
-
 		int ccmdArgsSize = ccmd.args.Size();
-		if ( ccmdArgsSize == 0 )
+		if ( ccmdArgsSize == 0 || ccmdArgsSize > 3 )
 			return false;
 
+		bool outval = false;
 		zcSubcommand = ICT_Error;
 
 		String argcmd = ccmd.args[ 0 ];

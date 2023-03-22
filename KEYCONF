@@ -1,62 +1,61 @@
 // ZChecker general control:
-alias zchelp "netevent zc_help@@%1"
+alias zchelp "netevent zc_help@@%1@@%2"
 
 
 // ZChecker actors control:
-alias zcadd "netevent zc_add@@%1@@%2"
-alias zcaddself "zcadd self %1"
-alias zcaddweap "zcadd weapon %1"
-alias zcaddforce "zcadd force %1"
-alias zcaddlistget "zcthinkers actors add:%2 %1"
+alias zcadd "netevent zc_add@@%1@@%2@@%3"
+alias zcaddself "zcadd self %1 %2"
+alias zcaddweap "zcadd weapon %1 %2"
+alias zcaddforce "zcadd force %1 %2"
+alias zcaddlistget "zcthinkers actors add:%2 %1 %3"
 
-alias zcrem "netevent zc_rem@@%1"
-alias zcclear "zcrem %1"
+alias zcrem "netevent zc_rem@@%1@@%2"
+alias zcclear "zcrem %1 %2"
 
-alias zcsetprop "netevent zc_setproperty@@%1@@%2@@%3"
-alias zcsetp "zcsetprop %1 %2 %3"
-alias zcsp "zcsetprop %1 %2 %3"
-alias zcprop "zcsetprop %1 %2 %3"
-alias zchate "zcsetprop %1 target:%2"
+alias zcsetprop "netevent zc_setproperty@@%1@@%2@@%3@@%4"
+alias zcsetp "zcsetprop %1 %2 %3 %4"
+alias zcsp "zcsetprop %1 %2 %3 %4"
+alias zchate "zcsetprop %1 raw target:%2 %3"
 
-alias zcsetstate "netevent zc_setstate@@%1@@%2"
-alias zcsetst "zcsetstate %1 %2"
-alias zcsets "zcsetstate %1 %2"
-alias zcst "zcsetstate %1 %2"
+alias zcsetstate "netevent zc_setstate@@%1@@%2@@%3"
+alias zcsetst "zcsetstate %1 %2 %3"
+alias zcsets "zcsetstate %1 %2 %3"
+alias zcst "zcsetstate %1 %2 %3"
 
-alias zcsetflag "netevent zc_setflag@@%1@@%2@@%3"
-alias zcsetf "zcsetflag %1 %2 %3"
-alias zcsf "zcsetflag %1 %2 %3"
-alias zcbud "zcsetflag %1 buddha %2"
+alias zcsetflag "netevent zc_setflag@@%1@@%2@@%3@@%4"
+alias zcsetf "zcsetflag %1 %2 %3 %4"
+alias zcsf "zcsetflag %1 %2 %3 %4"
+alias zcbud "zcsetflag %1 buddha %2 %3"
 
-alias zcgive "netevent zc_give@@%1@@%2@@%3"
-alias zctake "netevent zc_take@@%1@@%2@@%3"
+alias zcgive "netevent zc_give@@%1@@%2@@%3@@%4"
+alias zctake "netevent zc_take@@%1@@%2@@%3@@%4"
 
-alias zcact "netevent zc_actoraction@@%1@@%2"
+alias zcact "netevent zc_actoraction@@%1@@%2@@%3"
 
-alias zcsummon "netevent zc_summon@@%1@@%2@@%3"
+alias zcsummon "netevent zc_summon@@%1@@%2@@%3@@%4"
 
-alias zccopyclass "zcvarsctl set $savedclass $linetarget"
-alias zccopysummon "zcsummon $savedclass %1 %2"
+alias zccopyclass "zcvarsctl set $savedclass $linetarget %1"
+alias zccopysummon "zcsummon $savedclass %1 %2 %3"
 
 
 // ZChecker information, internal and global control:
-alias zcpanel "netevent zc_infopanelcontrol@@%1@@%2@@%3"
-alias zcvarsctl "netevent zc_variablescontrol@@%1@@%2@@%3"
-alias zcthinkers "netevent zc_thinkerscontrol@@%1@@%2@@%3"
+alias zcpanel "netevent zc_infopanelcontrol@@%1@@%2@@%3@@%4"
+alias zcvarsctl "netevent zc_variablescontrol@@%1@@%2@@%3@@%4"
+alias zcthinkers "netevent zc_thinkerscontrol@@%1@@%2@@%3@@%4"
 
-alias zcinfo "zcpanel info %1"
-alias zclistthinkers "zcthinkers %1"
+//alias zcinfo "zcpanel info %1 %2"
+alias zclistthinkers "zcthinkers %1 list"
 
-alias zcinterface "netevent zc_external_interface@@%1@@%2@@%3; wait 1"
-alias zcif "zcinterface %1 %2 %3"
+alias zcinterface "netevent zc_external_interface@@%1@@%2@@%3@@%4; wait 1"
+alias zcif "zcinterface %1 %2 %3 %4"
 
 
 // The Everything map aliases:
-alias zcev "netevent zc_ev@@%1@@%2@@%3@@%4" // add|new, goto, recreate, optimize|pause
-alias zcem "zcev %1 %2 %3 %4"
+alias zcev "netevent zc_ev@@%1@@%2@@%3" // "goto", "recreate", "map[2]"
+alias zcem "zcev %1 %2 %3"
 
 alias zcevre "zcev recreate"
-alias zcevg "zcev goto %1"
+alias zcevg "zcev goto %1 %2"
 
 
 // Deprecated/experimental/etc.:

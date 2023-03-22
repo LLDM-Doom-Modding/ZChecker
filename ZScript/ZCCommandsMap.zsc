@@ -153,7 +153,7 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 		int ccmdArgsSize = complexArgsTest( "map" );
 
 		if ( ccmdArgsSize == 0 )
-			ccmdArgsSize = complexArgsTest( "level" );
+			ccmdArgsSize = complexArgsTest( "lev" );
 
 		if ( ccmdArgsSize ) {
 			if ( ccmdArgsSize == 1 )

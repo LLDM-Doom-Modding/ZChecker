@@ -351,7 +351,7 @@ ZCHECKER_ZCSETSTATE_HELP_TITLE	= "zcsetstate [<pos>] <state label>;zcsets[t] [<p
 ZCHECKER_ZCSETSTATE_HELP_DESC	= "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic.";
 
 // "zcsetprop":
-ZCHECKER_ZCSETP_HELP_TITLE		= "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcprop [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
+ZCHECKER_ZCSETP_HELP_TITLE		= "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
 ZCHECKER_ZCSETP_HELP_DESC		= "Sets a <property> to <value> for the actor in position <pos> (or for the linetarget if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if it's possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to caller player if <pos> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>;\
