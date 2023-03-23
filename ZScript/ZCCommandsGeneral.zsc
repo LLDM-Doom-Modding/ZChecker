@@ -190,13 +190,14 @@ class ZCAddCommand: ZCConsoleCommand {
 
 	override bool HandleArguments() {
 		zcSpecialAddType = SAT_Normal;
+		int ccmdArgsSize = ccmd.args.Size();
 
 		// For 0 args: zcPos == "-1" (to check it later).
-		bool outValue = ( ccmd.args.Size() == 0 );
+		bool outValue = ( ccmdArgsSize == 0 );
 		zcPos = -1;
 
 		// Next lines ("if {}" block) are hard to understand, but they're right.
-		if ( ccmd.args.Size() > 0 && ccmd.args.Size() <= 2 ) {
+		if ( ccmdArgsSize > 0 && ccmdArgsSize <= 2 ) {
 			String arg0 = ccmd.args[ 0 ];
 			arg0.ToLower();
 			String arg0left1 = arg0.Left( 1 );
@@ -215,7 +216,7 @@ class ZCAddCommand: ZCConsoleCommand {
 			if ( zcSpecialAddType != SAT_Error ) {
 				// "zcadd self|weap[on]|force [pos]":
 
-				if ( ccmd.args.Size() == 2 ) {
+				if ( ccmdArgsSize == 2 ) {
 					if ( str2int_Ptr( ccmd.args[ 1 ], +zcPos ) )
 						outValue = checkTesteePlace( --zcPos );
 				} else {
@@ -308,9 +309,6 @@ class ZCAddCommand: ZCConsoleCommand {
 
 						if ( locatedActorClass == "ZCheckerActorInfo" ) {
 							locatedActor = locatedActor.master;
-						} else if ( locatedActorClass == "ZCheckerSectorSetter" ) {
-							LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", "" .. locatedActor.GetClassName() );
-							locatedActor = NULL;
 						}
 					}
 
@@ -388,10 +386,12 @@ class ZCRemCommand: ZCConsoleCommand {
 	}
 
 	override bool HandleArguments() {
+		int ccmdArgsSize = ccmd.args.Size();
 		zcPos = -1;
-		bool outValue = ( ccmd.args.Size() == 0 );
 
-		if ( ccmd.args.Size() == 1 ) {
+		bool outValue = ( ccmdArgsSize == 0 );
+
+		if ( ccmdArgsSize == 1 ) {
 			if ( str2int_Ptr( ccmd.args[ 0 ], +zcPos ) )
 				outValue = checkTesteePlace( --zcPos );
 		}

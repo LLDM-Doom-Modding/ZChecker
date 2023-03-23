@@ -55,9 +55,24 @@ class ZCTooltipTakeCommand: ZCTooltipGeneralActorMasks {
 	}
 }
 
+class ZCTooltipActorActionCommand: ZCTooltipClass {
+	override String GetTips() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCACT_TIPS" );
+	}
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCACT_EXAMPLES" );
+	}
+}
+
 class ZCTooltipSummonCommand: ZCTooltipGeneralActorMasks {
 	override String GetExamples() {
 		return ZCGlobal.Locz( "TOOLTIP_ZCSUMMON_EXAMPLES" );
+	}
+}
+
+class ZCTooltipSetPropertyCommand: ZCTooltipClass {
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCSETPROP_EXAMPLES" );
 	}
 }
 

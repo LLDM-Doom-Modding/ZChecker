@@ -1,7 +1,8 @@
 class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_args";
-		optionLabel = "Args, special & TIDs";
+		optionLabel = "$ZCHECKER_INFOPANELS_ARGSTIDS";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_ARGSTIDS";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -18,10 +19,11 @@ class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 	}
 } // of class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {}
 
-class ZCPlayersInfoPanel: ZCBaseInfoPanelPart {
+class ZCFriendPlayersInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_players";
-		optionLabel = "Players & teams";
+		optionLabel = "$ZCHECKER_INFOPANELS_FRIENDPLAYERS";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_FRIENDPLAYERS";
 	}
 
 	protected String getPlayerString( int playernum ) {
@@ -82,7 +84,8 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 	override void OnCreate( void ) 
 	{
 		optionCVarName = "mcm_zchecker_info_sounddefs";
-		optionLabel = "Sound definitions";
+		optionLabel = "$ZCHECKER_INFOPANELS_SOUNDDEFS";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_SOUNDDEFS";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_sound";
 	}
 
@@ -128,7 +131,8 @@ class ZCCheatsInfoPanel: ZCBaseInfoPanelPart {
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_cheatsdefs";
-		optionLabel = "Cheats panel";
+		optionLabel = "$ZCHECKER_INFOPANELS_CHEATS";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_CHEATS";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -139,7 +143,7 @@ class ZCCheatsInfoPanel: ZCBaseInfoPanelPart {
 			static const String cheatcodes_1[] = {
 				"No clipping", "Godmode", "No velocity", "No Target", "",
 				"Chasecam", "Frozen", "Revertplease", "", "Stepleft", "Frightening",
-				"Instant Weapon Switch", "Totally Frozen", "Predicting",  "Interpview"
+				"Instant Weapon Switch", "Totally Frozen", "Predicting",  "Interpolate view"
 			};
 			static const String cheatcodes_2[] = {
 				"ExtremelyDead", "", "Buddha 2", "Godmode 2", "", "Buddha", "", "", "No clipping 2"

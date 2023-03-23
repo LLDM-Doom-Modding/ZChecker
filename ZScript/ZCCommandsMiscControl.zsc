@@ -11,6 +11,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 	enum EThinkersControlActions {
 		TCA_Error = 0,
+		TCA_Skip,
 		TCA_List,
 		TCA_PanelAdd,
 		TCA_RemoveThinker,
@@ -51,6 +52,10 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 			zcStatNumType = TCSN_ListTypes;
 			return true;
 		}
+
+		if ( ccmdArgsSize > 3 )
+			return false;
+
 
 		String origarg0 = ccmd.args[ 0 ];
 		origarg0.ToLower();
@@ -188,8 +193,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 						if ( specifiedClass == NULL )
 							LogLocalize2Str( LL_Main, "ZCTHINKERS_NOTTHCLASS", arg );
-						else
-							zcAction = TCA_RemoveThinker;
+
+						zcAction = ( specifiedClass? TCA_RemoveThinker : TCA_Skip );
 					} else {
 						specifiedClassRawString = arg;
 						zcAction = TCA_RemoveThinkerRawName;
@@ -223,6 +228,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 				} else {
 					// "zcthinkers <type> add:<panelpos> <index>".
+					zcAction = TCA_Skip;
+
 					if ( !str2int_Ptr( arg, +zcActionArg ) ) {
 						LogLocalize2Str( LL_Main, "ZCTHINKERS_WRONGPANEL", arg );
 					} else if ( !checkTesteePlace( --zcActionArg ) ) {
@@ -236,7 +243,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				if ( zcAction != TCA_Error ) {
 					if ( !str2int_Ptr( ccmd.args[ 2 ], +specifiedIndex ) || ( specifiedIndex <= 0 ) ) {
 						ZCGlobal.Log( LL_Main, "$ZCTHINKERS_WRONGSELECT" );
-						zcAction = TCA_Error;
+						zcAction = TCA_Skip;
 					}
 				}
 
@@ -283,7 +290,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				} else {
 					class<Actor> locatedActorClass = Actor( curThinker ).GetClass();
 
-					if ( ZCGlobal.SpecialZCActorsHandling() && ( locatedActorClass == "ZCheckerActorInfo" || locatedActorClass == "ZCheckerSectorSetter" ) ) {
+					if ( ZCGlobal.SpecialZCActorsHandling() && ( locatedActorClass == "ZCheckerActorInfo" ) ) {
 						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", curThinker.GetClassName() .. "" );
 					} else {
 						int newPanelPos = ZCAddCommand.HandleDuplicateActorFields( ccmd, Actor( curThinker ), zcActionArg );
@@ -366,6 +373,9 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 
 	override void DoCommand() {
+		if ( zcAction == TCA_Skip )
+			return;
+
 		if ( zcStatNumType == TCSN_ListTypes ) {
 			helpListStr = helpListValuesColor = "";
 
@@ -829,6 +839,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 		ICT_PanelEqual,
 		ICT_ValidPlacePos,
 		ICT_ValidRawPos,
+		ICT_LinetargetCheck,
 
 		// Returns 1..MaxTestee:
 		ICT_FindInPanels,
@@ -842,19 +853,18 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_external_interface",
-			"zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree",
-			"Provide an external interface for the user-defined aliases and same other stuff. On return sets an integer console variable \"" .. const_interfaceCVarName .. "\".",
+			"$ZCIF_HELP_TITLE",
+			String.Format( ZCGlobal.Locz( "ZCIF_HELP_DESC" ), const_interfaceCVarName ),
 			'ZCTooltipExternalInterfaceCommand'
 		);
 	}
 
 	override bool HandleArguments() {
-		bool outval = false;
-
 		int ccmdArgsSize = ccmd.args.Size();
-		if ( ccmdArgsSize == 0 )
+		if ( ccmdArgsSize == 0 || ccmdArgsSize > 3 )
 			return false;
 
+		bool outval = false;
 		zcSubcommand = ICT_Error;
 
 		String argcmd = ccmd.args[ 0 ];
@@ -909,6 +919,12 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				zcSubcommand = ( argcmd == "validpos"? ICT_ValidRawPos : ICT_ValidPlacePos );
 			}
 
+		} else if ( argcmd == "lt" || argcmd == "linetarget" || argcmd == "linetrace" ) {
+			if ( ccmdArgsSize == 0 ) {
+				outval = true;
+				zcSubcommand = ICT_LinetargetCheck;
+			}
+
 		} else if ( argcmd == "panelfind" ) {
 			if ( ccmdArgsSize == 1 ) {
 				outval = true;
@@ -927,7 +943,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	} // of override bool HandleArguments() {}
 
 	void InterfaceDebugLog( String message ) {
-		ZCGlobal.Log( LL_Debug, TEXTCOLOR_DARKBROWN .. "External interface" .. LLCOLOR_DEBUG .. ". " .. LLCOLOR_MAIN .. message );
+		ZCGlobal.Log( LL_Debug, ZCGlobal.Locz( "ZCIF_TRACEPREFIX" ) .. message );
 	}
 
 	override void DoCommand() {
@@ -1005,6 +1021,12 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				InterfaceDebugLog( "Place validation: \"" .. ccmd.args[ 1 ] .. "\" is" .. ( outval
 							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_DEBUG .. " (true)."
 							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_DEBUG .. " (false)." ) );
+				break;
+			case ICT_LinetargetCheck:
+				outval = !!LinetraceActor( quiet: true );
+				InterfaceDebugLog( "Linetarget actor " .. ( outval
+							? TEXTCOLOR_GREEN .. " exists" .. LLCOLOR_DEBUG .. " (true)."
+							: TEXTCOLOR_BRICK .. " not exists" .. LLCOLOR_DEBUG .. " (false)." ) );
 				break;
 			case ICT_FindInPanels:
 				class<Actor> compareClass = ParseSpecialActorName( ccmd.args[ 1 ] );

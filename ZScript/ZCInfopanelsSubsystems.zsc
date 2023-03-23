@@ -58,7 +58,8 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_inventory";
-		optionLabel = "Inventory";
+		optionLabel = "$ZCHECKER_INFOPANELS_INVENTORY";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_INVENTORY";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_inventory";
 
 		sortPrevTypeOption = -1;
@@ -204,7 +205,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_states";
-		optionLabel = "States";
+		optionLabel = "$ZCHECKER_INFOPANELS_STATES";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_STATES";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_states";
 
 		for ( int i = 0; i < MaxTestee; i++ )
@@ -571,7 +573,8 @@ class ZCSpritesInfoPanel: ZCBaseInfoPanelPart {
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_visual";
-		optionLabel = "Visual";
+		optionLabel = "$ZCHECKER_INFOPANELS_VISUAL";
+		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_VISUAL";
 	}
 
 	protected String GetRenderStyleStr( int style ) {
@@ -597,7 +600,7 @@ class ZCSpritesInfoPanel: ZCBaseInfoPanelPart {
 			case STYLE_ColorBlend: str = "ColorBlend"; break;
 			case STYLE_Source: str = BLACK .. "(Source)"; break;
 			case STYLE_ColorAdd: str = "ColorAdd"; break;
-			default: str = BLACK .. "(Unknown)"; break;
+			default: str = BLACK .. "(Unknown: " .. style .. ")"; break;
 		}
 
 		return str;
