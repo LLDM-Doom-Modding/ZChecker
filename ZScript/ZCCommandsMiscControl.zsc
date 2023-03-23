@@ -11,6 +11,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 	enum EThinkersControlActions {
 		TCA_Error = 0,
+		TCA_Skip,
 		TCA_List,
 		TCA_PanelAdd,
 		TCA_RemoveThinker,
@@ -192,8 +193,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 						if ( specifiedClass == NULL )
 							LogLocalize2Str( LL_Main, "ZCTHINKERS_NOTTHCLASS", arg );
-						else
-							zcAction = TCA_RemoveThinker;
+
+						zcAction = ( specifiedClass? TCA_RemoveThinker : TCA_Skip );
 					} else {
 						specifiedClassRawString = arg;
 						zcAction = TCA_RemoveThinkerRawName;
@@ -227,6 +228,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 				} else {
 					// "zcthinkers <type> add:<panelpos> <index>".
+					zcAction = TCA_Skip;
+
 					if ( !str2int_Ptr( arg, +zcActionArg ) ) {
 						LogLocalize2Str( LL_Main, "ZCTHINKERS_WRONGPANEL", arg );
 					} else if ( !checkTesteePlace( --zcActionArg ) ) {
@@ -240,7 +243,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 				if ( zcAction != TCA_Error ) {
 					if ( !str2int_Ptr( ccmd.args[ 2 ], +specifiedIndex ) || ( specifiedIndex <= 0 ) ) {
 						ZCGlobal.Log( LL_Main, "$ZCTHINKERS_WRONGSELECT" );
-						zcAction = TCA_Error;
+						zcAction = TCA_Skip;
 					}
 				}
 
@@ -370,6 +373,9 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 
 	override void DoCommand() {
+		if ( zcAction == TCA_Skip )
+			return;
+
 		if ( zcStatNumType == TCSN_ListTypes ) {
 			helpListStr = helpListValuesColor = "";
 
