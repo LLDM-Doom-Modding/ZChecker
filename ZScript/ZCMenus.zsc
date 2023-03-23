@@ -600,6 +600,8 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 } // of class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {}
 
 class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
+	private ZCOptionMenuPanels panelsmenu;
+
 	ZCOptionMenuItemRecreateInfopanels Init( String label ) {
 		Super.Init( label, 'None' );
 		return self;
@@ -611,21 +613,49 @@ class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
 		return indent;
 	}
 
+	private void ResetPanels( void ) {
+		ZCPanelsStorage panels = panelsmenu.handler.panels;
+
+		panels.panelsstr = "";
+		panels.UpdatePanels( false );
+
+		panelsmenu.ReinitMenuItems( panelsmenu.mDesc );
+		panelsmenu.mDesc.mSelectedItem = panelsmenu.lastPanelItemPos + 2;
+
+		ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The informational panels order has been reset to defaults." );
+	}
+
+	// Grabbed from "*zdoom.pk3" -> "class OptionMenuItemSafeCommand".
+	override bool MenuEvent( int mkey, bool fromcontroller ) {
+		if ( mkey == Menu.MKEY_MBYes ) {
+			// Paranoidal pointers checking (already saved more than one time, actually):
+			if ( panelsmenu && panelsmenu.handler && panelsmenu.handler.panels ) {
+				ResetPanels();
+			} else if ( !panelsmenu ) {
+				ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::MenuEvent(). Panels menu not found." );
+			} else if ( !panelsmenu.handler ) {
+				ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::MenuEvent(). ZChecker handler not found (\"panelsmenu->handler\" is NULL)." );
+			} else {
+				ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::MenuEvent(). Panels storage in ZChecker handler not found (\"panelsmenu->handler->panels\" is NULL)." );
+			}
+
+			return true;
+		}
+
+		return Super.MenuEvent( mkey, fromcontroller );
+	}
+
 	override bool Activate() {
-		ZCOptionMenuPanels curmenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
+		panelsmenu = ZCOptionMenuPanels( Menu.GetCurrentMenu() );
 
-		if ( curmenu && curmenu.handler && curmenu.handler.panels ) {
-			ZCPanelsStorage panels = curmenu.handler.panels;
+		if ( panelsmenu && panelsmenu.handler && panelsmenu.handler.panels ) {
+			String msg = StringTable.Localize( "$SAFEMESSAGE" );
+			String actionLabel = StringTable.localize( mLabel );
 
-			panels.panelsstr = "";
-			panels.UpdatePanels( false );
+			String safeMessageFullString = String.Format( "%s%s%s\n\n%s", TEXTCOLOR_WHITE, actionLabel, TEXTCOLOR_NORMAL, msg );
+			Menu.MenuSound( "menu/choose" );
+			Menu.StartMessage( safeMessageFullString, 0 );
 
-			curmenu.ReinitMenuItems( curmenu.mDesc );
-			curmenu.mDesc.mSelectedItem = curmenu.lastPanelItemPos + 2;
-
-			Menu.MenuSound( "menu/activate" );
-
-			ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The informational panels order has been reset." );
 		} else {
 			Menu.MenuSound( "menu/invalid" );
 		}
