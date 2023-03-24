@@ -9,14 +9,14 @@ GameInfo {
 
 Map EVERYTHING "ZChecker: Everything" {
 	Sky1 = "RSKY3"
-	Music = "D_RUNNIN"
+	Music = ""
 	Cluster = 0
 	NoAutosaveHint
 }
 
 Map EVERYTHING_SIMPLE "ZChecker: Everything (simplified map)" {
 	Sky1 = "RSKY3"
-	Music = "D_RUNNIN"
+	Music = ""
 	Cluster = 0
 	NoAutosaveHint
 }
