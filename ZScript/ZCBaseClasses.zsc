@@ -221,7 +221,7 @@ class ZCTooltipClass: ZCConsoleClass {
 
 			if ( addtext != "" ) {
 				helpCacheString.AppendFormat(
-								HEADER .. "\\------------= =-/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
+								HEADER .. "\n\\------------= =-/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
 								ZCGlobal.Locz( "CCMDSHELP_EXAMPLES" ), IndentNewlines( addtext ) );
 			}
 		} // of if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {}

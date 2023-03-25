@@ -425,7 +425,7 @@ ZCHECKER_ZCSETFLAG_HELP_DESC	= "Set/reset a <flag> for the testee in <pos> (or l
 ZCHECKER_ZCSETFLAG_SUCCESS		= "Flag \"%s\" for actor %s is succesfully set to %i.";
 
 // "zcsetstate":
-ZCHECKER_ZCSETSTATE_HELP_TITLE	= "zcsetstate [<pos>] <state label>;zcsets[t] [<pos>] <state label>;zcst [<pos>] <state label>";
+ZCHECKER_ZCSETSTATE_HELP_TITLE	= "zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcsetst [<pos>] <state label>;zcst [<pos>] <state label>";
 ZCHECKER_ZCSETSTATE_HELP_DESC	= "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution result in singleplayer will be delayed for one tic.";
 
 // "zcsetprop":
@@ -501,8 +501,8 @@ ZCHECKER_ZCTHINKERS_LISTINVOWNER	= "inv.owner is";
 ZCHECKER_ZCTHINKERS_LISTTOTAL		= "Total %i thinkers of enum type %i.";
 
 // "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
-ZCHECKER_ZCPANELCTL_HELP_TITLE		= "zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (<pos> info|info [<pos>]);zcinfo [<pos>]";
-ZCHECKER_ZCPANELCTL_HELP_DESC		= "Perform keen control with informational panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting at <pos>.";
+ZCHECKER_ZCPANELCTL_HELP_TITLE		= "zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (info [<pos>]|<pos> info)";
+ZCHECKER_ZCPANELCTL_HELP_DESC		= "Perform keen control with informational panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting if <pos> is provided or about actors stashed aliases in other case.";
 ZCHECKER_ZCPANEL_NOACTORINPOS		= "There's no actor in position %i.";
 ZCHECKER_ZCPANELINFO_HEADER			= "\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>";
 ZCHECKER_ZCPANELINFO_INHERITANCE	= "  \c~Inherited from \c-%s\c~ <%s>";
@@ -679,5 +679,5 @@ ZCHECKER_TOOLTIP_ZCINTERFACE_EXAMPLES =
 The next alias will check if the last added to the panel is a DoomImp `~(via classname saved in the variable `1$last`~)`x:\
 `Calias testforimp3 `x\"`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\\"echo Imp.\\\" \\\"echo Not an Imp.\\\"`x\".\n\
 This alias will indefinitely check if the `1self`x pointer equals to the `1self.player.camera`x pointer:\
-`Calias isselfcamera `x\"`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \\\"echo Player camera view was changed from default.\\\"`~; `2wait 1`~; `2isselfcamera`x\".\n";
+`Calias isselfcamera `x\"`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \\\"echo Player camera view was changed from default.\\\"`~; `2wait 1`~; `2isselfcamera`x\".";
 

@@ -1,8 +1,12 @@
+//
+// General ZChecker console commands: "zchelp", "zcadd" and "zcrem".
+//
+
 class ZCHelpCommand: ZCConsoleCommand {
+	const HEADERCOLOR = ZCTooltipClass.HEADER;
+
 	bool verboseHelp;
 	ZCConsoleCommand infoclass;
-
-	const HEADER = TEXTCOLOR_BLUE;
 
 	override void InitCCMD() {
 		SetupCCMDInterface(
@@ -61,11 +65,6 @@ class ZCHelpCommand: ZCConsoleCommand {
 
 				if ( !outValue )
 					LogLocalize2Str( LL_Main | LL_NoDot, "ZCHELP_CANNOTFIND", ccmd.args[ 0 ] );
-
-				/*ZCGlobal.Log( LL_Main | LL_NoDot, TEXTCOLOR_TEAL .. "ZChecker help: " .. ( outValue
-						? TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n\n"
-						: TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
-					) );*/
 			}
 		}
 
@@ -77,20 +76,20 @@ class ZCHelpCommand: ZCConsoleCommand {
 		if ( verboseHelp ) {
 			console.printf( ZCGlobal.Locz( "ZCHELP_VERBOSETITLE" ), ZCheckerVersion );
 
-			//console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADER .. ".\n" ..
-			//		"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADER .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADER .. ";\n" ..
-			//		"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADER .. " team" .. ".\n\n" );
+			//console.printf( HEADERCOLOR .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADERCOLOR .. ".\n" ..
+			//		"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADERCOLOR .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADERCOLOR .. ";\n" ..
+			//		"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADERCOLOR .. " team" .. ".\n\n" );
 		}
 
 		if ( infoclass ) {
 			String helpstr = infoclass.GetHelpString();
 
-			helpstr.Replace( "\n", TEXTCOLOR_SAPPHIRE .. "\n| " .. LLCOLOR_MAIN );
-			console.printf( TEXTCOLOR_SAPPHIRE .. "| " .. LLCOLOR_MAIN .. helpstr );
+			helpstr.Replace( "\n", "\n" .. HEADERCOLOR .. "| " .. LLCOLOR_MAIN );
+			console.printf( HEADERCOLOR .. "| " .. LLCOLOR_MAIN .. helpstr );
 
 			if ( infoclass.ccmdInterfaceData.helpTooltip ) {
-				console.printf( TEXTCOLOR_SAPPHIRE .. "|\n| ".. infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
-				console.printf( TEXTCOLOR_SAPPHIRE .. "\\-= =-------------\n| " .. LLCOLOR_MAIN .. helpstr .. TEXTCOLOR_SAPPHIRE .. "\n/--=--=--=--=--=--\n\n" );
+				console.printf( HEADERCOLOR .. "|\n" .. HEADERCOLOR .. "| ".. infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
+				console.printf( "\n" .. HEADERCOLOR .. "\\-= =-------------\n" .. HEADERCOLOR .. "| " .. LLCOLOR_MAIN .. helpstr .. HEADERCOLOR .. "\n/--=--=--=--=--=--\n\n" );
 			} else {
 				console.printf( "\n" );
 			}
