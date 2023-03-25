@@ -61,8 +61,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
     StaticText "$ZCHECKER_VISUAL_POSITIONING", 1
 	Slider "$ZCHECKER_VISUAL_START_X",    "mcm_zchecker_infopanel_startx", 0.0, 99.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_START_X_10", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_START_Y",    "mcm_zchecker_infopanel_starty", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_START_Y_10", "mcm_zchecker_infopanel_starty", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_START_Y",    "mcm_zchecker_infopanel_starty", -50.0, 99.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_START_Y_10", "mcm_zchecker_infopanel_starty", -50.0, 99.0, 10.0, 0
 	Slider "$ZCHECKER_VISUAL_OFFSET_X", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "mcm_zchecker_infopanel_scale", 0.5, 8.0, 0.1, 1
 	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
