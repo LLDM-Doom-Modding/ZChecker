@@ -20,15 +20,20 @@ enum EZCheckerLogLevels {
 	LL_Emergency = 0,
 	LL_General = 1,
 	LL_Detailed,
+	LL_Developer,
 	LL_Debug,
 
-	LL_Critical = LL_Emergency,
-	LL_Avary 	= LL_Emergency,
-	LL_Common 	= LL_General,
-	LL_Normal 	= LL_General,
-	LL_Main 	= LL_General,
-	LL_Extended = LL_Detailed,
-	LL_Extra 	= LL_Detailed,
+	LL_Critical 	= LL_Emergency,
+	LL_Avary 		= LL_Emergency,
+	LL_Common 		= LL_General,
+	LL_Normal 		= LL_General,
+	LL_Main 		= LL_General,
+	LL_Extended 	= LL_Detailed,
+	LL_Details 		= LL_Detailed,
+	LL_Extra 		= LL_Developer,
+	LL_Development 	= LL_Developer,
+	LL_Interface 	= LL_Developer,
+	LL_APIMessage	= LL_Developer,
 
 	LL_FlagsMask	= 0xFFF0,
 	LL_NoLocalize	= 0x2000,
@@ -143,16 +148,24 @@ class ZCGlobal: Thinker {
 		if ( !( loglevel & LL_NoPrefix ) ) {
 			switch ( loglevel & ~LL_FlagsMask ) {
 				case LL_Debug:
+					// This logging level generally used only by internal developers.
 					logPrefix = LLCOLOR_DEBUG .. "[ZC Debug] ";
 					break;
+
+				case LL_Developer:
+					// "ZChecker" and "API" are spelled as "ZChecker" and "API" in any language.
+					logPrefix = LLCOLOR_DARK .. "[" .. TEXTCOLOR_DARKBROWN .. "ZC API" .. LLCOLOR_DARK .. "] " .. LLCOLOR_MAIN;
+					break;
+
 				case LL_Emergency:
 					logPrefix = String.Format( TEXTCOLOR_RED .. "%s " .. LLCOLOR_EMERGENCY, ZCGlobal.Localize( "LOG_EMERGENCY_PREFIX" ) );
 					break;
+
 				default:
 					logPrefix = TEXTCOLOR_GRAY .. "[ZC] " .. LLCOLOR_MAIN;
 					break;
-			} // of switch ( loglevel & ~LL_NoPrefix ) {
-		} // of if ( !( loglevel & LL_NoPrefix ) ) {
+			} // of switch ( loglevel & ~LL_FlagsMask ) {}
+		} // of if ( !( loglevel & LL_NoPrefix ) ) {}
 
 
 		// Auto-localization (without a "ZCHECKER_" prefix in text):

@@ -1,5 +1,9 @@
 //
-// Miscellaneous control CCMDs. Internal variables, thinkers, panels etc.
+// Miscellaneous control CCMDs.
+//	 1) Internal variables;
+//	 2) Thinkers;
+//	 3) Panels;
+//	 4) External interface.
 //
 
 class ZCThinkersControlCommand: ZCConsoleCommand {
@@ -943,7 +947,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	} // of override bool HandleArguments() {}
 
 	void InterfaceDebugLog( String message ) {
-		ZCGlobal.Log( LL_Debug, ZCGlobal.Locz( "ZCIF_TRACEPREFIX" ) .. message );
+		ZCGlobal.Log( LL_Interface, ZCGlobal.Locz( "ZCIF_TRACEPREFIX" ) .. message );
 	}
 
 	override void DoCommand() {
@@ -980,8 +984,8 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 			case ICT_PanelNotEmpty:
 				outval = !!( zchandler.Testee[ zcPos ].mo );
 				InterfaceDebugLog( "Actor in position " .. zcPos .. ( outval
-							? TEXTCOLOR_GREEN .. " exists" .. LLCOLOR_DEBUG .. " (true)."
-							: TEXTCOLOR_BRICK .. " not exists" .. LLCOLOR_DEBUG .. " (false)." ) );
+							? TEXTCOLOR_GREEN .. " exists" .. LLCOLOR_MAIN .. " (true)."
+							: TEXTCOLOR_BRICK .. " not exists" .. LLCOLOR_MAIN .. " (false)." ) );
 				break;
 			case ICT_PanelInheriting:
 				class<Actor> ancestorClass = ParseSpecialActorName( ccmd.args[ 2 ] );
@@ -998,35 +1002,35 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 					outval = ( testeeInPos is ancestorClass );
 
 					InterfaceDebugLog( "Actor \"" .. testeeInPos.GetClassName() .. "\" in position " .. zcPos .. ( outval
-							? TEXTCOLOR_GREEN .. " inherits " .. LLCOLOR_DEBUG .. " (true)"
-							: TEXTCOLOR_BRICK .. " not inherits" .. LLCOLOR_DEBUG .. " (false)" )
+							? TEXTCOLOR_GREEN .. " inherits " .. LLCOLOR_MAIN .. " (true)"
+							: TEXTCOLOR_BRICK .. " not inherits" .. LLCOLOR_MAIN .. " (false)" )
 						.. " from the \"" .. ancestorClass.GetClassName() .. "\"." );
 				}
 				break;
 			case ICT_PanelEqual:
 				outval = ( testeePos1 == testeePos2 );
 				InterfaceDebugLog( "Actors in positions " .. ccmd.args[ 1 ] .. " and " .. ccmd.args[ 2 ] .. ( outval
-							? TEXTCOLOR_GREEN .. " are same" .. LLCOLOR_DEBUG .. " (true)."
-							: TEXTCOLOR_BRICK .. " are different" .. LLCOLOR_DEBUG .. " (false)." ) );
+							? TEXTCOLOR_GREEN .. " are same" .. LLCOLOR_MAIN .. " (true)."
+							: TEXTCOLOR_BRICK .. " are different" .. LLCOLOR_MAIN .. " (false)." ) );
 				break;
 			case ICT_ValidRawPos:
 				outval = str2int_Ptr( ccmd.args[ 1 ], +zcPos );
 				InterfaceDebugLog( "Panel position validation: \"" .. ccmd.args[ 1 ] .. "\" is" .. ( outval
-							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_DEBUG .. " (true)."
-							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_DEBUG .. " (false)." ) );
+							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_MAIN .. " (true)."
+							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_MAIN .. " (false)." ) );
 				break;
 			case ICT_ValidPlacePos:
 				zcPos = getPlaceTestee( testeeInPos, 1 );
 				outval = ( zcPos != PPS_Error && zcPos != PPS_WrongPos );
 				InterfaceDebugLog( "Place validation: \"" .. ccmd.args[ 1 ] .. "\" is" .. ( outval
-							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_DEBUG .. " (true)."
-							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_DEBUG .. " (false)." ) );
+							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_MAIN .. " (true)."
+							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_MAIN .. " (false)." ) );
 				break;
 			case ICT_LinetargetCheck:
 				outval = !!LinetraceActor( quiet: true );
 				InterfaceDebugLog( "Linetarget actor " .. ( outval
-							? TEXTCOLOR_GREEN .. " exists" .. LLCOLOR_DEBUG .. " (true)."
-							: TEXTCOLOR_BRICK .. " not exists" .. LLCOLOR_DEBUG .. " (false)." ) );
+							? TEXTCOLOR_GREEN .. " exists" .. LLCOLOR_MAIN .. " (true)."
+							: TEXTCOLOR_BRICK .. " not exists" .. LLCOLOR_MAIN .. " (false)." ) );
 				break;
 			case ICT_FindInPanels:
 				class<Actor> compareClass = ParseSpecialActorName( ccmd.args[ 1 ] );
@@ -1041,15 +1045,15 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 						}
 					}
 					InterfaceDebugLog( "Actor class \"" .. compareClass.GetClassName() .. "\" " .. ( outval
-								? TEXTCOLOR_GREEN .. "found" .. LLCOLOR_DEBUG .. " in panel " .. outval
-								: TEXTCOLOR_BRICK .. "not found" .. LLCOLOR_DEBUG .. " (false)" ) );
+								? TEXTCOLOR_GREEN .. "found" .. LLCOLOR_MAIN .. " in panel " .. outval
+								: TEXTCOLOR_BRICK .. "not found" .. LLCOLOR_MAIN .. " (false)" ) );
 				}
 				break;
 			case ICT_FindFreePanel:
 				outval = ( ZCAddCommand.FindFreeTesteePlace( ccmd ) + 1 );
 				InterfaceDebugLog( "Empty place " .. ( outval
-							? TEXTCOLOR_GREEN .. "found" .. LLCOLOR_DEBUG .. " in panel " .. outval
-							: TEXTCOLOR_BRICK .. "not found" .. LLCOLOR_DEBUG .. " (false)" ) );
+							? TEXTCOLOR_GREEN .. "found" .. LLCOLOR_MAIN .. " in panel " .. outval
+							: TEXTCOLOR_BRICK .. "not found" .. LLCOLOR_MAIN .. " (false)" ) );
 				break;
 			default:
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown external interface command type " .. zcSubcommand .. "." );
@@ -1060,7 +1064,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 		interfaceCVar.SetInt( outval );
 		ACS_ExecuteAlways( -int( 'ZChecker_SetExternalInterfaceCVar' ), 0, consoleplayer );
 
-		InterfaceDebugLog( "CVar will be set to " .. TEXTCOLOR_BLUE .. outval .. LLCOLOR_MAIN .. " in next tic" .. LLCOLOR_DEBUG );
+		InterfaceDebugLog( "CVar will be set to " .. TEXTCOLOR_BLUE .. outval .. LLCOLOR_MAIN .. " in next tic" .. LLCOLOR_MAIN );
 	} // of override void DoCommand() {}
 
 } // of class ZCExternalInterfaceCommand: ZCConsoleCommand {}

@@ -69,9 +69,10 @@ ZCHECKER_MAINMENU_OPEN_MENU_KEY	= "Open this controls menu key";
 ZCHECKER_MAINMENU_LOG_LEVEL		= "Log level";
 ZCHECKER_MAINMENU_UPDATE_5_TICS	= "will be updated after up to five world tics.";
 
-ZCHECKER_MAINMENUOPT_LOGLEVEL1	= "1. General";
-ZCHECKER_MAINMENUOPT_LOGLEVEL2	= "2. Detailed (default)";
-ZCHECKER_MAINMENUOPT_LOGLEVEL3	= "3. Debug mode";
+ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN		= "1. General";
+ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED	= "2. Detailed (default)";
+ZCHECKER_MAINMENUOPT_LOGLEVEL_DEVELOPER	= "3. Development/API";
+ZCHECKER_MAINMENUOPT_LOGLEVEL_DEBUG		= "4. Debug mode";
 
 ZCHECKER_MAINMENUOPT_FONTS_SMALL	= "Built-in smallfont";
 ZCHECKER_MAINMENUOPT_FONTS_SMSHORT	= "Mono smallfont, short space";
@@ -514,7 +515,7 @@ ZCHECKER_ZCVARSCTL_LISTHEADER		= "\cyInternal variables \c~(total \c-%i\c~): ";
 
 // "zcinterface"/"zcif":
 ZCHECKER_ZCIF_HELP_TITLE			= "zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree";
-ZCHECKER_ZCIF_HELP_DESC				= "Provide an external interface for the user-defined aliases and same other stuff. On return sets an integer console variable \"%s\".";
+ZCHECKER_ZCIF_HELP_DESC				= "Provide an external interface for the user-defined aliases and same other stuff. On return sets an integer console variable \"%s\". A \"Development/API\" log level should be enabled to trace for the command results.";
 ZCHECKER_ZCIF_TRACEPREFIX			= "\csExternal interface\c~. \c-";
 
 
