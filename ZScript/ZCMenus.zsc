@@ -505,10 +505,10 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 		String text;
 
 		if ( selection & const_AllEnabled == const_AllEnabled ) {
-			text = TEXTCOLOR_GRAY .. ZCGlobal.Locz( "PANELSMENU_INALLPANELS" );
+			text = TEXTCOLOR_GRAY .. ZCGlobal.Locz( "INFOPANELSMENU_INALLPANELS" );
 
 		} else if ( selection == const_AllDisabled ) {
-			text = TEXTCOLOR_BLACK .. ZCGlobal.Locz( "PANELSMENU_NOTINPANELS" );
+			text = TEXTCOLOR_BLACK .. ZCGlobal.Locz( "INFOPANELSMENU_NOTINPANELS" );
 
 		} else {
 			for ( int i = 0; i < MaxTestee; i++ ) {
@@ -543,9 +543,13 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 	OptionMenuDescriptor subdesc;
 
+	private String GetSubmenuLabel( bool itemselected = false ) {
+		String newlabel = masterInfoPanel.GetSubmenuLabel( subdesc );
 
-	private String GetSubmenuLabel( void ) {
-		return masterInfoPanel.GetSubmenuLabel( subdesc );
+		if ( itemselected )
+			newlabel.Replace( masterInfoPanel.SUBMENUCOLOR, TEXTCOLOR_BRICK );
+
+		return newlabel;
 	}
 
 	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
@@ -563,8 +567,8 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 		if ( desc ) {
 			if ( desc.mSelectedItem > 0 ) {
-				mLabel = GetSubmenuLabel();
 				masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
+				mLabel = GetSubmenuLabel( masterItemSelected );
 			}
 		} else {
 			mLabel = GetClassName() .. "::Draw(). No OptionMenuDescriptor.";

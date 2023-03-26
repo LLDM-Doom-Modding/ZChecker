@@ -184,6 +184,28 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 
 		return outstr;
 	}
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		String invlabel;
+
+		ResetSubmenuItemsIterator();
+
+		int itemsAmount = GetNextSubmenuItemIntSelection( desc );
+
+		OptionMenuItem sortmodeMenuItem = GetNextSubmenuItem( desc );
+		int itemsSortMode = GetSubmenuItemIntSelection( sortmodeMenuItem );
+		String itemsSortModeStr = GetSubmenuItemStrSelection( sortmodeMenuItem );
+
+		if ( itemsSortMode > 0 )
+			invlabel = String.Format( "%i %s %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_SORTEDBY" ), itemsSortModeStr );
+		else
+			invlabel = String.Format( "%i %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_UNSORTED" ) );
+
+		if ( !!GetNextSubmenuItemIntSelection( desc ) )
+			invlabel = invlabel .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_INV_REVERSED" );
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_INV_PREFIX" ) .. invlabel;
+	}
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
 
 
