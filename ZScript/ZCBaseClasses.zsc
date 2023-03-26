@@ -426,10 +426,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					outActor = outActor.master;
 				} else {
 					// This branch will be executed if master had been removed from the world.
-					outActor = NULL;
-
 					if ( !quiet )
 						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", outActor.GetClassName() .. "" );
+
+					outActor = NULL;
 				}
 			}
 
