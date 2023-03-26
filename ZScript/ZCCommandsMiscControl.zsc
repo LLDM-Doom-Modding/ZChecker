@@ -622,10 +622,10 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 					if ( index != -1 ) {
 						if ( aliases[ index ].thing ) {
-							ZCGlobal.Log( LL_Main, "Alias \"" .. zcAliasName .. "\" already exists and linked to the actor." );
+							LogLocalize2Str( LL_Main, "ZCPANELSAVE_ALIASEXISTS", zcAliasName );
 							continueFlag = false;
 						} else {
-							ZCGlobal.Log( LL_Detailed, "Relinking the \"" .. zcAliasName .. "\" alias (its original actor was destroyed)." );
+							LogLocalize2Str( LL_Detailed, "ZCPANELSAVE_RELINKINGALIAS", zcAliasName );
 						}
 					} 
 
@@ -636,28 +636,31 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 						aliasnode.thing = handler.Testee[ zcPos ].mo;
 						aliases.Push( aliasnode );
 
-						ZCGlobal.Log( LL_Detailed, "Saved actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> as \"" .. zcAliasName .. "\"." );
+						ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCPANELSAVE_SUCCESS" ), aliasnode.thing.GetClassName() .. " <" .. aliasnode.thing .. ">", zcAliasName ) );
 					}
 				} else {
-					ZCGlobal.Log( LL_Main, "No actor linked to the panel " .. ( zcPos + 1 ) );
+					LogLocalize2Str( LL_Main, "ZCPANELSAVE_NOPANEL", "" .. ( zcPos + 1 ) );
 				}
 				break;
+
 			case PCT_Load:
 				int index = FindAliasIndex( zcAliasName );
 
 				if ( index != -1 ) {
 					if ( aliases[ index ].thing ) {
-						handler.Testee[ zcPos ].mo = aliases[ index ].thing;
+						Actor thing = aliases[ index ].thing;
+						handler.Testee[ zcPos ].mo = thing;
 						ccmd.handler.UpdateInternalClassnameByField( zcPos );
 
-						ZCGlobal.Log( LL_Detailed, "Loaded actor " .. ccmd.handler.Testee[ zcPos ].mo.GetClassName() .. " <" .. ccmd.handler.Testee[ zcPos ].mo .. "> with alias \"" .. zcAliasName .. "\"." );
+						ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCPANELLOAD_SUCCESS" ), thing.GetClassName() .. " <" .. thing .. ">", zcAliasName ) );
 					} else {
-						ZCGlobal.Log( LL_Detailed, "Cannot load, actor with alias \"" .. zcAliasName .. "\" destroyed." );
+						LogLocalize2Str( LL_Detailed, "ZCPANELLOAD_ACTORDESTROYED", zcAliasName );
 					}
 				} else {
-					ZCGlobal.Log( LL_Main, "Alias name \"" .. zcAliasName .. "\" does not exist." );
+					LogLocalize2Str( LL_Main, "ZCPANELLOAD_WRONGALIAS", zcAliasName );
 				}
 				break;
+
 			case PCT_Move:
 			case PCT_Copy:
 				if ( handler.Testee[ zcPos ].mo ) {
@@ -673,6 +676,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANEL_NOACTORINPOS" ), zcPos + 1 ) );
 				}
 				break;
+
 			case PCT_Info:
 				Actor mo = handler.Testee[ zcPos ].mo;
 
@@ -699,15 +703,15 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 		} else if ( zcPanelControlType == PCT_Info ) {
 			if ( aliases.Size() == 0 ) {
-				ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "No actors aliases created now" );
+				ZCGlobal.ClearscopeLog( LL_Main, "$ZCPANELINFO_NOALIASES" );
 			} else {
-				ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, TEXTCOLOR_SAPPHIRE .. "Actors aliases " .. GRAY .. "(total " .. aliases.Size() .. "): " );
+				ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, String.Format( ZCGlobal.Locz( "ZCPANELINFO_LISTHEADER" ), aliases.Size() ) );
 
 				for ( int i = 0; i < aliases.Size(); i++ ) {
 					if ( aliases[ i ].thing )
-						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" linked to the " .. GRAY .. aliases[ i ].thing.GetClassName() .. DARKGRAY .. " <" .. aliases[ i ].thing .. "> at pos " .. ZCGlobal.squeezeVector3( aliases[ i ].thing.pos ) );
+						ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANELINFO_ALIASLINKED" ), aliases[ i ].aliasname, aliases[ i ].thing.GetClassName() .. DARKGRAY .. " <" .. aliases[ i ].thing .. ">", ZCGlobal.squeezeVector3( aliases[ i ].thing.pos ) ) );
 					else
-						ZCGlobal.ClearscopeLog( LL_Main, DARKGRAY .. "  \"" .. GRAY .. aliases[ i ].aliasname .. DARKGRAY .. "\" is unlinked" );
+						ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANELINFO_ALIASGONE" ), aliases[ i ].aliasname ) );
 				}
 			}
 
@@ -753,7 +757,9 @@ class ZCVariablesControlCommand: ZCConsoleCommand {
 			String argOperation = ccmd.args[ 0 ];
 			argOperation.ToLower();
 
-			if ( ccmdArgsSize > 1 && argOperation == "del" || argOperation == "delete" || argOperation == "rm" || argOperation == "rem" || argOperation == "remove" ) {
+			String argOperationLeft3 = argOperation.Left( 3 );
+
+			if ( ccmdArgsSize > 1 && ( argOperationLeft3 == "del" || argOperation == "rm" || argOperationLeft3 == "rem" ) ) {
 				zcSubcommand = VCT_Delete;
 
 			} else if ( argOperation == "l" || argOperation == "list" || argOperation == "i" || argOperation == "info" ) {

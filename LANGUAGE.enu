@@ -394,7 +394,7 @@ ZCHECKER_ZCTAKE_CANNOTRECEIVE	= "Cannot take item from actor %s.";
 ZCHECKER_ZCTAKE_NOTINVCLASS		= "\"%s\" isn't an Inventory actor.";
 
 // "zcsummon":
-ZCHECKER_ZCSUMMON_HELP_TITLE	= "zcsummon <class> [<amount=1>] [<comma-separated: [rel]ang,tid,spec,panel|add,arg0-4,zofs,fofs,hp,aggr (...:<value>), notproj,friend|foe,[no]infi>]";
+ZCHECKER_ZCSUMMON_HELP_TITLE	= "zcsummon <class> [<amount=1>] [<comma-separated list of extra properties>]";
 ZCHECKER_ZCSUMMON_HELP_DESC		= "Summon <amount> of <class>es on position by rules of build-in eponymous command. Extended info (<extras>) may be provided by comma-separated (\",\") list. Possible parameters are:\
   BEHAVIOUR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];\
   WORLD    : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>;\
@@ -410,6 +410,8 @@ ZCHECKER_ZCSUMMON_UNKNOWNFLAG	= "\c!Unknown flag \"%s\".";
 ZCHECKER_ZCSUMMON_LIMITPREVENT	= "Trying to summon more than 200 actors in once. \c~You may disable this limit switching the \"Allow dangerous actions\" option.";
 ZCHECKER_ZCSUMMON_LIMITWARNING	= "summoning more than 200 actors";
 ZCHECKER_ZCSUMMON_SUCCESS		= "Summoned %i %s \c~of class \"\cd%s\c~\".";
+ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR= "actor";
+ZCHECKER_ZCSUMMON_SUCCESS_ACTORS= "actors";
 ZCHECKER_ZCSUMMON_ADDINSUFFPLACE= "Cannot add actor to list, insufficient place. Try set target to list directly via parameter \"panel:1\"..\"panel:%i\".";
 ZCHECKER_ZCSUMMON_ADDONLYLAST	= "\c~Only last summoned actor added to the list.";
 ZCHECKER_ZCSUMMON_CANNOTSUMMON	= "\caCannot summon actor class \cu\"\c-%s\cu\". It may be abstract or immediately destroyed in the BeginPlay() override.";
@@ -506,6 +508,17 @@ ZCHECKER_ZCPANELCTL_HELP_DESC		= "Perform keen control with informational panels
 ZCHECKER_ZCPANEL_NOACTORINPOS		= "There's no actor in position %i.";
 ZCHECKER_ZCPANELINFO_HEADER			= "\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>";
 ZCHECKER_ZCPANELINFO_INHERITANCE	= "  \c~Inherited from \c-%s\c~ <%s>";
+ZCHECKER_ZCPANELSAVE_ALIASEXISTS	= "Alias \"%s\" already exists and linked to the actor.";
+ZCHECKER_ZCPANELSAVE_RELINKINGALIAS	= "Relinking the \"%s\" alias (its original actor was destroyed).";
+ZCHECKER_ZCPANELSAVE_NOPANEL		= "No actor linked to the panel %s.";
+ZCHECKER_ZCPANELSAVE_SUCCESS		= "\c~Saved actor \c-%s\c~ as alias \"\c-%s\c~\".";
+ZCHECKER_ZCPANELLOAD_ACTORDESTROYED	= "Cannot load, actor with alias \"%s\" destroyed.";
+ZCHECKER_ZCPANELLOAD_WRONGALIAS		= "Alias name \"%s\" \c!does not exist\c-.";
+ZCHECKER_ZCPANELLOAD_SUCCESS		= "\c~Loaded actor \c-%s\c~ as alias \"\c-%s\c~\".";
+ZCHECKER_ZCPANELINFO_NOALIASES		= "\c~No actors aliases created now.";
+ZCHECKER_ZCPANELINFO_LISTHEADER		= "\cyActors aliases \c-(total %i): ";
+ZCHECKER_ZCPANELINFO_ALIASLINKED	= "  \c~\"\c-%s\c~\" linked to the \c-%s\c~ with world position %s.";
+ZCHECKER_ZCPANELINFO_ALIASGONE		= "  \c~\"\c-%s\c~\" is unlinked";
 
 // "zcvarsctl":
 ZCHECKER_ZCVARSCTL_HELP_TITLE		= "zcvarsctl set|new <$varname> <string_value_or_placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo]";
