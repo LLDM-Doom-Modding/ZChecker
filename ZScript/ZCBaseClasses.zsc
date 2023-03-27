@@ -184,6 +184,7 @@ class ZCTooltipClass: ZCConsoleClass {
 			str = "  " .. str;
 
 		str.Replace( "\n", "\n  " );
+		str.Replace( "  " .. LISTPREFIX, LISTPREFIX );
 
 		return str;
 	}
@@ -200,28 +201,28 @@ class ZCTooltipClass: ZCConsoleClass {
 		return "";
 	}
 
-	// Default help string generator:
+	// Default help string generator for tooltips:
 	override String GetHelpString( void ) {
 		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
 			String addtext = HighlightText( GetPlaintext() );
 
 			if ( addtext != "" )
-				helpCacheString = NORMAL .. addtext .. "\n";
+				helpCacheString = "\n" .. HEADER .. "> " .. NORMAL .. addtext;
 
 			addtext = HighlightText( GetTips() );
 
 			if ( addtext != "" ) {
-				helpCacheString.AppendFormat(
+				helpCacheString.AppendFormat( "\n" ..
 								HEADER .. "\\--------= =-----/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
-								ZCGlobal.Locz( "CCMDSHELP_TIPS" ), addtext );
+								ZCGlobal.Locz( "CCMDSHELP_TIPS" ), IndentNewlines( addtext ) );
 			}
 
 			addtext = HighlightText( GetExamples() );
 
 			if ( addtext != "" ) {
-				helpCacheString.AppendFormat(
-								HEADER .. "\n\\------------= =-/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
+				helpCacheString.AppendFormat( "\n" ..
+								HEADER .. "\\------------= =-/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
 								ZCGlobal.Locz( "CCMDSHELP_EXAMPLES" ), IndentNewlines( addtext ) );
 			}
 		} // of if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {}
@@ -503,9 +504,51 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	} // of protected int getBoolArg( uint argnum ) {}
 
 
-	protected String GetInternalZCheckerString( String zcname ) {
-		return ZCGlobal.Get().GetZCheckerString( zcname );
-	}
+	// A wrapper which unites aliases and description to one nice string:
+	override String GetHelpString( void ) {
+		// Attempt to speed up help strings processing:
+		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+			helpCacheString = "";
+
+			Array<String> aliases;
+			ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
+
+			int aliasesSize = aliases.Size();
+			bool unreleased = !!( zcFlags & CCF_Unreleased );
+
+			String ccmdColorHeader = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
+			String ccmdColorArgs   = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLEARGS );
+
+			for ( int i = 0; i < aliasesSize; i++ ) {
+				int spaceIndex = aliases[ i ].IndexOf( " " );
+				if ( spaceIndex != -1 )
+					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
+				else
+					aliases[ i ] = ccmdColorHeader .. aliases[ i ];
+
+				aliases[ i ].Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorArgs );
+				aliases[ i ].Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. ccmdColorArgs );
+				aliases[ i ].Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. ccmdColorArgs );
+				aliases[ i ].Replace( "<", TEXTCOLOR_LIGHTBLUE .. "<" .. ccmdColorArgs );
+				aliases[ i ].Replace( ">", TEXTCOLOR_LIGHTBLUE .. ">" .. ccmdColorArgs );
+			}
+
+			// Extra aliases:
+			for ( int i = 0; i < aliasesSize - 1; i++ )
+				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
+
+			// Last alias and a description:
+			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. ccmdInterfaceData.helpDesc;
+
+			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
+
+			if ( !( lastChar == "." || lastChar == "!" || lastChar == "?" ) )
+				helpCacheString = helpCacheString .. ".";
+		}
+
+		return helpCacheString;
+	} // of final override String GetHelpString( void ) {}
+
 
 	// Extremely long auxiliary method which tries to parse an arg string as:
 	//  1) Internal variable ("$last", ...);
@@ -804,6 +847,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return false;
 	} // of protected void RemoveWorldThinker( Thinker th ) {}
 
+
+	protected String GetInternalZCheckerString( String zcname ) {
+		return ZCGlobal.Get().GetZCheckerString( zcname );
+	}
+
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
 			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );
@@ -817,57 +865,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		newValue = ParseSpecialActorName( value );
 
-		// if ( ( classnameParseStatus == CPS_Variable ) || ( newValue != "" ) )
 		if ( newValue != "" )
 			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
 
 		return false;
 	}
-
-	// A wrapper which unites aliases and description to one nice string:
-	override String GetHelpString( void ) {
-		// Attempt to speed up help strings processing:
-		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
-			helpCacheString = "";
-
-			Array<String> aliases;
-			ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
-
-			int aliasesSize = aliases.Size();
-			bool unreleased = !!( zcFlags & CCF_Unreleased );
-
-			String ccmdColorHeader = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
-			String ccmdColorArgs   = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLEARGS );
-
-			for ( int i = 0; i < aliasesSize; i++ ) {
-				int spaceIndex = aliases[ i ].IndexOf( " " );
-				if ( spaceIndex != -1 )
-					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
-				else
-					aliases[ i ] = ccmdColorHeader .. aliases[ i ];
-
-				aliases[ i ].Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorArgs );
-				aliases[ i ].Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. ccmdColorArgs );
-				aliases[ i ].Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. ccmdColorArgs );
-				aliases[ i ].Replace( "<", TEXTCOLOR_LIGHTBLUE .. "<" .. ccmdColorArgs );
-				aliases[ i ].Replace( ">", TEXTCOLOR_LIGHTBLUE .. ">" .. ccmdColorArgs );
-			}
-
-			// Extra aliases:
-			for ( int i = 0; i < aliasesSize - 1; i++ )
-				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
-
-			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. ccmdInterfaceData.helpDesc;
-
-			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
-
-			if ( !( lastChar == "." || lastChar == "!" || lastChar == "?" ) )
-				helpCacheString = helpCacheString .. ".";
-		}
-
-		return helpCacheString;
-	} // of final override String GetHelpString( void ) {}
 
 } // of class ZCConsoleCommand abstract {}
 

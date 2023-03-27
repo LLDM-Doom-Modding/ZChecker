@@ -1,5 +1,5 @@
 //
-// Tab size for this file: 4.
+// Tabs size for this file: 4.
 //
 // "ZCGlobal.Log()" and all of its derivatives overrides next colors placeholders:
 //	'\c-' is a "LLCOLOR_MAIN" 	 (default user messages color, usually gray);
@@ -568,10 +568,20 @@ Right now there's two maps:\
 \"`2Everything_simple`2\", lightweight, but fully functional variant.\n\
 	`yWarning: some modifications denies actors ordinary spawning without special mod- or level-specified adjustments `d(maybe not on purpose, actually)`y. `xThe consequences can vary from spamming console messages to crashing the engine. If you found this, you're better write to the conflicting mod's author. Or to me, but in most of the cases I will also redirect you there as well.";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES	=
-"\"`Cmap everything_simple`C\" changes the level to the Everything map (simplified version).";
+"\"`Cmap everything_simple`C\" changes the level to the Everything map (simplified version);\
+\"`Czcev map2`x\" works same in general.";
 
 
 // Console commands tooltips:
+
+ZCHECKER_TOOLTIP_ZCHELP_EXAMPLES =
+"Simple \"`Czchelp`x\" prints out a help text with only common used console commands (CCMDs);\
+\"`Czchelp all`x\" prints out a full help text including all of the available console commands;\
+\"`Czchelp -a`x\" does the same as the CCMD above `~(for the *nix OS terminal users like me)`~;\
+\"`Czchelp zcadd`x\" outputs a help text and examples for the console command \"`Czcadd`C\";\
+\"`Czchelp add`x\" does the same as the help command above `~(\"zc\" prefix is optional)`~;\
+\"`Czchelp summon`x\" outputs a help text and examples for the CCMD \"`Czcsummon`C\".";
+
 
 ZCHECKER_TOOLTIP_ZCADD_TEXT =
 "`yNote`x: actors in panels will not be saved after any level reloading. `~Maybe 'll rewrite this system later...`x";
@@ -643,6 +653,31 @@ ZCHECKER_TOOLTIP_ZCSETPROP_EXAMPLES =
 \"`Czchate 2 none`C\" `~or`x \"`Czchate 2 null`C\" clears the current target for the actor in `G2`xnd panel `~(alias to the \"`Czcsetprop 2 target:null`~\")`x.";
 
 
+ZCHECKER_TOOLTIP_ZCSETSTATE_EXAMPLES =
+"\"`Czcsetstate missile`C\" sets a \"`2Missile:`2\" state for the linetarget (if specified state exists for this actor);\
+\"`Czcsetst missile`C\", \"`Czcsets missile`C\" or \"`Czcst missile`C\" does the same as the CCMD above;\
+\"`Czcsetst 1 death`C\" sets a \"`2Death:`2\" state for the actor in `y1`2st`2 infopanel;\
+\"`Czcsetst s melee`C\" sets a \"`2Melee:`2\" state for the caller player it`ys`xelf.";
+
+
+ZCHECKER_TOOLTIP_ZCSETFLAG_TEXT =
+"You may use next aliases as a target value:\
+	`g1`x, `gt`x, `gtrue`d or `gset`x: to set the flag;\
+	`g0`x, `gf`x, `gfalse`d or `greset`x: to clear the flag.\
+Note that only a few frequently used flags by default changes immediately. These include:\
+	`2Physics`x: SOLID, SHOOTABLE, NONSHOOTABLE, NOGRAVITY, NOINTERACTION, NOBLOCKMAP, NOSECTOR;\
+	`2Behaviour`x: FRIENDLY, FLOAT, NOTARGET, FORCEINFIGHTING, NOINFIGHTING;\
+	`2Defences`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x\
+	`2Other`x: BRIGHT.\
+You may disable their special handling by providing a \"ns\", \"nospec\", \"raw\" or \"acs\" keyword in the last argument (comma- or colon-separated if you want not to toggle a flag).";
+ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES =
+"\"`Czcsetflag friendly`x\", \"`Czcsetf friendly`x\" or \"`Czcsf friendly`x\" toggles the `2+FRIENDLY`x flag for the linetarget;\
+\"`Czcsetf 1 solid t`x\" or \"`Czcsetf 1 solid 1`x\" sets to \"true\" a `2+SOLID`x flag for the actor in 1st infopanel;\
+\"`Czcsetf s touchy`x\" sets a `2+TOUCHY`x flag to `1s`2elf`x, making player to die at the slightest touch. Note that this flag isn't in the quick access;\
+\"`Czcsetf solid raw`x\" toggles a flag with a one-delay tic, forcibly using an ACS machine;\
+\"`Czcsetf solid 1,nospec`x\", \"`Czcsetf solid acs:1`x\" sets a specified flag to \"true\", also forcibly using an ACS machine.";
+
+
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS =
 "Use the \"`Czcthinkers <type> rm`x\" command `yonly if you know what you're doing`x; it can absolutely break levels and whole game up to the engine crash.\
 You may provide a direct StatNum value instead of its string alias.\
@@ -664,24 +699,6 @@ ZCHECKER_TOOLTIP_ZCPANELCTL_TEXT =
 ZCHECKER_TOOLTIP_ZCPANELCTL_EXAMPLES =
 "\"`Czcpanel 1 m 3`x\" moves actor from the 1st panel to the 3rd panel;\
 \"`Czcpanel info 2`x\", \"`Czcpanel 2 info`x\" or \"`Czcinfo 2`x\" shows some info about specified (2nd) actor.";
-
-
-ZCHECKER_TOOLTIP_ZCSETFLAG_TEXT =
-"You may use next aliases as a target value:\
-	`g1`x, `gt`x, `gtrue`d or `gset`x: to set the flag;\
-	`g0`x, `gf`x, `gfalse`d or `greset`x: to clear the flag.\
-Note that only a few frequently used flags by default changes immediately. These include:\
-	`2Physics`x: SOLID, SHOOTABLE, NONSHOOTABLE, NOGRAVITY, NOINTERACTION, NOBLOCKMAP, NOSECTOR;\
-	`2Behaviour`x: FRIENDLY, FLOAT, NOTARGET, FORCEINFIGHTING, NOINFIGHTING;\
-	`2Defences`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x\
-	`2Other`x: BRIGHT.\
-You may disable their special handling by providing a \"ns\", \"nospec\", \"raw\" or \"acs\" keyword in the last argument (comma- or colon-separated if you want not to toggle a flag).";
-ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES =
-"\"`Czcsetflag friendly`x\", \"`Czcsetf friendly`x\" or \"`Czcsf friendly`x\" toggles the `2+FRIENDLY`x flag for the linetarget;\
-\"`Czcsetf 1 solid t`x\" or \"`Czcsetf 1 solid 1`x\" sets to \"true\" a `2+SOLID`x flag for the actor in 1st infopanel;\
-\"`Czcsetf s touchy`x\" sets a `2+TOUCHY`x flag to `1s`2elf`x, making player to die at the slightest touch. Note that this flag isn't in the quick access;\
-\"`Czcsetf solid raw`x\" toggles a flag with a one-delay tic, forcibly using an ACS machine;\
-\"`Czcsetf solid 1,nospec`x\", \"`Czcsetf solid acs:1`x\" sets a specified flag to \"true\", also forcibly using an ACS machine.";
 
 
 ZCHECKER_TOOLTIP_ZCINTERFACE_TEXT =

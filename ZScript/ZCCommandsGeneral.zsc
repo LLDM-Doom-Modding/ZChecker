@@ -12,7 +12,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_help",
 			"$ZCHELP_HELP_TITLE",
-			"$ZCHELP_HELP_DESC"
+			"$ZCHELP_HELP_DESC",
+			'ZCTooltipHelpCommand'
 		);
 	}
 
@@ -73,23 +74,25 @@ class ZCHelpCommand: ZCConsoleCommand {
 
 	override void DoCommand( void ) {
 		// Description and credits:
-		if ( verboseHelp ) {
+		if ( verboseHelp )
 			console.printf( ZCGlobal.Locz( "ZCHELP_VERBOSETITLE" ), ZCheckerVersion );
-
-			//console.printf( HEADERCOLOR .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADERCOLOR .. ".\n" ..
-			//		"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADERCOLOR .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADERCOLOR .. ";\n" ..
-			//		"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADERCOLOR .. " team" .. ".\n\n" );
-		}
 
 		if ( infoclass ) {
 			String helpstr = infoclass.GetHelpString();
+			String const_HelpIndent = HEADERCOLOR .. "| ";
 
-			helpstr.Replace( "\n", "\n" .. HEADERCOLOR .. "| " .. LLCOLOR_MAIN );
-			console.printf( HEADERCOLOR .. "| " .. LLCOLOR_MAIN .. helpstr );
+			helpstr.Replace( "\n", "\n" .. const_HelpIndent .. LLCOLOR_MAIN );
+			console.printf( const_HelpIndent .. " \n" .. const_HelpIndent .. helpstr );
 
 			if ( infoclass.ccmdInterfaceData.helpTooltip ) {
-				console.printf( HEADERCOLOR .. "|\n" .. HEADERCOLOR .. "| ".. infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
-				console.printf( "\n" .. HEADERCOLOR .. "\\-= =-------------\n" .. HEADERCOLOR .. "| " .. LLCOLOR_MAIN .. helpstr .. HEADERCOLOR .. "\n/--=--=--=--=--=--\n\n" );
+				String helpTooltipText = infoclass.ccmdInterfaceData.helpTooltip.GetHelpString();
+				console.printf( const_HelpIndent .. helpTooltipText );
+
+				if ( helpTooltipText.Length() > 1000 )
+					console.printf( "\n" .. HEADERCOLOR .. "\\-= =-------------\n" .. const_HelpIndent .. LLCOLOR_MAIN .. helpstr );
+
+				console.printf( HEADERCOLOR .. "/--=--=--=--=--=--\n\n" );
+
 			} else {
 				console.printf( "\n" );
 			}
@@ -97,7 +100,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 		} else {
 			console.printf( ZCGlobal.Locz( verboseHelp? "ZCHELP_HEADERALLCCMDS" : "ZCHELP_HEADERCOMMONCCMDS" ) );
 
-			ZCConsoleClass curCC = NULL; // Also separators.
+			ZCConsoleClass curCC = NULL; // Also separators and tooltips will be printed.
 
 			for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size(); i++ ) {
 				curCC = ccmd.handler.zcConsoleHandleClasses[ i ];

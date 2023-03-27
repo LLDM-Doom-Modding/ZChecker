@@ -789,7 +789,8 @@ class ZCSetStateCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_setstate",
 			"$ZCSETSTATE_HELP_TITLE",
-			"$ZCSETSTATE_HELP_DESC"
+			"$ZCSETSTATE_HELP_DESC",
+			'ZCTooltipSetStateCommand'
 		);
 	}
 
@@ -887,7 +888,7 @@ struct ZCSetPropertyParameterInteger {
 } // of struct ZCSetPropertyParameterInteger {}
 
 struct ZCSetPropertyParameterPointer {
-	Actor value; // [striked] See "ZCConsoleCommand.EPositionParseStatus".
+	Actor value;
 	bool changed;
 
 	void set( in Actor newval ) {
