@@ -7,7 +7,7 @@ Separated into three large, interdependent parts:
 
 ### 1. Console commands (CCMDs)
 
-The main control tool in the game world. All console commands begin with the prefix "zc", so you can type "zc`<tab>`" to show them all. The most commonly used ones are:
+The main control tool in the game world. All console commands begin with the prefix "zc," so you can type "zc`<tab>`" to show them all. The most commonly used ones are:
 
 - `zchelp [<command>|all]`. Prints a ZChecker help text to the console:
   
@@ -75,27 +75,24 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 
 ### LLDM crew
 
-- **JSO_x** a.k.a. **Morthimer McMare**: idea, most of the code, the "Everything_simple" map;
+- **JSO_x** a.k.a. **Morthimer McMare**: idea, most of the code, the "Everything_simpled" map;
+
 - **StormCatcher.77**: the "Everything" map;
+
 - **ika707**: beta-testing, bug reporting.
-
-
-### Modules/API
-
-- **InfernalSky** a.k.a. **Hizenfort**: player cheats infopanel;
-- **N00b2015**: "`zcadd force`" CCMD subcommand fix;
-- **Mud** a.k.a. **Serious_MOod**: sound definitions infopanel;
-
 
 ### Work with resources
 
 - **Agent_Ash** a.k.a. **Jekyll Grim Payne**: translation check and interface feedback;
-- **Dezette** a.k.a. **MyNameIs**: alternative monospaced smallfont;
-- **Mud** a.k.a. **Serious_MOod**: textures for the Everything maps.
 
+- **Dezette** a.k.a. **MyNameIs**: alternative monospaced smallfont;
+
+- **Mud** a.k.a. **Serious_MOod**: textures for the Everything maps.
 
 ### Special thanks to
 
 - **Sir Robin**, for his [ZScript quicksort library](https://forum.zdoom.org/viewtopic.php?f=105&t=75757);
+
 - **m8f**, for the GUI code from his [Hellscape Navigator](https://forum.zdoom.org/viewtopic.php?t=61643);
+
 - All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Agent_Ash**, **N00b2015**, **Dron12261**, **Chameleon_111**, **Dezette**, **Il Str**.
