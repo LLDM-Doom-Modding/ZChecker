@@ -95,7 +95,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	StaticText "$ZCHECKER_EVMAPMENU_EMPTYSPRITES", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_MISSING", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_TNT1A0", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawnplyc", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawncorruptedsprites", "YesNo"
 	StaticText "$ZCHECKER_EVMAPMENU_CODEBASED", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"

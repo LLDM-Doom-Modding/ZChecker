@@ -263,7 +263,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
 		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
-		bool spawnPLYC = CVar.FindCVar( "mcm_zchecker_ev_spawnplyc" ).GetBool();
+		bool spawnCorruptedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawncorruptedsprites" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
 		bool spawnMissedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawnmissingsprites" ).GetBool();
 		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
@@ -294,49 +294,55 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			}
 
 			if ( !skipactor ) {
-				bool spriteCheckSuccess = spawnTNT1A0 && spawnPLYC;
+				bool spriteCheckSuccess = spawnTNT1A0 && spawnCorruptedSprites;
 
 				State st = GetDefaultByType( cls ).SpawnState;
 				String stSpriteName = "TNT1A0";
-				String stSpriteName4 = "TNT1";
-				SpriteID stSprite = spriteTNT1A0;
+				String stSpriteName4;
+				SpriteID stInternalSprite;
+				String stInternalSpriteName;
 
 				if ( !spriteCheckSuccess && st ) {
 					int statesCountdown = 0;
 
-					// "st.sprite" returns non-altered sprite.
 					stSpriteName = TexMan.GetName( st.GetSpriteTexture( 0 ) );
 					stSpriteName4 = stSpriteName.Left( 4 );
-					stSprite = st.sprite;
+					stInternalSprite = st.sprite; // "st.sprite" stores an non-altered sprite.
+					stInternalSpriteName = "" .. stInternalSprite;
 
-					while ( st.NextState && ( !spawnTNT1A0 && stSpriteName == "TNT1A0" || !spawnPLYC && stSpriteName4 == "PLYC" ) && statesCountdown < 7 ) {
+					// Skipping some "TNT1A0" Decorate-style initialization states:
+					while ( st.NextState && ( !spawnTNT1A0 && stSpriteName == "TNT1A0" || !spawnCorruptedSprites && stSpriteName4 != stInternalSpriteName ) && statesCountdown < 7 ) {
 						st = st.NextState;
 						statesCountdown++;
 
 						stSpriteName = TexMan.GetName( st.GetSpriteTexture( 0 ) );
 						stSpriteName4 = stSpriteName.Left( 4 );
-						stSprite = st.sprite;
+						stInternalSprite = st.sprite;
+						stInternalSpriteName = "" .. stInternalSprite;
 					}
 
+					// A verdict:
 					if ( stSpriteName4 == "TNT1" ) {
 						// Empty or missing sprite:
-						if ( stSprite == spriteTNT1A0 )
+						if ( stInternalSprite == spriteTNT1A0 )
 							spriteCheckSuccess = spawnTNT1A0;
 						else
 							spriteCheckSuccess = spawnMissedSprites;
 
 					} else {
-						// Valid or a "PLYC" sprite:
-						spriteCheckSuccess = ( spawnPLYC || ( stSpriteName4 != "PLYC" && stSpriteName != "" ) );
+						// Valid sprite or sprite with a corrupted name:
+						spriteCheckSuccess = ( spawnCorruptedSprites || stSpriteName4 == stInternalSpriteName );
 					}
+				} // of if ( !spriteCheckSuccess && st ) {}
 
-				}
 
 				if ( !spriteCheckSuccess ) {
-					if ( stSprite == spriteTNT1A0 )
+					if ( stInternalSprite == spriteTNT1A0 )
 						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
+					else if ( stSpriteName4 == "TNT1" )
+						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName ) );
 					else
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stSpriteName, "" .. stSprite ) );
+						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_CORRUPSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName, stSpriteName ) );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
 					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_INVISSKIP" ), cls.GetClassName() ) );
@@ -908,16 +914,16 @@ class ZCheckerCategoryInfoHeader: Actor {
 		}
 
 		if ( frame != ZCheckerEverythingMapHandler.S__Nothing ) {
-			categoryDescription = String.Format( TEXTCOLOR_DARKGRAY .. "Category " .. TEXTCOLOR_WHITE  .. "%s" .. TEXTCOLOR_DARKGRAY, categoryDescription );
+			categoryDescription = String.Format( ZCGlobal.Locz( "EVMAPCATEGORY_PREFIX" ), categoryDescription );
 
 			if ( missedActorsAmount == 0 ) {
 				if ( spawnedActorsAmount != 0 )
-					categoryDescription.AppendFormat( ". Spawned %i actor(s)", spawnedActorsAmount );
+					categoryDescription.AppendFormat( ZCGlobal.Locz( "EVMAPCATEGORY_NORMALSPAWN" ), spawnedActorsAmount );
 				else
-					categoryDescription.AppendFormat( ". No actors spawned" );
+					categoryDescription.AppendFormat( ZCGlobal.Locz( "EVMAPCATEGORY_EMPTYSPAWN" ) );
 
 			} else {
-				categoryDescription.AppendFormat( ". Spawned " .. TEXTCOLOR_BRICK .. "%i/%i" .. TEXTCOLOR_DARKGRAY .. " actor(s)", spawnedActorsAmount, spawnedActorsAmount + missedActorsAmount );
+				categoryDescription.AppendFormat( ZCGlobal.Locz( "EVMAPCATEGORY_PARTIALSPAWN" ), spawnedActorsAmount, spawnedActorsAmount + missedActorsAmount );
 			}
 		} // of if ( frame != ZCheckerEverythingMapHandler.S__Nothing ) {}
 	} // of void InitCategoryHeader( void ) {}
