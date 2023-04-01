@@ -176,8 +176,8 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 				elemstr = BLACK .. elemstr .. item.GetClassName() .. " x0";
 			}
 
-			outstr = outstr .. elemstr .. GRAY .. ";";
-		}
+			outstr = outstr .. elemstr;
+		} // of for ( int i = 0; i < min( qsortArraySize, cellsAmountOption ); i++ ) {}
 
 		if ( qsortArraySize > cellsAmountOption )
 			outstr = outstr .. TEXTCOLOR_DARKGRAY .. "\n  (..." .. ( qsortArraySize - cellsAmountOption ) .. " more)";

@@ -892,6 +892,7 @@ class ZCheckerCategoryInfoHeader: Actor {
 		-SHOOTABLE;
 		+NOGRAVITY;
 		+DONTSPLASH;
+		+BRIGHT;
 		FloatBobPhase 0;
 		RenderStyle "Translucent";
 		Alpha 0.33;
