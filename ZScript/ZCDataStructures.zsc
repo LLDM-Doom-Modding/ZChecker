@@ -390,7 +390,7 @@ class ZCPanelsStorage {
 	} // of void TickSetPanelsorderCVars( void ) {}
 
 
-	String GetPanelsorderFromCVars( void ) {
+	static String GetPanelsorderFromCVars( void ) {
 		String outstr = "";
 
 		for ( int i = 0; i < 10; i++ ) {
@@ -403,7 +403,7 @@ class ZCPanelsStorage {
 		}
 
 		return outstr;
-	}
+	} // of static String GetPanelsorderFromCVars( void ) {}
 
 	void UpdateFont( void ) {
 		int fonttype = -1;
