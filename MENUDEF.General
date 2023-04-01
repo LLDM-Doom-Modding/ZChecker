@@ -20,6 +20,8 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Submenu "$ZCHECKER_MAINMENU_EVMAP", "mcm_ZChecker_ControlMenu_MapEverything"
 	Submenu "$ZCHECKER_MAINMENU_VISUAL", "mcm_ZChecker_ControlMenu_VisualSettings"
 	StaticText " "
+	StaticText "$ZCHECKER_MAINMENU_DIV_HOTKEYS", 1	
+	Control "$ZCHECKER_MAINMENU_OPEN_MENU_KEY", "openmenu mcm_ZChecker_ControlMenu"
 	Control "$ZCHECKER_MAINMENU_OPENINFOPANELS", "openmenu mcm_ZChecker_ControlMenu_Panels"
 	Control "$ZCHECKER_MAINMENU_OPENCCMDS", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
 	Control "$ZCHECKER_MAINMENU_OPENEVMAP", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
@@ -40,8 +42,6 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Option "$ZCHECKER_MAINMENU_NO_ZC_HANDLING", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
     StaticText "$ZCHECKER_MAINMENU_DO_NOT_ALTER", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_SPECIAL", DARKGRAY
-	StaticText " "
-	Control "$ZCHECKER_MAINMENU_OPEN_MENU_KEY", "openmenu mcm_ZChecker_ControlMenu"
 	StaticText " "
 	Option "$ZCHECKER_MAINMENU_LOG_LEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "$ZCHECKER_MAINMENU_UPDATE_5_TICS", DARKGRAY

@@ -35,34 +35,35 @@ ZCHECKER_NETEVENTINTC_FROMPLAYER= "from player #";
 // === Menus ===
 //     [WIP]
 
-ZCHECKER_MAINMENU_TITLE			= "ZChecker control";
+ZCHECKER_MAINMENU_TITLE			= "ZChecker settings";
 ZCHECKER_OPTIONSMENU_NOHANDLER	= "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in options menu above.";
 
 ZCHECKER_MAINMENU_CANNOT_LOCATE = "\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker is not able to be launched properly\ci.\n\n\ciPossible reason: usage of the \cu\"\crEventHandlers = ...\cu\"\n\cu(\cinot \cu\"\cqAddEventHandlers = ...\cu\") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.";
 ZCHECKER_MAINMENU_DIV_GENERAL	= "General categories";
-ZCHECKER_MAINMENU_INFOPANELS	= "Informational panels control";
+ZCHECKER_MAINMENU_INFOPANELS	= "Information panel settings";
 ZCHECKER_MAINMENU_CCMDS			= "Call console command [WIP]";
 ZCHECKER_MAINMENU_EVMAP			= "\"Everything\" map settings";
 ZCHECKER_MAINMENU_VISUAL		= "HUD & visual settings";
-ZCHECKER_MAINMENU_OPENINFOPANELS= "Open infopanels menu key";
-ZCHECKER_MAINMENU_OPENCCMDS		= "Open CCMD call menu key";
-ZCHECKER_MAINMENU_OPENEVMAP		= "Open \"Everything\" map settings key";
-ZCHECKER_MAINMENU_OPENVISUAL	= "Open visual settings menu key";
+ZCHECKER_MAINMENU_OPEN_MENU_KEY	= "Open this menu";
+ZCHECKER_MAINMENU_OPENINFOPANELS= "Open infopanels menu";
+ZCHECKER_MAINMENU_OPENCCMDS		= "Open CCMD call menu";
+ZCHECKER_MAINMENU_OPENEVMAP		= "Open \"Everything\" map settings";
+ZCHECKER_MAINMENU_OPENVISUAL	= "Open visual settings menu";
 
 ZCHECKER_MAINMENU_DIV_OTHER		= "Other settings";
-ZCHECKER_MAINMENU_NETEVENTS		= "Netevents info intercepting";
-ZCHECKER_MAINMENU_NETEVENTS_TIP	= "Tries to catch a network events information.";
+ZCHECKER_MAINMENU_DIV_HOTKEYS		= "Hotkeys";
+ZCHECKER_MAINMENU_NETEVENTS		= "Netevent info intercepting";
+ZCHECKER_MAINMENU_NETEVENTS_TIP	= "Try to obtain information from network events.";
 ZCHECKER_MAINMENU_ALLOW_DANGEROUS	= "Allow dangerous actions";
 ZCHECKER_MAINMENU_ALLOW_CRASH	= "Allow operations that are known to crash the game.";
-ZCHECKER_MAINMENU_TWICE_BEHAVIOUR	= "Adding actor twice behaviour";
-ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR	= "Behaviour when using \"zcadd\" on actor which is";
-ZCHECKER_MAINMENU_ALREADY_LIST	= "already in the informational panels list.";
-ZCHECKER_MAINMENU_NO_ZC_HANDLING= "No ZC-classes special handling";
-ZCHECKER_MAINMENU_DO_NOT_ALTER	= "Do not alter handling for the ZChecker";
-ZCHECKER_MAINMENU_SPECIAL		= "special actors and classes.";
-ZCHECKER_MAINMENU_OPEN_MENU_KEY	= "Open this controls menu key";
+ZCHECKER_MAINMENU_TWICE_BEHAVIOUR	= "Repeated actor addition handling";
+ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR	= "Behaviour when using \"zcadd\" on an actor which";
+ZCHECKER_MAINMENU_ALREADY_LIST	= "is already present in the information panels list.";
+ZCHECKER_MAINMENU_NO_ZC_HANDLING= "No ZC classes special handling";
+ZCHECKER_MAINMENU_DO_NOT_ALTER	= "Do not alter handling for the special";
+ZCHECKER_MAINMENU_SPECIAL		= "ZChecker actors and classes.";
 ZCHECKER_MAINMENU_LOG_LEVEL		= "Log level";
-ZCHECKER_MAINMENU_UPDATE_5_TICS	= "will be updated after up to five world tics.";
+ZCHECKER_MAINMENU_UPDATE_5_TICS	= "Will be updated within 5 world tics.";
 
 ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN		= "1. General";
 ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED	= "2. Detailed (default)";
@@ -75,15 +76,15 @@ ZCHECKER_MAINMENUOPT_FONTS_SMFULL	= "Mono smallfont, full space";
 ZCHECKER_MAINMENUOPT_FONTS_CONFONT	= "Built-in confont";
 ZCHECKER_MAINMENUOPT_FONTS_NEWSMALL	= "Built-in new smallfont";
 ZCHECKER_MAINMENUOPT_FONTS_NEWCON	= "Built-in new confont";
-ZCHECKER_MAINMENUOPT_NOFONTMSG		= "\c~Font \"\c-%s\c~\" isn't available. Maybe you're using an old GZDoom engine version.";
+ZCHECKER_MAINMENUOPT_NOFONTMSG		= "\c~Font \"\c-%s\c~\" isn't available. You might be using an old GZDoom engine version.";
 
 ZCHECKER_MAINMENUOPT_NETEVENS_DISABLED	= "Disabled";
 ZCHECKER_MAINMENUOPT_NETEVENS_NA		= "Names and args";
 ZCHECKER_MAINMENUOPT_NETEVENS_NAM		= "Names, args and maptime";
 ZCHECKER_MAINMENUOPT_NETEVENS_FULL		= "Full information";
 
-ZCHECKER_MAINMENUOPT_TWICE_SMOVE	= "Silently move";
-ZCHECKER_MAINMENUOPT_TWICE_SCOPY	= "Silently copy";
+ZCHECKER_MAINMENUOPT_TWICE_SMOVE	= "Move silently";
+ZCHECKER_MAINMENUOPT_TWICE_SCOPY	= "Copy silently";
 ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN	= "Move and warn (default)";
 ZCHECKER_MAINMENUOPT_TWICE_COPYWARN	= "Copy and warn";
 
@@ -118,7 +119,7 @@ ZCHECKER_INFOPANELS_PTROTHER		= "Other pointers";
 ZCHECKER_INFOPANELKEYS_PTROTHER		= "P";
 ZCHECKER_INFOPANELS_ARGSTIDS		= "Args, special & TIDs";
 ZCHECKER_INFOPANELKEYS_ARGSTIDS		= "TS";
-ZCHECKER_INFOPANELS_FRIENDPLAYERS	= "Friend players & teams";
+ZCHECKER_INFOPANELS_FRIENDPLAYERS	= "Friendly players & teams";
 ZCHECKER_INFOPANELKEYS_FRIENDPLAYERS= "PT";
 ZCHECKER_INFOPANELS_SOUNDDEFS		= "Sound definitions";
 ZCHECKER_INFOPANELKEYS_SOUNDDEFS	= "";
@@ -146,17 +147,17 @@ ZCHECKER_PANELMAINOPT_TAGS_ON		= "Always";
 
 ZCHECKER_PANELSUBMENU_WPOS_TITLE	= "ZChecker panel: World positioning";
 ZCHECKER_PANELSUBMENU_WPOSDIV_TILTS	= "Tilts";
-ZCHECKER_PANELSUBMENU_WPOS_DECIMAMNT= "Amount of decimals";
-ZCHECKER_PANELSUBMENU_WPOS_NOROLL	= "Remove roll";
+ZCHECKER_PANELSUBMENU_WPOS_DECIMAMNT= "Number of decimals";
+ZCHECKER_PANELSUBMENU_WPOS_NOROLL	= "Hide roll";
 ZCHECKER_PANELSUBMENU_WPOSDIV_OTHER	= "Other";
-ZCHECKER_PANELSUBMENU_WPOS_PLAYERBUTTONS = "Player buttons";
+ZCHECKER_PANELSUBMENU_WPOS_PLAYERBUTTONS = "Player inputs";
 
 ZCHECKER_PANELSUBLABEL_INV_PREFIX	= "";
 ZCHECKER_PANELSUBLABEL_INV_SORTEDBY	= "items sorted by";
 ZCHECKER_PANELSUBLABEL_INV_UNSORTED	= "unsorted items";
 ZCHECKER_PANELSUBLABEL_INV_REVERSED	= "(rev)";
 ZCHECKER_PANELSUBMENU_INV_TITLE		= "ZChecker panel: Inventory";
-ZCHECKER_PANELSUBMENU_INV_ITEMSAMNT	= "Amount of elements";
+ZCHECKER_PANELSUBMENU_INV_ITEMSAMNT	= "Number of elements";
 ZCHECKER_PANELSUBMENU_INV_SORTBY	= "Sort output by";
 ZCHECKER_PANELSUBMENU_INV_REVERSE	= "Ascending (reversed) output";
 ZCHECKER_PANELINVOPT_SORT_UNSORTED	= "(Unsorted)";
@@ -245,23 +246,23 @@ ZCHECKER_EVMAPMENU_SPAWNREPLACED= "Replaced actors";
 ZCHECKER_EVMAPMENU_RESTRICT		= "Replacements of restricted actors";
 ZCHECKER_EVMAPMENU_EMPTYSPRITES	= "- By empty sprites -";
 ZCHECKER_EVMAPMENU_MISSING		= "Actors with missing sprites";
-ZCHECKER_EVMAPMENU_TNT1A0		= "Actors with sprite \"TNT1A0\"";
+ZCHECKER_EVMAPMENU_TNT1A0		= "Actors with the \'TNT1A0\' sprite";
 ZCHECKER_EVMAPMENU_PLYC			= "Actors with corrupted sprite names";
 ZCHECKER_EVMAPMENU_CODEBASED	= "- Code-based -";
 ZCHECKER_EVMAPMENU_STEALTH		= "+STEALTH actors";
 ZCHECKER_EVMAPMENU_INVISIBLE	= "+INVISIBLE actors";
-ZCHECKER_EVMAPMENU_PLAYERCHUNK	= "Inherited from \"PlayerChunk\"";
+ZCHECKER_EVMAPMENU_PLAYERCHUNK	= "Inherited from \'PlayerChunk\'";
 ZCHECKER_EVMAPMENU_OTHER		= "Other";
 ZCHECKER_EVMAPMENU_AUTONOTARGET	= "Auto-notarget";
 ZCHECKER_EVMAPMENU_AUTOGOD		= "Auto-godmode";
 ZCHECKER_EVMAPMENU_SPEC_CHEATS	= "Enable specified cheats automatically";
-ZCHECKER_EVMAPMENU_ENTERING		= "when entering an \"Everything\" map.";
+ZCHECKER_EVMAPMENU_ENTERING		= "when entering the \"Everything\" map.";
 ZCHECKER_EVMAPMENU_LOGSPAWN		= "Log spawn information";
 ZCHECKER_EVMAPMENU_LOGCREATED1	= "Log information to console about created (or";
-ZCHECKER_EVMAPMENU_LOGCREATED2	= "skipped) actors on an \"Everything\" map.";
+ZCHECKER_EVMAPMENU_LOGCREATED2	= "skipped) actors on the \"Everything\" map.";
 ZCHECKER_EVMAPMENU_FORCEUSE		= "Force use map scripts";
 
-ZCHECKER_EVMAPMENU_ALLOWSPEC1	= "This option allows using a special \"Everything\" map";
+ZCHECKER_EVMAPMENU_ALLOWSPEC1	= "This option allows using special \"Everything\" map";
 ZCHECKER_EVMAPMENU_ALLOWSPEC2	= "scripts for any map, skipping the conformity check.";
 ZCHECKER_EVMAPMENU_CANNOT_LOCATE= "\n\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cx\"Everything\" map CCMDs cannot be used.";
 ZCHECKER_EVMAPMENU_RELATEDCCMD	= "Related CCMDs (closes menu)";
@@ -272,8 +273,8 @@ ZCHECKER_EVMAPMENU_TELEPORTSTART= "Teleport to start: \"zcevg start\"";
 
 ZCHECKER_CCMDMENU_TITLE			= "ZChecker: call console command";
 ZCHECKER_CCMDMENU_WIP			= "[WIP] Some frequently used commands will be here.";
-ZCHECKER_CCMDMENU_HELPNOTE1 	= "All commands may be shown via \"zchelp all\" in";
-ZCHECKER_CCMDMENU_HELPNOTE2 	= "the console; also you may use a \"zchelp <command>\".";
+ZCHECKER_CCMDMENU_HELPNOTE1 	= "All commands may be shown via the \"zchelp all\"";
+ZCHECKER_CCMDMENU_HELPNOTE2 	= "console command; also you may use \"zchelp <command>\".";
 ZCHECKER_CCMDMENU_CANNOT_LOCATE	= "\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.";
 ZCHECKER_CCMDMENU_EXAMPLES 		= "Command examples:";
 ZCHECKER_CCMDMENU_ZCADD 		= "\"zcadd\": Add linetarget to panel";
@@ -513,7 +514,7 @@ ZCHECKER_ZCTHINKERS_LISTTOTAL		= "Total %i thinkers of enum type %i.";
 
 // "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE		= "zcpanel <pos> m[ove] <newpos>;zcpanel <pos> c[opy] <newpos>;zcpanel <pos> save|store|load <aliasname>;zcpanel (info [<pos>]|<pos> info)";
-ZCHECKER_ZCPANELCTL_HELP_DESC		= "Perform keen control with informational panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting if <pos> is provided or about actors stashed aliases in other case.";
+ZCHECKER_ZCPANELCTL_HELP_DESC		= "Perform keen control with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheriting if <pos> is provided or about actors stashed aliases in other case.";
 ZCHECKER_ZCPANEL_NOACTORINPOS		= "There's no actor in position %i.";
 ZCHECKER_ZCPANELINFO_HEADER			= "\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>";
 ZCHECKER_ZCPANELINFO_INHERITANCE	= "  \c~Inherited from \c-%s\c~ <%s>";
@@ -597,7 +598,7 @@ ZCHECKER_TOOLTIP_ZCADD_EXAMPLES =
 \"`Czcadd weap`x\"`d/`x\"`Czcaddweap`x\" adds a currently selected weapon to the first empty panel (if it exists);\
 \"`Czcadd self 1`x\"`d/`x\"`Czcaddself 1`x\" adds a player actor to the first panel;\
 \"`Czcaddlistget`x\" prints out a list with all actors on the level;\
-\"`Czcaddlistget 13 2`x\" adds a 13th element from the list to the second informational panel.";
+\"`Czcaddlistget 13 2`x\" adds a 13th element from the list to the second information panel.";
 
 
 ZCHECKER_TOOLTIP_ZCGIVE_EXAMPLES =
@@ -695,7 +696,7 @@ ZCHECKER_TOOLTIP_ZCTHINKERS_EXAMPLES =
 \"`Czcthinkers 100 l`x\" does the same as a command above: an `2actors`x alias actually converts to the value `y100`x;\
 \"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level `d(same action as in the \"`Cremove zombieman`d\");\
 \"`Czcthinkers static rm 1`x\" removes a 1st element in the set of the static thinkers (`~STAT_STATIC`~);\
-\"`Czcthinkers a add`g:2`C 17`x\" adds a 17th actor from the list to the second informational panel;\
+\"`Czcthinkers a add`g:2`C 17`x\" adds a 17th actor from the list to the second information panel;\
 \"`Czcthinkers sl rm`2:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).";
 
 

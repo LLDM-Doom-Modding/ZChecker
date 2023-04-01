@@ -27,15 +27,15 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
-		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings:" ) );
+		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings" ) );
 
-		String panelbitsStr = DARKGRAY .. "'" .. GRAY .. "1" .. DARKGRAY .. "'";
+		String panelbitsStr = GRAY .. "1";
 		for ( int i = 1; i < MaxTestee; i++ )
-			panelbitsStr.AppendFormat( DARKGRAY .. ", '" .. GRAY .. "%i" .. DARKGRAY .. "'", i + 1 );
+			panelbitsStr.AppendFormat( DARKGRAY .. ", " .. GRAY .. "%i" .. DARKGRAY .. "", i + 1 );
 
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TAN .. "Switch info" .. DARKGRAY .. " with " .. GRAY .. "<Space>" .. DARKGRAY .. "/" .. GRAY .. "<Enter>" .. DARKGRAY .. ", " .. panelbitsStr .. " or " .. GRAY .. "<L/R>" .. DARKGRAY .. ";" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F3>" .. DARKGRAY .. ", " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "'/" .. GRAY .. "<KP+>" .. DARKGRAY .. ", '" .. GRAY .. "-" .. DARKGRAY .. "'/" .. GRAY .. "<KP->" .. DARKGRAY .. " or " .. GRAY .. "mouse wheel" .. DARKGRAY .. "." ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TAN .. "Switch info: " .. GRAY .. "Space" .. DARKGRAY .. "/" .. GRAY .. "Enter" .. DARKGRAY .. ", " .. panelbitsStr .. " or " .. GRAY .. "Left" .. DARKGRAY .. "/" .. GRAY .. "Right" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu: " .. GRAY .. "F3" .. DARKGRAY .. "/" .. GRAY .. "F4" .. DARKGRAY .. "/" .. GRAY .. "Tab" .. DARKGRAY .. " or " .. GRAY .. "Mouse 1"  ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels: " .. GRAY .. "+" .. DARKGRAY .. "/" .. GRAY .. "KP+" .. DARKGRAY .. ", " .. GRAY .. "-" .. DARKGRAY .. "/" .. GRAY .. "KP-" .. DARKGRAY .. " or " .. GRAY .. "Mouse wheel" ) );
 		desc.mItems.Push( NewStaticText() );
 	}
 
