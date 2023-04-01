@@ -106,11 +106,11 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		String decimalsfmt = ( decimalsAmount == 0? "%i" : "%." .. decimalsAmount .. "f" );
 
 		if ( skipRollTilt ) {
-			outStr = String.Format( "Tilt: (" .. DARKGRAY
+			outStr = String.Format( "Tilts: (" .. DARKGRAY
 							.. "a\c-" .. decimalsfmt .. ", " .. DARKGRAY
 							.. "p\c-" .. decimalsfmt .. ");\n", thing.angle % 360.0, thing.pitch );
 		} else {
-			outStr = String.Format( "Tilt: (" .. DARKGRAY
+			outStr = String.Format( "Tilts: (" .. DARKGRAY
 							.. "a\c-" .. decimalsfmt .. ", " .. DARKGRAY
 							.. "p\c-" .. decimalsfmt .. ", " .. DARKGRAY
 							.. "r\c-" .. decimalsfmt .. ");\n", thing.angle % 360.0, thing.pitch, thing.roll );

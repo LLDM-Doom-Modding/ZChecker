@@ -504,6 +504,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		} // of for ( int i = 0; i < level.sectors.Size(); i++ ) {}
 
 
+		int nonProvidedCategoriesAmount = 0;
+
 		for ( int i = 0; i < S__Quantity; i++ ) {
 			ZCheckerEverythingMapCategoryData curCategory = evSectors[ i ];
 			int startSectorsSize = curCategory.startSectors.Size();
@@ -516,8 +518,15 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				}
 			} else {
 				ZCGlobal.Log( LL_APIMessage, GetClassName() .. "::WorldLoaded(). Category \"" .. GetESectorName( i ) .. "\" not found." );
+				nonProvidedCategoriesAmount++;
 			}
 		} // of for ( int i = 0; i < S__Quantity; i++ ) {}
+
+
+		if ( nonProvidedCategoriesAmount == S__Quantity ) {
+			ZCGlobal.Log( LL_Emergency, "No ZChecker Everything map category identifier (UDMF sector fields \"" .. ZCUDMF_Type .. "\") found." );
+			canRecreateEverything = false;
+		}
 
 
 		// Create all:
@@ -892,6 +901,7 @@ class ZCheckerCategoryInfoHeader: Actor {
 		-SHOOTABLE;
 		+NOGRAVITY;
 		+DONTSPLASH;
+		+BRIGHT;
 		FloatBobPhase 0;
 		RenderStyle "Translucent";
 		Alpha 0.33;
