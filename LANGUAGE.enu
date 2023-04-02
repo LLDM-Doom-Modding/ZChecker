@@ -442,7 +442,7 @@ ZCHECKER_ZCSETSTATE_HELP_DESC	= "Set a state to <state label> for the testee in 
 
 // "zcsetprop":
 ZCHECKER_ZCSETP_HELP_TITLE		= "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
-ZCHECKER_ZCSETP_HELP_DESC		= "Sets a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
+ZCHECKER_ZCSETP_HELP_DESC		= "Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;\
   VISUAL  : scale[x|y] <float>, alpha <float>;\
@@ -466,13 +466,17 @@ ZCHECKER_ZCSETP_SUCCESS			= "Properties for actor \"%s\" succesfully changed.";
 
 // "zcev (*)":
 ZCHECKER_ZCEV_HELP_TITLE		= "zcev goto <class>|s[tart];zcev re[create|load];zcev map[2]|level[2]";
-ZCHECKER_ZCEV_HELP_DESC			= "Operates with the world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warp player to the \"map everything\" and \"map everything_simple\".";
+ZCHECKER_ZCEV_HELP_DESC			= "Operate with the world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warp player to the \"map everything\" and \"map everything_simple\".";
 ZCHECKER_ZCEV_NOTEVMAP			= "Cannot use command on maps other than the Everything map.";
 
 ZCHECKER_ZCEVGOTO_HELP_TITLE	= "zcev goto <class>|start;zcevg <class>|start";
 ZCHECKER_ZCEVGOTO_HELP_DESC		= "While on the Everything map, go to the specified actor definition / to starting position";
+ZCHECKER_ZCEVGOTO_TREATASPREFIX	= "\c~Treat \"%s\" as a full form of category prefix \"\c-%s\c~\"\c-";
+ZCHECKER_ZCEVGOTO_NOTCATEGORY	= "Unknown category or keyword \"%s\".";
+ZCHECKER_ZCEVGOTO_EMPTYCATEGORY	= "Category or keyword not provided.";
 ZCHECKER_ZCEVGOTO_NOTACTOR		= "\"%s\" is not an Actor class.";
 ZCHECKER_ZCEVGOTO_SUCCESS		= "Found actor %s at %s.";
+ZCHECKER_ZCEVGOTO_CATEGSUCCESS	= "Found category \c~\"\c-%s\c~\"\c- header at %s.";
 ZCHECKER_ZCEVGOTO_NOTFOUND		= "Actor \"%s\" does not exist on this map.";
 
 ZCHECKER_ZCEVRE_HELP_TITLE		= "zcev recreate|reload;zcevre";
@@ -564,7 +568,8 @@ ZCHECKER_TOOLTIP_ACTORMASKS_EXAMPLES =
 \"`Czcsummon sta`2*`Cff`2:1`x\" also summons a \"StaffPuff\" `d(by specifying a selection)`x;\
 \"`Czcsummon $2 15`x\" summons fifteen actors of the class in the second panel;\
 \"`Czcgive 1 `2*`Ccard`x\" will print a list of all Inventory classes ending with a \"card\" `d(while trying to give item to the actor in the first panel)`x;\
-\"`Czctake 1 z`2-`Cman`x\" will not take anything from the actor in the first panel: \"Zombieman\" is not an Inventory class.";
+\"`Czctake 1 z`2-`Cman`x\" will not take anything from the actor in the first panel: \"Zombieman\" is not an Inventory class.\
+You can find more specific examples in the help pages of all of the commands mentioned.";
 
 
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT	=
@@ -583,7 +588,7 @@ ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES	=
 ZCHECKER_TOOLTIP_ZCHELP_EXAMPLES =
 "Simple \"`Czchelp`x\" prints out a help text with only the commonly used console commands (CCMDs);\
 \"`Czchelp all`x\" prints out a full help text including all of the available console commands;\
-\"`Czchelp -a`x\" same as CCMD `~(for the *nix OS terminal users like me)`~;\
+\"`Czchelp -a`x\" same as CCMD above `~(for the *nix OS terminal users like me)`~;\
 \"`Czchelp zcadd`x\" outputs a help text and examples for the console command \"`Czcadd`C\";\
 \"`Czchelp add`x\" same as the help command above `~(\"zc\" prefix is optional)`~;\
 \"`Czchelp summon`x\" outputs a help text and examples for the CCMD \"`Czcsummon`C\".";
@@ -682,6 +687,22 @@ ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES =
 \"`Czcsetf s touchy`x\" sets the `2+TOUCHY`x flag to `1s`2elf`x, making player able to die at the slightest touch. Note that this flag isn't in the quick access;\
 \"`Czcsetf solid raw`x\" toggles the flag with a one-delay tic, forcibly using an ACS machine;\
 \"`Czcsetf solid 1,nospec`x\", \"`Czcsetf solid acs:1`x\" sets the specified flag to \"true\", also forcibly using an ACS machine.";
+
+
+ZCHECKER_TOOLTIP_ZCEV_TIPS =
+"Help text of the `Czcevg`C CCMD (\"`Czchelp zcevg`C\") has plethora of special usage examples.";
+ZCHECKER_TOOLTIP_ZCEVGOTO_TEXT =
+"`y[WIP help text]`y In general, you may warp to section headers. List of them here will be provided in the nearest future.";
+ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES =
+"\"`Czcev goto doomimp`C\", \"`Czcev g doomimp`C\" or \"`Czcevg doomimp`C\" teleports player to the specified actor (of course, `2DoomImp`2 in this case).\
+\"`Czcevg shotgun`C\" teleports player next to the `2Shotgun`2 item;\
+\"`Czcevg z*man`C\" teleports player next to the spawned `2Z`~ombie`2man`x actor;\
+\"`Czcevg *armor`C\" prints a list of all actors with this postfix;\
+\"`Czcevg *armor:4`C\" teleports player next to the `2BlueArmor`2;\
+\"`Czcevg $last`C\" teleports player next to the last actor class added to infopanels (if it exists on the map);\
+\"`Czcevg #monsters`C\" or \"`Czcevg #m`C\" warps player to the header of the category \"Monsters\";\
+\"`Czcevg mons\" does the same if the actor class \"`2mons`2\" not defined, else teleports to it;\
+\"`Czcevg #ammo\" warps player to the header of the category \"Ammo\". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).";
 
 
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS =

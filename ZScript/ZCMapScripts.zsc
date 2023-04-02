@@ -829,13 +829,13 @@ class ZCheckerActorInfo: Actor {
 			if ( master.bSPAWNCEILING ) {
 				master.SetZ( master.ceilingz - master.height );
 				master.ClearInterpolation();
-				floorclip = -64.0;
+				floorclip = -56.0;
 			} else if ( master.bNOGRAVITY || master.bNOINTERACTION ) {
 				master.AddZ( 16.0 );
 				master.ClearInterpolation();
-				floorclip = -22.0;
+				floorclip = -17.0;
 			} else {
-				floorclip = -3.5;
+				floorclip = 0.0;
 			}
 		}
 	} // of void SetMasterZ( void ) {}
@@ -890,11 +890,12 @@ class ZCheckerActorInfo: Actor {
 
 
 class ZCheckerCategoryInfoHeader: Actor {
+	ZCheckerEverythingMapCategoryData evSectorDef;
 	String categoryDescription;
 	vector2 headerActorStartOffset;
+
 	int spawnedActorsAmount;
 	int missedActorsAmount;
-	ZCheckerEverythingMapCategoryData evSectorDef;
 
 	Default {
 		-SOLID;

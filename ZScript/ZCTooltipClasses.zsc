@@ -97,6 +97,23 @@ class ZCTooltipSetStateCommand: ZCTooltipClass {
 	}
 }
 
+// Everything map CCMDs tooltips:
+
+class ZCTooltipEvmapCommand: ZCTooltipClass {
+	override String GetTips() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCEV_TIPS" );
+	}
+}
+
+class ZCTooltipEvmapGotoCommand: ZCTooltipGeneralActorMasks {
+	override String GetPlaintext() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_TEXT" );
+	}
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_EXAMPLES" );
+	}
+}
+
 
 // Miscellaneous controlling CCMDs tooltips:
 
