@@ -133,13 +133,13 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Command "$ZCHECKER_EVMAPMENU_WARPKEYS", "zcev goto #key", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPOTHITEMS", "zcev goto #othi", 0, 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPDECOR", DARKBROWN
-	Command "$ZCHECKER_EVMAPMENU_WARPDSOLID", "zcev goto #solid", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_WARPDLSOLID", "zcev goto lsolid", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDSOLID", "zcev goto #ds", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLSOLID", "zcev goto #dsl", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPDETHER", "zcev goto #pass", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPDLETHER", "zcev goto #lpass", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_WARPDSHOOT", "zcev goto #shoot", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_WARPDLSHOOT", "zcev goto #lshoot", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_WARPDNOBLKMAP", "zcev goto #noblockmap", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDSHOOT", "zcev goto #dsh", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLSHOOT", "zcev goto #dshl", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDNOBLKMAP", "zcev goto #dnobl", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPDNOINTRCT", "zcev goto #noint", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPDHUGE", "zcev goto #dhuge", 0, 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPOTHER", DARKBROWN

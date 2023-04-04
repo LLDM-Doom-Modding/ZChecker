@@ -111,7 +111,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		S__Quantity
 	};
 
-	private ZCEvmapCommand_goto_CategoryInfo[ S__Quantity ] jumpCategories;
+	private Array<ZCEvmapCommand_goto_CategoryInfo> jumpCategories;
 	private int curPushedCategory;
 
 
@@ -119,10 +119,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		if ( categoryOverride != S__Nothing )
 			curPushedCategory = categoryOverride;
 
-		if ( NULL == jumpCategories[ curPushedCategory ] )
-			jumpCategories[ curPushedCategory ] = ZCEvmapCommand_goto_CategoryInfo.Create( curPushedCategory, afull, ashort );
-		else
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::addCategoryNode(). jumpCategories[ " .. curPushedCategory .. " ] is already defined." );
+		jumpCategories.Push( ZCEvmapCommand_goto_CategoryInfo.Create( curPushedCategory, afull, ashort ) );
 
 		curPushedCategory++;
 	}
@@ -147,7 +144,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		addCategoryNode( "ik", "ikey,key" );
 		addCategoryNode( "io", "ioth,othi" );
 
-		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
+		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
 		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
 		addCategoryNode( "dsl,dil,sl,ls,sld,lsd,li,il,lid,ild", "largeim,largeso,decs,deci,decors,decori,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
 		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol", S_DecorSolid );
@@ -221,28 +218,40 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 				ZCheckerCategoryInfoHeader curHeader;
 
 				destWord.ToLower();
+				int foundJumpCategoryIndex = -1;
+
+				for ( int i = 0; i < jumpCategories.Size(); i++ ) {
+					if ( jumpCategories[ i ].CompareWithAliases( destWord ) ) {
+						foundJumpCategoryIndex = i;
+						destIsCategory = true;
+						break;
+					}
+				}
+
 				bool categoryFound = false;
 
-				while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {
-					//if ( lastDestWord == destWord ) { }
+				if ( foundJumpCategoryIndex != -1 ) {
+					while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {
+						//if ( lastDestWord == destWord ) { }
 
-					ZCheckerEverythingMapCategoryData curCategory = curHeader.evSectorDef;
+						ZCheckerEverythingMapCategoryData curCategory = curHeader.evSectorDef;
 
-					if ( curCategory && jumpCategories[ curCategory.evType ].CompareWithAliases( destWord ) ) {
-						for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {
-							if ( curCategory.headerActors[ i ] ) {
-								curHeader = curCategory.headerActors[ i ];
-								gotoCCMDPlayerTeleport( curHeader.pos, atan2( -curHeader.headerActorStartOffset.y, -curHeader.headerActorStartOffset.x ) );
-								categoryFound = true;
+						if ( curCategory && curCategory.evType == jumpCategories[ foundJumpCategoryIndex ].categoryType ) {
+							for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {
+								if ( curCategory.headerActors[ i ] ) {
+									curHeader = curCategory.headerActors[ i ];
+									gotoCCMDPlayerTeleport( curHeader.pos, atan2( -curHeader.headerActorStartOffset.y, -curHeader.headerActorStartOffset.x ) );
+									categoryFound = true;
+									break;
+								}
+							} // of for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {}
+
+							if ( categoryFound )
 								break;
-							}
-						} // of for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {}
+						} // of if ( curCategory && jumpCategories[ curCategory.evType ].CompareWithAliases( destWord ) ) {}
 
-						if ( categoryFound )
-							break;
-					} // of if ( curCategory && jumpCategories[ curCategory.evType ].CompareWithAliases( destWord ) ) {}
-
-				} // of while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {}
+					} // of while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {}
+				}
 
 				if ( categoryFound && curHeader ) {
 					lastDestWord = destWord;
@@ -254,7 +263,10 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 						) );
 
 				} else if ( destIsCategory ) {
-					LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTCATEGORY", destWord );
+					if ( foundJumpCategoryIndex != -1 )
+						LogLocalize2Str( LL_Normal, "ZCEVGOTO_CATEGNOTFOUND", destWord );
+					else
+						LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTCATEGORY", destWord );
 
 				} else {
 					LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTACTOR", destWord );

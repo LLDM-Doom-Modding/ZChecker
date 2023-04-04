@@ -503,6 +503,7 @@ ZCHECKER_ZCEVGOTO_EMPTYCATEGORY	= "Category or keyword not provided.";
 ZCHECKER_ZCEVGOTO_NOTACTOR		= "\"%s\" is not an Actor class.";
 ZCHECKER_ZCEVGOTO_SUCCESS		= "Found actor %s at %s.";
 ZCHECKER_ZCEVGOTO_CATEGSUCCESS	= "Found category \c~\"\c-%s\c~\"\c- header at %s.";
+ZCHECKER_ZCEVGOTO_CATEGNOTFOUND	= "Header for category \"%s\" does not exist on this map.";
 ZCHECKER_ZCEVGOTO_NOTFOUND		= "Actor \"%s\" does not exist on this map.";
 
 ZCHECKER_ZCEVRE_HELP_TITLE		= "zcev recreate|reload;zcevre";
