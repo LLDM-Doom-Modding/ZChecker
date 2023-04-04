@@ -89,20 +89,20 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText " "
 
     StaticText "$ZCHECKER_EVMAPMENU_SPAWNOPTIONS", 1
-	StaticText "$ZCHECKER_EVMAPMENU_GENERAL", DARKBROWN
+	StaticText "$ZCHECKER_EVMAPMENUDIV_GENERAL", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_SPAWNREPLACED", "mcm_zchecker_ev_spawnreplaced", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_RESTRICT", "mcm_zchecker_ev_restrictreplacements", "NoYes"
-	StaticText "$ZCHECKER_EVMAPMENU_EMPTYSPRITES", DARKBROWN
+	StaticText "$ZCHECKER_EVMAPMENUDIV_SPRITES", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_MISSING", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_TNT1A0", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawncorruptedsprites", "YesNo"
-	StaticText "$ZCHECKER_EVMAPMENU_CODEBASED", DARKBROWN
+	StaticText "$ZCHECKER_EVMAPMENUDIV_CODEBASED", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_PLAYERCHUNK", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
 
     StaticText " "
-    StaticText "$ZCHECKER_EVMAPMENU_OTHER", 1
+    StaticText "$ZCHECKER_EVMAPMENUDIV_OTHER", 1
 	Option "$ZCHECKER_EVMAPMENU_AUTONOTARGET", "mcm_zchecker_ev_auto_notarget", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_AUTOGOD", "mcm_zchecker_ev_auto_iddqd", "YesNo"
     StaticText "$ZCHECKER_EVMAPMENU_SPEC_CHEATS", DARKGRAY
@@ -117,9 +117,35 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC2", DARKGRAY
 	StaticText " "
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_CANNOT_LOCATE"
-	StaticText "$ZCHECKER_EVMAPMENU_RELATEDCCMD", 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_EVCCMDS", 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev recreate", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_TELEPORTSTART", "zcev goto start", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPSTART", "zcev goto #start", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPMONS", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPMONSTERS", "zcev goto #mon", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPLMONS", "zcev goto #lmon", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPHMONS", "zcev goto #hmon", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPITEMS", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPWEAPS", "zcev goto #weap", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPAMMO", "zcev goto #ammo", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPHPARMOR", "zcev goto #health", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPPOWERUPS", "zcev goto #powerup", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPKEYS", "zcev goto #key", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPOTHITEMS", "zcev goto #othi", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPDECOR", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPDSOLID", "zcev goto #solid", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLSOLID", "zcev goto lsolid", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDETHER", "zcev goto #pass", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLETHER", "zcev goto #lpass", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDSHOOT", "zcev goto #shoot", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLSHOOT", "zcev goto #lshoot", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDNOBLKMAP", "zcev goto #noblockmap", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDNOINTRCT", "zcev goto #noint", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDHUGE", "zcev goto #dhuge", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPOTHER", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPMISSILES", "zcev goto #proj", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPPLAYERS", "zcev goto #pl", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPOTHER", "zcev goto #spec", 0, 1
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {

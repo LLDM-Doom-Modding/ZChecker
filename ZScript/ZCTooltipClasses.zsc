@@ -107,7 +107,7 @@ class ZCTooltipEvmapCommand: ZCTooltipClass {
 
 class ZCTooltipEvmapGotoCommand: ZCTooltipGeneralActorMasks {
 	override String GetPlaintext() {
-		return ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_TEXT" );
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_TEXT" ) );
 	}
 	override String GetExamples() {
 		return ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_EXAMPLES" );

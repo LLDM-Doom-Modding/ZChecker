@@ -241,18 +241,18 @@ ZCHECKER_VISUAL_FONTTYPES	= "General font";
 
 ZCHECKER_EVMAPMENU_TITLE		= "ZChecker: \"Everything\" map settings";
 ZCHECKER_EVMAPMENU_SPAWNOPTIONS	= "Spawning options";
-ZCHECKER_EVMAPMENU_GENERAL		= "- General -";
+ZCHECKER_EVMAPMENUDIV_GENERAL	= "- General -";
 ZCHECKER_EVMAPMENU_SPAWNREPLACED= "Replaced actors";
 ZCHECKER_EVMAPMENU_RESTRICT		= "Replacements of restricted actors";
-ZCHECKER_EVMAPMENU_EMPTYSPRITES	= "- By empty sprites -";
+ZCHECKER_EVMAPMENUDIV_SPRITES	= "- By empty sprites -";
 ZCHECKER_EVMAPMENU_MISSING		= "Actors with missing sprites";
 ZCHECKER_EVMAPMENU_TNT1A0		= "Actors with the \'TNT1A0\' sprite";
 ZCHECKER_EVMAPMENU_PLYC			= "Actors with corrupted sprite names";
-ZCHECKER_EVMAPMENU_CODEBASED	= "- Code-based -";
+ZCHECKER_EVMAPMENUDIV_CODEBASED	= "- Code-based -";
 ZCHECKER_EVMAPMENU_STEALTH		= "+STEALTH actors";
 ZCHECKER_EVMAPMENU_INVISIBLE	= "+INVISIBLE actors";
 ZCHECKER_EVMAPMENU_PLAYERCHUNK	= "Inherited from \'PlayerChunk\'";
-ZCHECKER_EVMAPMENU_OTHER		= "Other";
+ZCHECKER_EVMAPMENUDIV_OTHER		= "Other";
 ZCHECKER_EVMAPMENU_AUTONOTARGET	= "Auto-notarget";
 ZCHECKER_EVMAPMENU_AUTOGOD		= "Auto-godmode";
 ZCHECKER_EVMAPMENU_SPEC_CHEATS	= "Enable specified cheats automatically";
@@ -261,13 +261,39 @@ ZCHECKER_EVMAPMENU_LOGSPAWN		= "Log spawn information";
 ZCHECKER_EVMAPMENU_LOGCREATED1	= "Log information to console about created (or";
 ZCHECKER_EVMAPMENU_LOGCREATED2	= "skipped) actors on the \"Everything\" map.";
 ZCHECKER_EVMAPMENU_FORCEUSE		= "Force use map scripts";
-
 ZCHECKER_EVMAPMENU_ALLOWSPEC1	= "This option allows using special \"Everything\" map";
 ZCHECKER_EVMAPMENU_ALLOWSPEC2	= "scripts for any map, skipping the conformity check.";
 ZCHECKER_EVMAPMENU_CANNOT_LOCATE= "\n\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cx\"Everything\" map CCMDs cannot be used.";
-ZCHECKER_EVMAPMENU_RELATEDCCMD	= "Related CCMDs (closes menu)";
-ZCHECKER_EVMAPMENU_RECREATEACTORS = "Recreate actors: \"zcevre\"";
-ZCHECKER_EVMAPMENU_TELEPORTSTART= "Teleport to start: \"zcevg start\"";
+
+ZCHECKER_EVMAPMENUDIV_EVCCMDS	= "Related CCMDs (closes menu)";
+ZCHECKER_EVMAPMENUDIV_MAINCCMDS	= "- General CCMDs -";
+ZCHECKER_EVMAPMENU_RECREATEACTORS = "Recreate actors\cc: \"\cbzcevre\cc\"";
+ZCHECKER_EVMAPMENU_WARPSTART	= "Teleport to start\cc: \"\cmzcevg #\cqstart\cc\"";
+ZCHECKER_EVMAPMENUDIV_WARPMONS	= "- Monsters -";
+ZCHECKER_EVMAPMENU_WARPMONSTERS	= "Teleport to regular monsters\cc: \"\cmzcevg #\cdmons\cc\"";
+ZCHECKER_EVMAPMENU_WARPLMONS	= "Teleport to large monsters\cc: \"\cmzcevg #\cdlmons\cc\"";
+ZCHECKER_EVMAPMENU_WARPHMONS	= "Teleport to huge monsters\cc: \"\cmzcevg #\cdhmons\cc\"";
+ZCHECKER_EVMAPMENUDIV_WARPITEMS	= "- Items -";
+ZCHECKER_EVMAPMENU_WARPWEAPS	= "Teleport to weapos\cc: \"\cmzcevg #\cdweaps\cc\"";
+ZCHECKER_EVMAPMENU_WARPAMMO		= "Teleport to ammo\cc: \"\cmzcevg #\cdammo\cc\"";
+ZCHECKER_EVMAPMENU_WARPHPARMOR	= "Teleport to health/armor items\cc: \"\cmzcevg #\cdhealth\cc\"";
+ZCHECKER_EVMAPMENU_WARPPOWERUPS	= "Teleport to powerups\cc: \"\cmzcevg #\cdpowerups\cc\"";
+ZCHECKER_EVMAPMENU_WARPKEYS		= "Teleport to keys\cc: \"\cmzcevg #\cdkeys\cc\"";
+ZCHECKER_EVMAPMENU_WARPOTHITEMS	= "Teleport to other items\cc: \"\cmzcevg #\cdothitems\cc\"";
+ZCHECKER_EVMAPMENUDIV_WARPDECOR	= "- Decorations and objects -";
+ZCHECKER_EVMAPMENU_WARPDSOLID	= "Teleport to solid\cc: \"\cmzcevg #\cdsolid\cc\"";
+ZCHECKER_EVMAPMENU_WARPDLSOLID	= "Teleport to large solid\cc: \"\cmzcevg #\cdsolidl\cc\"";
+ZCHECKER_EVMAPMENU_WARPDETHER	= "Teleport to passable\cc: \"\cmzcevg #\cdpass\cc\"";
+ZCHECKER_EVMAPMENU_WARPDLETHER	= "Teleport to large passable\cc: \"\cmzcevg #\cdpassl\cc\"";
+ZCHECKER_EVMAPMENU_WARPDSHOOT	= "Teleport to shootable\cc: \"\cmzcevg #\cdshoot\cc\"";
+ZCHECKER_EVMAPMENU_WARPDLSHOOT	= "Teleport to large shootable\cc: \"\cmzcevg #\cdshootl\cc\"";
+ZCHECKER_EVMAPMENU_WARPDNOBLKMAP= "Teleport to +NOBLOCKMAP\cc: \"\cmzcevg #\cdnoblockmap\cc\"";
+ZCHECKER_EVMAPMENU_WARPDNOINTRCT= "Teleport to +NOINTERACTION\cc: \"\cmzcevg #\cdnoint\cc\"";
+ZCHECKER_EVMAPMENU_WARPDHUGE	= "Teleport to huge decorations\cc: \"\cmzcevg #\cddhuge\cc\"";
+ZCHECKER_EVMAPMENUDIV_WARPOTHER	= "- Other actors -";
+ZCHECKER_EVMAPMENU_WARPMISSILES	= "Teleport to projectiles\cc: \"\cmzcevg #\cdproj\cc\"";
+ZCHECKER_EVMAPMENU_WARPPLAYERS	= "Teleport to player classes\cc: \"\cmzcevg #\cdplayers\cc\"";
+ZCHECKER_EVMAPMENU_WARPOTHER	= "Teleport to special actors\cc: \"\cmzcevg #\cdspecial\cc\"";
 
 // === Console commands control menu ===
 
@@ -556,8 +582,8 @@ ZCHECKER_TOOLTIP_ACTORMASKS_TIPS	=
 	'`2*`2' for any number of any characters, including zero; `dand`x\
 	'`2-`2' for any number of characters greater than 0.\
 If more than one actor class candidate is found, only `2numbered list`x will be printed. A value may be selected from it by using `2:N`x or `2,N`x.\
-Also, a class inheritance filter is applied for some commands.\n\
-In general, you may substitute values from `1ZChecker variables`1 `d(must begin with \"`2$`d\" or \"`2%`d\")`x like:\
+Note that a class inheritance filter is applied for some commands.\n\
+Also, you may substitute values from `1ZChecker variables`1 `d(must begin with \"`2$`d\" or \"`2%`d\")`x like:\
 	'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;\
 	'`1$last`1' for the last class added to any panel;\
 	Any other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".";
@@ -690,9 +716,18 @@ ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES =
 
 
 ZCHECKER_TOOLTIP_ZCEV_TIPS =
-"Help text of the `Czcevg`C CCMD (\"`Czchelp zcevg`C\") has plethora of special usage examples.";
+"Help text of the `Czcevg`C CCMD (\"`Czchelp zcevg`C\") has a list of all categories that are presented on the map.";
 ZCHECKER_TOOLTIP_ZCEVGOTO_TEXT =
-"`y[WIP help text]`y In general, you may warp to section headers. List of them here will be provided in the nearest future.";
+"In general, you may warp to section headers by their `2approximate shortened names`2 (always exactly one word). On collision with actor class name, the last one has the higher priority, so the command will try to teleported you to this actor. To override this and jump to the category anyway, use the sharp character `~(\"`1#`~\")`~ at the beginning of the name.\n\
+All of the categories on the Everything maps. The examples in brackets are not an exhaustive list:\
+	`AMonsters`A: `2Monsters`2 `~(\"`~m`~\", \"`~mons\"`~ etc)`~, `2Large monsters`2 `~(\"`~lm`~\", \"`~ml`~\", \"`~largem`~\" etc)`~ and `2Huge monsters`2 `~(\"`~hm`~\" etc)`~;\
+	`AItems`A   : `2Weapons`2 `~(\"`~iw`~\", \"`~weaps`~\" etc)`~, `2Ammo`2 `~(\"`~ia`~\" etc)`~, `2Health & armor`2 `~(\"`~ih`~\" etc)`~, `2Powerups`2, `2Keys`2 and `2Other items`2;\
+	`AObjects`A : `2Impassible/solid`2 `~(\"`~impass`~\", \"`~ds`~\" etc)`~, `2Large solid`2 `~(\"`~dli`~\" etc)`~, `2Shootable`2, `2Large shootable`2;\
+	`ADecor`A   : `2Passable/ethereal`2 `~(\"`~ether`~\", \"`~dp`~\" etc)`~, `2Large passable`2, `2+NOBLOCKMAP`2 `~(\"`~nobl`~\" etc)`~, `2+NOINTERACTION`2;\
+	`AHuge obj`A: `2Huge decorations`2 `~(\"`~hd`~\" etc)`~;\
+	`AMissiles`A: `2Projectiles`2 `~(\"`~missiles`~\", \"`~proj`~\" etc)`~;\
+	`AOther`A   : `2Player classes`2 `~(\"`~pl`~\" etc)`~, `2Special`2 `~(\"`~other`~\", \"`~special`~\" etc)`~.\
+You also may just use the `1Everything maps menu`1 to warp to any caterogy.";
 ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES =
 "\"`Czcev goto doomimp`C\", \"`Czcev g doomimp`C\" or \"`Czcevg doomimp`C\" teleports player to the specified actor (of course, `2DoomImp`2 in this case).\
 \"`Czcevg shotgun`C\" teleports player next to the `2Shotgun`2 item;\

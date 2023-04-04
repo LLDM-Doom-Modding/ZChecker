@@ -140,19 +140,19 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		addCategoryNode( "hm,mh,mhuge", "hugem,hmon,monh,monsh,monstersh", S_MonstersHuge );
 		addCategoryNode( "m,mstr", "mon", S_Monsters );
 
-		addCategoryNode( "iw,wp,arms", "weap", S_Weapons );
-		addCategoryNode( "ia,ammo" );
+		addCategoryNode( "iw,wp,arms", "iweap,weap", S_Weapons );
+		addCategoryNode( "ia,ammo", "iammo" );
 		addCategoryNode( ashort: "ih,arm,health,hp,iarm" );
-		addCategoryNode( "ip", "ipow,powerup,pwrup" );
+		addCategoryNode( "ip,pwup,pwups", "ipow,powerup,pwrup" );
 		addCategoryNode( "ik", "ikey,key" );
 		addCategoryNode( "io", "ioth,othi" );
 
-		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl", "largesho,lsho,shootl,shootablel,+shol,+shootl,+shootablel", S_DecorShootableLarge );
-		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sho", S_DecorShootable );
+		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
+		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
 		addCategoryNode( "dsl,dil,sl,ls,sld,lsd,li,il,lid,ild", "largeim,largeso,decs,deci,decors,decori,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
-		addCategoryNode( "ds,di,sd,id", "sol,imp,+sol", S_DecorSolid );
-		addCategoryNode( "dpl,del,el,le,pl,lp,led,eld,pld,lpd", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl", S_DecorEtherealLarge );
-		addCategoryNode( "dp,de,ed,pd,-sld", "eth,pass,-sol", S_DecorEthereal );
+		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol", S_DecorSolid );
+		addCategoryNode( "dpl,del,el,le,lp,led,eld,pld,lpd", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl", S_DecorEtherealLarge );
+		addCategoryNode( "dp,de,ed,pd,-sld", "deth,dpas,eth,pass,-sol", S_DecorEthereal );
 		addCategoryNode( "dd,nbm,dnbm,dnobl,dnobmap,+nb", "dnobl,nobl,+nobl", S_DecorNoBlockmap );
 		addCategoryNode( "dni,+ni", "nint,noint,dnint,dnoi,+noint" );
 		addCategoryNode( "dh,hd,dhuge", "hdec,dech,huged" );

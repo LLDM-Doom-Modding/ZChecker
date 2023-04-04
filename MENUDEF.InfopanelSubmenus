@@ -131,7 +131,7 @@ OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	Title "ZChecker panel: Lines geometry"
 	StaticText " "
 
-	StaticText "Play-scoped class. Will be updated in world tick.", FIRE
+	StaticText "$ZCHECKER_PANELSUBMENUNOTE_PLAYSCOPE", FIRE
 	StaticText " "
 
 	Option "Line type", "mcm_zchecker_infovar_geomlinetype", "mcm_ZCheckerOption_panelgeom_linetype"
