@@ -137,7 +137,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		addCategoryNode( "hm,mh,mhuge", "hugem,hmon,monh,monsh,monstersh", S_MonstersHuge );
 		addCategoryNode( "m,mstr", "mon", S_Monsters );
 
-		addCategoryNode( "iw,wp,arms", "iweap,weap", S_Weapons );
+		addCategoryNode( "iw,wp,arms,guns", "iweap,weap", S_Weapons );
 		addCategoryNode( "ia,ammo", "iammo" );
 		addCategoryNode( ashort: "ih,arm,health,hp,iarm" );
 		addCategoryNode( "ip,pwup,pwups", "ipow,powerup,pwrup" );
