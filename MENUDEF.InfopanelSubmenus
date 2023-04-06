@@ -97,10 +97,10 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 	Option "$ZCHECKER_PANELSUBMENU_STATES_FLAGS", "mcm_zchecker_infovar_stateflags", "mcm_ZCheckerOption_flags_names"
 	Option "$ZCHECKER_PANELSUBMENU_STATES_EXTRAINFO", "mcm_zchecker_infovar_stateextras", "YesNo"
 
-	StaticText " "
-	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_PSPRITE", 1
-	Option "$ZCHECKER_PANELSUBMENU_STATES_OVERLAYS", "mcm_zchecker_infovar_statepsprlayersmode", "mcm_ZCheckerOption_panelstates_psprite_type"
-	ZCPSpriteInputField "$ZCHECKER_PANELSUBMENU_STATES_SPECIALID", "mcm_zchecker_infovar_statepsprlayerid"
+	//StaticText " "
+	//StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_PSPRITE", 1
+	//Option "$ZCHECKER_PANELSUBMENU_STATES_OVERLAYS", "mcm_zchecker_infovar_statepsprlayersmode", "mcm_ZCheckerOption_panelstates_psprite_type"
+	//ZCPSpriteInputField "$ZCHECKER_PANELSUBMENU_STATES_SPECIALID", "mcm_zchecker_infovar_statepsprlayerid"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {

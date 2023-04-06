@@ -98,4 +98,4 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 
 - **Sir Robin**, for his [ZScript quicksort library](https://forum.zdoom.org/viewtopic.php?f=105&t=75757);
 - **m8f**, for the GUI code from his [Hellscape Navigator](https://forum.zdoom.org/viewtopic.php?t=61643);
-- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Agent_Ash**, **N00b2015**, **Dron12261**, **Chameleon_111**, **Dezette**, **Il Str**.
+- All beta-testers and critics of ergonomics: **ika707**, **Mud**, **Agent_Ash**, **N00b2015**, **Dron12261**, **Chameleon_111**, **Ron_Dallas**, **Dezette**, **Il Str**.
