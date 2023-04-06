@@ -111,7 +111,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 
 
 	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
-		String invlabel;
+		String outlabel;
 
 		ResetSubmenuItemsIterator();
 
@@ -122,14 +122,14 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		String itemsSortModeStr = GetSubmenuItemStrSelection( sortmodeMenuItem );
 
 		if ( itemsSortMode > 0 )
-			invlabel = String.Format( "%i %s %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_SORTEDBY" ), itemsSortModeStr );
+			outlabel = String.Format( "%i %s %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_SORTEDBY" ), itemsSortModeStr );
 		else
-			invlabel = String.Format( "%i %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_UNSORTED" ) );
+			outlabel = String.Format( "%i %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_UNSORTED" ) );
 
 		if ( !!GetNextSubmenuItemIntSelection( desc ) )
-			invlabel = invlabel .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_INV_REVERSED" );
+			outlabel = outlabel .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_INV_REVERSED" );
 
-		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_INV_PREFIX" ) .. invlabel;
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_INV_PREFIX" ) .. outlabel;
 	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
 
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
@@ -558,6 +558,20 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		return outStr;
 	} // of override String GetInfo( Actor thing, ZCheckerField thingfield ) {}
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		ResetSubmenuItemsIterator();
+
+		int statesAmount = GetNextSubmenuItemIntSelection( desc );
+		bool statesLogging = !!GetNextSubmenuItemIntSelection( desc );
+
+		String outlabel = ( statesAmount > 0? "" .. statesAmount : ZCGlobal.Locz( "PANELSUBLABEL_STATES_UNLIMITED" ) ) .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_STATES_STATES" );
+
+		if ( statesLogging )
+			outlabel = outlabel .. ", " .. ZCGlobal.Locz( "PANELSUBLABEL_STATES_LOGGING" );
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_STATES_PREFIX" ) .. outlabel .. " " .. ZCGlobal.Locz( "PANELSUBMENU_DEFAULTMORE" );
+	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
 
 } // of class ZCStatesInfoPanel: ZCBaseInfoPanelPart {}
 

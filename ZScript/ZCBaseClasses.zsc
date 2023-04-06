@@ -936,7 +936,7 @@ class ZCBaseInfoPanelPart abstract {
 
 
 	ui virtual String GetSubmenuLabel( OptionMenuDescriptor submenuDesc ) {
-		String label = ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" );
+		String label;
 
 		int errorCountdown = 256;
 		OptionMenuItem curitem = NULL;
@@ -944,7 +944,11 @@ class ZCBaseInfoPanelPart abstract {
 
 		while ( ( curitem = GetNextSubmenuItem( submenuDesc ) ) && label.Length() < 30 ) {
 			String curitemSelectionStr = GetSubmenuItemStrSelection( curitem );
-			label.AppendFormat( "\"%s: %s\" ", StringTable.Localize( curitem.mLabel ), ( curitemSelectionStr != ""? curitemSelectionStr : "Unknown" ) );
+
+			if ( label != "" )
+				label = label .. ". ";
+
+			label.AppendFormat( "%s: %s", StringTable.Localize( curitem.mLabel ), ( curitemSelectionStr != ""? curitemSelectionStr : "Unknown" ) );
 
 			if ( --errorCountdown <= 0 ) {
 				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::GetSubmenuLabel(). Runaway loop counter reaches limit (256), terminated. curitem " .. curitem .. ", curitemSelection \"" .. curitemSelectionStr .. "\"." );
@@ -953,9 +957,9 @@ class ZCBaseInfoPanelPart abstract {
 		}
 
 		if ( curSubmenuItemIndex < submenuDesc.mItems.Size() )
-			label = label .. ZCGlobal.Locz( "PANELSUBMENU_DEFAULTMORE" );
+			label.AppendFormat( " %s", ZCGlobal.Locz( "PANELSUBMENU_DEFAULTMORE" ) );
 
-		return label;
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. label;
 	}
 
 
