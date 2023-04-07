@@ -153,7 +153,7 @@ class ZCTooltipClass: ZCConsoleClass {
 			prevCharIndexStart = curCharIndex + 2;
 		} // of while ( ( curCharIndex = origstr.IndexOf( "`", prevCharIndexStart ) ) != -1 ) {}
 
-		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() );
+		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() - 1 );
 
 		return outstr;
 	} // of String HighlightText( String origstr ) {}
@@ -184,6 +184,7 @@ class ZCTooltipClass: ZCConsoleClass {
 			str = "  " .. str;
 
 		str.Replace( "\n", "\n  " );
+		str.Replace( "  " .. LISTPREFIX, LISTPREFIX );
 
 		return str;
 	}
@@ -200,27 +201,27 @@ class ZCTooltipClass: ZCConsoleClass {
 		return "";
 	}
 
-	// Default help string generator:
+	// Default help string generator for tooltips:
 	override String GetHelpString( void ) {
 		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
 			String addtext = HighlightText( GetPlaintext() );
 
 			if ( addtext != "" )
-				helpCacheString = NORMAL .. addtext .. "\n";
+				helpCacheString = "\n" .. HEADER .. "> " .. NORMAL .. addtext;
 
 			addtext = HighlightText( GetTips() );
 
 			if ( addtext != "" ) {
-				helpCacheString.AppendFormat(
+				helpCacheString.AppendFormat( "\n" ..
 								HEADER .. "\\--------= =-----/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
-								ZCGlobal.Locz( "CCMDSHELP_TIPS" ), addtext );
+								ZCGlobal.Locz( "CCMDSHELP_TIPS" ), IndentNewlines( addtext ) );
 			}
 
 			addtext = HighlightText( GetExamples() );
 
 			if ( addtext != "" ) {
-				helpCacheString.AppendFormat(
+				helpCacheString.AppendFormat( "\n" ..
 								HEADER .. "\\------------= =-/\n" .. HEADER .. "| %s:\n" .. NORMAL .. "%s\n",
 								ZCGlobal.Locz( "CCMDSHELP_EXAMPLES" ), IndentNewlines( addtext ) );
 			}
@@ -426,10 +427,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					outActor = outActor.master;
 				} else {
 					// This branch will be executed if master had been removed from the world.
-					outActor = NULL;
-
 					if ( !quiet )
 						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", outActor.GetClassName() .. "" );
+
+					outActor = NULL;
 				}
 			}
 
@@ -503,9 +504,51 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	} // of protected int getBoolArg( uint argnum ) {}
 
 
-	protected String GetInternalZCheckerString( String zcname ) {
-		return ZCGlobal.Get().GetZCheckerString( zcname );
-	}
+	// A wrapper which unites aliases and description to one nice string:
+	override String GetHelpString( void ) {
+		// Attempt to speed up help strings processing:
+		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+			helpCacheString = "";
+
+			Array<String> aliases;
+			ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
+
+			int aliasesSize = aliases.Size();
+			bool unreleased = !!( zcFlags & CCF_Unreleased );
+
+			String ccmdColorHeader = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
+			String ccmdColorArgs   = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLEARGS );
+
+			for ( int i = 0; i < aliasesSize; i++ ) {
+				int spaceIndex = aliases[ i ].IndexOf( " " );
+				if ( spaceIndex != -1 )
+					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
+				else
+					aliases[ i ] = ccmdColorHeader .. aliases[ i ];
+
+				aliases[ i ].Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorArgs );
+				aliases[ i ].Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. ccmdColorArgs );
+				aliases[ i ].Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. ccmdColorArgs );
+				aliases[ i ].Replace( "<", TEXTCOLOR_LIGHTBLUE .. "<" .. ccmdColorArgs );
+				aliases[ i ].Replace( ">", TEXTCOLOR_LIGHTBLUE .. ">" .. ccmdColorArgs );
+			}
+
+			// Extra aliases:
+			for ( int i = 0; i < aliasesSize - 1; i++ )
+				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
+
+			// Last alias and a description:
+			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. ccmdInterfaceData.helpDesc;
+
+			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
+
+			if ( !( lastChar == "." || lastChar == "!" || lastChar == "?" ) )
+				helpCacheString = helpCacheString .. ".";
+		}
+
+		return helpCacheString;
+	} // of final override String GetHelpString( void ) {}
+
 
 	// Extremely long auxiliary method which tries to parse an arg string as:
 	//  1) Internal variable ("$last", ...);
@@ -804,6 +847,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return false;
 	} // of protected void RemoveWorldThinker( Thinker th ) {}
 
+
+	protected String GetInternalZCheckerString( String zcname ) {
+		return ZCGlobal.Get().GetZCheckerString( zcname );
+	}
+
 	protected bool SetInternalZCheckerString( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
 			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );
@@ -817,57 +865,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 		newValue = ParseSpecialActorName( value );
 
-		// if ( ( classnameParseStatus == CPS_Variable ) || ( newValue != "" ) )
 		if ( newValue != "" )
 			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
 
 		return false;
 	}
-
-	// A wrapper which unites aliases and description to one nice string:
-	override String GetHelpString( void ) {
-		// Attempt to speed up help strings processing:
-		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
-			helpCacheString = "";
-
-			Array<String> aliases;
-			ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
-
-			int aliasesSize = aliases.Size();
-			bool unreleased = !!( zcFlags & CCF_Unreleased );
-
-			String ccmdColorHeader = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLE );
-			String ccmdColorArgs   = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_TITLEARGS );
-
-			for ( int i = 0; i < aliasesSize; i++ ) {
-				int spaceIndex = aliases[ i ].IndexOf( " " );
-				if ( spaceIndex != -1 )
-					aliases[ i ] = ccmdColorHeader .. aliases[ i ].Left( spaceIndex ) .. ccmdColorArgs .. aliases[ i ].Mid( spaceIndex, aliases[ i ].Length() - spaceIndex );
-				else
-					aliases[ i ] = ccmdColorHeader .. aliases[ i ];
-
-				aliases[ i ].Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorArgs );
-				aliases[ i ].Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. ccmdColorArgs );
-				aliases[ i ].Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. ccmdColorArgs );
-				aliases[ i ].Replace( "<", TEXTCOLOR_LIGHTBLUE .. "<" .. ccmdColorArgs );
-				aliases[ i ].Replace( ">", TEXTCOLOR_LIGHTBLUE .. ">" .. ccmdColorArgs );
-			}
-
-			// Extra aliases:
-			for ( int i = 0; i < aliasesSize - 1; i++ )
-				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
-
-			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. ccmdInterfaceData.helpDesc;
-
-			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
-
-			if ( !( lastChar == "." || lastChar == "!" || lastChar == "?" ) )
-				helpCacheString = helpCacheString .. ".";
-		}
-
-		return helpCacheString;
-	} // of final override String GetHelpString( void ) {}
 
 } // of class ZCConsoleCommand abstract {}
 
@@ -875,8 +877,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 // ZChecker informational panel part class (in general is an UI scope).
 // Also inherits a play-scoped infopanel parts.
 class ZCBaseInfoPanelPart abstract {
-	protected bool playScoped;
-
 	const NORMAL	= LLCOLOR_MAIN;
 	const N			= NORMAL;
 	const BRICK		= TEXTCOLOR_BRICK;
@@ -906,12 +906,19 @@ class ZCBaseInfoPanelPart abstract {
 	const SAPPHIRE	= TEXTCOLOR_SAPPHIRE;
 	const TEAL		= TEXTCOLOR_TEAL;
 
+	const const_WrongSubmenuSelection = -0x7FFFFFFE;
+	const SUBMENUCOLOR = TEXTCOLOR_DARKGRAY;
+
+
 	ZCheckerHandler handler;
 
 	String optionCVarName;
 	String optionLabel;
 	String optionSubmenuName;
 	String optionLabelExtraHotkeys; // Automatically picked up only a first character in localized string.
+
+	protected int curSubmenuItemIndex;
+	protected bool playScoped;
 
 
 	/* API section */
@@ -927,36 +934,32 @@ class ZCBaseInfoPanelPart abstract {
 		return GetClassName() .. "::GetInfo(). Not overrided.";
 	}
 
+
 	ui virtual String GetSubmenuLabel( OptionMenuDescriptor submenuDesc ) {
-		String label = ZCGlobal.Locz( "PANELSMENU_SUBMENULABEL" );
+		String label;
 
-		int i = 0;
+		int errorCountdown = 256;
+		OptionMenuItem curitem = NULL;
+		ResetSubmenuItemsIterator();
 
-		for ( ; i < submenuDesc.mItems.Size() && label.Length() < 30; i++ ) {
-			OptionMenuItem cur = OptionMenuItem( submenuDesc.mItems[ i ] );
+		while ( ( curitem = GetNextSubmenuItem( submenuDesc ) ) && label.Length() < 30 ) {
+			String curitemSelectionStr = GetSubmenuItemStrSelection( curitem );
 
-			String addlabel = "";
+			if ( label != "" )
+				label = label .. ". ";
 
-			if ( cur is 'OptionMenuItemOption' ) {
-				OptionMenuItemOption curoption = OptionMenuItemOption( cur );
-				addlabel = StringTable.Localize( OptionValues.GetText( curoption.mValues, curoption.GetSelection() ) );
+			label.AppendFormat( "%s: %s", StringTable.Localize( curitem.mLabel ), ( curitemSelectionStr != ""? curitemSelectionStr : "Unknown" ) );
 
-				if ( addlabel.Length() == 0 )
-					addlabel = "Unknown";
-
-			} else if ( cur is 'OptionMenuItemSlider' ) {
-				OptionMenuItemSlider curslider = OptionMenuItemSlider( cur );
-				addlabel = String.Format( String.Format( "%%.%df", curslider.mShowValue ), curslider.GetSliderValue() );
+			if ( --errorCountdown <= 0 ) {
+				ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::GetSubmenuLabel(). Runaway loop counter reaches limit (256), terminated. curitem " .. curitem .. ", curitemSelection \"" .. curitemSelectionStr .. "\"." );
+				break;
 			}
-
-			if ( addlabel != "" )
-				label = label .. "\"" .. StringTable.Localize( cur.mLabel ) .. ":" .. addlabel .. "\" ";
 		}
 
-		if ( i < submenuDesc.mItems.Size() )
-			label = label .. ZCGlobal.Locz( "PANELSMENU_SUBMENUMORE" );
+		if ( curSubmenuItemIndex < submenuDesc.mItems.Size() )
+			label.AppendFormat( " %s", ZCGlobal.Locz( "PANELSUBMENU_DEFAULTMORE" ) );
 
-		return label;
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. label;
 	}
 
 
@@ -993,6 +996,83 @@ class ZCBaseInfoPanelPart abstract {
 	}
 
 
+	// Next six functions are for the "GetSubmenuLabel()" virtual method.
+
+	protected ui void ResetSubmenuItemsIterator( void ) {
+		curSubmenuItemIndex = 0;
+	}
+
+	protected ui OptionMenuItem GetNextSubmenuItem( OptionMenuDescriptor submenuDesc, int startfrom = const_WrongSubmenuSelection, class<OptionMenuItem> menuitemclass = NULL ) {
+		OptionMenuItem outmenuitem = NULL;
+
+		if ( submenuDesc ) {
+			if ( startfrom != const_WrongSubmenuSelection )
+				curSubmenuItemIndex = max( 0, startfrom );
+
+			// If special menu item class provided, search only for them:
+			if ( menuitemclass ) {
+				while ( curSubmenuItemIndex < submenuDesc.mItems.Size() ) {
+					OptionMenuItem cur = OptionMenuItem( submenuDesc.mItems[ curSubmenuItemIndex++ ] );
+
+					if ( cur is menuitemclass ) {
+						outmenuitem = cur;
+						break;
+					}
+				}
+
+			// Else, if no special menu item class provided, search for standard Options and Sliders:
+			} else {
+				while ( curSubmenuItemIndex < submenuDesc.mItems.Size() ) {
+					OptionMenuItem cur = OptionMenuItem( submenuDesc.mItems[ curSubmenuItemIndex++ ] );
+
+					if ( cur is 'OptionMenuItemOption' || cur is 'OptionMenuItemSlider' ) {
+						outmenuitem = cur;
+						break;
+					}
+				}
+			} // of else of if ( menuitemclass ) {}
+
+		} // of if ( submenuDesc ) {}
+
+		return outmenuitem;
+	} // of protected ui OptionMenuItem GetNextSubmenuItem( OptionMenuDescriptor submenuDesc, int startfrom = const_WrongSubmenuSelection, class<OptionMenuItem> menuitemclass = NULL ) {}
+
+	protected ui int GetSubmenuItemIntSelection( OptionMenuItem menuitem ) {
+		if ( menuitem ) {
+			if ( menuitem is 'OptionMenuItemOption' )
+				return OptionMenuItemOption( menuitem ).GetSelection();
+
+			else if ( menuitem is 'OptionMenuItemSlider' )
+				return int( OptionMenuItemSlider( menuitem ).GetSliderValue() );
+		}
+
+		return const_WrongSubmenuSelection;
+	} // of protected ui int GetSubmenuItemIntSelection( OptionMenuItem menuitem ) {}
+
+	protected ui String GetSubmenuItemStrSelection( OptionMenuItem menuitem ) {
+		if ( menuitem ) {
+			if ( menuitem is 'OptionMenuItemOption' ) {
+				OptionMenuItemOption curoption = OptionMenuItemOption( menuitem );
+				return StringTable.Localize( OptionValues.GetText( curoption.mValues, curoption.GetSelection() ) );
+
+			} else if ( menuitem is 'OptionMenuItemSlider' ) {
+				OptionMenuItemSlider curslider = OptionMenuItemSlider( menuitem );
+				return String.Format( String.Format( "%%.%df", curslider.mShowValue ), curslider.GetSliderValue() );
+			}
+		}
+
+		return "";
+	} // of protected ui String GetSubmenuItemStrSelection( OptionMenuItem menuitem ) {}
+
+	protected ui int GetNextSubmenuItemIntSelection( OptionMenuDescriptor submenuDesc, int startfrom = const_WrongSubmenuSelection ) {
+		return GetSubmenuItemIntSelection( GetNextSubmenuItem( submenuDesc, startfrom ) );
+	}
+
+	protected ui String GetNextSubmenuItemStrSelection( OptionMenuDescriptor submenuDesc, int startfrom = const_WrongSubmenuSelection ) {
+		return GetSubmenuItemStrSelection( GetNextSubmenuItem( submenuDesc, startfrom ) );
+	}
+
+
 	/* Internal section */
 
 	static ZCBaseInfoPanelPart Create( class<ZCBaseInfoPanelPart> panelclass, ZCheckerHandler globalHandler ) {
@@ -1000,6 +1080,7 @@ class ZCBaseInfoPanelPart abstract {
 
 		panel.handler = globalHandler;
 		panel.OnCreate();
+		panel.curSubmenuItemIndex = 0;
 		panel.playScoped = false;
 
 		return panel;

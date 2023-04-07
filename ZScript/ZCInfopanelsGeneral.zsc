@@ -20,24 +20,24 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 		// Classname printing:
 		if ( thingfield.actorType == IAT_Normal )
-			info = info .. GREEN .. thing.GetClassName();
+			info.AppendFormat( GREEN .. thing.GetClassName() );
 		else if ( thingfield.actorType == IAT_StateProvider )
-			info = info .. DARKGREEN .. "Inv\c-: " .. GREEN .. thing.GetClassName();
+			info.AppendFormat( DARKGREEN .. "Weap\c-: " .. GREEN .. "%s", thing.GetClassName() );
 
 		// Tag printing:
 		int displayTagsMode = displayTagsModeCVar.GetInt();
 
 		if ( displayTagsMode == 2 || ( displayTagsMode == 1 && thing.GetTag() != thing.GetClassName() ) )
-			info = info .. "\n" .. ORANGE .. "Tag" .. " \"" .. YELLOW .. thing.GetTag() .. ORANGE .. "\"";
+			info.AppendFormat( "\n" .. ORANGE .. "Tag" .. " \"" .. YELLOW .. "%s" .. ORANGE .. "\"", thing.GetTag() );
 
 		// Player info printing (maybe will be in some other infopanel):
 		if ( displayPlayersInfoCVar.GetBool() && thing.player ) {
 			int playernum = thing.PlayerNumber() + 1;
 
 			if ( thing.player.bot )
-				info = info .. "\n" .. DARKBROWN .. "Bot player " .. playernum .. ".";
+				info.AppendFormat( "\n" .. DARKBROWN .. "Bot player %i.", playernum );
 			else
-				info = info .. "\n" .. DARKBROWN .. "Player " .. playernum .. " name " .. GRAY .. thing.player.GetUserName() .. DARKBROWN .. ".";
+				info.AppendFormat( "\n" .. DARKBROWN .. "Player %i name " .. GRAY .. "%s" .. DARKBROWN .. ".", playernum, thing.player.GetUserName() );
 		}
 
 		// Self pointer printing:
@@ -50,6 +50,44 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 		return info;
 	}
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		String outlabel;
+		ResetSubmenuItemsIterator();
+
+		int tagShowMode = GetNextSubmenuItemIntSelection( desc );
+		bool selfPtrMode = !!GetNextSubmenuItemIntSelection( desc );
+		bool playerinfoShowMode = !!GetNextSubmenuItemIntSelection( desc );
+
+		if ( tagShowMode != 0 || selfPtrMode || playerinfoShowMode ) {
+			outlabel = ZCGlobal.Locz( "PANELSUBLABEL_MAIN_PREFIX" );
+
+			if ( tagShowMode == 1 )
+				outlabel = outlabel .. ZCGlobal.Locz( "PANELSUBLABEL_MAIN_TAGAUTO" );
+			else if ( tagShowMode == 2 )
+				outlabel = outlabel .. ZCGlobal.Locz( "PANELSUBLABEL_MAIN_TAG" );
+
+			if ( selfPtrMode ) {
+				if ( tagShowMode != 0 )
+					outlabel = outlabel .. ", ";
+
+				outlabel = outlabel .. ZCGlobal.Locz( "PANELSUBLABEL_MAIN_SELFPTR" );
+			}
+
+			if ( playerinfoShowMode ) {
+				if ( tagShowMode != 0 || selfPtrMode )
+					outlabel = outlabel .. ", ";
+
+				outlabel = outlabel .. ZCGlobal.Locz( "PANELSUBLABEL_MAIN_PLRINFO" );
+			}
+
+		} else {
+			outlabel = ZCGlobal.Locz( "PANELSUBLABEL_MAIN_XPREFIX" );
+		}
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. outlabel;
+	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
+
 } // of class ZCMainInfoPanel: ZCBaseInfoPanelPart {}
 
 class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
@@ -106,11 +144,11 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		String decimalsfmt = ( decimalsAmount == 0? "%i" : "%." .. decimalsAmount .. "f" );
 
 		if ( skipRollTilt ) {
-			outStr = String.Format( "Tilt: (" .. DARKGRAY
+			outStr = String.Format( "Tilts: (" .. DARKGRAY
 							.. "a\c-" .. decimalsfmt .. ", " .. DARKGRAY
 							.. "p\c-" .. decimalsfmt .. ");\n", thing.angle % 360.0, thing.pitch );
 		} else {
-			outStr = String.Format( "Tilt: (" .. DARKGRAY
+			outStr = String.Format( "Tilts: (" .. DARKGRAY
 							.. "a\c-" .. decimalsfmt .. ", " .. DARKGRAY
 							.. "p\c-" .. decimalsfmt .. ", " .. DARKGRAY
 							.. "r\c-" .. decimalsfmt .. ");\n", thing.angle % 360.0, thing.pitch, thing.roll );
@@ -167,6 +205,24 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 
 		return outStr;
 	}
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		ResetSubmenuItemsIterator();
+
+		int fractionalPartLength = GetNextSubmenuItemIntSelection( desc );
+		bool excludeRoll = !!GetNextSubmenuItemIntSelection( desc );
+		bool showPlayerButtons = !!GetNextSubmenuItemIntSelection( desc );
+
+		String outlabel = ZCGlobal.Locz( "PANELSUBLABEL_WPOS_ROLL" .. ( excludeRoll? "OFF" : "ON" ) );
+
+		outlabel.AppendFormat( " %s %i", ZCGlobal.Locz( "PANELSUBLABEL_WPOS_FRACLEN" ), fractionalPartLength );
+
+		if ( showPlayerButtons )
+			outlabel = outlabel .. ZCGlobal.Locz( "PANELSUBLABEL_WPOS_BUTTONS" );
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_WPOS_PREFIX" ) .. outlabel;
+	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
+
 } // of class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {}
 
 

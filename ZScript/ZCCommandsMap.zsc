@@ -11,7 +11,8 @@ class ZCEvmapCommand: ZCConsoleCommand {
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEV_HELP_TITLE",
-			"$ZCEV_HELP_DESC"
+			"$ZCEV_HELP_DESC",
+			'ZCTooltipEvmapCommand'
 		);
 	}
 
@@ -41,24 +42,141 @@ class ZCEvmapCommand: ZCConsoleCommand {
 } // of class ZCEvmapCommand: ZCConsoleCommand {}
 
 
+class ZCEvmapCommand_goto_CategoryInfo {
+	int categoryType;
+
+	Array<String> fullaliases;
+	Array<String> shortaliases;
+
+	static ZCEvmapCommand_goto_CategoryInfo Create( int categoryInitType, String afull = "", String ashort = "" ) {
+		ZCEvmapCommand_goto_CategoryInfo newnode = new( 'ZCEvmapCommand_goto_CategoryInfo' );
+		newnode.categoryType = categoryInitType;
+
+		afull.Replace( " ", "" );
+		afull.ToLower();
+		afull.Split( newnode.fullaliases, ",", TOK_SKIPEMPTY );
+
+		ashort.Replace( " ", "" );
+		ashort.ToLower();
+		ashort.Split( newnode.shortaliases, ",", TOK_SKIPEMPTY );
+
+		return newnode;
+	}
+
+	bool CompareWithAliases( String text ) {
+		if ( fullaliases.Find( text ) != fullaliases.Size() )
+			return true;
+
+		for ( int i = 0; i < shortaliases.Size(); i++ ) {
+			int aliaslen = shortaliases[ i ].Length();
+
+			if ( text.Left( aliaslen ) == shortaliases[ i ] ) {
+				if ( text.Length() > aliaslen )
+					ZCGlobal.DataLog( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCEVGOTO_TREATASPREFIX" ), text, shortaliases[ i ] ) );
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+} // of class ZCEvmapCommand_goto_CategoryInfo {}
 
 class ZCEvmapCommand_goto: ZCEvmapCommand {
-	String zcDestinationWord; // Actor class, category or a "start" keyword.
+	private String destWord; // Actor class, actor mask, $variable, #category or a "start" keyword.
+	private String lastDestWord;
+	private bool destIsCategory;
+
+	enum ECategoryIdentifiers {
+		S__Nothing = ZCheckerEverythingMapHandler.S__Nothing,
+
+		S_Monsters = ZCheckerEverythingMapHandler.S_Monsters,
+		S_MonstersLarge,
+		S_MonstersHuge,
+
+		S_Weapons, S_Ammo,
+		S_HealthAndArmor, S_Powerups,
+		S_Keys, S_OtherItems,
+
+		S_DecorSolid, S_DecorSolidLarge,
+		S_DecorShootable, S_DecorShootableLarge,
+		S_DecorEthereal, S_DecorEtherealLarge,
+		S_DecorNoBlockmap, S_DecorNoInteraction,
+		S_DecorHuge,
+
+		S_Missiles,
+		S_Players,
+		S_SpecialActors,
+
+		S__Quantity
+	};
+
+	private Array<ZCEvmapCommand_goto_CategoryInfo> jumpCategories;
+	private int curPushedCategory;
+
+
+	protected void addCategoryNode( String afull = "", String ashort = "", ECategoryIdentifiers categoryOverride = S__Nothing ) {
+		if ( categoryOverride != S__Nothing )
+			curPushedCategory = categoryOverride;
+
+		jumpCategories.Push( ZCEvmapCommand_goto_CategoryInfo.Create( curPushedCategory, afull, ashort ) );
+
+		curPushedCategory++;
+	}
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEVGOTO_HELP_TITLE",
-			"$ZCEVGOTO_HELP_DESC"
+			"$ZCEVGOTO_HELP_DESC",
+			'ZCTooltipEvmapGotoCommand'
 		);
+
+		curPushedCategory = 0;
+
+		addCategoryNode( "lm,ml,mlarge", "largem,lmon,monl,monsl,monstersl", S_MonstersLarge );
+		addCategoryNode( "hm,mh,mhuge", "hugem,hmon,monh,monsh,monstersh", S_MonstersHuge );
+		addCategoryNode( "m,mstr", "mon", S_Monsters );
+
+		addCategoryNode( "iw,wp,arms,guns", "iweap,weap", S_Weapons );
+		addCategoryNode( "ia,ammo", "iammo" );
+		addCategoryNode( ashort: "ih,arm,health,hp,iarm" );
+		addCategoryNode( "ip,pwup,pwups", "ipow,powerup,pwrup" );
+		addCategoryNode( "ik", "ikey,key" );
+		addCategoryNode( "io", "ioth,othi" );
+
+		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
+		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
+		addCategoryNode( "dsl,dil,sl,ls,sld,lsd,li,il,lid,ild", "largeim,largeso,decs,deci,decors,decori,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
+		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol", S_DecorSolid );
+		addCategoryNode( "dpl,del,el,le,lp,led,eld,pld,lpd", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl", S_DecorEtherealLarge );
+		addCategoryNode( "dp,de,ed,pd,-sld", "deth,dpas,eth,pass,-sol", S_DecorEthereal );
+		addCategoryNode( "dd,nbm,dnbm,dnobl,dnobmap,+nb", "dnobl,nobl,+nobl", S_DecorNoBlockmap );
+		addCategoryNode( "dni,+ni", "nint,noint,dnint,dnoi,+noint" );
+		addCategoryNode( "dh,hd,dhuge", "hdec,dech,huged" );
+
+		addCategoryNode( "mis,miss,msl,misl,prj,pj", "missil,proj" );
+		addCategoryNode( "", "pl" );
+		addCategoryNode( "oth", "spec,other" );
 	}
 
 	override bool HandleArguments() {
 		bool outValue = false;
 		int ccmdArgsSize = complexArgsTest( "g" );
 
+		classnameParseStatus = CPS_Default;
+
 		if ( ccmdArgsSize && testForEverythingLevel() ) {
 			if ( ccmdArgsSize == 2 ) {
-				zcDestinationWord = ParseSpecialActorName( ccmd.args[ 1 ] );
+				String arg = ccmd.args[ 1 ];
+				String destWordFirstChar = arg.Left( 1 );
+				destIsCategory = ( destWordFirstChar == "#" || destWordFirstChar == ":" );
+
+				if ( destIsCategory ) {
+					destWord = arg.Mid( 1, arg.Length() - 1 );
+				} else {
+					destWord = ParseSpecialActorName( arg );
+				}
+
 				outValue = true;
 			} else {
 				SetNonblockingUsageMessage();
@@ -75,6 +193,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		pl.SetZ( pl.floorz );
 		pl.angle = newangle;
 		pl.vel.xy = (0.0, 0.0);
+		pl.player.cheats &= ~CF_INTERPVIEW;
 		pl.player.vel = (0.0, 0.0);
 	}
 
@@ -82,37 +201,104 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		if ( classnameParseStatus == CPS_RegexFailed )
 			return;
 
-		if ( zcDestinationWord == "s" || zcDestinationWord == "start" ) {
-			// From "TelOtherFX1::P_TeleportToPlayerStarts()":
-			Vector3 dest;
-			double destAngle;
+		class<Actor> destActorClass = destWord;
 
-			[ dest, destAngle ] = G_PickPlayerStart( 0, PPS_NOBLOCKINGCHECK );
-			gotoCCMDPlayerTeleport( dest, destAngle );
+		// Category or keyword was provided:
+		if ( destIsCategory || !destActorClass ) {
+			if ( destWord == "s" || destWord == "st" || destWord == "start" ) {
+				// From "TelOtherFX1::P_TeleportToPlayerStarts()":
+				Vector3 dest;
+				double destAngle;
 
+				[ dest, destAngle ] = G_PickPlayerStart( 0, PPS_NOBLOCKINGCHECK );
+				gotoCCMDPlayerTeleport( dest, destAngle );
+
+			} else if ( destWord != "" ) {
+				ThinkerIterator it = ThinkerIterator.Create( "ZCheckerCategoryInfoHeader" );
+				ZCheckerCategoryInfoHeader curHeader;
+
+				destWord.ToLower();
+				int foundJumpCategoryIndex = -1;
+
+				for ( int i = 0; i < jumpCategories.Size(); i++ ) {
+					if ( jumpCategories[ i ].CompareWithAliases( destWord ) ) {
+						foundJumpCategoryIndex = i;
+						destIsCategory = true;
+						break;
+					}
+				}
+
+				bool categoryFound = false;
+
+				if ( foundJumpCategoryIndex != -1 ) {
+					while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {
+						//if ( lastDestWord == destWord ) { }
+
+						ZCheckerEverythingMapCategoryData curCategory = curHeader.evSectorDef;
+
+						if ( curCategory && curCategory.evType == jumpCategories[ foundJumpCategoryIndex ].categoryType ) {
+							for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {
+								if ( curCategory.headerActors[ i ] ) {
+									curHeader = curCategory.headerActors[ i ];
+									gotoCCMDPlayerTeleport( curHeader.pos, atan2( -curHeader.headerActorStartOffset.y, -curHeader.headerActorStartOffset.x ) );
+									categoryFound = true;
+									break;
+								}
+							} // of for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {}
+
+							if ( categoryFound )
+								break;
+						} // of if ( curCategory && jumpCategories[ curCategory.evType ].CompareWithAliases( destWord ) ) {}
+
+					} // of while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {}
+				}
+
+				if ( categoryFound && curHeader ) {
+					lastDestWord = destWord;
+
+					ZCGlobal.Log( LL_Detailed, String.Format( 
+								ZCGlobal.Locz( "ZCEVGOTO_CATEGSUCCESS" ),
+								ZCheckerEverythingMapHandler.GetESectorName( curHeader.evSectorDef.evType ),
+								ZCGlobal.squeezeVector3( curHeader.pos )
+						) );
+
+				} else if ( destIsCategory ) {
+					if ( foundJumpCategoryIndex != -1 )
+						LogLocalize2Str( LL_Normal, "ZCEVGOTO_CATEGNOTFOUND", destWord );
+					else
+						LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTCATEGORY", destWord );
+
+				} else {
+					LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTACTOR", destWord );
+				}
+
+			} else {
+				ZCGlobal.Log( LL_Main, "$ZCEVGOTO_EMPTYCATEGORY" );
+			}
+
+		// Class was provided:
 		} else {
 			ThinkerIterator it = ThinkerIterator.Create( "ZCheckerActorInfo" );
 			ZCheckerActorInfo curActor;
 
-			class<Actor> destActorClass = zcDestinationWord;
+			while ( ( curActor = ZCheckerActorInfo( it.Next( true ) ) ) && ( curActor.masterClass != destActorClass ) );
 
-			if ( !destActorClass ) {
-				LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTACTOR", zcDestinationWord );
+			if ( curActor ) {
+				double newPlayerAngle = ( curActor.master? curActor.AngleTo( curActor.master, true ) : atan2( -curActor.masterOffset.y, -curActor.masterOffset.x ) );
+				gotoCCMDPlayerTeleport( curActor.pos, newPlayerAngle );
+
+				ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCEVGOTO_SUCCESS" ), curActor.masterClass.GetClassName(), ZCGlobal.squeezeVector3( curActor.pos ) ) );
 			} else {
-				while ( ( curActor = ZCheckerActorInfo( it.Next( true ) ) ) && ( curActor.masterClass != destActorClass ) );
-
-				if ( curActor ) {
-					double newPlayerAngle = ( curActor.master? curActor.AngleTo( curActor.master, true ) : atan2( -curActor.masterOffset.y, -curActor.masterOffset.x ) );
-					gotoCCMDPlayerTeleport( curActor.pos, newPlayerAngle );
-					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCEVGOTO_SUCCESS" ), curActor.masterClass.GetClassName(), "" .. curActor.pos ) );
-				} else {
-					// No this actor at the map.
-					LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTFOUND", zcDestinationWord );
-				}
+				// No this actor at the map.
+				LogLocalize2Str( LL_Normal, "ZCEVGOTO_NOTFOUND", destWord );
 			}
 		}
+
+		lastDestWord = destWord;
 	} // of override void DoCommand( void ) {}
+
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
+
 
 class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 	override void InitCCMD() {

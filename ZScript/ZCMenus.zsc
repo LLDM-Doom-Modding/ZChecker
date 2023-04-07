@@ -27,15 +27,15 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
-		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings:" ) );
+		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings" ) );
 
-		String panelbitsStr = DARKGRAY .. "'" .. GRAY .. "1" .. DARKGRAY .. "'";
+		String panelbitsStr = GRAY .. "1";
 		for ( int i = 1; i < MaxTestee; i++ )
-			panelbitsStr.AppendFormat( DARKGRAY .. ", '" .. GRAY .. "%i" .. DARKGRAY .. "'", i + 1 );
+			panelbitsStr.AppendFormat( DARKGRAY .. ", " .. GRAY .. "%i" .. DARKGRAY .. "", i + 1 );
 
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TAN .. "Switch info" .. DARKGRAY .. " with " .. GRAY .. "<Space>" .. DARKGRAY .. "/" .. GRAY .. "<Enter>" .. DARKGRAY .. ", " .. panelbitsStr .. " or " .. GRAY .. "<L/R>" .. DARKGRAY .. ";" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu" .. DARKGRAY .. " with " .. GRAY .. "<F3>" .. DARKGRAY .. ", " .. GRAY .. "<F4>" .. DARKGRAY .. ", " .. GRAY .. "<tab>" .. DARKGRAY .. " or " .. GRAY .. "mouse click" .. DARKGRAY .. ";" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels" .. DARKGRAY .. " with '" .. GRAY .. "+" .. DARKGRAY .. "'/" .. GRAY .. "<KP+>" .. DARKGRAY .. ", '" .. GRAY .. "-" .. DARKGRAY .. "'/" .. GRAY .. "<KP->" .. DARKGRAY .. " or " .. GRAY .. "mouse wheel" .. DARKGRAY .. "." ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TAN .. "Switch info: " .. GRAY .. "Space" .. DARKGRAY .. "/" .. GRAY .. "Enter" .. DARKGRAY .. ", " .. panelbitsStr .. " or " .. GRAY .. "Left" .. DARKGRAY .. "/" .. GRAY .. "Right" ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu: " .. GRAY .. "F3" .. DARKGRAY .. "/" .. GRAY .. "F4" .. DARKGRAY .. "/" .. GRAY .. "Tab" .. DARKGRAY .. " or " .. GRAY .. "Mouse 1"  ) );
+		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels: " .. GRAY .. "+" .. DARKGRAY .. "/" .. GRAY .. "KP+" .. DARKGRAY .. ", " .. GRAY .. "-" .. DARKGRAY .. "/" .. GRAY .. "KP-" .. DARKGRAY .. " or " .. GRAY .. "Mouse wheel" ) );
 		desc.mItems.Push( NewStaticText() );
 	}
 
@@ -171,7 +171,7 @@ class ZCOptionMenuPanels: OptionMenu {
 			if ( key == 0x2D ) // '-'.
 				actiontype = PMAT_MoveItemUp;
 
-			else if ( key == 0x2B ) // '+'.
+			else if ( key == 0x2B || key == 0x3D ) // '+'/'='.
 				actiontype = PMAT_MoveItemDown;
 
 			else if ( key == 0x20 ) // A space.
@@ -284,25 +284,20 @@ class ZCOptionMenuPanels: OptionMenu {
 		bool isSearchEventType = ( e.Type == UIEvent.Type_Char || ( e.Type == UIEvent.Type_KeyDown && e.IsCtrl ) );
 		int ch = e.KeyChar;
 
-		if ( actiontype == PMAT_None && isSearchEventType && ch > 0x20 && ch < 0x7F ) {
+		if ( actiontype == PMAT_None && isSearchEventType && ch > 0x20 && ch < 0x7E ) {
 			// Converting to lowercase:
 			if ( ch >= LETTER_A_UPPER && ch <= LETTER_Z_UPPER )
 				ch |= 0x20;
 
 			int foundIndex = -1;
-			int errorCountdown = 1000;
+			int charNotFoundCountdown = lastPanelItemPos - firstPanelItemPos - 1;
 			int searchdir = ( (e.IsCtrl || e.IsAlt)? -1 : 1 );
 
-			for ( int i = mDesc.mSelectedItem + searchdir; i != mDesc.mSelectedItem; i += searchdir ) {
-				if ( errorCountdown-- <= 0 ) {
-					ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::OnUIEvent(). Runaway char search terminated (1000 iterations). i == " .. i .. ", items range [" .. firstPanelItemPos .. "; " .. lastPanelItemPos .. "], mDesc.mItems.Size() == " .. mDesc.mItems.Size() .. ", searchdir == " .. searchdir );
-					break;
-				}
-
+			for ( int i = mDesc.mSelectedItem + searchdir; i != mDesc.mSelectedItem && charNotFoundCountdown --> 0; i += searchdir ) {
 				// Looping the search:
 				if ( i >= lastPanelItemPos )
 					i = firstPanelItemPos;
-				else if ( i <= firstPanelItemPos )
+				else if ( i < firstPanelItemPos )
 					i = lastPanelItemPos;
 
 				// Skipping submenus:
@@ -314,7 +309,7 @@ class ZCOptionMenuPanels: OptionMenu {
 					foundindex = i;
 					break;
 				}
-			} // of for ( int i = mDesc.mSelectedItem + searchdir; i != mDesc.mSelectedItem; i += searchdir ) {}
+			} // of for ( int i = mDesc.mSelectedItem + searchdir; i != mDesc.mSelectedItem && charNotFoundCountdown --> 0; i += searchdir ) {}
 
 			if ( foundindex != -1 ) {
 				mDesc.mSelectedItem = foundindex;
@@ -505,10 +500,10 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 		String text;
 
 		if ( selection & const_AllEnabled == const_AllEnabled ) {
-			text = TEXTCOLOR_GRAY .. ZCGlobal.Locz( "PANELSMENU_INALLPANELS" );
+			text = TEXTCOLOR_GRAY .. ZCGlobal.Locz( "INFOPANELSMENU_INALLPANELS" );
 
 		} else if ( selection == const_AllDisabled ) {
-			text = TEXTCOLOR_BLACK .. ZCGlobal.Locz( "PANELSMENU_NOTINPANELS" );
+			text = TEXTCOLOR_BLACK .. ZCGlobal.Locz( "INFOPANELSMENU_NOTINPANELS" );
 
 		} else {
 			for ( int i = 0; i < MaxTestee; i++ ) {
@@ -543,9 +538,13 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 	OptionMenuDescriptor subdesc;
 
+	private String GetSubmenuLabel( bool itemselected = false ) {
+		String newlabel = masterInfoPanel.GetSubmenuLabel( subdesc );
 
-	private String GetSubmenuLabel( void ) {
-		return masterInfoPanel.GetSubmenuLabel( subdesc );
+		if ( itemselected )
+			newlabel.Replace( masterInfoPanel.SUBMENUCOLOR, TEXTCOLOR_BRICK );
+
+		return newlabel;
 	}
 
 	ZCOptionMenuItemInfopanelSubmenu Init( ZCOptionMenuItemInfopanel masteritem, ZCBaseInfoPanelPart infopanel ) {
@@ -563,8 +562,8 @@ class ZCOptionMenuItemInfopanelSubmenu: OptionMenuItemStaticText {
 
 		if ( desc ) {
 			if ( desc.mSelectedItem > 0 ) {
-				mLabel = GetSubmenuLabel();
 				masterItemSelected = ( desc.mItems[ desc.mSelectedItem ] == masterMenuItem );
+				mLabel = GetSubmenuLabel( masterItemSelected );
 			}
 		} else {
 			mLabel = GetClassName() .. "::Draw(). No OptionMenuDescriptor.";

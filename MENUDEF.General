@@ -20,6 +20,8 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Submenu "$ZCHECKER_MAINMENU_EVMAP", "mcm_ZChecker_ControlMenu_MapEverything"
 	Submenu "$ZCHECKER_MAINMENU_VISUAL", "mcm_ZChecker_ControlMenu_VisualSettings"
 	StaticText " "
+	StaticText "$ZCHECKER_MAINMENU_DIV_HOTKEYS", 1	
+	Control "$ZCHECKER_MAINMENU_OPEN_MENU_KEY", "openmenu mcm_ZChecker_ControlMenu"
 	Control "$ZCHECKER_MAINMENU_OPENINFOPANELS", "openmenu mcm_ZChecker_ControlMenu_Panels"
 	Control "$ZCHECKER_MAINMENU_OPENCCMDS", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
 	Control "$ZCHECKER_MAINMENU_OPENEVMAP", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
@@ -41,8 +43,6 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     StaticText "$ZCHECKER_MAINMENU_DO_NOT_ALTER", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_SPECIAL", DARKGRAY
 	StaticText " "
-	Control "$ZCHECKER_MAINMENU_OPEN_MENU_KEY", "openmenu mcm_ZChecker_ControlMenu"
-	StaticText " "
 	Option "$ZCHECKER_MAINMENU_LOG_LEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "$ZCHECKER_MAINMENU_UPDATE_5_TICS", DARKGRAY
 }
@@ -61,8 +61,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
     StaticText "$ZCHECKER_VISUAL_POSITIONING", 1
 	Slider "$ZCHECKER_VISUAL_START_X",    "mcm_zchecker_infopanel_startx", 0.0, 99.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_START_X_10", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_START_Y",    "mcm_zchecker_infopanel_starty", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_START_Y_10", "mcm_zchecker_infopanel_starty", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_START_Y",    "mcm_zchecker_infopanel_starty", -50.0, 99.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_START_Y_10", "mcm_zchecker_infopanel_starty", -50.0, 99.0, 10.0, 0
 	Slider "$ZCHECKER_VISUAL_OFFSET_X", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "mcm_zchecker_infopanel_scale", 0.5, 8.0, 0.1, 1
 	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
@@ -89,20 +89,20 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText " "
 
     StaticText "$ZCHECKER_EVMAPMENU_SPAWNOPTIONS", 1
-	StaticText "$ZCHECKER_EVMAPMENU_GENERAL", DARKBROWN
+	StaticText "$ZCHECKER_EVMAPMENUDIV_GENERAL", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_SPAWNREPLACED", "mcm_zchecker_ev_spawnreplaced", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_RESTRICT", "mcm_zchecker_ev_restrictreplacements", "NoYes"
-	StaticText "$ZCHECKER_EVMAPMENU_EMPTYSPRITES", DARKBROWN
+	StaticText "$ZCHECKER_EVMAPMENUDIV_SPRITES", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_MISSING", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_TNT1A0", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawnplyc", "YesNo"
-	StaticText "$ZCHECKER_EVMAPMENU_CODEBASED", DARKBROWN
+	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawncorruptedsprites", "YesNo"
+	StaticText "$ZCHECKER_EVMAPMENUDIV_CODEBASED", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_PLAYERCHUNK", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
 
     StaticText " "
-    StaticText "$ZCHECKER_EVMAPMENU_OTHER", 1
+    StaticText "$ZCHECKER_EVMAPMENUDIV_OTHER", 1
 	Option "$ZCHECKER_EVMAPMENU_AUTONOTARGET", "mcm_zchecker_ev_auto_notarget", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_AUTOGOD", "mcm_zchecker_ev_auto_iddqd", "YesNo"
     StaticText "$ZCHECKER_EVMAPMENU_SPEC_CHEATS", DARKGRAY
@@ -117,9 +117,35 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC2", DARKGRAY
 	StaticText " "
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_CANNOT_LOCATE"
-	StaticText "$ZCHECKER_EVMAPMENU_RELATEDCCMD", 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_EVCCMDS", 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev recreate", 0, 1
-	Command "$ZCHECKER_EVMAPMENU_TELEPORTSTART", "zcev goto start", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPSTART", "zcev goto #start", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPMONS", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPMONSTERS", "zcev goto #mon", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPLMONS", "zcev goto #lmon", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPHMONS", "zcev goto #hmon", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPITEMS", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPWEAPS", "zcev goto #weap", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPAMMO", "zcev goto #ammo", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPHPARMOR", "zcev goto #health", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPPOWERUPS", "zcev goto #powerup", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPKEYS", "zcev goto #key", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPOTHITEMS", "zcev goto #othi", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPDECOR", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPDSOLID", "zcev goto #ds", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLSOLID", "zcev goto #dsl", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDETHER", "zcev goto #pass", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLETHER", "zcev goto #lpass", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDSHOOT", "zcev goto #dsh", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDLSHOOT", "zcev goto #dshl", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDNOBLKMAP", "zcev goto #dnobl", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDNOINTRCT", "zcev goto #noint", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPDHUGE", "zcev goto #dhuge", 0, 1
+	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPOTHER", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPMISSILES", "zcev goto #proj", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPPLAYERS", "zcev goto #pl", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_WARPOTHER", "zcev goto #spec", 0, 1
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
@@ -146,9 +172,10 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
-	1, "$ZCHECKER_MAINMENUOPT_LOGLEVEL1"
-	2, "$ZCHECKER_MAINMENUOPT_LOGLEVEL2"
-	3, "$ZCHECKER_MAINMENUOPT_LOGLEVEL3"
+	1, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN"
+	2, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED"
+	3, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_DEVELOPER"
+	4, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_DEBUG"
 }
 
 OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {

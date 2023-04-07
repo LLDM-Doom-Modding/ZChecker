@@ -1,14 +1,19 @@
+//
+// General ZChecker console commands: "zchelp", "zcadd" and "zcrem".
+//
+
 class ZCHelpCommand: ZCConsoleCommand {
+	const HEADERCOLOR = ZCTooltipClass.HEADER;
+
 	bool verboseHelp;
 	ZCConsoleCommand infoclass;
-
-	const HEADER = TEXTCOLOR_BLUE;
 
 	override void InitCCMD() {
 		SetupCCMDInterface(
 			"zc_help",
 			"$ZCHELP_HELP_TITLE",
-			"$ZCHELP_HELP_DESC"
+			"$ZCHELP_HELP_DESC",
+			'ZCTooltipHelpCommand'
 		);
 	}
 
@@ -61,11 +66,6 @@ class ZCHelpCommand: ZCConsoleCommand {
 
 				if ( !outValue )
 					LogLocalize2Str( LL_Main | LL_NoDot, "ZCHELP_CANNOTFIND", ccmd.args[ 0 ] );
-
-				/*ZCGlobal.Log( LL_Main | LL_NoDot, TEXTCOLOR_TEAL .. "ZChecker help: " .. ( outValue
-						? TEXTCOLOR_SAPPHIRE .. " === Visual " .. TEXTCOLOR_DARKRED .. "separator ===" .. "\n\n"
-						: TEXTCOLOR_FIRE .. "cannot find ZChecker console command " .. LLCOLOR_MAIN .. "\"" .. ccmd.args[ 0 ] .. "\"."
-					) );*/
 			}
 		}
 
@@ -74,23 +74,25 @@ class ZCHelpCommand: ZCConsoleCommand {
 
 	override void DoCommand( void ) {
 		// Description and credits:
-		if ( verboseHelp ) {
+		if ( verboseHelp )
 			console.printf( ZCGlobal.Locz( "ZCHELP_VERBOSETITLE" ), ZCheckerVersion );
-
-			//console.printf( TEXTCOLOR_SAPPHIRE .. "ZChecker " .. TEXTCOLOR_BLUE .. "v" .. ZCheckerVersion .. HEADER .. ".\n" ..
-			//		"  (c) " .. TEXTCOLOR_WHITE .. "JSO_x" .. HEADER .. " a.k.a. " .. TEXTCOLOR_WHITE .. "Morthimer McMare" .. HEADER .. ";\n" ..
-			//		"  (c) " .. TEXTCOLOR_WHITE .. "LLDM-Doom-modding" .. HEADER .. " team" .. ".\n\n" );
-		}
 
 		if ( infoclass ) {
 			String helpstr = infoclass.GetHelpString();
+			String const_HelpIndent = HEADERCOLOR .. "| ";
 
-			helpstr.Replace( "\n", TEXTCOLOR_SAPPHIRE .. "\n| " .. LLCOLOR_MAIN );
-			console.printf( TEXTCOLOR_SAPPHIRE .. "| " .. LLCOLOR_MAIN .. helpstr );
+			helpstr.Replace( "\n", "\n" .. const_HelpIndent .. LLCOLOR_MAIN );
+			console.printf( const_HelpIndent .. " \n" .. const_HelpIndent .. helpstr );
 
 			if ( infoclass.ccmdInterfaceData.helpTooltip ) {
-				console.printf( TEXTCOLOR_SAPPHIRE .. "|\n| ".. infoclass.ccmdInterfaceData.helpTooltip.GetHelpString() );
-				console.printf( TEXTCOLOR_SAPPHIRE .. "\\-= =-------------\n| " .. LLCOLOR_MAIN .. helpstr .. TEXTCOLOR_SAPPHIRE .. "\n/--=--=--=--=--=--\n\n" );
+				String helpTooltipText = infoclass.ccmdInterfaceData.helpTooltip.GetHelpString();
+				console.printf( const_HelpIndent .. helpTooltipText );
+
+				if ( helpTooltipText.Length() > 1000 )
+					console.printf( "\n" .. HEADERCOLOR .. "\\-= =-------------\n" .. const_HelpIndent .. LLCOLOR_MAIN .. helpstr );
+
+				console.printf( HEADERCOLOR .. "/--=--=--=--=--=--\n\n" );
+
 			} else {
 				console.printf( "\n" );
 			}
@@ -98,7 +100,7 @@ class ZCHelpCommand: ZCConsoleCommand {
 		} else {
 			console.printf( ZCGlobal.Locz( verboseHelp? "ZCHELP_HEADERALLCCMDS" : "ZCHELP_HEADERCOMMONCCMDS" ) );
 
-			ZCConsoleClass curCC = NULL; // Also separators.
+			ZCConsoleClass curCC = NULL; // Also separators and tooltips will be printed.
 
 			for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size(); i++ ) {
 				curCC = ccmd.handler.zcConsoleHandleClasses[ i ];

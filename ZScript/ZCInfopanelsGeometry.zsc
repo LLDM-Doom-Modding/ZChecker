@@ -1,3 +1,7 @@
+//
+// Infopanels of the linked with actor level geometry: sectors and linedefs.
+//
+
 class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	String outinfo;
 	Actor infothing;
@@ -19,6 +23,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	native double FloorClip;
 	native Line BlockingLine;
 */
+
 	Sector tempInfoSec;
 	String tempFlagsStr;
 	uint secFlagsAmount;
@@ -338,6 +343,57 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 
 		return outinfo;
 	}
+
+
+	protected ui String fullOptionsString;
+	protected ui int curOptionItemNum;
+	protected ui bool fullOptionsStringOverflow;
+
+	ui protected void addLabelFlag( bool optionval, String optionname ) {
+		String localizedpart = ZCGlobal.Locz( "PANELSUBLABEL_GSEC_" .. optionname );
+
+		if ( optionval && !fullOptionsStringOverflow ) {
+			if ( fullOptionsString.Length() + localizedpart.Length() < 25 ) {
+				if ( curOptionItemNum > 0 )
+					fullOptionsString.AppendFormat( ", %s", localizedpart );
+				else
+					fullOptionsString = fullOptionsString .. localizedpart;
+
+				curOptionItemNum++;
+			} else {
+				fullOptionsString = fullOptionsString .. ", ...";
+				fullOptionsStringOverflow = true;
+			}
+		}
+	} // of ui protected void addLabelFlag( bool optionval, String optionname ) {}
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		ResetSubmenuItemsIterator();
+
+		bool separatedSectors = !!GetNextSubmenuItemIntSelection( desc );
+
+		curOptionItemNum = 0;
+		fullOptionsString = "";
+		fullOptionsStringOverflow = false;
+
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "HEIGHTS" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "LIGHT" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "TEXTURES" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "FLAGS" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "DAMAGE" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "PHYSICS" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "PORTALS" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "TERRAIN" );
+		addLabelFlag( GetNextSubmenuItemIntSelection( desc ), "OTHER" );
+
+		if ( fullOptionsString.Length() != 0 )
+			fullOptionsString = ". " .. ZCGlobal.Locz( "PANELSUBLABEL_GSEC_PREFIX2" ) .. fullOptionsString .. " ";
+
+		fullOptionsString = ZCGlobal.Locz( "PANELSUBLABEL_GSEC_" .. ( separatedSectors? "FCSEC" : "CURSEC" ) ) .. fullOptionsString;
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_GSEC_PREFIX" ) .. fullOptionsString .. ZCGlobal.Locz( "PANELSUBMENU_DEFAULTMORE" );
+	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
+
 } // of class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {}
 
 

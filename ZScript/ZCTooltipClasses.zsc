@@ -1,5 +1,5 @@
 //
-// All default tooltip classes.
+// All default ZChecker tooltip classes.
 //
 
 
@@ -27,6 +27,12 @@ class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
 
 
 // Common CCMDs tooltips:
+
+class ZCTooltipHelpCommand: ZCTooltipClass {
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCHELP_EXAMPLES" );
+	}
+}
 
 class ZCTooltipAddCommand: ZCTooltipClass {
 	override String GetPlaintext() {
@@ -76,6 +82,38 @@ class ZCTooltipSetPropertyCommand: ZCTooltipClass {
 	}
 }
 
+class ZCTooltipSetFlagCommand: ZCTooltipClass {
+	override String GetPlaintext() {
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCSETFLAG_TEXT" ) );
+	}
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCSETFLAG_EXAMPLES" );
+	}
+}
+
+class ZCTooltipSetStateCommand: ZCTooltipClass {
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCSETSTATE_EXAMPLES" );
+	}
+}
+
+// Everything map CCMDs tooltips:
+
+class ZCTooltipEvmapCommand: ZCTooltipClass {
+	override String GetTips() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCEV_TIPS" );
+	}
+}
+
+class ZCTooltipEvmapGotoCommand: ZCTooltipGeneralActorMasks {
+	override String GetPlaintext() {
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_TEXT" ) );
+	}
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_ZCEVGOTO_EXAMPLES" );
+	}
+}
+
 
 // Miscellaneous controlling CCMDs tooltips:
 
@@ -96,16 +134,6 @@ class ZCTooltipPanelsControlCommand: ZCTooltipClass {
 		return ZCGlobal.Locz( "TOOLTIP_ZCPANELCTL_EXAMPLES" );
 	}
 }
-
-class ZCTooltipSetFlagCommand: ZCTooltipClass {
-	override String GetPlaintext() {
-		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCSETFLAG_TEXT" ) );
-	}
-	override String GetExamples() {
-		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCSETFLAG_EXAMPLES" ) );
-	}
-}
-
 
 class ZCTooltipExternalInterfaceCommand: ZCTooltipClass {
 	override String GetPlaintext() {

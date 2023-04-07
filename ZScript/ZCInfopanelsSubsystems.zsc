@@ -8,53 +8,12 @@
 //
 
 
-// Not really done yet...
-class ZCInvFieldNode {
-	ZCInvFieldNode next, prev;
-
-	Inventory inv;
-	int visualTicks;		// Positive: green (inv. added); negative: red (inv. taken).
-}
-
-class ZCInvFieldData {
-	ZCInvFieldNode head, tail;
-	ZCInvFieldNode firstvisible;
-
-	ZCInvFieldNode AddNode( Inventory inv ) {
-		ZCInvFieldNode newnode = new( 'ZCInvFieldNode' );
-
-		if ( !head ) {
-			head = tail = newnode;
-		} else {
-			tail.next = newnode;
-			newnode.prev = tail;
-			tail = newnode;
-		}
-
-		newnode.inv = inv;
-		newnode.visualTicks = 5;
-
-		return newnode;
-	}
-
-	void UpdateByActorInventory( Actor owner ) {
-		Inventory aitem = owner.inv;
-		Inventory sitem = head.inv;
-
-		while ( aitem ) {
-			if ( aitem != sitem ) {
-				// <...>
-			}
-
-			aitem = aitem.inv;
-		}
-	}
-} // of class ZCInvFieldData {}
-
 class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
-	Array<ZCInvFieldData> prevInvs;
 	ZCInventoryQuicksort qsort;
 	int sortPrevTypeOption;
+
+	//Array<ZCInvFieldData> prevInvs;
+
 
 	override void OnCreate( void ) {
 		optionCVarName = "mcm_zchecker_info_inventory";
@@ -64,8 +23,8 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 
 		sortPrevTypeOption = -1;
 
-		for ( int i = 0; i < MaxTestee; i++ )
-			prevInvs.Push( new( 'ZCInvFieldData' ) );
+		//for ( int i = 0; i < MaxTestee; i++ )
+		//	prevInvs.Push( new( 'ZCInvFieldData' ) );
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -75,48 +34,13 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 			return outstr .. "(Inventory itself).\n";
 
 		Inventory item = thing.Inv;
-		//ZCInvFieldData previnv = prevInvs[ thingfield.fieldPos ];
 
 		if ( !item )
 			return outstr .. "none.";
 
-		//uint curCellsAmount = 0;
-
-		//ZCheckerInvField cmpItem = Testee[ i ].inv;
-		//ZCheckerInvField nextItem = cmpItem.Next;
-
-		/*while ( item && curCellsAmount < cellsAmountOption ) {
-			//if ( nextItem && nextItem.type != item.Inv.GetClassName() ) {
-			/ *	ZCheckerInvField cmpNextItem = nextItem;
-				bool found = false;
-				while ( ( cmpNextItem = cmpNextItem.Next ) && !found ) {
-					if ( cmpNextItem.type == item.Inv.GetClassName() )
-						found = true;
-				}
-				if ( !found ) {}
-			}
-            * /
-			outStr = outStr .. "\n* " .. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
-			item = item.Inv;
-
-			/ *if ( cmpItem.visualTicks > 0 )
-				--cmpItem.visualTicks;
-			else if ( cmpItem.visualTicks < 0 )
-				++cmpItem.visualTicks;
-
-			outStr = outStr .. "\n* " .. "\c[" .. ( cmpItem.visualTicks > 0? "Green" : ( cmpItem.visualTicks < 0? "Red" : "Gray" ) ) .. "]"
-					.. item.GetClassName() .. ( item.Amount - 1? " x" .. item.Amount : "" ) .. "\c[Gray];";
-
-			item = item.Inv;
-			cmpItem = nextItem;
-			nextItem = nextItem.Next;* /
-
-			curCellsAmount++;
-		} // of while ( item && curCellsAmount < cellsAmountOption ) {}
-
-		if ( item && curCellsAmount >= cellsAmountOption )
-			outStr = outStr .. TEXTCOLOR_DARKGRAY .. " (...more)";
-		*/
+		// [McM] Tracking of the inventory amount changing not finished and 
+		//therefore not available in the ZChecker beta-versions. The color 
+		//interpretation of obtaining/losing inventory isn't ready yet...
 
 
 		uint cellsAmountOption = CVar.GetCVar( "mcm_zchecker_infovar_invamount", players[ consoleplayer ] ).GetInt();
@@ -176,15 +100,86 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 				elemstr = BLACK .. elemstr .. item.GetClassName() .. " x0";
 			}
 
-			outstr = outstr .. elemstr .. GRAY .. ";";
-		}
+			outstr = outstr .. elemstr;
+		} // of for ( int i = 0; i < min( qsortArraySize, cellsAmountOption ); i++ ) {}
 
 		if ( qsortArraySize > cellsAmountOption )
 			outstr = outstr .. TEXTCOLOR_DARKGRAY .. "\n  (..." .. ( qsortArraySize - cellsAmountOption ) .. " more)";
 
 		return outstr;
-	}
+	} // of override String GetInfo( Actor thing, ZCheckerField thingfield ) {}
+
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		String outlabel;
+
+		ResetSubmenuItemsIterator();
+
+		int itemsAmount = GetNextSubmenuItemIntSelection( desc );
+
+		OptionMenuItem sortmodeMenuItem = GetNextSubmenuItem( desc );
+		int itemsSortMode = GetSubmenuItemIntSelection( sortmodeMenuItem );
+		String itemsSortModeStr = GetSubmenuItemStrSelection( sortmodeMenuItem );
+
+		if ( itemsSortMode > 0 )
+			outlabel = String.Format( "%i %s %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_SORTEDBY" ), itemsSortModeStr );
+		else
+			outlabel = String.Format( "%i %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_UNSORTED" ) );
+
+		if ( !!GetNextSubmenuItemIntSelection( desc ) )
+			outlabel = outlabel .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_INV_REVERSED" );
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_INV_PREFIX" ) .. outlabel;
+	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
+
 } // of class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {}
+
+/*
+// [McM] Tracking of the inventory amount changing not finished and therefore 
+//not available in the ZChecker beta-versions.
+
+class ZCInvFieldNode {
+	ZCInvFieldNode next, prev;
+
+	Inventory inv;
+	int visualTicks;		// Positive: green (inv. obtained); negative: red (inv. taken).
+}
+
+class ZCInvFieldData {
+	ZCInvFieldNode head, tail;
+	ZCInvFieldNode firstvisible;
+
+	ZCInvFieldNode AddNode( Inventory inv ) {
+		ZCInvFieldNode newnode = new( 'ZCInvFieldNode' );
+
+		if ( !head ) {
+			head = tail = newnode;
+		} else {
+			tail.next = newnode;
+			newnode.prev = tail;
+			tail = newnode;
+		}
+
+		newnode.inv = inv;
+		newnode.visualTicks = 5;
+
+		return newnode;
+	}
+
+	void UpdateByActorInventory( Actor owner ) {
+		Inventory aitem = owner.inv;
+		Inventory sitem = head.inv;
+
+		while ( aitem ) {
+			if ( aitem != sitem ) {
+				// <...>
+			}
+
+			aitem = aitem.inv;
+		}
+	}
+} // of class ZCInvFieldData {}*/
+
 
 
 class ZCStatesInfoData {
@@ -521,8 +516,13 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 
 		} else if ( pspr ) { // Thanks to Il Str for crash reporting.
-			int pspriteOverlaysMode = pspriteOverlaysModeCVar.GetInt();
 			PlayerInfo pl = weapOwner.player;
+
+			outStr = outStr .. addPSpriteState( pl.FindPSprite( PSprite.WEAPON ) );
+
+			// [McM] PSprite layers not finished and therefore not available in the ZChecker beta-versions.
+
+			/*int pspriteOverlaysMode = pspriteOverlaysModeCVar.GetInt();
 			int pspriteSpecialOverlayIDString = pspriteExtraOverlayIDCVar.GetString().ToInt();
 
 			switch ( pspriteOverlaysMode ) {
@@ -552,11 +552,26 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				default:
 					break;
 			} // of switch ( pspriteOverlaysMode ) {}
+			*/
 
 		} // of else if ( pspr ) {}
 
 		return outStr;
 	} // of override String GetInfo( Actor thing, ZCheckerField thingfield ) {}
+
+	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
+		ResetSubmenuItemsIterator();
+
+		int statesAmount = GetNextSubmenuItemIntSelection( desc );
+		bool statesLogging = !!GetNextSubmenuItemIntSelection( desc );
+
+		String outlabel = ( statesAmount > 0? "" .. statesAmount : ZCGlobal.Locz( "PANELSUBLABEL_STATES_UNLIMITED" ) ) .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_STATES_STATES" );
+
+		if ( statesLogging )
+			outlabel = outlabel .. ", " .. ZCGlobal.Locz( "PANELSUBLABEL_STATES_LOGGING" );
+
+		return ZCGlobal.Locz( "PANELSUBMENU_DEFAULTLABEL" ) .. ZCGlobal.Locz( "PANELSUBLABEL_STATES_PREFIX" ) .. outlabel .. " " .. ZCGlobal.Locz( "PANELSUBMENU_DEFAULTMORE" );
+	} // of override String GetSubmenuLabel( OptionMenuDescriptor desc ) {}
 
 } // of class ZCStatesInfoPanel: ZCBaseInfoPanelPart {}
 

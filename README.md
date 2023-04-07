@@ -7,7 +7,7 @@ Separated into three large, interdependent parts:
 
 ### 1. Console commands (CCMDs)
 
-The main control tool in the game world. All console commands begin with the prefix "zc," so you can type "zc`<tab>`" to show them all. The most commonly used ones are:
+The main control tool in the game world. All console commands begin with the prefix "zc", so you can type "zc`<tab>`" to show them all. The most commonly used ones are:
 
 - `zchelp [<command>|all]`. Prints a ZChecker help text to the console:
   
@@ -17,7 +17,7 @@ The main control tool in the game world. All console commands begin with the pre
   
   - If the argument is a `<command>`: Prints a large help text with examples. Command names can be written without the "zc" prefix: for example, both `zchelp zcadd` and `zchelp add` are valid.
 
-- `zcadd [self|weap] [<pos>]`. Adds the linetarget actor, or the `self.player` pointer, or the currently selected weapon to the info panel at poisition `<pos>` (see [Section 2. Information panels](#2-information-panels-infopanels)). If the position is omitted, adds to the first empty panel.
+- `zcadd [self|weap] [<pos>]`. Adds the linetarget actor, or the calling player's actor, or the currently selected weapon to the info panel at poisition `<pos>` (see [Section 2. Information panels](#2-information-panels-infopanels)). If the position is omitted, adds to the first empty panel.
 
 - `zcrem [<pos>]` or `zcclear [<pos>]`. Removes an actor from infopanel `<pos>`, or clears all if argument is omitted.
 
@@ -55,7 +55,7 @@ These maps add CCMDs with the "zcev" prefix:
 
 - `zcev map2` or `zcev level2`. Warp to the `Everything_simple` map.
 
-Note: the Everything map may be outdated in the beta versions of the project. It's recommended to use `Everything_simple` instead.
+Note: the Everything map may be outdated in the beta versions of the project, so, if you're using one of them, it's recommended to warp to the `Everything_simple` instead.
 
 
 ## General notes
@@ -75,24 +75,27 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 
 ### LLDM crew
 
-- **JSO_x** a.k.a. **Morthimer McMare**: idea, most of the code, the "Everything_simpled" map;
-
+- **JSO_x** a.k.a. **Morthimer McMare**: idea, most of the code, the "Everything_simple" map;
 - **StormCatcher.77**: the "Everything" map;
-
 - **ika707**: beta-testing, bug reporting.
+
+
+### Modules/API
+
+- **InfernalSky** a.k.a. **Hizenfort**: player cheats infopanel;
+- **N00b2015**: "`zcadd force`" CCMD subcommand fix;
+- **Mud** a.k.a. **Serious_MOod**: sound definitions infopanel;
+
 
 ### Work with resources
 
 - **Agent_Ash** a.k.a. **Jekyll Grim Payne**: translation check and interface feedback;
-
 - **Dezette** a.k.a. **MyNameIs**: alternative monospaced smallfont;
-
 - **Mud** a.k.a. **Serious_MOod**: textures for the Everything maps.
+
 
 ### Special thanks to
 
 - **Sir Robin**, for his [ZScript quicksort library](https://forum.zdoom.org/viewtopic.php?f=105&t=75757);
-
 - **m8f**, for the GUI code from his [Hellscape Navigator](https://forum.zdoom.org/viewtopic.php?t=61643);
-
-- All beta-testers and critics of ergonomics: **ika707**, **Ron_Dallas**, **Agent_Ash**, **N00b2015**, **Dron12261**, **Chameleon_111**, **Dezette**, **Il Str**.
+- All beta-testers and critics of ergonomics: **ika707**, **Mud**, **Agent_Ash**, **N00b2015**, **Dron12261**, **Chameleon_111**, **Ron_Dallas**, **Dezette**, **Il Str**.

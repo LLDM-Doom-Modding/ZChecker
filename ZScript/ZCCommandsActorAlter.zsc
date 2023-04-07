@@ -585,7 +585,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 				} // of else of if ( GetDefaultByType( summoneeClass ).bMISSILE ) {}
 
 				if ( summoned ) {
-					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCSUMMON_SUCCESS" ), summoneeAmount, ( summoneeAmount > 1? "actors" : "actor" ), summoneeClass.GetClassName() ) );
+					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCSUMMON_SUCCESS" ), summoneeAmount, ( summoneeAmount > 1? ZCGlobal.Locz( "ZCSUMMON_SUCCESS_ACTORS" ) : ZCGlobal.Locz( "ZCSUMMON_SUCCESS_1ACTOR" ) ), summoneeClass.GetClassName() ) );
 
 					if ( params.infopanelPos == params.INFOPANEL_NOFREE ) {
 						ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSUMMON_ADDINSUFFPLACE" ), MaxTestee ) );
@@ -789,7 +789,8 @@ class ZCSetStateCommand: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"zc_setstate",
 			"$ZCSETSTATE_HELP_TITLE",
-			"$ZCSETSTATE_HELP_DESC"
+			"$ZCSETSTATE_HELP_DESC",
+			'ZCTooltipSetStateCommand'
 		);
 	}
 
@@ -887,7 +888,7 @@ struct ZCSetPropertyParameterInteger {
 } // of struct ZCSetPropertyParameterInteger {}
 
 struct ZCSetPropertyParameterPointer {
-	Actor value; // [striked] See "ZCConsoleCommand.EPositionParseStatus".
+	Actor value;
 	bool changed;
 
 	void set( in Actor newval ) {
@@ -1043,7 +1044,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		if ( propvalue != "" ) {
 			Actor newptr;
 
-			if ( propvalue == "null" || propvalue == "none" || propvalue == "clear" ) {
+			if ( propvalue == "null" || propvalue == "none" || propvalue == "clear" || propvalue == "-" ) {
 				params.pointers[ pointer_id ].set( NULL );
 			} else {
 				getPlaceTestee( newptr, 0, propvalue );

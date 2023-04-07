@@ -287,8 +287,8 @@ class ZCPanelsStorage {
 						}
     				}
 
-					if ( !found && curloglevel >= LL_Detailed )
-						ZCGlobal.ClearscopeLog( LL_Detailed, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). Class \"" .. LLCOLOR_NORMAL .. neworder[ i ] .. LLCOLOR_DARK .. "\" vanished from the *.cfg." );
+					if ( !found && curloglevel >= LL_Developer )
+						ZCGlobal.ClearscopeLog( LL_Developer, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). Class \"" .. LLCOLOR_NORMAL .. neworder[ i ] .. LLCOLOR_DARK .. "\" vanished from the *.cfg." );
     			} else if ( curclass ) {
 					warningsAmount++;
 					ZCGlobal.ClearscopeLog( LL_Main, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). Class \"" .. LLCOLOR_NORMAL .. neworder[ i ] .. LLCOLOR_DARK .. "\" isn't a Panel." );
@@ -319,7 +319,7 @@ class ZCPanelsStorage {
 
 					// Inserting new panel defined in "*.cfg" if it is not already in the current saved panels order:
 					if ( !panelfound ) {
-						ZCGlobal.DataLog( LL_Detailed, GetClassName() .. "::UpdatePanels(). New infopanel class \"" .. TEXTCOLOR_DARKGREEN .. defaultPanels[ i ].GetClassName() .. LLCOLOR_MAIN .. "\" saved at index " .. i .. "." );
+						ZCGlobal.DataLog( LL_Detailed, LLCOLOR_DARK .. GetClassName() .. "::UpdatePanels(). New infopanel class \"" .. TEXTCOLOR_DARKGREEN .. defaultPanels[ i ].GetClassName() .. LLCOLOR_DARK .. "\" saved at index " .. i .. "." );
 						curPanels.Insert( i, defaultPanels[ i ] );
 
 						if ( --inserteePanelsAmountLeft <= 0 )
@@ -338,7 +338,7 @@ class ZCPanelsStorage {
 			if ( warningsAmount > 0 )
 				ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::UpdatePanels(). It seems like data was corrupted (" .. TEXTCOLOR_FIRE .. warningsAmount .. " warnings\c-). Reinitialization..." );
 			else if ( curloglevel >= LL_Debug )
-				ZCGlobal.ClearscopeLog( LL_Debug, GetClassName() .. "::UpdatePanels(). Panels classes order not defined. First-launch initialization." );
+				ZCGlobal.ClearscopeLog( LL_Developer, GetClassName() .. "::UpdatePanels(). Panels classes order not defined. First-launch initialization." );
 
 			for ( int i = 0; i < defaultPanels.Size(); i++ )
 				curPanels.Push( defaultPanels[ i ] );
@@ -357,6 +357,8 @@ class ZCPanelsStorage {
 
 			panelsstr = panelsstr .. panelnode.panel.GetClassName() .. ",";
 		}
+
+		ZCGlobal.DataLog( LL_Developer, GetClassName() .. "::UpdatePanels(). Amount of saved panels: " .. curPanels.Size() );
 
 		InitSetPanelsorderCVars();
 	} // of void UpdatePanels( bool fromCVar = false ) {}
@@ -388,7 +390,7 @@ class ZCPanelsStorage {
 	} // of void TickSetPanelsorderCVars( void ) {}
 
 
-	String GetPanelsorderFromCVars( void ) {
+	static String GetPanelsorderFromCVars( void ) {
 		String outstr = "";
 
 		for ( int i = 0; i < 10; i++ ) {
@@ -401,7 +403,7 @@ class ZCPanelsStorage {
 		}
 
 		return outstr;
-	}
+	} // of static String GetPanelsorderFromCVars( void ) {}
 
 	void UpdateFont( void ) {
 		int fonttype = -1;
