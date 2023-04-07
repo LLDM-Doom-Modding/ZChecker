@@ -55,7 +55,7 @@ These maps add CCMDs with the "zcev" prefix:
 
 - `zcev map2` or `zcev level2`. Warp to the `Everything_simple` map.
 
-Note: the Everything map may be outdated in the beta versions of the project. It's recommended to use `Everything_simple` instead.
+Note: the Everything map may be outdated in the beta versions of the project, so, if you're using one of them, it's recommended to warp to the `Everything_simple` instead.
 
 
 ## General notes

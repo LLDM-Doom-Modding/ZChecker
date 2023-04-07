@@ -631,7 +631,7 @@ You can find more specific examples in the help pages of all of the commands men
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT	=
 "A map named \"`2Everything`2\" is an universal card-index.\
 Right now there are two maps:\
-\"`2Everything`2\" by StormCatcher.77 requires including \"cc4-tex.wad\" (Community Chest 4 textures) and may be out of date in the beta versions of ZChecker; `~and`x\
+\"`2Everything`2\" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x\
 \"`2Everything_simple`2\", a lightweight but fully functional variant.\n\
 	`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or me, but in most cases I will redirect you to them as well.";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES	=
