@@ -694,8 +694,8 @@ ZCHECKER_TOOLTIP_ZCSUMMON_EXAMPLES =
 \"`Czcsummon z`2*`Cman 4`x\" creates four Zombiemen;\
 \"`Czcsummon $2 15`x\" summons fifteen actors of the class in the second panel;\
 \"`Czcsummon `2*`Ccard`x\" will print a list of all classes ending with \"card\";\
-\"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\
-\"`Czcsummon sta`2*`Cff`2:1`x\" also summons a \"StaffPuff\" `d(by specifying a selection)`x;\
+\"`Czcsummon armo`2-`Cr`x\" summons an Armorer `~(a merchant from Strife)`x;\
+\"`Czcsummon armo`2*`Cr`2:2`x\" also summons an Armorer `d(by selection from \"`xArmor`d\" and \"`xArmo`dre`xr`d\")`x;\
 \"`Czcsummon z`2*`Cman 3 f`x\" or \"`Czcsummon z`2*`Cman 3 friendly`x\" summons three `1friendly`x Zombiemen;\
 \"`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x\" summons `1friendly`x Zombieman and adds it to the `g3`xrd `gpanel position`x;\
 \"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" summons one ShotgunGuy facing away from the player, which will not infight others, has a TID of 4 and a very large health value.";
