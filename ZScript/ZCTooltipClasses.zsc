@@ -101,7 +101,7 @@ class ZCTooltipSetStateCommand: ZCTooltipClass {
 
 class ZCTooltipEvmapCommand: ZCTooltipClass {
 	override String GetTips() {
-		return ZCGlobal.Locz( "TOOLTIP_ZCEV_TIPS" );
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_ZCEV_TIPS" ) );
 	}
 }
 

@@ -59,7 +59,7 @@ ZCHECKER_MAINMENU_ALLOW_CRASH	= "Allow operations that are known to crash the ga
 ZCHECKER_MAINMENU_TWICE_BEHAVIOUR	= "Repeated actor addition handling";
 ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR	= "Behaviour when using \"zcadd\" on an actor which";
 ZCHECKER_MAINMENU_ALREADY_LIST	= "is already present in the information panels list.";
-ZCHECKER_MAINMENU_NO_ZC_HANDLING= "No ZC classes special handling";
+ZCHECKER_MAINMENU_NO_ZC_HANDLING= "Disable ZC classes special handling";
 ZCHECKER_MAINMENU_DO_NOT_ALTER	= "Do not alter handling for the special";
 ZCHECKER_MAINMENU_SPECIAL		= "ZChecker actors and classes.";
 ZCHECKER_MAINMENU_LOG_LEVEL		= "Log level";
@@ -746,7 +746,13 @@ ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES =
 
 
 ZCHECKER_TOOLTIP_ZCEV_TIPS =
-"Help text of the `Czcevg`C CCMD (\"`Czchelp zcevg`C\") has a list of all categories that are presented on the map.";
+"Multicolored markers near to every spawned class are interactive informational actors:\
+	By default ZChecker commands used on them will be redirect to the linked actors. Behaviour may be changed with the \"Disable ZC classes special handling\" setting.\
+	You can press `2+USE`2 on them to recreate dead or disappeared actor they are linked with.\
+	Green color indicates that linked actor is alive, yellow imforms that it is dead. Red color is used for the vanished actors.\
+	Infoactors has different height offsets, which refers to the initial spawn flags of actors they are linked with. `1Highest position`1 (has the highest priority) is for the `1+SPAWNCEILING`1 flag set for the linked actor, `2middle position`2 informs about the `2+NOGRAVITY`2 flag set, and a lowest has no such flags.\
+\
+Help text of the `Czcevg`C CCMD (\"`Czchelp zcevg`C\") has a `glist of all categories`g that are presented on the map.";
 ZCHECKER_TOOLTIP_ZCEVGOTO_TEXT =
 "In general, you may warp to section headers by their `2approximate shortened names`2 (always exactly one word). On collision with actor class name, the last one has the higher priority, so the command will try to teleported you to this actor. To override this and jump to the category anyway, use the sharp character `~(\"`1#`~\")`~ at the beginning of the name.\n\
 All of the categories on the Everything maps. The examples in brackets are not an exhaustive list:\

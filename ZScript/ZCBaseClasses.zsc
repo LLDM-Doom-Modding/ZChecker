@@ -76,7 +76,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 
 class ZCTooltipClass: ZCConsoleClass {
 	const HEADER	= TEXTCOLOR_SAPPHIRE;
-	const NORMAL	= TEXTCOLOR_WHITE;
+	const NORMAL	= LLCOLOR_MAIN;
 	const DARKGRAY	= TEXTCOLOR_DARKGRAY;
 	const COMMAND	= TEXTCOLOR_LIGHTBLUE;
 	const HIGHLIGHT1= TEXTCOLOR_GOLD;
