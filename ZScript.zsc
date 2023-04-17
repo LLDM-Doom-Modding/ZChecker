@@ -58,8 +58,10 @@ class ZCheckerHandler: StaticEventHandler {
 	ZCheckerHandlerDatascopeVariables datascoped;
 
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
-
 	Array<ZCInternalActorNameCell> allActorNames;
+
+	const const_ZCheckerConfigFileName = "zchecker.cfg";
+
 
 	// In current structure it's impossible to avoid unloading pointers to 
 	//actors from memory on level reloading. Found this too late for a 
@@ -85,7 +87,7 @@ class ZCheckerHandler: StaticEventHandler {
 	} // of void UpdateInternalClassnameByField( uint fieldnum ) {}
 
 
-	private bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
+	protected bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
 
 		if ( classname ) {
@@ -100,11 +102,11 @@ class ZCheckerHandler: StaticEventHandler {
 		return !!classname;
 	}
 
-	private void addConsoleSeparator( bool importantFlag = false ) {
+	protected void addConsoleSeparator( bool importantFlag = false ) {
 		zcConsoleHandleClasses.Push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
 	}
 
-	private play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
+	protected play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
 		if ( classname ) {
 			ZCBaseInfoPanelPart newPanelPart = NULL;
 
@@ -125,7 +127,7 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 
-	private void handleConfigFileNewlines( String newlineTypeComment, String replaceeNewlineSeq ) {
+	protected void handleConfigFileNewlines( String newlineTypeComment, String replaceeNewlineSeq ) {
 		ZCGlobal.Log( LL_Debug, "New lines type for file \"ZChecker.cfg\" recognized as " .. newlineTypeComment );
 
 		if ( replaceeNewlineSeq != "\n" )
@@ -143,104 +145,126 @@ class ZCheckerHandler: StaticEventHandler {
 	}
 
 	private void printConfigWarning( String message ) {
-		ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). " .. message .. " at line " .. zcConfigCurLineIndex .. "." );
+		ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseConfigFile(). " .. message .. " at line " .. zcConfigCurLineIndex .. "." );
 		handlerInitSuccess = false;
 	}
 
-	protected void ParseConfigFile( void ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::IncludeConsoleClasses(). Parsing a *.cfg file; creating CCMD handlers and info panel classes..." );
+	protected void ParseConfigFile( int filehandler ) {
+        if ( filehandler == -1 ) {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseConfigFile(). Error: wrong file handler (" .. filehandler .. ")." );
+			handlerInitSuccess = false;
+			return;
+		}
 
-        int zcConfigFileHandler = Wads.FindLump( "zchecker.cfg" );
+        zcConfigFile = Wads.ReadLump( filehandler );
+        Array<String> zcConfigLines;
 
-        if ( zcConfigFileHandler != -1 ) {
-            zcConfigFile = Wads.ReadLump( zcConfigFileHandler );
-            Array<String> zcConfigLines;
+        zcConfigFile.ToLower();
+		ENewlineTypes newlinesType = ZCGlobal.GetTextNewlinesType( zcConfigFile );
 
-            zcConfigFile.ToLower();
-			ENewlineTypes newlinesType = ZCGlobal.GetTextNewlinesType( zcConfigFile );
+		switch ( newlinesType ) {
+			case ZCNL_Unix: handleConfigFileNewlines( "*nix (LF)", "\n" ); break;
+			case ZCNL_DOS: handleConfigFileNewlines( "DOS/Windows (CR/LF)", "\r\n" ); break;
+			case ZCNL_Mac: handleConfigFileNewlines( "MacOS (CR)", "\r" ); break;
+			case ZCNL_DOSReversed: handleConfigFileNewlines( "DOS reversed (LF/CR)", "\n\r" ); break;
+			default:
+				ZCGlobal.Log( LL_Debug, TEXTCOLOR_YELLOW .. "Cannot recognize new lines type, using *nix" .. LLCOLOR_DEBUG .. "." );
+				newlinesType = ZCNL_Unix;
+				break;
+		}
 
-			switch ( newlinesType ) {
-				case ZCNL_Unix: handleConfigFileNewlines( "*nix (LF)", "\n" ); break;
-				case ZCNL_DOS: handleConfigFileNewlines( "DOS/Windows (CR/LF)", "\r\n" ); break;
-				case ZCNL_Mac: handleConfigFileNewlines( "MacOS (CR)", "\r" ); break;
-				case ZCNL_DOSReversed: handleConfigFileNewlines( "DOS reversed (LF/CR)", "\n\r" ); break;
-				default:
-					ZCGlobal.Log( LL_Debug, TEXTCOLOR_YELLOW .. "Cannot recognize new lines type, using *nix" .. LLCOLOR_DEBUG .. "." );
-					newlinesType = ZCNL_Unix;
-					break;
-			}
-
-			zcConfigFile.Split( zcConfigLines, "\n" );
+		zcConfigFile.Split( zcConfigLines, "\n" );
 
 
-			int zcConfigLinesSize = zcConfigLines.Size();
+		int zcConfigLinesSize = zcConfigLines.Size();
 
-			// Fixing a non-POSIX end-of-file marker:
-			if ( zcConfigLinesSize ) {
-				String lastline = zcConfigLines[ zcConfigLinesSize - 1 ];
+		// Fixing a non-POSIX end-of-file marker:
+		if ( zcConfigLinesSize ) {
+			String lastline = zcConfigLines[ zcConfigLinesSize - 1 ];
 
-				if ( lastline.CharCodeAt( lastline.Length() - 1 ) == 0 )
-					zcConfigLines[ zcConfigLinesSize - 1 ] = lastline.Left( lastline.Length() - 1 );
-			}
+			if ( lastline.CharCodeAt( lastline.Length() - 1 ) == 0 )
+				zcConfigLines[ zcConfigLinesSize - 1 ] = lastline.Left( lastline.Length() - 1 );
+		}
 
-			zcConfigCurLineIndex = 1;
+		zcConfigCurLineIndex = 1;
 
-			for ( int i = 0; i < zcConfigLinesSize; i++, zcConfigCurLineIndex++ ) {
-				String curLine = zcConfigLines[ i ];
+		for ( int i = 0; i < zcConfigLinesSize; i++, zcConfigCurLineIndex++ ) {
+			String curLine = zcConfigLines[ i ];
 
-				// Comments and extra spaces delete:
-				int IndexOfCommentStart = curLine.IndexOf( "#" );
-				if ( IndexOfCommentStart != -1 )
-					curLine.Truncate( IndexOfCommentStart );
+			// Comments and extra spaces delete:
+			int IndexOfCommentStart = curLine.IndexOf( "#" );
+			if ( IndexOfCommentStart != -1 )
+				curLine.Truncate( IndexOfCommentStart );
 
-				curLine = ZCGlobal.TruncateStringBySpaces( curLine );
+			curLine = ZCGlobal.TruncateStringBySpaces( curLine );
 
-				// Try to unparse current line if it isn't empty or remove it elsewere:
-				if ( curLine != "" ) {
-					Array<String> curLineWords;
+			// Try to unparse current line if it isn't empty or remove it elsewere:
+			if ( curLine != "" ) {
+				Array<String> curLineWords;
 
-					curLineWords.Clear();
-					curLine.Replace( "\t", " " );
-					curLine.Split( curLineWords, " ", TOK_SKIPEMPTY );
+				curLineWords.Clear();
+				curLine.Replace( "\t", " " );
+				curLine.Split( curLineWords, " ", TOK_SKIPEMPTY );
 
-					int argsamount = ( curLineWords.Size() - 1 );
+				int argsamount = ( curLineWords.Size() - 1 );
 
-					if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
-						if ( argsamount == 1 ) {
-							if ( !addConsoleClass( curLineWords[ 1 ], false ) )
-								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
-						} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
-							if ( !addConsoleClass( curLineWords[ 1 ], true ) )
-								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
-						} else {
-							checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
-						}
-
-					} else if ( curLineWords[ 0 ] == "ccmdsep" || curLineWords[ 0 ] == "addccmdsep" || curLineWords[ 0 ] == "ccmdseparator" || curLineWords[ 0 ] == "addccmdseparator" ) {
-						addConsoleSeparator( argsamount == 1 && curLineWords[ 1 ] == "important" );
-
-					} else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
-						if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
-							if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
-								printConfigWarning( "Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"" );
-
+				if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
+					if ( argsamount == 1 ) {
+						if ( !addConsoleClass( curLineWords[ 1 ], false ) )
+							printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
+					} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
+						if ( !addConsoleClass( curLineWords[ 1 ], true ) )
+							printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
 					} else {
-						printConfigWarning( "Unknown keyword \"" .. curLineWords[ 0 ] .. "\"" );
+						checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
 					}
 
+				} else if ( curLineWords[ 0 ] == "ccmdsep" || curLineWords[ 0 ] == "addccmdsep" || curLineWords[ 0 ] == "ccmdseparator" || curLineWords[ 0 ] == "addccmdseparator" ) {
+					addConsoleSeparator( argsamount == 1 && curLineWords[ 1 ] == "important" );
+
+				} else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
+					if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
+						if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
+							printConfigWarning( "Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"" );
+
 				} else {
-					zcConfigLines.Delete( i, 1 );
-					zcConfigLinesSize--;
-					i--;
-				} // of else of if ( curLine != "" ) {}
+					printConfigWarning( "Unknown keyword \"" .. curLineWords[ 0 ] .. "\"" );
+				}
 
-			} // of for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {}
-		} else {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Cannot find file \"ZChecker.cfg\"." );
+			} else {
+				zcConfigLines.Delete( i, 1 );
+				zcConfigLinesSize--;
+				i--;
+			} // of else of if ( curLine != "" ) {}
+
+		} // of for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {}
+
+	} // of protected void ParseConfigFile( int filehandler ) {}
+
+	protected void ParseAllConfigFiles( void ) {
+		int curConfigFileHandler = 0;
+		int configFilesAmount = 0;
+
+		do {
+	        curConfigFileHandler = Wads.FindLump( const_ZCheckerConfigFileName, curConfigFileHandler );
+
+			if ( curConfigFileHandler != -1 ) {
+				configFilesAmount++;
+				ZCGlobal.Log( LL_Debug, String.Format( "%s::ParseAllConfigFiles(). Parsing file #%i named \"%s\", handler %i...", GetClassName(), configFilesAmount, const_ZCheckerConfigFileName, curConfigFileHandler ) );
+				ParseConfigFile( curConfigFileHandler );
+
+				curConfigFileHandler++; // To prevent infinite loop in the "Wads.FindLump()".
+			}
+
+		} while ( curConfigFileHandler != -1 );
+
+		if ( configFilesAmount == 0 ) {
 			handlerInitSuccess = false;
-		} // of else of if ( zcConfigFileHandler != -1 ) {}
-
-	} // of protected void ParseConfigFile( void ) {}
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. ":ParseAllConfigFiles(). Cannot find file \"" .. const_ZCheckerConfigFileName .. "\"." );
+		} else {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. ":ParseAllConfigFiles(). Parsed " .. configFilesAmount .. " configuration files in total." );
+		}
+	} // of protected void ParseAllConfigFiles( void ) {}
 
 	protected void InitAllActorNames( void ) {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::InitAllActorNames(). Creating storage cells for actor names..." );
@@ -287,7 +311,7 @@ class ZCheckerHandler: StaticEventHandler {
 		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
 		zcCCMDInfo.handler = self;
 
-		ParseConfigFile();
+		ParseAllConfigFiles();
 		InitAllActorNames();
 
 		ZCGlobal.Log( LL_Detailed, String.Format( ( handlerInitSuccess? ZCGlobal.Loc( "GREETINGS_SUCCESS" ) : ZCGlobal.Loc( "GREETINGS_WARNINGS" ) ),

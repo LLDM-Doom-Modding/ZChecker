@@ -54,11 +54,6 @@ enum EZCheckerInfoActorType {
 	IAT_StateProvider
 };
 
-const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
-const CCMDCOLOR_TITLEARGS = TEXTCOLOR_GREEN;
-const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
-const CCMDCOLOR_DESC = "\c-";
-
 
 // Internal constants of limited use in API:
 enum ENewlineTypes {

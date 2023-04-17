@@ -33,7 +33,7 @@ class ZCConsoleClass abstract {
 	// A wrapper which unites anything related to quick help to the one nice
 	//string. In most cases already overrided in inherited default classes.
 	virtual String GetHelpString( void ) {
-		return TEXTCOLOR_RED .. "Wrong inheriting (\"" .. GetClassName() .. "::GetHelpString()\" isn't overrided).";
+		return TEXTCOLOR_RED .. "Wrong inheritance (\"" .. GetClassName() .. "::GetHelpString()\" isn't overrided).";
 	}
 } // of class ZCConsoleClass abstract {}
 
@@ -56,6 +56,7 @@ class ZCConsoleSeparator: ZCConsoleClass {
 			if ( titleLen > 70 ) {
 				helpCacheString = HEADER .. " - - " .. title;
 			} else {
+				//String sepDecor = HEADER .. " - \\ | / - \\ | / - \\ | / - \\ | /";
 				String sepDecor = HEADER .. " - - - - - - - - - - - - - - -";
 
 				if ( titleLen != 0 ) {
@@ -94,7 +95,7 @@ class ZCTooltipClass: ZCConsoleClass {
 	//  "`2", "`g": secondary (green) highlighting;
 	//  "`3", "`d", "`~": shadowing (dark text);
 	//  "`a", "`h`": header highlighting.
-	String HighlightText( String origstr ) {
+	static String HighlightText( String origstr ) {
 		String outstr = "";
 		int prevCharIndexStart = 0;
 		int curCharIndex;
@@ -156,10 +157,10 @@ class ZCTooltipClass: ZCConsoleClass {
 		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() - 1 );
 
 		return outstr;
-	} // of String HighlightText( String origstr ) {}
+	} // of static String HighlightText( String origstr ) {}
 
 	// Returns a string with tabs replaced to the list prefixes.
-	String IndentTabList( String str ) {
+	static String IndentTabList( String str ) {
 		if ( str.CharCodeAt( 0 ) == 0x09 )
 			str = LISTPREFIX .. str;
 
@@ -169,7 +170,7 @@ class ZCTooltipClass: ZCConsoleClass {
 	}
 
 	// Returns a string with tabs replaced to the spaces.
-	String IndentTabs( String str ) {
+	static String IndentTabs( String str ) {
 		if ( str.CharCodeAt( 0 ) == 0x09 )
 			str = "  " .. str;
 
@@ -179,7 +180,7 @@ class ZCTooltipClass: ZCConsoleClass {
 	}
 
 	// Returns a string with an indentation after newlines.
-	String IndentNewlines( String str ) {
+	static String IndentNewlines( String str ) {
 		if ( str.CharCodeAt( 0 ) != " " )
 			str = "  " .. str;
 
@@ -248,14 +249,23 @@ struct ZCheckerCCMDInterfaceData {
 
 // Main CCMD base class.
 class ZCConsoleCommand: ZCConsoleClass abstract play {
+	const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
+	const CCMDCOLOR_TITLEARGS = TEXTCOLOR_GREEN;
+	const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
+	const CCMDCOLOR_DESC = "\c-";
+
 	enum EConsoleCommandFlags {
 		// <enum EConsoleCommandFlags {}>.
 		CCF_Unreleased			= 0x0004,	// Help will be colored in dark gray.
 
 		CCF_NonblockingFailure	= 0x0008,	// Testing of the subsequent ZChecker CCMDs will not stop when "HandleArguments()" \
 		CCF_NonblockingSuccess	= 0x0010,	//for this netevent returns false for "Failure" and true for "Success".
+
+		CCF_NoHelpDescColoring	= 0x0020,
+		CCF_TipHelpDescColoring	= 0x0040,
 	};
 
+	// Will be moved to the separated util method in the future.
 	enum EClassnameParseStatus {
 		CPS_Default = 0,
 		CPS_Variable,
@@ -507,7 +517,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	// A wrapper which unites aliases and description to one nice string:
 	override String GetHelpString( void ) {
 		// Attempt to speed up help strings processing:
-		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
+		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
 
 			Array<String> aliases;
@@ -538,7 +548,39 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ i ] .. CCMDCOLOR_DESC .. ",\n";
 
 			// Last alias and a description:
-			helpCacheString = helpCacheString .. ccmdColorArgs .. aliases[ aliasesSize - 1 ] .. CCMDCOLOR_DESC .. ":\n  " .. ( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " .. CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC ) .. ccmdInterfaceData.helpDesc;
+			String ccmdColorDesc = ( unreleased? CCMDCOLOR_TITLEWIP : CCMDCOLOR_DESC );
+
+			helpCacheString.AppendFormat( "%s%s" .. CCMDCOLOR_DESC .. ":\n  %s%s", 
+										ccmdColorArgs, aliases[ aliasesSize - 1 ],
+										( unreleased? TEXTCOLOR_ORANGE .. "[WIP] " : "" ), ccmdColorDesc );
+
+			String description = ccmdInterfaceData.helpDesc;
+
+			if ( !( zcFlags & CCF_NoHelpDescColoring ) ) {
+				description.Replace( "|", TEXTCOLOR_BRICK .. "|" .. ccmdColorDesc );
+				description.Replace( ",", TEXTCOLOR_DARKGRAY .. "," .. ccmdColorDesc );
+
+				int nextDescParamPos;
+
+				while ( -1 != ( nextDescParamPos = description.IndexOf( "<", nextDescParamPos ) ) ) {
+					description = String.Format( "%s" .. TEXTCOLOR_TEAL .. "<" .. "%s",
+									description.Left( nextDescParamPos ),
+									description.Mid( nextDescParamPos + 1 ) );
+
+					nextDescParamPos = description.IndexOf( ">", nextDescParamPos + 1 );
+
+					if ( nextDescParamPos != -1 ) {
+						description = String.Format( "%s" .. ">" .. ccmdColorDesc .. "%s",
+										description.Left( nextDescParamPos ),
+										description.Mid( nextDescParamPos + 1 ) );
+					}
+				}
+
+			} else if ( zcFlags & CCF_TipHelpDescColoring ) {
+				description = ZCTooltipClass.HighlightText( description );
+			}
+
+			helpCacheString = helpCacheString .. description;
 
 			String lastChar = helpCacheString.CharAt( helpCacheString.Length() - 1 );
 
@@ -547,7 +589,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 
 		return helpCacheString;
-	} // of final override String GetHelpString( void ) {}
+	} // of override String GetHelpString( void ) {}
 
 
 	// Extremely long auxiliary method which tries to parse an arg string as:
