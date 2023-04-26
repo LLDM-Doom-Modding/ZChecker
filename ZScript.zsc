@@ -329,7 +329,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		// Updating info actors type. Usually it's better not to cross the 
 		//ui, data and play scopes in one method...
-		if ( curTestee is "StateProvider" && PlayerPawn( Inventory( curTestee ).owner ) ) {
+		if ( curTestee is "StateProvider" && !( curTestee is "CustomInventory" ) && PlayerPawn( Inventory( curTestee ).owner ) ) {
 			Testee[ fieldindex ].mo = curTestee = PlayerPawn( Inventory( curTestee ).owner ).player.ReadyWeapon;
 			Testee[ fieldindex ].actorType = IAT_StateProvider;
 		} else {
