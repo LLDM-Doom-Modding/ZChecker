@@ -137,12 +137,12 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		addCategoryNode( "hm,mh,mhuge", "hugem,hmon,monh,monsh,monstersh", S_MonstersHuge );
 		addCategoryNode( "m,mstr", "mon", S_Monsters );
 
-		addCategoryNode( "iw,wp,arms,guns", "iweap,weap", S_Weapons );
+		addCategoryNode( "iw,wp,arms,guns,items", "iweap,weap", S_Weapons );
 		addCategoryNode( "ia,ammo", "iammo" );
 		addCategoryNode( ashort: "ih,arm,health,hp,iarm" );
 		addCategoryNode( "ip,pwup,pwups", "ipow,powerup,pwrup" );
 		addCategoryNode( "ik", "ikey,key" );
-		addCategoryNode( "io", "ioth,othi" );
+		addCategoryNode( "io", "ioth,othi,otheri" );
 
 		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
 		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
@@ -156,7 +156,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 
 		addCategoryNode( "mis,miss,msl,misl,prj,pj", "missil,proj" );
 		addCategoryNode( "", "pl" );
-		addCategoryNode( "oth", "spec,other" );
+		addCategoryNode( "oth,other,spec,special", "speca,speciala,othera,actorss,actorso" );
 	}
 
 	override bool HandleArguments() {

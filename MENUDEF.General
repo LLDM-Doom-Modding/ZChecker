@@ -120,7 +120,10 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	StaticText "$ZCHECKER_EVMAPMENUDIV_EVCCMDS", 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev recreate", 0, 1
+	SafeCommand "$ZCHECKER_EVMAPMENU_CHANGEMAP1", "map Everything", "$ZCHECKER_EVMAPMENU_CHANGEMAP1ASK"
+	SafeCommand "$ZCHECKER_EVMAPMENU_CHANGEMAP2", "map Everything_simple", "$ZCHECKER_EVMAPMENU_CHANGEMAP2ASK"
 	Command "$ZCHECKER_EVMAPMENU_WARPSTART", "zcev goto #start", 0, 1
+	StaticText " "
 	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPMONS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_WARPMONSTERS", "zcev goto #mon", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPLMONS", "zcev goto #lmon", 0, 1
@@ -146,6 +149,10 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Command "$ZCHECKER_EVMAPMENU_WARPMISSILES", "zcev goto #proj", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPPLAYERS", "zcev goto #pl", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPOTHER", "zcev goto #spec", 0, 1
+	StaticText " "
+	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPSTART", "zcev goto #s", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev reload", 0, 1
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
