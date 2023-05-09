@@ -611,7 +611,7 @@ ZCHECKER_ZCIF_TRACEPREFIX			= "\csExternal interface\c~. \c-";
 
 // General tooltips:
 
-ZCHECKER_TOOLTIP_ACTORMASKS_TIPS	=
+ZCHECKER_TOOLTIP_ACTORMASKS_TIPS =
 "For almost all commands that take actor name as argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\
 	'`2*`2' for any number of any characters, including zero; `dand`x\
 	'`2-`2' for any number of characters greater than 0.\
@@ -632,13 +632,35 @@ ZCHECKER_TOOLTIP_ACTORMASKS_EXAMPLES =
 You can find more specific examples in the help pages of all of the commands mentioned.";
 
 
-ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT	=
+ZCHECKER_TOOLTIP_CCMDRULES_HEADER =
+"About general console commands rules";
+ZCHECKER_TOOLTIP_CCMDRULES_TIPS =
+"Most of the ZChecker console commands which works with only one actor have the same first argument: it's a pointer to (position of) the source actor. The most notable exceptions are commands of the \"`Czcadd`C\" family, which have special arguments handling.\
+Argument `g<pos>`g can take the following values and keywords:\
+	`~\"`C1`~\"`x..`~\"`C3`~\" (up to the max amount of the infopanels).`x Refers to previously saved actors in the informational panels;\
+	`~\"`Clt`~\"`x or `~\"`Clinetarget`~\".`x Takes the first tangible actor from the player's line of sight;\
+	`~\"`Cs`~\"`x or `~\"`Cself`~\".`x Specifies a caller player itself;\
+	`~\"`Ccam`~\"`x or `~\"`Ccamera`~\".`x Specifies a current player's camera.\
+By default (if this argument not provided) a `Clinetarget`C will be used.";
+ZCHECKER_TOOLTIP_CCMDRULES_EXAMPLES =
+"\"`Czcgive lt clip 4`x\" gives 4 clips to the `1l`2ine`1t`2arget`2;\
+\"`Czcgive clip 4`x\" does same as the CCMD above `~(default argument value is `2linetarget`~)`x;\
+\"`Czcgive 1 clip 4`x\" gives 4 clips to the actor in the `11`xst informational panel;\
+\"`Czcgive self clip 4`x\" `~or`x \"`Czcgive s clip 4`x\" gives 4 clips to `1s`2elf`x `~(to the caller player)`~;\
+\"`Czcsetflag 1 noblockmap`C\" toggles the flag for the actor in the `11`xst informational panel;\
+\"`Czcsetflag cam noblockmap`C\" toggles the flag of the caller player camera actor.\
+You can find more specific examples in the help pages of almost all of the commands supporting this format.";
+
+
+ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER =
+"About \"Everything\" maps";
+ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT =
 "A map named \"`2Everything`2\" is an universal card-index.\
 Right now there are two maps:\
 \"`2Everything`2\" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x\
 \"`2Everything_simple`2\", a lightweight but fully functional variant.\n\
 	`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or me, but in most cases I will redirect you to them as well.";
-ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES	=
+ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES =
 "\"`Cmap everything_simple`C\" changes the level to the Everything map (simplified version);\
 \"`Czcev map2`x\" does pretty much the same.";
 
@@ -753,7 +775,7 @@ ZCHECKER_TOOLTIP_ZCEV_TIPS =
 "Multicolored markers near to every spawned class are interactive informational actors:\
 	By default ZChecker commands used on them will be redirect to the linked actors. Behaviour may be changed with the \"Disable ZC classes special handling\" setting.\
 	You can press `2+USE`2 on them to recreate dead or disappeared actor they are linked with.\
-	Green color indicates that linked actor is alive, yellow imforms that it is dead. Red color is used for the vanished actors.\
+	\cd[Green color]\c- indicates that linked actor is alive, \ci[yellow]\c- imforms that it is dead. \cg[Red color]\c- is used for the vanished actors.\
 	Infoactors has different height offsets, which refers to the initial spawn flags of actors they are linked with. `1Highest position`1 (has the highest priority) is for the `1+SPAWNCEILING`1 flag set for the linked actor, `2middle position`2 informs about the `2+NOGRAVITY`2 flag set, and a lowest has no such flags.\
 \
 Help text of the `Czcevg`C CCMD (\"`Czchelp zcevg`C\") has a `glist of all categories`g that are presented on the map.";
@@ -776,8 +798,8 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES =
 \"`Czcevg *armor:4`C\" teleports player next to the `2BlueArmor`2;\
 \"`Czcevg $last`C\" teleports player next to the last actor class added to infopanels (if it exists on the map);\
 \"`Czcevg #monsters`C\" or \"`Czcevg #m`C\" warps player to the header of the category \"Monsters\";\
-\"`Czcevg mons\" does the same if the actor class \"`2mons`2\" not defined, else teleports to it;\
-\"`Czcevg #ammo\" warps player to the header of the category \"Ammo\". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).";
+\"`Czcevg mons`C\" does the same if the actor class \"`2mons`2\" not defined, else teleports to it;\
+\"`Czcevg #ammo`C\" warps player to the header of the category \"Ammo\". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).";
 
 
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS =

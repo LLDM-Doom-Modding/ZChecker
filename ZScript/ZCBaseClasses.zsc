@@ -192,6 +192,9 @@ class ZCTooltipClass: ZCConsoleClass {
 
 
 	// Main virtual methods:
+	virtual String GetTooltipHeader( void ) {
+		return "";
+	}
 	virtual String GetPlaintext( void ) {
 		return "";
 	}
@@ -206,11 +209,25 @@ class ZCTooltipClass: ZCConsoleClass {
 	override String GetHelpString( void ) {
 		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";
-			String addtext = HighlightText( GetPlaintext() );
 
-			if ( addtext != "" )
-				helpCacheString = "\n" .. HEADER .. "> " .. NORMAL .. addtext;
+			// A header:
+			String addtext = GetTooltipHeader();
+			bool headerexists = ( addtext != "" );
 
+			if ( headerexists )
+				helpCacheString = "\n" .. HEADER .. " === " .. addtext .. " === " .. "\n";
+
+			// A plaintext:
+			addtext = HighlightText( GetPlaintext() );
+
+			if ( addtext != "" ) {
+				if ( headerexists )
+					helpCacheString = helpCacheString .. "\n" .. NORMAL .. addtext;
+				else
+					helpCacheString = helpCacheString .. "\n" .. HEADER .. "> " .. NORMAL .. addtext;
+			}
+
+			// Some tips:
 			addtext = HighlightText( GetTips() );
 
 			if ( addtext != "" ) {
@@ -219,6 +236,7 @@ class ZCTooltipClass: ZCConsoleClass {
 								ZCGlobal.Locz( "CCMDSHELP_TIPS" ), IndentNewlines( addtext ) );
 			}
 
+			// Examples:
 			addtext = HighlightText( GetExamples() );
 
 			if ( addtext != "" ) {
@@ -255,7 +273,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	const CCMDCOLOR_DESC = "\c-";
 
 	enum EConsoleCommandFlags {
-		// <enum EConsoleCommandFlags {}>.
+		// <enum EConsoleClassFlags {}>.
 		CCF_Unreleased			= 0x0004,	// Help will be colored in dark gray.
 
 		CCF_NonblockingFailure	= 0x0008,	// Testing of the subsequent ZChecker CCMDs will not stop when "HandleArguments()" \
@@ -287,7 +305,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	// Main internal interface. Parsed arguments etc. are stored here.
 	ZCheckerCCMDInfo ccmd;
 
-	// External interface. ZChecker handler works in general only with this structure:
+	// External interface (see "SetupCCMDInterface()"). ZChecker handler works in general only with this structure:
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
@@ -302,7 +320,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		}
 	} // of protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltip = NULL ) {}
 
-	// Call "SetupCCMDInterface()" here:
+	// Call "SetupCCMDInterface()" from here:
 	virtual void InitCCMD( void ) /*abstract*/ {
 		/* SetupCCMDInterface(); */
 	}
@@ -957,7 +975,7 @@ class ZCBaseInfoPanelPart abstract {
 	String optionCVarName;
 	String optionLabel;
 	String optionSubmenuName;
-	String optionLabelExtraHotkeys; // Automatically picked up only a first character in localized string.
+	String optionLabelExtraHotkeys; // Automatically will be picked up only a first character from localized string.
 
 	protected int curSubmenuItemIndex;
 	protected bool playScoped;

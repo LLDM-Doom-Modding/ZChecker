@@ -15,7 +15,22 @@ class ZCTooltipGeneralActorMasks: ZCTooltipClass {
 	}
 }
 
+class ZCTooltipGeneralCCMDRules: ZCTooltipClass {
+	override String GetTooltipHeader() {
+		return ZCGlobal.Locz( "TOOLTIP_CCMDRULES_HEADER" );
+	}
+	override String GetTips() {
+		return IndentTabList( ZCGlobal.Locz( "TOOLTIP_CCMDRULES_TIPS" ) );
+	}
+	override String GetExamples() {
+		return ZCGlobal.Locz( "TOOLTIP_CCMDRULES_EXAMPLES" );
+	}
+}
+
 class ZCTooltipGeneralEverythingMap: ZCTooltipClass {
+	override String GetTooltipHeader() {
+		return ZCGlobal.Locz( "TOOLTIP_EVERYTHINGMAP_HEADER" );
+	}
 	override String GetPlaintext() {
 		return IndentTabs( ZCGlobal.Locz( "TOOLTIP_EVERYTHINGMAP_TEXT" ) );
 	}
