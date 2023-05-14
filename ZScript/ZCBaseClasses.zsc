@@ -256,8 +256,10 @@ struct ZCheckerCCMDInterfaceData {
 	// Linked netevent command name (see KEYCONF):
 	String neteventName;
 
-	// Aliases separated by a semicolon:
+	// Header aliases separated by a semicolon ("zcadd [weap[on]|self|force] [<panel>]"):
 	String helpHeader;
+	// Internal help aliases ("zcadd;zcaddweap;zcaddself;zcaddforce"):
+	Array<String> helpInternalAliases;
 	// Usage quick help (command description):
 	String helpDesc;
 
@@ -274,13 +276,14 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	enum EConsoleCommandFlags {
 		// <enum EConsoleClassFlags {}>.
-		CCF_Unreleased			= 0x0004,	// Help will be colored in dark gray.
+		CCF_Unreleased			= 0x0010,	// Help will be colored in dark gray.
+		CCF_HelpArgOverride		= 0x0020,	// "zc<command> help" will not be translated automatically to the "zchelp <command>" (see "ZCheckerCCMDInfo").
 
-		CCF_NonblockingFailure	= 0x0008,	// Testing of the subsequent ZChecker CCMDs will not stop when "HandleArguments()" \
-		CCF_NonblockingSuccess	= 0x0010,	//for this netevent returns false for "Failure" and true for "Success".
+		CCF_NonblockingFailure	= 0x0040,	// Testing of the subsequent ZChecker CCMDs will not stop when "HandleArguments()" \
+		CCF_NonblockingSuccess	= 0x0080,	//for this netevent returns false for "Failure" and true for "Success".
 
-		CCF_NoHelpDescColoring	= 0x0020,
-		CCF_TipHelpDescColoring	= 0x0040,
+		CCF_NoHelpDescColoring	= 0x0100,
+		CCF_TipHelpDescColoring	= 0x0200,
 	};
 
 	// Will be moved to the separated util method in the future.
@@ -309,10 +312,13 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	ZCheckerCCMDInterfaceData ccmdInterfaceData;
 
 
-	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltipClass = NULL ) {
+	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltipClass = NULL, String helpaliases = "" ) {
 		ccmdInterfaceData.neteventName = neteventname;
 		ccmdInterfaceData.helpHeader = ZCGlobal.FreeLocalize( helpheader );
 		ccmdInterfaceData.helpDesc = ZCGlobal.FreeLocalize( helpdesc );
+		helpaliases.Replace( " ", "" );
+		helpaliases.Replace( ",", ";" );
+		helpaliases.Split( ccmdInterfaceData.helpInternalAliases, ";", TOK_SKIPEMPTY );
 
 		if ( tooltipClass ) {
 			ccmdInterfaceData.helpTooltip = ZCTooltipClass( new( tooltipClass ) );
@@ -345,12 +351,48 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::OnLoad(). Missed " .. whatmissed .. " in the " .. TEXTCOLOR_WHITE .. "InitCCMD()" .. LLCOLOR_EMERGENCY .. " overload." );
 	}
 
+	private void splitAliasesData( void ) {
+		Array<String> aliases;
+		aliases.Clear();
+
+		ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
+
+		for ( int i = 0; i < aliases.Size(); i++ ) {
+			String curalias = aliases[ i ];
+			int firstSpaceIndex = curalias.IndexOf( " " );
+
+			if ( firstSpaceIndex >= 0 )
+				curalias.Truncate( firstSpaceIndex );
+
+			if ( curalias.Left( 2 ) ~== "zc" )
+				curalias = curalias.Mid( 2, curalias.Length() - 1 );
+
+			if ( curalias != "" ) {
+				curalias.ToLower();
+
+				// Filtering out non-unique aliases:
+				bool isUnique = true;
+
+				for ( int j = 0; j < ccmdInterfaceData.helpInternalAliases.Size(); j++ ) {
+					if ( ccmdInterfaceData.helpInternalAliases[ j ] == curalias ) {
+						isUnique = false;
+						break;
+					}
+				}
+
+				if ( isUnique )
+					ccmdInterfaceData.helpInternalAliases.Push( curalias );
+			}
+		} // of for ( int j = 0; j < aliases.Size(); j++ ) {}
+	} // of private void splitAliasesData( void ) {}
+
 	final override void OnLoad( void ) {
 		Super.OnLoad();
 
 		ccmdInterfaceData.neteventName = "-";
 		ccmdInterfaceData.helpHeader = "";
 		ccmdInterfaceData.helpDesc = "";
+		ccmdInterfaceData.helpInternalAliases.Clear();
 		ccmdInterfaceData.helpTooltip = NULL;
 
 		InitCCMD();
@@ -361,6 +403,18 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		if ( ccmdInterfaceData.helpHeader == "" ) {
 			printInitMissedWarning( "help header" );
 			ccmdInterfaceData.helpHeader = TEXTCOLOR_RED .. GetClassName() .. "::InitCCMD() usage example: \"zcAlias <arg>;zcAlias2;zc-alias [<arg1>] [<arg2>]\"\c-";
+		}
+
+		if ( ccmdInterfaceData.helpInternalAliases.Size() == 0 )
+			splitAliasesData();
+
+		if ( ZCGlobal.GetLogLevel() >= LL_APIMessage ) {
+			String devstr = String.Format( LLCOLOR_DARK .. "Help aliases for the " .. LLCOLOR_MAIN .. "%-24s" .. LLCOLOR_DARK .. ":" .. LLCOLOR_MAIN, GetClassName() );
+
+			for ( int i = 0; i < ccmdInterfaceData.helpInternalAliases.Size(); i++ )
+				devstr = devstr .. " \"" .. TEXTCOLOR_TEAL .. ccmdInterfaceData.helpInternalAliases[ i ] .. LLCOLOR_MAIN .. "\"";
+
+			ZCGlobal.ClearscopeLog( LL_APIMessage | LL_NoDot, devstr );
 		}
 
 		if ( ccmdInterfaceData.helpDesc == "" ) {
@@ -374,65 +428,12 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return ( place >= 0 && place < MaxTestee );
 	}
 
-	// Returns "true" is string is an integer; "converted" is a pointer:
 	protected clearscope bool str2int_Ptr( in String str, out int converted, bool usesign = false ) {
-		bool isInteger = false;
-
-		if ( str.Length() ) {
-			bool isSigned = false;
-
-			int firstChar = str.CharCodeAt( 0 );
-
-			if ( firstChar == 0x2D /* '-' */ && usesign ) {
-				isSigned = true;
-				str = str.Mid( 1, str.Length() - 1 );
-				firstChar = str.CharCodeAt( 0 );
-			}
-
-			int tempConverted = str.ToInt();
-
-			if ( ( firstChar >= 0x31 && firstChar <= 0x39 ) || ( firstChar == 0x30 && str.Length() == 1 ) ) {
-				isInteger = ( usesign || !isSigned );
-				converted = ( isSigned? -tempConverted : tempConverted );
-			}
-		}
-
-		return isInteger;
+		return ZCGlobal.str2int_Ptr( str, converted, usesign );
 	}
 
-	// Returns "true" is string is a float-value; "converted" is a pointer:
 	protected clearscope bool str2double_Ptr( in String str, out double converted ) {
-		bool isDouble = false;
-
-		if ( str.Length() ) {
-			bool isSigned = false;
-
-			int firstChar = str.CharCodeAt( 0 );
-
-			if ( firstChar == 0x2D /* '-' */ ) {
-				isSigned = true;
-				str = str.Mid( 1, str.Length() - 1 );
-				firstChar = str.CharCodeAt( 0 );
-			}
-
-			double tempConverted = str.ToDouble();
-			int tempStrlen = str.Length();
-
-			// Removing leading zeros:
-			while ( firstChar == 0x30 && tempStrlen > 1 ) {
-				tempStrlen--;
-				str = str.Mid( 1, tempStrlen );
-				firstChar = str.CharCodeAt( 0 );
-			}
-
-			// Treat as a float-point digit if first char is '0'..'9' or '.':
-			if ( ( firstChar >= 0x30 && firstChar <= 0x39 ) || ( firstChar == 0x2E /* '.' */ ) ) {
-				isDouble = true;
-				converted = ( isSigned? -tempConverted : tempConverted );
-			}
-		}
-
-		return isDouble;
+		return ZCGlobal.str2double_Ptr( str, converted );
 	}
 
 	// Returns a linetarget actor (if one exists):
@@ -463,7 +464,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			}
 
 		} else if ( !quiet ) {
-			ZCGlobal.Log( LL_Normal, ZCGlobal.Loc( "GETACTOR_LTNOACTORS" ) );
+			ZCGlobal.Log( LL_Normal, "$GETACTOR_LTNOACTORS" );
 		}
 
 		return outActor;

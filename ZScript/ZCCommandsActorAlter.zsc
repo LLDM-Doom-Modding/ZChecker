@@ -144,7 +144,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			"zc_actoraction",
 			"$ZCACT_HELP_TITLE",
 			"$ZCACT_HELP_DESC",
-			'ZCTooltipActorActionCommand'
+			'ZCTooltipActorActionCommand',
+			"act; action"
 		);
 	}
 
@@ -620,7 +621,8 @@ class ZCCopyPasteClass_dummy: ZCConsoleCommand {
 		SetupCCMDInterface(
 			"",
 			"$ZCCOPYPASTE_HELP_TITLE",
-			"$ZCCOPYPASTE_HELP_DESC"
+			"$ZCCOPYPASTE_HELP_DESC",
+			helpaliases: "copy, copyclass, paste, pasteclass"
 		);
 	}
 }

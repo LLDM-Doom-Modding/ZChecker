@@ -412,8 +412,8 @@ ZCHECKER_ZCHELP_HEADERCOMMONCCMDS	= "\cjAvailable commands, commonly used\c-:";
 ZCHECKER_ZCHELP_HEADERALLCCMDS		= "\cjAvailable commands, complete list\c-:";
 
 // "zcadd":
-ZCHECKER_ZCADD_HELP_TITLE			= "zcadd [s[elf]|w[eapon]|cam[era]|force] [<pos>];zcaddself [<pos>];zcaddweap [<pos>];zcaddforce [<pos>];zcaddlistget [<index>] [<pos>]";
-ZCHECKER_ZCADD_HELP_DESC			= "Add the linetarget/current player/current weapon/non-solid linetarget into the list. [<pos>] is a panel number to set to; if omitted, the first empty slot will be used.";
+ZCHECKER_ZCADD_HELP_TITLE			= "zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [<index>] [<panel>]";
+ZCHECKER_ZCADD_HELP_DESC			= "Add the linetarget/current player/current weapon/non-solid linetarget into the list. [<panel>] is a panel number to set to; if omitted, the first empty slot will be used.";
 ZCHECKER_ZCADD_ADDINSUFFPLACE		= "Cannot add target to list, insufficient space. Try adding the target to list directly via \"zcadd 1\"..\"zcadd %i\".";
 ZCHECKER_ZCADD_NOWEAPON				= "No weapon, cannot add.";
 ZCHECKER_ZCADD_FORCENOTFOUND		= "Cannot find any suitable actors.";
@@ -426,8 +426,8 @@ ZCHECKER_ZCADD_SUCCESSCAMERA		= "Added a player camera %s";
 ZCHECKER_ZCADD_USINGPREVLINK		= "\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.";
 
 // "zcrem"/"zcclear":
-ZCHECKER_ZCREM_HELP_TITLE			= "zcrem [<pos>];zcclear [<pos>]";
-ZCHECKER_ZCREM_HELP_DESC			= "Remove testee from <pos>; removes the whole list if no argument provided.";
+ZCHECKER_ZCREM_HELP_TITLE			= "zcrem [<panel>];zcclear [<panel>]";
+ZCHECKER_ZCREM_HELP_DESC			= "Remove testee from informational panel <panel>; removes the whole list if no argument provided.";
 ZCHECKER_ZCREM_SUCCESS				= "Removed actor \"%s\" <%s> from position %i.";
 ZCHECKER_ZCREM_SUCCESSTOTAL			= "All actors cleared from the infopanels.";
 ZCHECKER_ZCREM_EMPTYPOS				= "Cannot remove, there's no actor in position %i.";

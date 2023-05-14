@@ -3,15 +3,16 @@
 //
 
 class ZCEvmapCommand: ZCConsoleCommand {
-	protected void InitEvmapCCMD( String helpheader, String helpdesc, class<ZCTooltipClass> helptooltip = NULL ) {
+	protected void InitEvmapCCMD( String helpheader, String helpdesc, String helpaliases = "", class<ZCTooltipClass> helptooltip = NULL ) {
 		zcFlags = CCF_NonblockingFailure;
-		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, helptooltip );
+		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, tooltipClass: helptooltip, helpaliases: helpaliases );
 	}
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEV_HELP_TITLE",
 			"$ZCEV_HELP_DESC",
+			"ev, map, everything, everything_simple",
 			'ZCTooltipEvmapCommand'
 		);
 	}
@@ -128,6 +129,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		InitEvmapCCMD(
 			"$ZCEVGOTO_HELP_TITLE",
 			"$ZCEVGOTO_HELP_DESC",
+			"evg, evgoto, goto",
 			'ZCTooltipEvmapGotoCommand'
 		);
 
@@ -304,7 +306,8 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEVRE_HELP_TITLE",
-			"$ZCEVRE_HELP_DESC"
+			"$ZCEVRE_HELP_DESC",
+			"evre, recreate, reload"
 		);
 	}
 
@@ -340,6 +343,9 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 
 		if ( ccmdArgsSize == 0 )
 			ccmdArgsSize = complexArgsTest( "lev" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "lvl" );
 
 		if ( ccmdArgsSize ) {
 			if ( ccmdArgsSize == 1 )

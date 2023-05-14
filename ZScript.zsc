@@ -260,9 +260,9 @@ class ZCheckerHandler: StaticEventHandler {
 
 		if ( configFilesAmount == 0 ) {
 			handlerInitSuccess = false;
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. ":ParseAllConfigFiles(). Cannot find file \"" .. const_ZCheckerConfigFileName .. "\"." );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseAllConfigFiles(). Cannot find file \"" .. const_ZCheckerConfigFileName .. "\"." );
 		} else {
-			ZCGlobal.Log( LL_Debug, GetClassName() .. ":ParseAllConfigFiles(). Parsed " .. configFilesAmount .. " configuration files in total." );
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseAllConfigFiles(). Parsed " .. configFilesAmount .. " configuration file(s) in total." );
 		}
 	} // of protected void ParseAllConfigFiles( void ) {}
 
@@ -314,7 +314,7 @@ class ZCheckerHandler: StaticEventHandler {
 		ParseAllConfigFiles();
 		InitAllActorNames();
 
-		ZCGlobal.Log( LL_Detailed, String.Format( ( handlerInitSuccess? ZCGlobal.Loc( "GREETINGS_SUCCESS" ) : ZCGlobal.Loc( "GREETINGS_WARNINGS" ) ),
+		ZCGlobal.Log( LL_Detailed, String.Format( ( handlerInitSuccess? ZCGlobal.Locz( "GREETINGS_SUCCESS" ) : ZCGlobal.Locz( "GREETINGS_WARNINGS" ) ),
 									ZCheckerVersionNumber, zcConsoleHandleClasses.Size(), panels.defaultPanels.Size() ) );
 
 		Super.OnRegister();
@@ -566,24 +566,60 @@ class ZCheckerHandler: StaticEventHandler {
 				continue; // Skipping tooltips and other plaintext classes.
 
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
+			String curCCMDNeteventName = curCCMD.ccmdInterfaceData.neteventName;
 
-			if ( ccmdName ~== curCCMD.ccmdInterfaceData.neteventName ) {
+
+			if ( curCCMDNeteventName != "" && ccmdName ~== curCCMDNeteventName ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
 				if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.argsamount );
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.maxArgsAmount );
 
-				if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
+				if ( zcCCMDInfo.paramCallHelp && !( curCCMD.zcFlags & curCCMD.CCF_HelpArgOverride ) ) {
+					// Converts a "zc<ccmd> help" to a "zchelp <ccmd>".
+					//Too subtly realisation, actually.
+					if ( curCCMD.ccmdInterfaceData.helpInternalAliases.Size() == 0 ) {
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). No internal help aliases for the \"" .. curCCMD.GetClassName() .. "\"." );
+						break;
+					}
+
+					zcCCMDInfo.paramCallHelp = false;
+
+					zcCCMDInfo.args.Clear();
+					zcCCMDInfo.args.Push( curCCMD.ccmdInterfaceData.helpInternalAliases[ 0 ] );
+					ccmdName = "zc_help";
+
+					ZCGlobal.Log( LL_APIMessage, String.Format(
+									"%s::NetworkProcess(). Command was changed to the \"" .. TEXTCOLOR_ORANGE .. "%s %s" .. LLCOLOR_MAIN .. "\".",
+									GetClassName(), "zchelp", zcCCMDInfo.args[ 0 ]
+								) );
+
+					i = -1;
+					continue;
+
+				} else if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
+					// Requires a non-blocking execution.
 					if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_OLIVE .. "Requested a non-blocking execution" .. LLCOLOR_DEBUG .. "." );
 
 					zcCCMDInfo.nonblockingCommands.Push( curCCMD );
 					nonblockingCommandsAmount++;
+
 				} else {
+					// Default execution.
+
+					// Saving original log level:
+					int realLogLevel = ZCGlobal.GetLoglevel();
+					ZCGlobal.ForceSetLogLevel( zcCCMDInfo.paramLogLevelOverride );
+
+					// Command call:
 					if ( curCCMD.HandleArguments() )
 						curCCMD.DoCommand();
-					else
+					else if ( !zcCCMDInfo.paramNoUsage )
 						ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. ZCGlobal.Locz( "CCMDSHELP_USAGE" ) .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
+
+					// Restoring log level:
+					ZCGlobal.ForceSetLogLevel( realLogLevel );
 
 					interceptNeteventsMode = 0;
 					break;
@@ -615,8 +651,13 @@ class ZCheckerHandler: StaticEventHandler {
 				ZCConsoleCommand curCCMD = zcCCMDInfo.nonblockingCommands[ curCCMDIndex ];
 
 				if ( curCCMD.HandleArguments() ) {
+					int realLogLevel = ZCGlobal.GetLoglevel();
+					ZCGlobal.ForceSetLogLevel( zcCCMDInfo.paramLogLevelOverride );
+
 					curCCMD.DoCommand();
 					printUsage = false;
+
+					ZCGlobal.ForceSetLogLevel( realLogLevel );
 
 					if ( !( curCCMD.zcFlags & curCCMD.CCF_NonblockingSuccess ) )
 						break;
@@ -626,7 +667,7 @@ class ZCheckerHandler: StaticEventHandler {
 				}
 			}
 
-			if ( printUsage && zcCCMDInfo.usageNonblockingCommand )
+			if ( printUsage && zcCCMDInfo.usageNonblockingCommand && !zcCCMDInfo.paramNoUsage )
 				ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. ZCGlobal.Locz( "CCMDSHELP_USAGE" ) .. LLCOLOR_MAIN .. ":\n" .. zcCCMDInfo.usageNonblockingCommand.GetHelpString() );
 
 			interceptNeteventsMode = 0;

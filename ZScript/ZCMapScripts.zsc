@@ -338,26 +338,26 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( !spriteCheckSuccess ) {
 					if ( stInternalSprite == spriteTNT1A0 )
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
 					else if ( stSpriteName4 == "TNT1" )
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName ) );
 					else
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_CORRUPSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName, stSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_CORRUPSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName, stSpriteName ) );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
-					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_INVISSKIP" ), cls.GetClassName() ) );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_INVISSKIP" ), cls.GetClassName() ) );
 
 				} else if ( !spawnReplaced && Actor.GetReplacement( cls ) != cls ) {
-					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_REPLACEDSKIP" ), cls.GetClassName() ) );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_REPLACEDSKIP" ), cls.GetClassName() ) );
 
 				} else if ( !spawnPlayerChunks && cls is "PlayerChunk" ) {
-					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_PLCHUNKSKIP" ), cls.GetClassName() ) );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_PLCHUNKSKIP" ), cls.GetClassName() ) );
 
 				} else {
 					ECategoryIdentifiers clsType = GetSectorStartForClass( cls );
 
 					if ( clsType != S__Nothing ) {
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_SUCCESS" ), cls.GetClassName(), stSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_SUCCESS" ), cls.GetClassName(), stSpriteName ) );
 
 						ZCheckerEverythingMapCategoryData curCategory = evSectors[ clsType ];
 
