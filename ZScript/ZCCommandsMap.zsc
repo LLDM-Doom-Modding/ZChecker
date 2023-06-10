@@ -325,7 +325,10 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 		return outValue;
 	}
 	override void DoCommand( void ) {
-		EventHandler.SendNetworkEvent( "zc_evmap_recreate" );
+		if ( IsConsoleplayer() )
+			EventHandler.SendNetworkEvent( "zc_evmap_recreate" );
+		else
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Skipped sending of the \"zc_evmap_recreate\" network event for the consoleplayer." );
 	}
 } // of class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {}
 

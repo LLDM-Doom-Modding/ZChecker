@@ -932,6 +932,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return false;
 	}
 
+	protected bool IsConsoleplayer( void ) {
+		return ( ccmd.e.Player == consoleplayer );
+	}
+
 } // of class ZCConsoleCommand abstract {}
 
 

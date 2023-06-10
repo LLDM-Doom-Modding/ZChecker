@@ -84,7 +84,7 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 
 - **InfernalSky** a.k.a. **Hizenfort**: player cheats infopanel;
 - **N00b2015**: "`zcadd force`" CCMD subcommand fix;
-- **Mud** a.k.a. **Serious_MOod**: sound definitions infopanel;
+- **Mud** a.k.a. **Serious_MOod**: sound definitions infopanel.
 
 
 ### Work with resources

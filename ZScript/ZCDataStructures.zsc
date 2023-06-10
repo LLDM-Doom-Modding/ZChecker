@@ -133,6 +133,7 @@ class ZCheckerField {
 	uint asyncwith;			// Warn in multiplayer (0 == synced, 1..8 == player).
 	String hashsync[ MAXPLAYERS ];
 
+	const const_MixStringsAppendLen = 4;
 
 	play void UpdateActorMetainformation( ZCheckerCCMDInfo fccmd ) {
 		if ( !mo )
@@ -190,11 +191,28 @@ class ZCheckerField {
 			return a;
 		}
 
-		// Mixing:
-		for ( int i = 0; i < alen; i++ ) {
-			uint nextchar = a.CharCodeAt( i ) ^ b.CharCodeAt( i );
+		// Mixing (four chars appending is for about 1.8 times faster than every char-wise):
+		for ( int i = 0; i < int( alen / const_MixStringsAppendLen ) * const_MixStringsAppendLen; ) {
+			uint nextchars[ const_MixStringsAppendLen ];
 
-			outstr.AppendFormat( "%c", ( nextchar == 0? 32 : nextchar ) );
+			for ( int j = 0; j < const_MixStringsAppendLen; j++ ) {
+				nextchars[ j ] = a.CharCodeAt( i ) ^ b.CharCodeAt( i );
+				i++;
+
+				if ( nextchars[ j ] == 0 )
+					nextchars[ j ] = 32;
+			}
+
+			outstr.AppendFormat( "%c%c%c%c", nextchars[ 0 ], nextchars[ 1 ], nextchars[ 2 ], nextchars[ 3 ] );
+		}
+
+		for ( int i = 0; i < int( alen % const_MixStringsAppendLen ); i++ ) {
+			int nextchar = a.CharCodeAt( i ) ^ b.CharCodeAt( i );
+
+			if ( nextchar == 0 )
+				nextchar = 32;
+
+			outstr.AppendFormat( "%c", nextchar );
 		}
 
 		return outstr;
@@ -207,7 +225,7 @@ class ZCheckerField {
 		String outstr = mixStrings( mo.GetClassName(), String.Format( "%i%.2f%.2f%.2f%.2f", mo.tics + fieldPos * 10 + actorType * 100, mo.angle + mo.pitch, mo.pos.x, mo.pos.y, mo.pos.z ) );
 
 		outstr = mixStrings( outstr, ( mo.inv? mo.inv.GetClassName() .. "" : "<No_inventory>" ) );
-		outstr.Replace( ZCHECKER_AGRS_SEPARATOR, ";;" );
+		outstr.Replace( ZCHECKER_AGRS_SEPARATOR, "a" );
 
 		return outstr;
 	}
