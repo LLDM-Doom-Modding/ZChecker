@@ -302,18 +302,22 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
 
 
-class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
+class ZCEvmapCommand_recreate: ZCEvmapCommand {
+	String neteventName;
+
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEVRE_HELP_TITLE",
 			"$ZCEVRE_HELP_DESC",
 			"evre, recreate, reload"
 		);
+
+		neteventName = "zc_evmap_recreate";
 	}
 
-	override bool HandleArguments() {
+	// It seems to be a dumb method name. Also used in the "ZCEvmapCommand_reloadsectors".
+	protected bool isArgsTestSuccess( int ccmdArgsSize ) {
 		bool outValue = false;
-		int ccmdArgsSize = complexArgsTest( "re" );
 
 		if ( ccmdArgsSize && testForEverythingLevel() ) {
 			if ( ccmdArgsSize == 1 )
@@ -323,14 +327,47 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 		}
 
 		return outValue;
+	} // of protected bool isArgsTestSuccess( int ccmdArgsSize ) {}
+
+	override bool HandleArguments() {
+		return isArgsTestSuccess( complexArgsTest( "re" ) );
 	}
+
 	override void DoCommand( void ) {
 		if ( IsConsoleplayer() )
-			EventHandler.SendNetworkEvent( "zc_evmap_recreate" );
+			EventHandler.SendNetworkEvent( neteventName );
 		else
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Skipped sending of the \"zc_evmap_recreate\" network event for the consoleplayer." );
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Skipped sending of the \"" .. neteventName .. "\" network event for the consoleplayer." );
 	}
-} // of class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {}
+} // of class ZCEvmapCommand_recreate: ZCEvmapCommand {}
+
+class ZCEvmapCommand_reloadsectors: ZCEvmapCommand_recreate {
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"$ZCEVRESECTOR_HELP_TITLE",
+			"$ZCEVRESECTOR_HELP_DESC",
+			"evresec, evres, res, resec, evsec, evsectors, recreatesec, recreatesectors, reloadsec, reloadsectors"
+		);
+
+		neteventName = "zc_evmap_reloadsectors";
+	}
+
+	override bool HandleArguments() {
+		int ccmdArgsSize = complexArgsTest( "res" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "sec" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "reloads" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "recreates" );
+
+		return isArgsTestSuccess( ccmdArgsSize );
+	}
+} // of class ZCEvmapCommand_reloadsectors: ZCEvmapCommand_recreate {}
+
 
 class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 	override void InitCCMD() {
@@ -342,6 +379,7 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 
 	override bool HandleArguments() {
 		bool outValue = false;
+
 		int ccmdArgsSize = complexArgsTest( "map" );
 
 		if ( ccmdArgsSize == 0 )
@@ -360,8 +398,8 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 		return outValue;
 	}
 	override void DoCommand( void ) {
-		// [McM] Compatibility. Again.
-		//LevelLocals.ChangeLevel( "Everything", 0, 0 );
+		// [McM] Compatibility. Again. There's no "LevelLocals.ChangeLevel()"
+		//in the old versions of the engine.
 
 		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) != -1 );
 

@@ -21,6 +21,70 @@ class ZCheckerEverythingMapCategoryData play {
 	Array<ZCheckerCategoryInfoHeader> headerActors;
 }
 
+class ZCheckerEverythingMapInitSectorData play {
+	enum ESectorPlanes {
+		SP_Floor = Sector.floor,
+		SP_Ceiling = Sector.ceiling,
+		_SP_Quantity,
+
+		_SP_First = SP_Floor,
+		_SP_Last = SP_Ceiling
+	}
+
+	FColormap colormap;
+	double friction, movefactor;
+
+	int lightLevel[ _SP_Quantity ];
+	double glowHeight[ _SP_Quantity ];
+	Color glowColor[ _SP_Quantity ];
+	Color specialColor[ _SP_Quantity ];
+
+
+	static ZCheckerEverythingMapInitSectorData Create( Sector sourcesec ) {
+		ZCheckerEverythingMapInitSectorData newdata = new( 'ZCheckerEverythingMapInitSectorData' );
+
+		for ( int plane = _SP_First; plane <= _SP_Last; plane++ ) {
+			newdata.lightLevel[ plane ] = sourcesec.GetPlaneLight( plane );
+
+			newdata.glowHeight[ plane ] = sourcesec.GetGlowHeight( plane );
+			newdata.glowColor[ plane ] = sourcesec.GetGlowColor( plane );
+
+			newdata.specialColor[ plane ] = sourcesec.SpecialColors[ plane ];
+		}
+
+		newdata.colormap.lightColor = sourcesec.colormap.lightColor;
+		newdata.colormap.fadeColor = sourcesec.colormap.fadeColor;
+		newdata.colormap.desaturation = sourcesec.colormap.desaturation;
+		newdata.colormap.blendFactor = sourcesec.colormap.blendFactor;
+		newdata.colormap.fogDensity = sourcesec.colormap.fogDensity;
+
+		newdata.friction = sourcesec.friction;
+		newdata.movefactor = sourcesec.movefactor;
+
+		return newdata;
+	}
+
+	void Apply( Sector targetsec ) {
+		for ( int plane = _SP_First; plane <= _SP_Last; plane++ ) {
+			targetsec.SetPlaneLight( plane, lightLevel[ plane ] );
+
+			targetsec.SetGlowHeight( plane, glowHeight[ plane ] );
+			targetsec.SetGlowColor( plane, glowColor[ plane ] );
+
+			targetsec.SetSpecialColor( plane, specialColor[ plane ] );
+		}
+
+		targetsec.SetColor( colormap.lightColor, colormap.desaturation );
+		targetsec.SetFade( colormap.fadeColor );
+		targetsec.SetFogDensity( colormap.fogDensity );
+
+		targetsec.friction = friction;
+		targetsec.movefactor = movefactor;
+	}
+} // of class ZCheckerEverythingMapInitSectorData play {}
+
+
+
 class ZCheckerEverythingMapHandler: EventHandler {
 	const ZCUDMF_Type = "user_zcsector_type";	// Category.
 	const ZCUDMF_TypeSegment = "user_zcsector_typesegment";	// Current segment index in the category.
@@ -64,6 +128,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	};
 
 	ZCheckerEverythingMapCategoryData evSectors[ S__Quantity ];
+	Array<ZCheckerEverythingMapInitSectorData> initsectors;
+
 
 	bool canRecreateEverything;
 	bool logSpawnInfo;
@@ -171,7 +237,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		);
 	}
 
-	// Really just a wrapper around a some extremely rough algorithm (will be rewritten).
+	// Really just a wrapper around a some extremely rough algorithm (will be rewritten... someday).
 	static int FindNextExistingSectorIndex( ZCheckerEverythingMapCategoryData evSector, int fromIndex = -1 ) {
 		if ( !evSector )
 			return -1;
@@ -393,6 +459,15 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 	} // of void RecreateEverything( void ) {}
 
+	void ReloadAllSectors( void ) {
+		//ZCGlobal.Log( LL_Main, GetClassName() .. "::ReloadCategorySectors(). Not released yet." );
+
+		for ( int i = 0; i < level.sectors.Size(); i++ )
+			initsectors[ i ].Apply( level.sectors[ i ] );
+
+	} // of void ReloadAllSectors( void ) {}
+
+
 
 	override void OnRegister() {
 		SetOrder( ZCheckerMapHandlerOrder );
@@ -411,6 +486,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			evSectors[ i ] = new( 'ZCheckerEverythingMapCategoryData' );
 			evSectors[ i ].evType = i;
 		}
+
+
+		for ( int i = 0; i < level.sectors.Size(); i++ )
+			initsectors.Push( ZCheckerEverythingMapInitSectorData.Create( level.sectors[ i ] ) );
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Saved common data fields for the total of " .. initsectors.Size() .. " sectors." );
+
 
 		canRecreateEverything = true;
 
@@ -562,8 +644,12 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 
 			if ( e.Name == "zc_evmap_recreate" ) {
-				ZCGlobal.Log( LL_Main, "$EVMAP_TOTALRECREATE" );
+				ZCGlobal.Log( LL_Main, "$EVMAP_RECREATEACTORS" );
 				RecreateEverything();
+
+			} else if ( e.Name == "zc_evmap_reloadsectors" ) {
+				ZCGlobal.Log( LL_Main, "$EVMAP_RELOADSECTORS" );
+				ReloadAllSectors();
 			}
 
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}

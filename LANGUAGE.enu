@@ -307,7 +307,7 @@ ZCHECKER_EVMAPMENU_WARPMONSTERS	= "Monsters, regular\cc: \"\cmzcevg #\cdmons\cc\
 ZCHECKER_EVMAPMENU_WARPLMONS	= "Monsters, large\cc: \"\cmzcevg #\cdlmons\cc\"";
 ZCHECKER_EVMAPMENU_WARPHMONS	= "Monsters, huge\cc: \"\cmzcevg #\cdhmons\cc\"";
 ZCHECKER_EVMAPMENUDIV_WARPITEMS	= "- Teleport to items -";
-ZCHECKER_EVMAPMENU_WARPWEAPS	= "Weapos\cc: \"\cmzcevg #\cdweaps\cc\"";
+ZCHECKER_EVMAPMENU_WARPWEAPS	= "Weapons\cc: \"\cmzcevg #\cdweaps\cc\"";
 ZCHECKER_EVMAPMENU_WARPAMMO		= "Ammo\cc: \"\cmzcevg #\cdammo\cc\"";
 ZCHECKER_EVMAPMENU_WARPHPARMOR	= "Health/armor items\cc: \"\cmzcevg #\cdhealth\cc\"";
 ZCHECKER_EVMAPMENU_WARPPOWERUPS	= "Powerups\cc: \"\cmzcevg #\cdpowerups\cc\"";
@@ -344,7 +344,8 @@ ZCHECKER_CCMDMENU_ZCREM 		= "\"zcrem\": Clear all panels";
 // === An "Everything" maps ===
 
 ZCHECKER_EVMAP_INITERROR			= "%s::RecreateEverything(). Cannot run due to the map errors, terminating.";
-ZCHECKER_EVMAP_TOTALRECREATE		= "Recreating/reloading map...";
+ZCHECKER_EVMAP_RECREATEACTORS		= "Recreating/reloading map...";
+ZCHECKER_EVMAP_RELOADSECTORS		= "Reloading general properties for all sectors...";
 ZCHECKER_EVMAP_AUTOIDDQD			= "Auto-godmode enabled.";
 ZCHECKER_EVMAP_AUTONOTARGET			= "Auto-notarget enabled.";
 ZCHECKER_EVMAPSPAWN_SUCCESS			= "\cqsummoned class \"\cd%s\cq\"\c~ (sprite \"%s\").";
@@ -365,7 +366,6 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES		= "%s \cnreplaces\c- %s";
 
 
 // === Console commands ===
-//          [WIP]
 
 // General:
 
@@ -541,6 +541,9 @@ ZCHECKER_ZCEVGOTO_NOTFOUND		= "Actor \"%s\" does not exist on this map.";
 
 ZCHECKER_ZCEVRE_HELP_TITLE		= "zcev recreate|reload;zcevre";
 ZCHECKER_ZCEVRE_HELP_DESC		= "Delete and recreate all actors on the Everything map, like on map start";
+
+ZCHECKER_ZCEVRESECTOR_HELP_TITLE= "zcev recreatesec[tors]|reloadsector[s];zcev [re]sec";
+ZCHECKER_ZCEVRESECTOR_HELP_DESC	= "Reload general parameters for all of the category sectors on the Everything map. May be useful if some actor change properties of its current sector.";
 
 ZCHECKER_ZCEVMAPWARP_HELP_TITLE	= "zcev map|launch;zcev map2|launch2";
 ZCHECKER_ZCEVMAPWARP_HELP_DESC	= "Warp to the \"Everything\" map when no digit provided; otherwise warp to the \"Everything_simple\" map.";
