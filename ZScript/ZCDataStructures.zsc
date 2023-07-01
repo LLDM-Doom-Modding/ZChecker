@@ -308,6 +308,7 @@ class ZCPanelsStorage {
 	// Panels order data:
 	String panelsstr; 			// General I/O variable.
 	bool panelsorderChanged; 	// Set it to "true" if a panels order must be saved.
+	bool panelsResetRequest;	// Set it to "true" when all panels must be reinitialized (e.g. after language change).
 
 	// Fonts data:
 	transient Font infopanelsFont;
@@ -331,6 +332,7 @@ class ZCPanelsStorage {
 		ZCPanelsStorage panel = new( 'ZCPanelsStorage' );
 
 		panel.panelsorderChanged = true;
+		panel.panelsResetRequest = true;
 		panel.curpanels = new( 'ZCInfoPanelNodesKeeper' );
 		panel.lastFontType = -1;
 
@@ -420,6 +422,7 @@ class ZCPanelsStorage {
 			} // of if ( !warningsAmount && savedPanelsAmount < defaultPanels.Size() ) {}
 
 		} // of if ( panelsOrderCVar.GetString() != "" ) {}
+
 
 		// Reinitialization (if neccesary):
 		if ( curPanels.Size() == 0 || warningsAmount > 0 ) {
@@ -673,6 +676,9 @@ struct ZCheckerHandlerDatascopeVariables {
 	transient CVar infopanelDimColorCVar;
 	transient CVar infopanelDimAlphaCVar;
 	transient CVar infopanelDimBorderWidthCVar;
+
+	int lastLocalizationTestGameTic;
+	String lastLocalizedTestString;
 
 } // of struct ZCheckerHandlerDatascopeVariables {}
 

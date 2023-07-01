@@ -215,7 +215,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 
 		String outlabel = ZCGlobal.Locz( "PANELSUBLABEL_WPOS_ROLL" .. ( excludeRoll? "OFF" : "ON" ) );
 
-		outlabel.AppendFormat( " %s %i", ZCGlobal.Locz( "PANELSUBLABEL_WPOS_FRACLEN" ), fractionalPartLength );
+		outlabel.AppendFormat( "%s %i", ZCGlobal.Locz( "PANELSUBLABEL_WPOS_FRACLEN" ), fractionalPartLength );
 
 		if ( showPlayerButtons )
 			outlabel = outlabel .. ZCGlobal.Locz( "PANELSUBLABEL_WPOS_BUTTONS" );

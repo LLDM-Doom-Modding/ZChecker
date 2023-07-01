@@ -35,6 +35,11 @@ class ZCConsoleClass abstract {
 	virtual String GetHelpString( void ) {
 		return TEXTCOLOR_RED .. "Wrong inheritance (\"" .. GetClassName() .. "::GetHelpString()\" isn't overrided).";
 	}
+
+	// Clears cached help string, actually. Useful, for example, when language changes.
+	virtualscope virtual void ResetCachedHelpString( void ) {
+		helpCacheString = "";
+	}
 } // of class ZCConsoleClass abstract {}
 
 class ZCConsoleSeparator: ZCConsoleClass {
@@ -257,14 +262,22 @@ struct ZCheckerCCMDInterfaceData {
 	String neteventName;
 
 	// Header aliases separated by a semicolon ("zcadd [weap[on]|self|force] [<panel>]"):
+	String helpHeaderLoczNodeName;
 	String helpHeader;
+	// Usage quick help (command description):
+	String helpDescLoczNodeName;
+	String helpDesc;
+
 	// Internal help aliases ("zcadd;zcaddweap;zcaddself;zcaddforce"):
 	Array<String> helpInternalAliases;
-	// Usage quick help (command description):
-	String helpDesc;
 
 	// A tooltip class (extra information which is being printed via "zchelp <command>"):
 	ZCTooltipClass helpTooltip;
+
+	void Update( void ) {
+		helpHeader = ZCGlobal.FreeLocalize( helpHeaderLoczNodeName );
+		helpDesc = ZCGlobal.FreeLocalize( helpDescLoczNodeName );
+	}
 };
 
 // Main CCMD base class.
@@ -314,8 +327,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	protected void SetupCCMDInterface( String neteventname, String helpheader, String helpdesc, class<ZCTooltipClass> tooltipClass = NULL, String helpaliases = "" ) {
 		ccmdInterfaceData.neteventName = neteventname;
-		ccmdInterfaceData.helpHeader = ZCGlobal.FreeLocalize( helpheader );
-		ccmdInterfaceData.helpDesc = ZCGlobal.FreeLocalize( helpdesc );
+		ccmdInterfaceData.helpHeaderLoczNodeName = helpheader;
+		ccmdInterfaceData.helpDescLoczNodeName = helpdesc;
+		ccmdInterfaceData.Update();
+
 		helpaliases.Replace( " ", "" );
 		helpaliases.Replace( ",", ";" );
 		helpaliases.Split( ccmdInterfaceData.helpInternalAliases, ";", TOK_SKIPEMPTY );
@@ -422,6 +437,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ccmdInterfaceData.helpDesc = "No help description provided in the " .. GetClassName() .. "::InitCCMD().";
 		}
 	} // of final override void OnLoad( void ) {}
+
+	override void ResetCachedHelpString( void ) {
+		ccmdInterfaceData.Update();
+		Super.ResetCachedHelpString();
+	}
 
 	// Returns "true" if an arg is in the range [0..MaxTestee]:
 	protected clearscope bool checkTesteePlace( int place ) {
@@ -535,6 +555,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	// A wrapper which unites aliases and description to one nice string:
 	override String GetHelpString( void ) {
+
 		// Attempt to speed up help strings processing:
 		if ( helpCacheString == "" || ( zcFlags & CCF_NoCacheHelp ) ) {
 			helpCacheString = "";

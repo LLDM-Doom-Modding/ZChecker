@@ -212,11 +212,17 @@ class ZCGlobal: Thinker {
 			ClearscopeLog( loglevel, text );
 	}
 
+	// Compatibility with GZDoom higher than 4.0.0, because '$EMPTY_NODE = ""'
+	//strangely localizes as string "EMPTY_NODE", not "":
 	static clearscope String Localize( String textid ) {
-		return StringTable.Localize( "$ZCHECKER_" .. textid );
+		String localized = StringTable.Localize( "$ZCHECKER_" .. textid );
+
+		return ( localized == "ZCHECKER_" .. textid? "" : localized );
 	}
 	static clearscope String Locz( String textid ) {
-		return StringTable.Localize( "$ZCHECKER_" .. textid );
+		String localized = StringTable.Localize( "$ZCHECKER_" .. textid );
+
+		return ( localized == "ZCHECKER_" .. textid? "" : localized );
 	}
 
 	// Much more convenient method to localize ZChecker (and maybe user) strings.

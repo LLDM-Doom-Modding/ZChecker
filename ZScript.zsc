@@ -76,7 +76,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	void UpdateInternalClassnameByField( uint fieldnum ) {
-		if ( fieldnum < MaxTestee ) {
+		if ( fieldnum >= MaxTestee ) {
 			String newClassname = "";
 
 			if ( Testee[ fieldnum ].mo )
@@ -85,6 +85,30 @@ class ZCheckerHandler: StaticEventHandler {
 			globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
 		}
 	} // of void UpdateInternalClassnameByField( uint fieldnum ) {}
+
+
+	clearscope bool CheckForResetLocalization( void ) const {
+		if ( datascoped.lastLocalizationTestGameTic != gametic && StringTable.Localize( "$ZCHECKER_CURLANGUAGE" ) != datascoped.lastLocalizedTestString ) {
+			datascoped.lastLocalizedTestString = StringTable.Localize( "$ZCHECKER_CURLANGUAGE" );
+			datascoped.lastLocalizationTestGameTic = gametic;
+
+			return true;
+		}
+
+		return false;
+	} // of clearscope bool CheckForResetLocalization( void ) {}
+
+	void ResetPlayLocalization( void ) {
+		// Double call of the "StringTable.Localize()" is for optimization.
+		if ( CheckForResetLocalization() ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ResetPlayLocalization(). Updating all console classes. New language is " .. datascoped.lastLocalizedTestString );
+
+			for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ )
+				zcConsoleHandleClasses[ i ].ResetCachedHelpString();
+		}
+	} // of void ResetPlayLocalization( void ) {}
+
+
 
 
 	protected bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
@@ -430,7 +454,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 				panelsstr.Push( String.Format( TEXTCOLOR_GRAY .. "%s\n", outStr ) );
 
-				// Push the text out from the borders:
+				// Pushing the text out from the borders:
 				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
 
 				if ( x < bordersXMargin )
@@ -442,7 +466,7 @@ class ZCheckerHandler: StaticEventHandler {
 					maxStringWidth = stringWidth;
 			}
 
-			// Printing infopanels parts:
+			// Adjusting heights:
 			int panelsstrAmount = panelsstr.Size();
 			double endy = y;
 
@@ -612,6 +636,8 @@ class ZCheckerHandler: StaticEventHandler {
 					int realLogLevel = ZCGlobal.GetLoglevel();
 					ZCGlobal.ForceSetLogLevel( zcCCMDInfo.paramLogLevelOverride );
 
+					ResetPlayLocalization();
+
 					// Command call:
 					if ( curCCMD.HandleArguments() )
 						curCCMD.DoCommand();
@@ -673,6 +699,7 @@ class ZCheckerHandler: StaticEventHandler {
 			interceptNeteventsMode = 0;
 			zcCCMDInfo.nonblockingCommands.Clear();
 		} // of if ( nonblockingCommandsAmount != 0 ) {}
+
 
 		if ( e.name == "zc_evmap_recreate" || e.name == "zc_evmap_reloadsectors" /*|| e.name == "zc_evmap_pause_level_part"*/ )
 			interceptNeteventsMode = 0;

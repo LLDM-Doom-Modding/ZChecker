@@ -622,7 +622,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 					if ( index != -1 ) {
 						if ( aliases[ index ].thing ) {
-							LogLocalize2Str( LL_Main, "ZCPANELSAVE_ALIASEXISTS", zcAliasName );
+							ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANELSAVE_ALIASEXISTS" ), zcAliasName, aliases[ index ].thing.GetClassName() ) );
 							continueFlag = false;
 						} else {
 							LogLocalize2Str( LL_Detailed, "ZCPANELSAVE_RELINKINGALIAS", zcAliasName );

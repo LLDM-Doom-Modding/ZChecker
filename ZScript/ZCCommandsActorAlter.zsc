@@ -648,7 +648,8 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 	override bool HandleArguments() {
 		flagSetType = -1;
 		skipKnownFlags = false;
-//zcsetflag [<pos>] <flagname> [<type>][,nospec[ecial]|raw]
+
+		//zcsetflag [<pos>] <flagname> [<type>][,nospec[ecial]|raw|acs]
 		bool outValue = false;
 
 		int ccmdArgsSize = ccmd.args.Size();
@@ -677,7 +678,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 				if ( optionstr[ i ] == "" )
 					continue;
 
-				if ( optionstr[ i ] == "raw" || optionstr[ i ] == "ns" || optionstr[ i ].Left( 6 ) == "nospec" || optionstr[ i ] == "acs" )
+				if ( optionstr[ i ] == "raw" || optionstr[ i ].Left( 6 ) == "nospec" || optionstr[ i ] == "acs" )
 					skipKnownFlags = true;
 				else
 					flagSetType = getBoolFromStr( optionstr[ i ] );
@@ -1012,7 +1013,7 @@ struct ZCSetPropertyExtraParameters play {
 		for ( int i = PFI_Args_Start; i < PFI_Args_End; i++ )
 			integers[ i ].valclamp( "Args[ " .. ( i - PFI_Args_Start ) .. " ]", 0, 255 );
 
-		integers[ PFI_TID ].valclamp( "TID", 0, 2147483647 );
+		integers[ PFI_TID ].valclamp( "TID", 0, 0x7FFFFFFF );
 	} // of void AdjustValues( void ) {}
 
 }; // of struct ZCSetPropertyExtraParameters play {}

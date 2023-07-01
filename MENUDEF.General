@@ -5,14 +5,14 @@
 AddOptionMenu "OptionsMenu" {
 	StaticText " "
 	Submenu "$ZCHECKER_MAINMENU_TITLE", "mcm_ZChecker_ControlMenu"
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_NOHANDLER"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR"
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_ZCHANDLER_ERROR"
 
 	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
 	Submenu "$ZCHECKER_MAINMENU_INFOPANELS", "mcm_ZChecker_ControlMenu_Panels"
@@ -116,7 +116,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC1", DARKGRAY
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC2", DARKGRAY
 	StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_ZCHANDLER_ERROR"
 	StaticText "$ZCHECKER_EVMAPMENUDIV_EVCCMDS", 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev recreate", 0, 1
@@ -163,7 +163,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     StaticText "$ZCHECKER_CCMDMENU_HELPNOTE1", DARKGREEN
     StaticText "$ZCHECKER_CCMDMENU_HELPNOTE2", DARKGREEN
     StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_CCMDMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_CCMDMENU_ZCHANDLER_ERROR"
     StaticText " "
 
     StaticText "$ZCHECKER_CCMDMENU_EXAMPLES", 1

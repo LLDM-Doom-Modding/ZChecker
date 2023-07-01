@@ -27,22 +27,22 @@ class ZCOptionMenuPanels: OptionMenu {
 
 	private void ReinitMenuHeaderPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
-		desc.mItems.Push( NewStaticText( GOLD .. "Informational panels settings" ) );
+		desc.mItems.Push( NewStaticText( ZCGlobal.Locz( "INFOPANELSMENUDIV_PANELS" ) ) );
 
 		String panelbitsStr = GRAY .. "1";
 		for ( int i = 1; i < MaxTestee; i++ )
 			panelbitsStr.AppendFormat( DARKGRAY .. ", " .. GRAY .. "%i" .. DARKGRAY .. "", i + 1 );
 
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TAN .. "Switch info: " .. GRAY .. "Space" .. DARKGRAY .. "/" .. GRAY .. "Enter" .. DARKGRAY .. ", " .. panelbitsStr .. " or " .. GRAY .. "Left" .. DARKGRAY .. "/" .. GRAY .. "Right" ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_DARKGREEN .. "Enter sumbenu: " .. GRAY .. "F3" .. DARKGRAY .. "/" .. GRAY .. "F4" .. DARKGRAY .. "/" .. GRAY .. "Tab" .. DARKGRAY .. " or " .. GRAY .. "Mouse 1"  ) );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_TEAL .. "Move panels: " .. GRAY .. "+" .. DARKGRAY .. "/" .. GRAY .. "KP+" .. DARKGRAY .. ", " .. GRAY .. "-" .. DARKGRAY .. "/" .. GRAY .. "KP-" .. DARKGRAY .. " or " .. GRAY .. "Mouse wheel" ) );
+		desc.mItems.Push( NewStaticText( String.Format( ZCGlobal.Locz( "INFOPANELSMENU_KEYSHELP1" ), panelbitsStr ) ) );
+		desc.mItems.Push( NewStaticText( ZCGlobal.Locz( "INFOPANELSMENU_KEYSHELP2" ) ) );
+		desc.mItems.Push( NewStaticText( ZCGlobal.Locz( "INFOPANELSMENU_KEYSHELP3" ) ) );
 		desc.mItems.Push( NewStaticText() );
 	}
 
 	private void ReinitMenuLastPart( OptionMenuDescriptor desc ) {
 		desc.mItems.Push( NewStaticText() );
-		desc.mItems.Push( NewStaticText( TEXTCOLOR_GOLD .. "Panels order reset" ) );
-		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( "Reset informational panels order" ) );
+		desc.mItems.Push( NewStaticText( ZCGlobal.Locz( "INFOPANELSMENUDIV_RESET" ) ) );
+		desc.mItems.Push( new( "ZCOptionMenuItemRecreateInfopanels" ).Init( ZCGlobal.Locz( "INFOPANELSMENU_RESETBUTTON" ) ) );
 		desc.mItems.Push( NewStaticText() );
 	}
 
@@ -104,8 +104,7 @@ class ZCOptionMenuPanels: OptionMenu {
 		if ( !handler ) {
 			ZCGlobal.ClearscopeLog( LL_Emergency, GetClassName() .. "::Init(). Cannot locate ZChecker static event handler." );
 			desc.mItems.Push( new( "OptionMenuItemZCHandlerExistenceCheckWarning" ).Init(
-					"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxInformational panels are not able to be initialized."
-				) );
+									ZCGlobal.Locz( "INFOPANELSMENU_ZCHANDLER_ERROR" ) ) );
 		} else {
 			ReinitMenuPanelItems( desc, handler );
 		}
@@ -117,8 +116,12 @@ class ZCOptionMenuPanels: OptionMenu {
 	override void Init( Menu parent, OptionMenuDescriptor desc ) {
 		handler = ZCheckerHandler( StaticEventHandler.Find( "ZCheckerHandler" ) );
 
-		if ( !desc.mItems.Size() ) {
+
+		if ( !desc.mItems.Size() || ( handler && handler.CheckForResetLocalization() ) ) {
 			ReinitMenuItems( desc );
+
+			if ( handler )
+				handler.panels.panelsResetRequest = false;
 
 		} else {
 			// Items are saved between menu sessions but menu itself not.
@@ -621,7 +624,7 @@ class ZCOptionMenuItemRecreateInfopanels: OptionMenuItem {
 		panelsmenu.ReinitMenuItems( panelsmenu.mDesc );
 		panelsmenu.mDesc.mSelectedItem = panelsmenu.lastPanelItemPos + 2;
 
-		ZCGlobal.ClearscopeLog( LL_Detailed, TEXTCOLOR_GRAY .. "The informational panels order has been reset to defaults." );
+		ZCGlobal.ClearscopeLog( LL_Detailed, ZCGlobal.Locz( "INFOPANELSMENUMSG_RESETORDER" ) );
 	}
 
 	// Grabbed from "*zdoom.pk3" -> "class OptionMenuItemSafeCommand".
