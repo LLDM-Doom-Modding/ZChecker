@@ -1,17 +1,17 @@
 [rus]
 
 
-//Tabs size for this file: 4.
+// Tabs size for this file: 4.
 
-// "ZCGlobal.Log()" and all of its derivatives overrides next colors placeholders:
-//    '\c-' is a "LLCOLOR_MAIN"      (default user messages color, usually gray);
-//    '\c!' is a "LLCOLOR_WARNING"   (yellow);
-//    '\c~' is a "LLCOLOR_DARK"      (darkgray).
+//  "ZCGlobal.Log()" and all of its derivatives overrides next colors placeholders:
+//     '\c-' is a "LLCOLOR_MAIN"      (default user messages color, usually gray);
+//     '\c!' is a "LLCOLOR_WARNING"   (yellow);
+//     '\c~' is a "LLCOLOR_DARK"      (darkgray).
 
 
-// === General and core ===
+//  === General and core ===
 
-//Commons:
+// Commons:
 ZCHECKER_CURLANGUAGE                  = "ru"; //Used for the auto-updating of the cached localized strings.
 ZCHECKER_GREETINGS_SUCCESS            = "ZChecker %s успешно инициализирован; всего %i консольных команд, %i составляющих инфопанелей.";
 ZCHECKER_GREETINGS_WARNINGS           = "Во время инициализации ZChecker %s \c!возникли неполадки\c-; всего %i консольных команд, %i составляющих инфопанелей.";
@@ -21,7 +21,7 @@ ZCHECKER_CCMDSHELP_TIPS               = "Советы";
 ZCHECKER_CCMDSHELP_EXAMPLES           = "Примеры";
 ZCHECKER_CCMDS_DANGERALLOWEDWARN      = "Предупреждение";
 
-//Network events intercepting:
+// Network events intercepting:
 ZCHECKER_NETEVENTINTC_NETEVENT        = "Netevent";
 ZCHECKER_NETEVENTINTC_MANUAL          = "Ручной вызов";
 ZCHECKER_NETEVENTINTC_SYSTEM          = "Системный вызов";
@@ -30,7 +30,7 @@ ZCHECKER_NETEVENTINTC_FROMPLAYER      = "от игрока #";
 
 
 
-// === Menus ===
+//  === Menus ===
 
 ZCHECKER_MAINMENU_TITLE               = "Настройки ZChecker";
 ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR  = "\cxОшибка\ci: ZChecker не может быть запущен.\n\ciБольше информации есть в меню, расположенном выше.";
@@ -51,7 +51,7 @@ ZCHECKER_MAINMENU_DIV_HOTKEYS         = "Горячие клавиши";
 ZCHECKER_MAINMENU_NETEVENTS           = "Перехват Netevents";
 ZCHECKER_MAINMENU_NETEVENTS_TIP       = "Перехватывает информацию с сетевых событий.";
 ZCHECKER_MAINMENU_ALLOW_DANGEROUS     = "Разрешить опасные действия";
-ZCHECKER_MAINMENU_ALLOW_CRASH         = "Разрешить действия";
+ZCHECKER_MAINMENU_ALLOW_CRASH         = "Действия, при обычных условиях ломающие игровой движок.";
 ZCHECKER_MAINMENU_TWICE_BEHAVIOUR     = "Поведение при дублировании указателя";
 ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR     = "Поведение при использовании команд вроде \"zcadd\" на акторе,";
 ZCHECKER_MAINMENU_ALREADY_LIST        = "который уже присутствует в инфопанелях.";
@@ -85,12 +85,12 @@ ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN   = "Переместить, предупредив (по умолч.)";
 ZCHECKER_MAINMENUOPT_TWICE_COPYWARN   = "Скопировать, предупредив";
 
 
-// === Infopanels control menu ===
+//  === Infopanels control menu ===
 
 ZCHECKER_INFOPANELSMENU_TITLE         = "Инфопанели ZChecker";
 ZCHECKER_INFOPANELSMENUDIV_PANELS     = "\c[gold]Настройки информационных панелей";
 ZCHECKER_INFOPANELSMENU_KEYSHELP1     = "\c[tan]Вкл/Откл: \ccПробел\cu/\ccEnter\cu, %s или \ccВлево\cu/\ccВправо";
-ZCHECKER_INFOPANELSMENU_KEYSHELP2     = "\c[darkgreen]Открыть подменю: \ccF3\cu/\ccF4\cu/\ccTab\cu или \ccПКМ";
+ZCHECKER_INFOPANELSMENU_KEYSHELP2     = "\c[darkgreen]Открыть подменю: \ccF3\cu/\ccF4\cu/\ccTab\cu или \ccСКМ";
 ZCHECKER_INFOPANELSMENU_KEYSHELP3     = "\c[teal]Перемещение: \cc+\cu/\ccKP+\cu,\cc-\cu/\ccKP-\cu или \ccКолесо мыши";
 ZCHECKER_INFOPANELSMENUDIV_RESET      = "\c[gold]Управление";
 ZCHECKER_INFOPANELSMENU_RESETBUTTON   = "Сбросить порядок инфопанелей";
@@ -226,7 +226,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "Панель ZChecker: Звуки (properties)";
 ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Вывод редкоиспользуемых";
 
 
-// === Visual Settings control menu ===
+//  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: настройки отображения";
 ZCHECKER_VISUAL_POSITIONING           = "Положение панелей";
@@ -251,7 +251,7 @@ ZCHECKER_VISUAL_INFOSTR_SCALE         = "Масштабирование строки";
 ZCHECKER_VISUAL_OTHER                 = "Остальное";
 ZCHECKER_VISUAL_FONTTYPES             = "Глобальный шрифт";
 
-// === Control menu for the "Everything" map ==
+//  === Control menu for the "Everything" map ==
 
 ZCHECKER_EVMAPMENU_TITLE              = "ZChecker: опции карт \"Everything\"";
 ZCHECKER_EVMAPMENU_SPAWNOPTIONS       = "Настройки создания акторов";
@@ -292,8 +292,9 @@ ZCHECKER_EVMAPMENUDIV_WARPITEMS       = "- Переход к категориям предметов -";
 ZCHECKER_EVMAPMENUDIV_WARPDECOR       = "- Переход к категориям декораций и объектов -";
 ZCHECKER_EVMAPMENUDIV_WARPOTHER       = "- Переход к остальным категориям -";
 
-// === Console commands control menu ===
+//  === Console commands control menu ===
 
+ZCHECKER_CCMDMENU_TITLE               = "ZChecker: вызов консольных команд";
 ZCHECKER_CCMDMENU_WIP                 = "[В разработке] Здесь будут часто используемые консольные команды.";
 ZCHECKER_CCMDMENU_HELPNOTE1           = "Все команды могут быть показаны через";
 ZCHECKER_CCMDMENU_HELPNOTE2           = "\"zchelp all\"; также можно использовать \"zchelp <команда>\".";
@@ -304,7 +305,7 @@ ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Добавление себя в панел
 ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Очистка всех панелей";
 
 
-// === An Everything" maps ==
+//  === An Everything" maps ==
 
 ZCHECKER_EVMAP_INITERROR              = "%s::RecreateEverything(). Невозможно продолжить из-за ошибок на карте; останов.";
 ZCHECKER_EVMAP_RECREATEACTORS         = "Пересоздание акторов на карте...";
@@ -328,20 +329,20 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES       = "%s \cnзаменяет\c- %s";
 
 
 
-// === Console commands ===
+//  === Console commands ===
 
-//General:
+// General:
 
 ZCHECKER_CCMD_WIP                     = "\c~[Команда находится в разработке, может работать неочевидным образом или же не работать вовсе].";
 
-// "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()"
+//  "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()"
 ZCHECKER_GETACTOR_SKIPPEDSPECIAL      = "Пропущен внутренний класс ZChecker \"%s\".";
 ZCHECKER_GETACTOR_LTNOACTORS          = "Доступных целей под курсором не найдено.";
 ZCHECKER_GETACTOR_EMPTYPOS            = "Актора в позиции %i не существует.";
 ZCHECKER_GETACTOR_WRONGPOS            = "\c!Неверная позиция %i\c- (должен лежать в пределах [1..%i]).";
 ZCHECKER_GETACTOR_UNKNOWNKEYWORD      = "\c!Неизвестная подстановка \"%s\" в позиции %i\c~. Возможные значения: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.";
 
-// "ZCConsoleCommand::ParseSpecialActorName()"
+//  "ZCConsoleCommand::ParseSpecialActorName()"
 ZCHECKER_PARSENAME_WRONGSELECT        = "\c!Указание \"%s\" - не положительное целое число.";
 ZCHECKER_PARSENAME_EMPTYKEYWORD       = "\c!Пропущена\c- подстановка \"%s\", вырождающаяся в пустую. Для обхода этого можно использовать \"%%null\" или \"%%none\".";
 ZCHECKER_PARSENAME_UNSETVAR           = "\c!Пропущена\c- еще не установленная внутренняя переменная \"%s\".";
@@ -352,19 +353,19 @@ ZCHECKER_PARSENAME_FOUNDSOME          = "Найдено более одного кандидата, подходя
 ZCHECKER_PARSENAME_SELECTBOUNDS       = "\c!Выбранный индекс \cn%i \c!находится вне дипапзона\c- найденных кандидатов.";
 ZCHECKER_PARSENAME_IGNORESELECT       = "\c!Пропуск числового указания %i\c-";
 
-// "ZCConsoleCommand::RemoveWorldThinker()"
+//  "ZCConsoleCommand::RemoveWorldThinker()"
 ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crПопытка уничтожения живого игрока %i\c-, \c!пропущено\c-. Вы можете переопределить это с помощью опции \"Разрешить опасные действия\".";
 ZCHECKER_REMOVEWARNING_LIVEPLAYER     = "уничтожение живого игрока";
 ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crВнутренний класс ZChecker \"\c-%s\cr\" в списке на уничтожение, \c!пропущен\c-. Вы можете переопределить это с помощью опции \"Разрешить опасные действия\".";
 ZCHECKER_REMOVEWARNING_ZCINTERNAL     = "уничтожение внутреннего класса ZChecker";
 
-// "ZCAddCommand::HandleDuplicateActorFields()"
+//  "ZCAddCommand::HandleDuplicateActorFields()"
 ZCHECKER_ADD_DUPLICATELINK            = "\c~Найдена \c!ссылка-дубликат \c~для актора \c-%s\c~ в панели %i.";
 
 
-// "File ZCCommandsGeneral.zsc"
+//  "File ZCCommandsGeneral.zsc"
 
-// "zchelp":
+//  "zchelp":
 ZCHECKER_ZCHELP_HELP_TITLE            = "zchelp [a[ll]|-a|--all|-v];zchelp <zc-команда>";
 ZCHECKER_ZCHELP_HELP_DESC             = "Этот текст помощи. Если введена <команда>, выводит полную справку для нее (в большинстве случаев с примерами). Иначе, если введен аргумент <all>, показывает краткую справку по всем существующим командам.";
 ZCHECKER_ZCHELP_CANNOTFIND            = "\czСправка ZChecker: \cxне удается найти консольную команду ZChecker \c~\"\c-%s\c~\"\cx.";
@@ -374,7 +375,7 @@ ZCHECKER_ZCHELP_VERBOSETITLE          = "\cyZChecker \chv%s.\
 ZCHECKER_ZCHELP_HEADERCOMMONCCMDS     = "\cjСписок основных доступных команд\c-:";
 ZCHECKER_ZCHELP_HEADERALLCCMDS        = "\cjПолный список доступных команд\c-:";
 
-// "zcadd":
+//  "zcadd":
 ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<панель>];zcaddself [<панель>];zcaddweap [<панель>];zcaddforce [<панель>];zcaddlistget [<индекс>] [<панель>]";
 ZCHECKER_ZCADD_HELP_DESC              = "Добавление цели под курсором (без суффикса)/этого игрока (\"self\")/текущего оружия (\"weap\")/бесплотной цели (\"force\")/произвольного актора (\"listget\") в информационную панель. <панель> - номер самой панели; по умолчанию используется первый свободный слот.";
 ZCHECKER_ZCADD_ADDINSUFFPLACE         = "Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определенную панель через \"zcadd 1\"..\"zcadd %i\".";
@@ -388,7 +389,7 @@ ZCHECKER_ZCADD_SUCCESSFORCED          = "Добавлен актор %s";
 ZCHECKER_ZCADD_SUCCESSCAMERA          = "Добавлена камера игрока %s";
 ZCHECKER_ZCADD_USINGPREVLINK          = "\c~Используется уже существующая ссылка (панель \cj%i\c~) для актора \cu%s\c~.";
 
-// "zcrem"/"zcclear":
+//  "zcrem"/"zcclear":
 ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<панель>];zcclear [<панель>]";
 ZCHECKER_ZCREM_HELP_DESC              = "Убирает актора из информационной панели под номером <panel>; очищает весь список, если аргумента нет.";
 ZCHECKER_ZCREM_SUCCESS                = "Удален актор \"%s\" <%s> с позиции %i.";
@@ -396,9 +397,9 @@ ZCHECKER_ZCREM_SUCCESSTOTAL           = "Все акторы удалены из инфопанелей.";
 ZCHECKER_ZCREM_EMPTYPOS               = "Удалить невозможно, так как актора в позиции %i нет.";
 
 
-//File "ZCCommandsActorAlter.zsc":
+// File "ZCCommandsActorAlter.zsc":
 
-// "zcact":
+//  "zcact":
 ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<с кем>] <действие>";
 ZCHECKER_ZCACT_HELP_DESC              = "Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\".";
 ZCHECKER_ZCACT_CANNOTREVIVE           = "Невозможно воскресить актора %s.";
@@ -411,21 +412,21 @@ ZCHECKER_ZCACT_XKILLED                = "Актор %s жестоко убит.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Не удается жестоко убить актора %s.";
 ZCHECKER_ZCACT_DESTROYED              = "Актор %s уничтожен.";
 
-// "zcgive":
+//  "zcgive":
 ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<кому>] <предмет> [<количество=1>]";
 ZCHECKER_ZCGIVE_HELP_DESC             = "Выдает <количество> <предмет>ов актору <кому> (по умолчанию цели под курсором).";
 ZCHECKER_ZCGIVE_SUCCESS               = "Предмет \"%s\" был выдан актору \"%s\".";
 ZCHECKER_ZCGIVE_CANNOTRECEIVE         = "Актор %s не может принять предмет.";
 ZCHECKER_ZCGIVE_NOTINVCLASS           = "\"%s\" - не класс Inventory.";
 
-// "zctake":
+//  "zctake":
 ZCHECKER_ZCTAKE_HELP_TITLE            = "zctake [<от кого>] <предмет> [<количество=1>]";
 ZCHECKER_ZCTAKE_HELP_DESC             = "Отбирает <количество> <предмет>ов с актора <от кого> (по умолчанию с цели под курсором).";
 ZCHECKER_ZCTAKE_SUCCESS               = "Предмет \"%s\" был отобран от актора \"%s\".";
 ZCHECKER_ZCTAKE_CANNOTRECEIVE         = "Невозможно отобрать предмет у актора %s.";
 ZCHECKER_ZCTAKE_NOTINVCLASS           = "\"%s\" - не класс Inventory.";
 
-// "zcsummon":
+//  "zcsummon":
 ZCHECKER_ZCSUMMON_HELP_TITLE          = "zcsummon <класс> [<количество=1>] [<разделенный запятыми список дополнительных свойств>]";
 ZCHECKER_ZCSUMMON_HELP_DESC           = "Создает <количество> <класс>ов аналогично встроенной одноименной команде. Дополнительный свойства могут быть перечислены через запятую без пробелов. Возможные значения (\"rel\" - относительно игрока):\
   ПОВЕДЕНИЕ: f[riend]|foe, aggr[essiveness]:<0-255>, [no]infi[ght], notproj[ectile];\
@@ -449,20 +450,20 @@ ZCHECKER_ZCSUMMON_ADDONLYLAST         = "\c~Только последний созданный актор буд
 ZCHECKER_ZCSUMMON_CANNOTSUMMON        = "\caНе удается создать актор \cu\"\c-%s\cu\". Возможно, он помечен как \"abstract\" или же мгновенно уничтожается в переопределении BeginPlay().";
 ZCHECKER_ZCSUMMON_NOTACTOR            = "\"%s\" - не класс Actor.";
 
-// "zccopyclass"/"zccopysummon":
+//  "zccopyclass"/"zccopysummon":
 ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<количество=1>] [<разделенный запятыми список как в \"zcsummon\">]";
 ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "Сдвоенная команда. \"zccopyclass\" сохраняет название актора под курсором во внутреннюю переменную $savedclass; \"zccopysummon\" создает актор(ов) класса $savedclass.";
 
-// "zcsetflag":
+//  "zcsetflag":
 ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]];zcbud [<кому>] [<значение>]";
 ZCHECKER_ZCSETFLAG_HELP_DESC          = "Устанавливает или сбрасывает <флаг> актору <кому> (по умолчанию цели под курсором). Переключает <флаг>, если <значение> не указано. Примечание: из-за асинхронного исполнения сетевых событий ZScript и машины ACS операция над флагом будет отложена на один игровой такт.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Флаг \"%s\" для актора %s успешно установлен в %i.";
 
-// "zcsetstate":
+//  "zcsetstate":
 ZCHECKER_ZCSETSTATE_HELP_TITLE        = "zcsetstate [<кому>] <метка стейта>;zcsets [<кому>] <метка стейта>;zcsetst [<кому>] <метка стейта>;zcst [<кому>] <метка стейта>";
 ZCHECKER_ZCSETSTATE_HELP_DESC         = "Устанавливает указанную <метку стейта> актору <кому> (по умолчанию цели под курсором). Примечание: из-за асинхронного исполнения сетевых событий ZScript и машины ACS операция над флагом будет отложена на один игровой такт.";
 
-// "zcsetprop":
+//  "zcsetprop":
 ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<кто>] [add|rel[ative][:<к кому>]|raw] <свойство>:<значение>[,<св-во>:<значение>,[...]];zcsetp [<кто>] [add|rel[:<к кому>]] <свойство>:<значение>[,...];zcsp [<кто>] [add|rel[:<к кому>]] <свойство>:<значение>[,...];zchate [<кто>] [<кого>|null]";
 ZCHECKER_ZCSETP_HELP_DESC             = "Устанавливает <свойство> (property) в <значение> для актора <кто> (по умолчанию цели под курсором). С параметром \"raw\" или вовсе без параметра свойство будет просто перезаписано; с \"add\" - прибавлено к текущему значению (если это возможно); и с \"rel[ative]][:<к кому>]\" - прибавлено к значению указанного актора, или к игроку при пропущенном поле <к кому> (опять же, если возможно). Доступные свойства:\
   МИР      : x <дробн>, y <дробн>, z <дробн>|floor|ceil|rawceil, velx|vely|velz <дробн>, angle|pitch|roll <дробн>;\
@@ -484,9 +485,9 @@ ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Значение свойства \c-%s\c~, не являю
 ZCHECKER_ZCSETP_SUCCESS               = "Свойства для актора \"%s\" успешно изменены.";
 
 
-//File "ZCCommandsMap.zsc":
+// File "ZCCommandsMap.zsc":
 
-// "zcev (*)":
+//  "zcev (*)":
 ZCHECKER_ZCEV_HELP_TITLE              = "zcev goto <класс>|<категория>|start;zcev re[create|load];zcev map[2]|level[2]";
 ZCHECKER_ZCEV_HELP_DESC               = "Управление миром на картах Everything. Исключением являются команды \"map\"/\"level\", которые переносят игрока на карты \"map everything\" и \"map everything_simple\".";
 ZCHECKER_ZCEV_NOTEVMAP                = "Использование этой команды невозможно вне карт Everything.";
@@ -509,9 +510,9 @@ ZCHECKER_ZCEVRESECTOR_HELP_DESC       = "Перезагружает основные свойства секторо
 ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Переносит игрока на карту \"Everything\", если в конце аргумента не вписано число \"2\"; переносит на \"Everything_simple\" в ином случае.";
 
 
-//File "ZCCommandsMiscControl.zsc":
+// File "ZCCommandsMiscControl.zsc":
 
-// "zcthinkers":
+//  "zcthinkers":
 ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> [l[ist]];zcthinkers <тип> rm|rem[ove]|del[ete] <порядковый номер>|<класс>;zcthinkers actors add[:<панель>] <порядковый номер>;zclistthinkers <тип>;zcaddlistget [<порядковый номер>] [<панель>]";
 ZCHECKER_ZCTHINKERS_HELP_DESC         = "Произодит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели.";
 ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "StatNum лежит вне пределов. Должен находиться в диапазоне [0; %i].";
@@ -538,7 +539,7 @@ ZCHECKER_ZCTHINKERS_LISTATPOS         = "на";
 ZCHECKER_ZCTHINKERS_LISTINVOWNER      = "inv.owner: ";
 ZCHECKER_ZCTHINKERS_LISTTOTAL         = "Всего %i объектов класса Thinker типа StatNum %i.";
 
-// "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
+//  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)";
 ZCHECKER_ZCPANELCTL_HELP_DESC         = "Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае.";
 ZCHECKER_ZCPANEL_NOACTORINPOS         = "Актора в позиции %i нет.";
@@ -556,22 +557,22 @@ ZCHECKER_ZCPANELINFO_LISTHEADER       = "\cyПсевдонимы акторов \c-(всего %i): ";
 ZCHECKER_ZCPANELINFO_ALIASLINKED      = "  \"c~\"\c-%s\c~\" связан с \c-%s\c~, находящемуся на позиции %s.";
 ZCHECKER_ZCPANELINFO_ALIASGONE        = "  \"c~\"\c-%s\c~\" не связан";
 
-// "zcvarsctl":
+//  "zcvarsctl":
 ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvarsctl set|new <$название> <строка или подстановка>;zcvarsctl del[ete]|rm|rem[ove] <$название>|all;zcvarsctl l[ist]|i[nfo]";
 ZCHECKER_ZCVARSCTL_HELP_DESC          = "Управление внутренними переменными классов ZChecker; идентификаторы должны начинаться с \"$\".\n  Доступные подстановки (должны начинаться с \"%\" или \"$\"):  \"$self\" (сам игрок), \"$lt\"|\"$linetarget\" (его цель), \"$target\" (его поле target), \"$master\" (его поле master), \"$tracer\" (его поле tracer).";
 ZCHECKER_ZCVARSCTL_SETSUCCESS         = "Внутренняя переменная \"\cn%s\c-\" \cdустановлена\c- в \"%s\".";
 ZCHECKER_ZCVARSCTL_LISTHEADER         = "\cyВнутренние переменные \c~(всего \c-%i\c~): ";
 
-// "zcinterface"/"zcif":
+//  "zcinterface"/"zcif":
 ZCHECKER_ZCIF_HELP_TITLE              = "zcif strequal <имя1>|<$переменная1> <имя2>|<$переменная2>;zcif dangerccmds|ev[map|erything];zcif panel <панель>;zcif panelinherit <панель> <класс>|<$переменная>;zcif panelequal <панель1> <панель2>;zcif validplacepos <строка>;zcif validpos <строка>;zcinterface panelfind <имя класса>;zcinterface panelfindfree";
 ZCHECKER_ZCIF_HELP_DESC               = "Внешний интерфейс условного оператора для пользовательских псевдонимов (алиасов) команд и других подобных вещей. После отработки устанавливает целочисленную консольную переменную \"%s\". Для отслеживания результатов может быть включен уровень журналирования \"Разработка/API\".";
 ZCHECKER_ZCIF_TRACEPREFIX             = "\csВнешний интерфейс\c~. \c-";
 
 
 
-//File "ZCTooltipClasses.zsc":
+// File "ZCTooltipClasses.zsc":
 
-//General tooltips:
+// General tooltips:
 
 ZCHECKER_TOOLTIP_ACTORMASKS_TIPS      = "Практически для всех команд, которые принимают первым аргументом название класса (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) можно использовать два подстановочных символа регулярных выражений:\
 \t'`2*`2' для любых символов любого количества, в том числе и нуля; `dи`x\
@@ -619,7 +620,7 @@ ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES = "\"`Cmap everything_simple`C\" сменяет
 \"`Czcev map2`x\" на практике делает то же самое.";
 
 
-//Console commands tooltips:
+// Console commands tooltips:
 ZCHECKER_TOOLTIP_ZCHELP_EXAMPLES      = "\"`Czchelp`x\" без параметров выведет краткую справку по наиболее часто используемым консольным командам (CCMDs);\
 \"`Czchelp all`x\" отобразит полную справку, включая полный список всех команд.;\
 \"`Czchelp -a`x\" аналогична предыдущей команде `~(это для *nix-пользователей вроде меня)`~;\

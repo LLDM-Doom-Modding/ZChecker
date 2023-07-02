@@ -1,17 +1,17 @@
 [enu default]
 
 
-//Tabs size for this file: 4.
+// Tabs size for this file: 4.
 
-// "ZCGlobal.Log()" and all of its derivatives overrides next colors placeholders:
-//    '\c-' is a "LLCOLOR_MAIN"      (default user messages color, usually gray);
-//    '\c!' is a "LLCOLOR_WARNING"   (yellow);
-//    '\c~' is a "LLCOLOR_DARK"      (darkgray).
+//  "ZCGlobal.Log()" and all of its derivatives overrides next colors placeholders:
+//     '\c-' is a "LLCOLOR_MAIN"      (default user messages color, usually gray);
+//     '\c!' is a "LLCOLOR_WARNING"   (yellow);
+//     '\c~' is a "LLCOLOR_DARK"      (darkgray).
 
 
-// === General and core ===
+//  === General and core ===
 
-//Commons:
+// Commons:
 ZCHECKER_CURLANGUAGE                  = "en"; //Used for the auto-updating of the cached localized strings.
 ZCHECKER_GREETINGS_SUCCESS            = "ZChecker v%s initialized successfully. Total %i console commands, %i info panels.";
 ZCHECKER_GREETINGS_WARNINGS           = "ZChecker v%s initialized \c!with warnings\c-. Total %i console commands, %i info panels.";
@@ -22,7 +22,7 @@ ZCHECKER_CCMDSHELP_EXAMPLES           = "Examples";
 ZCHECKER_CCMDS_DANGERALLOWEDWARN      = "Warning";
 ZCHECKER_LOG_EMERGENCY_PREFIX         = "[ZChecker emergency]";
 
-//Network events intercepting:
+// Network events intercepting:
 ZCHECKER_NETEVENTINTC_NETEVENT        = "Netevent";
 ZCHECKER_NETEVENTINTC_MANUAL          = "Manual";
 ZCHECKER_NETEVENTINTC_SYSTEM          = "System";
@@ -31,7 +31,7 @@ ZCHECKER_NETEVENTINTC_FROMPLAYER      = "from player #";
 
 
 
-// === Menus ===
+//  === Menus ===
 
 ZCHECKER_MAINMENU_TITLE               = "ZChecker settings";
 ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR  = "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in the options menu above.";
@@ -87,12 +87,12 @@ ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN   = "Move and warn (default)";
 ZCHECKER_MAINMENUOPT_TWICE_COPYWARN   = "Copy and warn";
 
 
-// === Infopanels control menu ===
+//  === Infopanels control menu ===
 
 ZCHECKER_INFOPANELSMENU_TITLE         = "ZChecker panels";
 ZCHECKER_INFOPANELSMENUDIV_PANELS     = "\c[gold]Informational panels settings";
 ZCHECKER_INFOPANELSMENU_KEYSHELP1     = "\c[tan]Switch info: \ccSpace\cu/\ccEnter\cu, %s or \ccLeft\cu/\ccRight";
-ZCHECKER_INFOPANELSMENU_KEYSHELP2     = "\c[darkgreen]Enter sumbenu: \ccF3\cu/\ccF4\cu/\ccTab\cu or \ccRMB";
+ZCHECKER_INFOPANELSMENU_KEYSHELP2     = "\c[darkgreen]Enter sumbenu: \ccF3\cu/\ccF4\cu/\ccTab\cu or \ccMMB";
 ZCHECKER_INFOPANELSMENU_KEYSHELP3     = "\c[teal]Move panels: \cc+\cu/\ccKP+\cu,\cc-\cu/\ccKP-\cu or \ccMouse wheel";
 ZCHECKER_INFOPANELSMENUDIV_RESET      = "\c[gold]Control";
 ZCHECKER_INFOPANELSMENU_RESETBUTTON   = "Reset informational panels order";
@@ -247,7 +247,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "ZChecker panel: Sound definitions";
 ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Output rare sounds";
 
 
-// === Visual Settings control menu ===
+//  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: HUD and visual settings";
 ZCHECKER_VISUAL_POSITIONING           = "Panels positioning";
@@ -272,7 +272,7 @@ ZCHECKER_VISUAL_INFOSTR_SCALE         = "Actor info string scale";
 ZCHECKER_VISUAL_OTHER                 = "Other";
 ZCHECKER_VISUAL_FONTTYPES             = "General font";
 
-// === Control menu for the "Everything" map ==
+//  === Control menu for the "Everything" map ==
 
 ZCHECKER_EVMAPMENU_TITLE              = "ZChecker: \"Everything\" map settings";
 ZCHECKER_EVMAPMENU_SPAWNOPTIONS       = "Spawning options";
@@ -334,7 +334,7 @@ ZCHECKER_EVMAPMENU_WARPMISSILES       = "Projectiles\cc: \"\cmzcevg #\cdproj\cc\
 ZCHECKER_EVMAPMENU_WARPPLAYERS        = "Player classes\cc: \"\cmzcevg #\cdplayers\cc\"";
 ZCHECKER_EVMAPMENU_WARPOTHER          = "Special actors\cc: \"\cmzcevg #\cdspecial\cc\"";
 
-// === Console commands control menu ===
+//  === Console commands control menu ===
 
 ZCHECKER_CCMDMENU_TITLE               = "ZChecker: call console command";
 ZCHECKER_CCMDMENU_WIP                 = "[WIP] Some frequently used commands will be here.";
@@ -347,7 +347,7 @@ ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Add self to panel";
 ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Clear all panels";
 
 
-// === An Everything" maps ==
+//  === An Everything" maps ==
 
 ZCHECKER_EVMAP_INITERROR              = "%s::RecreateEverything(). Cannot run due to the map errors, terminating.";
 ZCHECKER_EVMAP_RECREATEACTORS         = "Recreating/reloading map actors...";
@@ -371,20 +371,20 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES       = "%s \cnreplaces\c- %s";
 
 
 
-// === Console commands ===
+//  === Console commands ===
 
-//General:
+// General:
 
 ZCHECKER_CCMD_WIP                     = "\c~[Work-in-progress command, may behave strangely or not work at all].";
 
-// "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()"
+//  "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()"
 ZCHECKER_GETACTOR_SKIPPEDSPECIAL      = "Skipped special ZChecker class \"%s\".";
 ZCHECKER_GETACTOR_LTNOACTORS          = "No available linetarget actors found.";
 ZCHECKER_GETACTOR_EMPTYPOS            = "No actor in position %i.";
 ZCHECKER_GETACTOR_WRONGPOS            = "\c!Wrong position %i\c- (must be in range [1..%i]).";
 ZCHECKER_GETACTOR_UNKNOWNKEYWORD      = "\c!Unknown placeholder \"%s\" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.";
 
-// "ZCConsoleCommand::ParseSpecialActorName()"
+//  "ZCConsoleCommand::ParseSpecialActorName()"
 ZCHECKER_PARSENAME_WRONGSELECT        = "\c!Selection \"%s\" isn't a positive integer.";
 ZCHECKER_PARSENAME_EMPTYKEYWORD       = "\c!Skipped\c- empty placeholder \"%s\". You may use \"%%null\" or \"%%none\" to override this.";
 ZCHECKER_PARSENAME_UNSETVAR           = "\c!Skipped\c- unset internal variable \"%s\".";
@@ -395,19 +395,19 @@ ZCHECKER_PARSENAME_FOUNDSOME          = "Found more than one suitable actor name
 ZCHECKER_PARSENAME_SELECTBOUNDS       = "\c!Selected index \cn%i \c!is out of range\c- of the found candidates.";
 ZCHECKER_PARSENAME_IGNORESELECT       = "\c!Ignoring numerical selection %i\c-";
 
-// "ZCConsoleCommand::RemoveWorldThinker()"
+//  "ZCConsoleCommand::RemoveWorldThinker()"
 ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crTried to destroy a live player %i\c-, \c!skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
 ZCHECKER_REMOVEWARNING_LIVEPLAYER     = "destroying live player";
 ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crInternal ZChecker class \"\c-%s\cr\" in the destroy list, \c!skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
 ZCHECKER_REMOVEWARNING_ZCINTERNAL     = "destroying internal ZChecker class";
 
-// "ZCAddCommand::HandleDuplicateActorFields()"
+//  "ZCAddCommand::HandleDuplicateActorFields()"
 ZCHECKER_ADD_DUPLICATELINK            = "\c~Found \c!duplicate link \c~for actor \c-%s\c~ in panel %i.";
 
 
-// "File ZCCommandsGeneral.zsc"
+//  "File ZCCommandsGeneral.zsc"
 
-// "zchelp":
+//  "zchelp":
 ZCHECKER_ZCHELP_HELP_TITLE            = "zchelp [a[ll]|-a|--all|-v];zchelp <zccommand>";
 ZCHECKER_ZCHELP_HELP_DESC             = "This help text. If <command> is provided, prints out a help text for the specific command (in most cases, with examples). Otherwise, if <all> output is enabled, displays the general complete help text.";
 ZCHECKER_ZCHELP_CANNOTFIND            = "\czZChecker help: \cxcannot find ZChecker console command \c~\"\c-%s\c~\"\cx.";
@@ -417,7 +417,7 @@ ZCHECKER_ZCHELP_VERBOSETITLE          = "\cyZChecker \chv%s.\
 ZCHECKER_ZCHELP_HEADERCOMMONCCMDS     = "\cjAvailable commands, commonly used\c-:";
 ZCHECKER_ZCHELP_HEADERALLCCMDS        = "\cjAvailable commands, complete list\c-:";
 
-// "zcadd":
+//  "zcadd":
 ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [<index>] [<panel>]";
 ZCHECKER_ZCADD_HELP_DESC              = "Add the linetarget/current player/current weapon/non-solid linetarget/random world actor into the panels list. <panel> is a panel number to set to; if omitted, the first empty slot will be used.";
 ZCHECKER_ZCADD_ADDINSUFFPLACE         = "Cannot add target to the panels list, insufficient space. Try adding the target to list directly via \"zcadd 1\"..\"zcadd %i\".";
@@ -431,7 +431,7 @@ ZCHECKER_ZCADD_SUCCESSFORCED          = "Added actor %s";
 ZCHECKER_ZCADD_SUCCESSCAMERA          = "Added a player camera %s";
 ZCHECKER_ZCADD_USINGPREVLINK          = "\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.";
 
-// "zcrem"/"zcclear":
+//  "zcrem"/"zcclear":
 ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<panel>];zcclear [<panel>]";
 ZCHECKER_ZCREM_HELP_DESC              = "Remove testee from informational panel <panel>; removes the whole list if no argument provided.";
 ZCHECKER_ZCREM_SUCCESS                = "Removed actor \"%s\" <%s> from position %i.";
@@ -439,9 +439,9 @@ ZCHECKER_ZCREM_SUCCESSTOTAL           = "All actors cleared from the infopanels.
 ZCHECKER_ZCREM_EMPTYPOS               = "Cannot remove, there's no actor in position %i.";
 
 
-//File "ZCCommandsActorAlter.zsc":
+// File "ZCCommandsActorAlter.zsc":
 
-// "zcact":
+//  "zcact":
 ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<pos>] <action>";
 ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
 ZCHECKER_ZCACT_CANNOTREVIVE           = "Cannot revive actor %s";
@@ -454,21 +454,21 @@ ZCHECKER_ZCACT_XKILLED                = "Extremely killed actor %s.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Cannot extremely kill actor %s";
 ZCHECKER_ZCACT_DESTROYED              = "Destroyed actor %s.";
 
-// "zcgive":
+//  "zcgive":
 ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<pos>] <item> [<amount=1>]";
 ZCHECKER_ZCGIVE_HELP_DESC             = "Give <amount> <item>s to the testee <pos> (or linetarget, if omitted)";
 ZCHECKER_ZCGIVE_SUCCESS               = "Item \"%s\" was given to actor \"%s\".";
 ZCHECKER_ZCGIVE_CANNOTRECEIVE         = "Actor %s cannot receive item.";
 ZCHECKER_ZCGIVE_NOTINVCLASS           = "\"%s\" isn't an Inventory actor.";
 
-// "zctake":
+//  "zctake":
 ZCHECKER_ZCTAKE_HELP_TITLE            = "zctake [<pos>] <item> [<amount=1>]";
 ZCHECKER_ZCTAKE_HELP_DESC             = "Take <amount> <item>s from the testee <pos> (or linetarget, if omitted)";
 ZCHECKER_ZCTAKE_SUCCESS               = "Item \"%s\" is taken from actor \"%s\".";
 ZCHECKER_ZCTAKE_CANNOTRECEIVE         = "Cannot take item from actor %s.";
 ZCHECKER_ZCTAKE_NOTINVCLASS           = "\"%s\" isn't an Inventory actor.";
 
-// "zcsummon":
+//  "zcsummon":
 ZCHECKER_ZCSUMMON_HELP_TITLE          = "zcsummon <class> [<amount=1>] [<comma-separated list of extra properties>]";
 ZCHECKER_ZCSUMMON_HELP_DESC           = "Summon <amount> of <class>es by rules of build-in eponymous command. Extended info (<extras>) may be provided as a comma-separated list without spaces. Possible parameters are:\
   BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];\
@@ -492,20 +492,20 @@ ZCHECKER_ZCSUMMON_ADDONLYLAST         = "\c~Only last summoned actor added to th
 ZCHECKER_ZCSUMMON_CANNOTSUMMON        = "\caCannot summon actor class \cu\"\c-%s\cu\". It may be abstract or immediately destroyed in the BeginPlay() override.";
 ZCHECKER_ZCSUMMON_NOTACTOR            = "\"%s\" isn't an Actor class.";
 
-// "zccopyclass"/"zccopysummon":
+//  "zccopyclass"/"zccopysummon":
 ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<amount=1>] [<comma-separated list as in \"zcsummon\">]";
 ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "A paired command. \"zccopyclass\" saves a linetarget actor class into $savedclass internal variable; \"zccopysummon\" summons a $savedclass actor(s).";
 
-// "zcsetflag":
+//  "zcsetflag":
 ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]";
 ZCHECKER_ZCSETFLAG_HELP_DESC          = "Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Flag \"%s\" for actor %s is succesfully set to %i.";
 
-// "zcsetstate":
+//  "zcsetstate":
 ZCHECKER_ZCSETSTATE_HELP_TITLE        = "zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcsetst [<pos>] <state label>;zcst [<pos>] <state label>";
 ZCHECKER_ZCSETSTATE_HELP_DESC         = "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution, in singleplayer the result for most of the flags will be delayed by 1 tic.";
 
-// "zcsetprop":
+//  "zcsetprop":
 ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
 ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
@@ -527,9 +527,9 @@ ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Value of the non-numeric property \c
 ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully changed.";
 
 
-//File "ZCCommandsMap.zsc":
+// File "ZCCommandsMap.zsc":
 
-// "zcev (*)":
+//  "zcev (*)":
 ZCHECKER_ZCEV_HELP_TITLE              = "zcev goto <class>|<category>|s[tart];zcev re[create|load];zcev map[2]|level[2]";
 ZCHECKER_ZCEV_HELP_DESC               = "Operate with the world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warp player to the \"map everything\" and \"map everything_simple\".";
 ZCHECKER_ZCEV_NOTEVMAP                = "Cannot use command on maps other than the Everything map.";
@@ -555,9 +555,9 @@ ZCHECKER_ZCEVMAPWARP_HELP_TITLE       = "zcev map|level;zcev map2|level2";
 ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Warp to the \"Everything\" map when no digit provided at the end of the argument; otherwise warp to the \"Everything_simple\" map.";
 
 
-//File "ZCCommandsMiscControl.zsc":
+// File "ZCCommandsMiscControl.zsc":
 
-// "zcthinkers":
+//  "zcthinkers":
 ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panel>] <numindex>;zclistthinkers <type>;zcaddlistget [<index>] [<panel>]";
 ZCHECKER_ZCTHINKERS_HELP_DESC         = "Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel, etc.";
 ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "StatNum is out of limits. Must be in range [0; %i].";
@@ -585,7 +585,7 @@ ZCHECKER_ZCTHINKERS_LISTATPOS         = "at";
 ZCHECKER_ZCTHINKERS_LISTINVOWNER      = "inv.owner is";
 ZCHECKER_ZCTHINKERS_LISTTOTAL         = "Total %i thinkers of the StatNum type %i.";
 
-// "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
+//  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info)";
 ZCHECKER_ZCPANELCTL_HELP_DESC         = "Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise.";
 ZCHECKER_ZCPANEL_NOACTORINPOS         = "There's no actor in position %i.";
@@ -603,22 +603,22 @@ ZCHECKER_ZCPANELINFO_LISTHEADER       = "\cyActors aliases \c-(total %i): ";
 ZCHECKER_ZCPANELINFO_ALIASLINKED      = "  \"c~\"\c-%s\c~\" linked to the \c-%s\c~ with world position %s.";
 ZCHECKER_ZCPANELINFO_ALIASGONE        = "  \"c~\"\c-%s\c~\" is unlinked";
 
-// "zcvarsctl":
+//  "zcvarsctl":
 ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo]";
 ZCHECKER_ZCVARSCTL_HELP_DESC          = "Perform control on internal ZChecker class variables; identifiers must be started with \"$\".\n  Possible placeholders for the <string value> (first symbol must be \"%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
 ZCHECKER_ZCVARSCTL_SETSUCCESS         = "Internal variable \"\cn%s\c-\" is \cdset\c- to \"%s\".";
 ZCHECKER_ZCVARSCTL_LISTHEADER         = "\cyInternal variables \c~(total \c-%i\c~): ";
 
-// "zcinterface"/"zcif":
+//  "zcinterface"/"zcif":
 ZCHECKER_ZCIF_HELP_TITLE              = "zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree";
 ZCHECKER_ZCIF_HELP_DESC               = "Provide a conditional operator external interface for the user-defined aliases and other similar stuff. On return sets an integer console variable \"%s\". A \"Development/API\" log level must be enabled to track the command results.";
 ZCHECKER_ZCIF_TRACEPREFIX             = "\csExternal interface\c~. \c-";
 
 
 
-//File "ZCTooltipClasses.zsc":
+// File "ZCTooltipClasses.zsc":
 
-//General tooltips:
+// General tooltips:
 
 ZCHECKER_TOOLTIP_ACTORMASKS_TIPS      = "For almost all commands that take actor name as argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\
 \t'`2*`2' for any number of any characters, including amount of zero; `dand`x\
@@ -666,7 +666,7 @@ ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES = "\"`Cmap everything_simple`C\" changes
 \"`Czcev map2`x\" does pretty much the same.";
 
 
-//Console commands tooltips:
+// Console commands tooltips:
 ZCHECKER_TOOLTIP_ZCHELP_EXAMPLES      = "Simple \"`Czchelp`x\" prints out a help text with only the commonly used console commands (CCMDs);\
 \"`Czchelp all`x\" prints out a full help text including all of the available console commands;\
 \"`Czchelp -a`x\" same as CCMD above `~(for the *nix OS terminal users like me)`~;\

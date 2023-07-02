@@ -52,7 +52,7 @@ unused),,,,
 ,,ZCHECKER_MAINMENU_NETEVENTS,Netevent info intercepting,Перехват Netevents
 ,,ZCHECKER_MAINMENU_NETEVENTS_TIP,Try to obtain information from network events.,Перехватывает информацию с сетевых событий.
 ,,ZCHECKER_MAINMENU_ALLOW_DANGEROUS,Allow dangerous actions,Разрешить опасные действия
-,,ZCHECKER_MAINMENU_ALLOW_CRASH,Allow operations that are known to crash the game.,Разрешить действия
+,,ZCHECKER_MAINMENU_ALLOW_CRASH,Allow operations that are known to crash the game.,"Действия, при обычных условиях ломающие игровой движок."
 ,,ZCHECKER_MAINMENU_TWICE_BEHAVIOUR,Repeated actor addition handling,Поведение при дублировании указателя
 ,,ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR,"Behaviour when using ""zcadd"" on an actor which","Поведение при использовании команд вроде ""zcadd"" на акторе,"
 ,,ZCHECKER_MAINMENU_ALREADY_LIST,is already present in the information panels list.,который уже присутствует в инфопанелях.
@@ -91,7 +91,7 @@ unused),,,,
 ,,ZCHECKER_INFOPANELSMENU_TITLE,ZChecker panels,Инфопанели ZChecker
 ,,ZCHECKER_INFOPANELSMENUDIV_PANELS,\c[gold]Informational panels settings,\c[gold]Настройки информационных панелей
 ,,ZCHECKER_INFOPANELSMENU_KEYSHELP1,"\c[tan]Switch info: \ccSpace\cu/\ccEnter\cu, %s or \ccLeft\cu/\ccRight","\c[tan]Вкл/Откл: \ccПробел\cu/\ccEnter\cu, %s или \ccВлево\cu/\ccВправо"
-,,ZCHECKER_INFOPANELSMENU_KEYSHELP2,\c[darkgreen]Enter sumbenu: \ccF3\cu/\ccF4\cu/\ccTab\cu or \ccRMB,\c[darkgreen]Открыть подменю: \ccF3\cu/\ccF4\cu/\ccTab\cu или \ccПКМ
+,,ZCHECKER_INFOPANELSMENU_KEYSHELP2,\c[darkgreen]Enter sumbenu: \ccF3\cu/\ccF4\cu/\ccTab\cu or \ccMMB,\c[darkgreen]Открыть подменю: \ccF3\cu/\ccF4\cu/\ccTab\cu или \ccСКМ
 ,,ZCHECKER_INFOPANELSMENU_KEYSHELP3,"\c[teal]Move panels: \cc+\cu/\ccKP+\cu,\cc-\cu/\ccKP-\cu or \ccMouse wheel","\c[teal]Перемещение: \cc+\cu/\ccKP+\cu,\cc-\cu/\ccKP-\cu или \ccКолесо мыши"
 ,,ZCHECKER_INFOPANELSMENUDIV_RESET,\c[gold]Control,\c[gold]Управление
 ,,ZCHECKER_INFOPANELSMENU_RESETBUTTON,Reset informational panels order,Сбросить порядок инфопанелей
@@ -335,7 +335,7 @@ unused),,,,
 ,,,,
 , === Console commands control menu ===,,,
 ,,,,
-,,ZCHECKER_CCMDMENU_TITLE,ZChecker: call console command,
+,,ZCHECKER_CCMDMENU_TITLE,ZChecker: call console command,ZChecker: вызов консольных команд
 ,,ZCHECKER_CCMDMENU_WIP,[WIP] Some frequently used commands will be here.,[В разработке] Здесь будут часто используемые консольные команды.
 ,,ZCHECKER_CCMDMENU_HELPNOTE1,"All commands may be shown via the ""zchelp all""",Все команды могут быть показаны через
 ,,ZCHECKER_CCMDMENU_HELPNOTE2,"console command; also you may use ""zchelp <command>"".","""zchelp all""; также можно использовать ""zchelp <команда>""."
