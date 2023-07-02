@@ -82,7 +82,7 @@ for localizationType in range( len( const_LocalizationFileTypes ) ):
 				writeout( "\n" )
 
 			elif ( cellRemark and not cellID ):
-				writeout( "//%s\n", [ ( cellRemark ) ], True )
+				writeout( "// %s\n", [ ( cellRemark ) ], True )
 
 			else:
 				isRusText = True if ( len( cellRu ) != 0 ) else False
@@ -98,6 +98,7 @@ for localizationType in range( len( const_LocalizationFileTypes ) ):
 					writeout( " //%s", [ cellRemark, cellRemark if isRusText else None ] )
 
 				writeout( "%s", [ "\n", "\n" if isRusText else None ] )
+
 
 	for outfile in loczFiles:
 		writeout( "\n" )
