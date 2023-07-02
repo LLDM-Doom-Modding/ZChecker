@@ -12,7 +12,7 @@
 //  === General and core ===
 
 // Commons:
-ZCHECKER_CURLANGUAGE                  = "en"; //Used for the auto-updating of the cached localized strings.
+ZCHECKER_CURLANGUAGE                  = "en"; // Used for the auto-updating of the cached localized strings.
 ZCHECKER_GREETINGS_SUCCESS            = "ZChecker v%s initialized successfully. Total %i console commands, %i info panels.";
 ZCHECKER_GREETINGS_WARNINGS           = "ZChecker v%s initialized \c!with warnings\c-. Total %i console commands, %i info panels.";
 
@@ -52,16 +52,16 @@ ZCHECKER_MAINMENU_DIV_OTHER           = "Other settings";
 ZCHECKER_MAINMENU_DIV_HOTKEYS         = "Hotkeys";
 ZCHECKER_MAINMENU_NETEVENTS           = "Netevent info intercepting";
 ZCHECKER_MAINMENU_NETEVENTS_TIP       = "Try to obtain information from network events.";
-ZCHECKER_MAINMENU_ALLOW_DANGEROUS     = "Allow dangerous actions";
-ZCHECKER_MAINMENU_ALLOW_CRASH         = "Allow operations that are known to crash the game.";
-ZCHECKER_MAINMENU_TWICE_BEHAVIOUR     = "Repeated actor addition handling";
-ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR     = "Behaviour when using \"zcadd\" on an actor which";
-ZCHECKER_MAINMENU_ALREADY_LIST        = "is already present in the information panels list.";
-ZCHECKER_MAINMENU_NO_ZC_HANDLING      = "Disable ZC classes special handling";
-ZCHECKER_MAINMENU_DO_NOT_ALTER        = "Do not alter handling for the special";
-ZCHECKER_MAINMENU_SPECIAL             = "ZChecker actors and classes.";
-ZCHECKER_MAINMENU_LOG_LEVEL           = "Log level";
-ZCHECKER_MAINMENU_UPDATE_5_TICS       = "Will be updated within 5 world tics.";
+ZCHECKER_MAINMENU_ALLOWDANGEROUS      = "Allow dangerous actions";
+ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP  = "Allow operations that are known to crash the game.";
+ZCHECKER_MAINMENU_ZCADDTWICE          = "Repeated actor addition handling";
+ZCHECKER_MAINMENU_ZCADDTWICE_TIP1     = "Behaviour when using \"zcadd\" on an actor which";
+ZCHECKER_MAINMENU_ZCADDTWICE_TIP2     = "is already present in the information panels list.";
+ZCHECKER_MAINMENU_SPECIALHANDLING     = "Disable ZC classes special handling";
+ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1 = "Do not alter handling for the special";
+ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2 = "ZChecker actors and classes.";
+ZCHECKER_MAINMENU_LOGLEVEL            = "Log level";
+ZCHECKER_MAINMENU_LOGLEVEL_TIP        = "Will be updated within 5 world tics.";
 
 ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN    = "1. General";
 ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED = "2. Detailed (default)";
@@ -195,16 +195,16 @@ ZCHECKER_PANELSUBMENU_STATESDIV_CUR   = "For current state";
 ZCHECKER_PANELSUBMENU_STATES_TICSBAR  = "Tics left bar";
 ZCHECKER_PANELSUBMENU_STATES_FLAGS    = "Flags";
 ZCHECKER_PANELSUBMENU_STATES_EXTRAINFO = "Extra info";
-ZCHECKER_PANELSUBMENU_STATESDIV_PSPRITE = "For ready weapon state/PSprite"; //Not used in the current version. >>>
-ZCHECKER_PANELSUBMENU_STATES_OVERLAYS = "Active overlay(s)"; //<...>
+ZCHECKER_PANELSUBMENU_STATESDIV_PSPRITE = "For ready weapon state/PSprite"; // Not used in the current version. >>>
+ZCHECKER_PANELSUBMENU_STATES_OVERLAYS = "Active overlay(s)"; // <...>
 ZCHECKER_PANELSUBMENU_STATES_SPECIALID = "Special overlay ID";
 ZCHECKER_PANELSTATESOPT_UNLIMITED     = "Unlimited";
 ZCHECKER_PANELSTATESOPT_PSPR_OFF      = "Disabled";
 ZCHECKER_PANELSTATESOPT_PSPR_M        = "Main only";
 ZCHECKER_PANELSTATESOPT_PSPR_MFLASH   = "Main + flash";
 ZCHECKER_PANELSTATESOPT_PSPR_SPEC     = "Special only";
-ZCHECKER_PANELSTATESOPT_PSPR_MSPEC    = "Main + special"; //<...>
-ZCHECKER_PANELSTATESOPT_PSPR_ALL      = "All overlays"; //<<< Not used in the current version.
+ZCHECKER_PANELSTATESOPT_PSPR_MSPEC    = "Main + special"; // <...>
+ZCHECKER_PANELSTATESOPT_PSPR_ALL      = "All overlays"; // <<< Not used in the current version.
 
 ZCHECKER_PANELSUBLABEL_GSEC_PREFIX    = "";
 ZCHECKER_PANELSUBLABEL_GSEC_FCSEC     = "Separated";
@@ -235,13 +235,13 @@ ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF   = "Disabled";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z coordinates";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA = "Z coord + actor delta";
 
-ZCHECKER_PANELGEOMLNOPT_TYPE_LOS      = "On line of sight"; //Not used in the current version. >>>
-ZCHECKER_PANELGEOMLNOPT_TYPE_BLOCK    = "Blocking line"; //<...>
+ZCHECKER_PANELGEOMLNOPT_TYPE_LOS      = "On line of sight"; // Not used in the current version. >>>
+ZCHECKER_PANELGEOMLNOPT_TYPE_BLOCK    = "Blocking line"; // <...>
 ZCHECKER_PANELGEOMLNOPT_TYPE_BOTH     = "Both (LOS & blocking)";
 ZCHECKER_PANELGEOMLNOPT_SPEC_OFF      = "Disabled";
 ZCHECKER_PANELGEOMLNOPT_SPEC_TAG      = "Action and tag";
-ZCHECKER_PANELGEOMLNOPT_SPEC_ARGS     = "Action, args and tag"; //<...>
-ZCHECKER_PANELGEOMLNOPT_SPEC_ALL      = "Everything"; //<<< Not used in the current version.
+ZCHECKER_PANELGEOMLNOPT_SPEC_ARGS     = "Action, args and tag"; // <...>
+ZCHECKER_PANELGEOMLNOPT_SPEC_ALL      = "Everything"; // <<< Not used in the current version.
 
 ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "ZChecker panel: Sound definitions";
 ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Output rare sounds";

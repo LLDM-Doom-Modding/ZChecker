@@ -32,19 +32,19 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Option "$ZCHECKER_MAINMENU_NETEVENTS", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
     StaticText "$ZCHECKER_MAINMENU_NETEVENTS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_ALLOW_DANGEROUS", "mcm_zchecker_allowdangerccmds", "YesNo"
-    StaticText "$ZCHECKER_MAINMENU_ALLOW_CRASH", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_ALLOWDANGEROUS", "mcm_zchecker_allowdangerccmds", "YesNo"
+    StaticText "$ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_TWICE_BEHAVIOUR", "mcm_zchecker_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
-    StaticText "$ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR", DARKGRAY
-	StaticText "$ZCHECKER_MAINMENU_ALREADY_LIST", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_ZCADDTWICE", "mcm_zchecker_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
+    StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP1", DARKGRAY
+	StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_NO_ZC_HANDLING", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
-    StaticText "$ZCHECKER_MAINMENU_DO_NOT_ALTER", DARKGRAY
-	StaticText "$ZCHECKER_MAINMENU_SPECIAL", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_SPECIALHANDLING", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
+    StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1", DARKGRAY
+	StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_LOG_LEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
-    StaticText "$ZCHECKER_MAINMENU_UPDATE_5_TICS", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_LOGLEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
+    StaticText "$ZCHECKER_MAINMENU_LOGLEVEL_TIP", DARKGRAY
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {

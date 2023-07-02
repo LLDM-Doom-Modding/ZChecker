@@ -95,7 +95,7 @@ for localizationType in range( len( const_LocalizationFileTypes ) ):
 				] )
 
 				if ( cellRemark ):
-					writeout( " //%s", [ cellRemark, cellRemark if isRusText else None ] )
+					writeout( " // %s", [ cellRemark, cellRemark if isRusText else None ] )
 
 				writeout( "%s", [ "\n", "\n" if isRusText else None ] )
 
