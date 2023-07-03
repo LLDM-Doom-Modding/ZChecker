@@ -589,10 +589,11 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERS_SECTIONSECTORS,Sectors,Секторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONOTHER,Other thinkers,Другие
 ,,ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX,Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).,Доступные типы (множественное число необязательно): \n%s\nили число для нестандартных StatNum (пользовательские: \cy%i\c-..\cy%i\c-).
-,,ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR,(+NOSECTOR),
-,,ZCHECKER_ZCTHINKERS_LISTATPOS,at,на
-,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,inv.owner is,inv.owner: 
+,,ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR, (+NOSECTOR),
+,,ZCHECKER_ZCTHINKERS_LISTATPOS, at, на
+,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,", inv.owner is",", inv.owner: "
 ,,ZCHECKER_ZCTHINKERS_LISTTOTAL,Total %i thinkers of the StatNum type %i.,Всего %i объектов класса Thinker типа StatNum %i.
+,,ZCHECKER_ZCTHINKERS_LISTSECTORNUM, in sector %i, в секторе %i
 ,,,,
 ," ""zcpanel"" (without ""zcpanel save|store|load"" because of unfinished/unclear subcommand UI):",,,
 ,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info),zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)

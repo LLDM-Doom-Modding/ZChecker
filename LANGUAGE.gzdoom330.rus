@@ -535,9 +535,10 @@ ZCHECKER_ZCTHINKERS_SECTIONSTATIC     = "Статичные";
 ZCHECKER_ZCTHINKERS_SECTIONSECTORS    = "Секторы";
 ZCHECKER_ZCTHINKERS_SECTIONOTHER      = "Другие";
 ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX   = "Доступные типы (множественное число необязательно): \n%s\nили число для нестандартных StatNum (пользовательские: \cy%i\c-..\cy%i\c-).";
-ZCHECKER_ZCTHINKERS_LISTATPOS         = "на";
-ZCHECKER_ZCTHINKERS_LISTINVOWNER      = "inv.owner: ";
+ZCHECKER_ZCTHINKERS_LISTATPOS         = " на";
+ZCHECKER_ZCTHINKERS_LISTINVOWNER      = ", inv.owner: ";
 ZCHECKER_ZCTHINKERS_LISTTOTAL         = "Всего %i объектов класса Thinker типа StatNum %i.";
+ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " в секторе %i";
 
 //  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)";

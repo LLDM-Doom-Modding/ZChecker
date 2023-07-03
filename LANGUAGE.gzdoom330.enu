@@ -580,10 +580,11 @@ ZCHECKER_ZCTHINKERS_SECTIONSTATIC     = "Static";
 ZCHECKER_ZCTHINKERS_SECTIONSECTORS    = "Sectors";
 ZCHECKER_ZCTHINKERS_SECTIONOTHER      = "Other thinkers";
 ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX   = "Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).";
-ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR  = "(+NOSECTOR)";
-ZCHECKER_ZCTHINKERS_LISTATPOS         = "at";
-ZCHECKER_ZCTHINKERS_LISTINVOWNER      = "inv.owner is";
+ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR  = " (+NOSECTOR)";
+ZCHECKER_ZCTHINKERS_LISTATPOS         = " at";
+ZCHECKER_ZCTHINKERS_LISTINVOWNER      = ", inv.owner is ";
 ZCHECKER_ZCTHINKERS_LISTTOTAL         = "Total %i thinkers of the StatNum type %i.";
+ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " in sector %i";
 
 //  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info)";
