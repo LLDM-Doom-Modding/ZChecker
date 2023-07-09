@@ -157,7 +157,7 @@ unused),,,,
 ,,ZCHECKER_PANELMAINOPT_TAGS_ON,Always,Отображать всегда
 ,,,,
 ,,ZCHECKER_PANELSUBLABEL_WPOS_PREFIX,,
-,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLON,All rotations ,Все углы поворота 
+,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLON,All rotations ,Все углы поворота
 ,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF,Angle and pitch ,"Курс и тангаж (angle, pitch)"
 ,,ZCHECKER_PANELSUBLABEL_WPOS_FRACLEN,with frac of length,", длина дроби"
 ,,ZCHECKER_PANELSUBLABEL_WPOS_BUTTONS,", show inputs",; клавиши
@@ -464,7 +464,7 @@ unused),,,,
 ,,,,
 ," ""zctake"":",,,
 ,,ZCHECKER_ZCTAKE_HELP_TITLE,zctake [<pos>] <item> [<amount=1>],zctake [<от кого>] <предмет> [<количество=1>]
-,,ZCHECKER_ZCTAKE_HELP_DESC,"Take <amount> <item>s from the testee <pos> (or linetarget, if omitted)",Отбирает <количество> <предмет>ов с актора <от кого> (по умолчанию с цели под курсором).
+,,ZCHECKER_ZCTAKE_HELP_DESC,"Take <amount> <item>s from the testee <pos> (or linetarget, if omitted)",Отбирает <количество> <предмет>ов у актора <от кого> (по умолчанию у цели под курсором).
 ,,ZCHECKER_ZCTAKE_SUCCESS,"Item ""%s"" is taken from actor ""%s"".","Предмет ""%s"" был отобран от актора ""%s""."
 ,,ZCHECKER_ZCTAKE_CANNOTRECEIVE,Cannot take item from actor %s.,Невозможно отобрать предмет у актора %s.
 ,,ZCHECKER_ZCTAKE_NOTINVCLASS,"""%s"" isn't an Inventory actor.","""%s"" — не класс Inventory."
@@ -474,7 +474,7 @@ unused),,,,
 ,,ZCHECKER_ZCSUMMON_HELP_DESC,"Summon <amount> of <class>es by rules of build-in eponymous command. Extended info (<extras>) may be provided as a comma-separated list without spaces. Possible parameters are:
   BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];
   WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>;
-  SPECIAL : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.","Создаёт <количество> <класс>ов аналогично встроенной одноимённой команде. Дополнительный свойства могут быть перечислены через запятую без пробелов. Возможные значения (""rel"" — относительно игрока):
+  SPECIAL : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.","Создаёт <количество> <класс>ов аналогично встроенной одноимённой команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (""rel"" — относительно игрока):
   ПОВЕДЕНИЕ: f[riend]|foe, aggr[essiveness]:<0-255>, [no]infi[ght], notproj[ectile];
   МИР      : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>;
   ДРУГОЕ   : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>, hp|health:<hp>."
@@ -591,7 +591,7 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX,Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).,Доступные типы (множественное число необязательно): \n%s\nили число для нестандартных StatNum (пользовательские: \cy%i\c-..\cy%i\c-).
 ,,ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR, (+NOSECTOR),
 ,,ZCHECKER_ZCTHINKERS_LISTATPOS, at, на
-,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,", inv.owner is",", inv.owner: "
+,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,", inv.owner is ",", inv.owner: "
 ,,ZCHECKER_ZCTHINKERS_LISTTOTAL,Total %i thinkers of the StatNum type %i.,Всего %i объектов класса Thinker типа StatNum %i.
 ,,ZCHECKER_ZCTHINKERS_LISTSECTORNUM, in sector %i, в секторе %i
 ,,,,
@@ -601,6 +601,7 @@ unused),,,,
 ,,ZCHECKER_ZCPANEL_NOACTORINPOS,There's no actor in position %i.,Актора в позиции %i нет.
 ,,ZCHECKER_ZCPANELINFO_HEADER,\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>,\c~Актор в позиции \c-%i \c~— \c-%s\c~ <%s>
 ,,ZCHECKER_ZCPANELINFO_INHERITANCE,  \c~Inherited from \c-%s\c~ (class pointer: <%s>),  \c~Наследован от \c-%s\c~ (указатель на класс: <%s>)
+,,ZCHECKER_ZCPANELINFO_REPLACEMENTCHAIN,Replacements chain: ,Цепь замен (replacements): 
 ,,ZCHECKER_ZCPANELSAVE_ALIASEXISTS,"Alias ""%s"" already exists and is linked to the actor %s.","Псевдоним ""%s"" уже существует и связан с актором %s."
 ,,ZCHECKER_ZCPANELSAVE_RELINKINGALIAS,"Relinking the ""%s"" alias (its previous actor was destroyed).","Перепривязка псевдонима ""%s"" (его предыдущий актор уничтожен)."
 ,,ZCHECKER_ZCPANELSAVE_NOPANEL,No actor linked to the panel %s.,Никакого актора к панели %s не привязано.
@@ -673,9 +674,9 @@ Argument `g<pos>`g can take the following values and keywords:
 \t`~""`Ccam`~""`x or `~""`Ccamera`~"".`x Specifies a current player's camera.
 By default (if this argument not provided) a `Clinetarget`C will be used.","Большинство из консольных команд ZChecker, работающих с одним объектом за раз, имеют одинаковый смысл первого аргумента: указатель на нужного актора. Наиболее заметное исключение — команды семейства ""`Czcadd`C"", также имеющие параметр, указывающий на одну из инфопанелей.
 Аргумент `g<кто>`g и его производные могут принимать следующие ключевые слова:
-\t`~""`C1`~""`x..`~""`C3`~"" (вплоть до предельного числа инфопанелей).`x Относит к актором, ранее сохранённым в информационных панелях;
+\t`~""`C1`~""`x..`~""`C3`~"" (вплоть до предельного числа инфопанелей).`x Относит к акторам, ранее сохранённым в информационных панелях;
 \t`~""`Clt`~""`x или `~""`Clinetarget`~"".`x Получает первого осязаемого актора под курсором;
-\t`~""`Cs`~""`x или `~""`Cself`~"".`x Указывает на самого вызывающего игрока;
+\t`~""`Cs`~""`x или `~""`Cself`~"".`x Указывает на самого игрока, который использовал команду;
 \t`~""`Ccam`~""`x или `~""`Ccamera`~"".`x Относит к текущей камере игрока.
 По умолчанию — если аргумент не задан — подразумевается использование `Clinetarget`C."
 ,,ZCHECKER_TOOLTIP_CCMDRULES_EXAMPLES,"""`Czcgive lt clip 4`x"" gives 4 clips to the `1l`2ine`1t`2arget`2;
