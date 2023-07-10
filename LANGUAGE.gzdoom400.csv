@@ -21,6 +21,9 @@ unused),,,,
 ,,ZCHECKER_CCMDS_DANGERALLOWEDWARN,Warning,Предупреждение
 ,,ZCHECKER_LOG_EMERGENCY_PREFIX,[ZChecker emergency],
 ,,,,
+,,ZCHECKER_MAPTITLE_EVERYTHING,ZChecker: Everything,ZChecker: Everything
+,,ZCHECKER_MAPTITLE_EVERYTHING2,ZChecker: Everything (simplified),ZChecker: Everything (упрощённая)
+,,,,
 ,Network events intercepting:,,,
 ,,ZCHECKER_NETEVENTINTC_NETEVENT,Netevent,Netevent
 ,,ZCHECKER_NETEVENTINTC_MANUAL,Manual,Ручной вызов

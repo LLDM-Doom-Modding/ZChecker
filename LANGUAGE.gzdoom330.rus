@@ -21,6 +21,9 @@ ZCHECKER_CCMDSHELP_TIPS               = "Советы";
 ZCHECKER_CCMDSHELP_EXAMPLES           = "Примеры";
 ZCHECKER_CCMDS_DANGERALLOWEDWARN      = "Предупреждение";
 
+ZCHECKER_MAPTITLE_EVERYTHING          = "ZChecker: Everything";
+ZCHECKER_MAPTITLE_EVERYTHING2         = "ZChecker: Everything (упрощенная)";
+
 // Network events intercepting:
 ZCHECKER_NETEVENTINTC_NETEVENT        = "Netevent";
 ZCHECKER_NETEVENTINTC_MANUAL          = "Ручной вызов";

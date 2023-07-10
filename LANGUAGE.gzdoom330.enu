@@ -22,6 +22,9 @@ ZCHECKER_CCMDSHELP_EXAMPLES           = "Examples";
 ZCHECKER_CCMDS_DANGERALLOWEDWARN      = "Warning";
 ZCHECKER_LOG_EMERGENCY_PREFIX         = "[ZChecker emergency]";
 
+ZCHECKER_MAPTITLE_EVERYTHING          = "ZChecker: Everything";
+ZCHECKER_MAPTITLE_EVERYTHING2         = "ZChecker: Everything (simplified)";
+
 // Network events intercepting:
 ZCHECKER_NETEVENTINTC_NETEVENT        = "Netevent";
 ZCHECKER_NETEVENTINTC_MANUAL          = "Manual";

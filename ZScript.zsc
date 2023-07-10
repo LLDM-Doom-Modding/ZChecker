@@ -45,7 +45,7 @@ version "3.3.0"
 #include "ZScript/ZCInfopanelsOther.zsc"
 
 
-const ZCheckerVersionNumber = "0.85";
+const ZCheckerVersionNumber = "0.86";
 
 const ZCheckerVersion = ZCheckerVersionNumber .. ", branch \"" .. ZCheckerVersionBranch .. "\"";
 
