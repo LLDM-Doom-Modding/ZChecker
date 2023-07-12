@@ -73,14 +73,15 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	void UpdateInternalClassnameByField( uint fieldnum ) {
-		if ( fieldnum >= MaxTestee ) {
-			String newClassname = "";
+		if ( fieldnum >= MaxTestee )
+			return;
 
-			if ( Testee[ fieldnum ].mo )
-				newClassname = Testee[ fieldnum ].mo.GetClassName();
+		String newClassname = "";
 
-			globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
-		}
+		if ( Testee[ fieldnum ].mo )
+			newClassname = Testee[ fieldnum ].mo.GetClassName();
+
+		globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
 	} // of void UpdateInternalClassnameByField( uint fieldnum ) {}
 
 

@@ -1047,7 +1047,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		if ( propvalue != "" ) {
 			Actor newptr;
 
-			if ( propvalue == "null" || propvalue == "none" || propvalue == "clear" || propvalue == "-" ) {
+			if ( propvalue == "null" || propvalue == "none" || propvalue == "-" || propvalue == "del" || propvalue == "rm" || propvalue == "rem" ) {
 				params.pointers[ pointer_id ].set( NULL );
 			} else {
 				getPlaceTestee( newptr, 0, propvalue );
@@ -1076,10 +1076,10 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			modeargstr.ToLower();
 
 			// Set mode parsing:
-			if ( modeargstr == "add" || modeargstr == "+" ) {
+			if ( modeargstr == "add" || modeargstr == "a" || modeargstr == "+" ) {
 				setmode = PSM_Add;
 
-			} else if ( modeargstr.Left( 3 ) == "rel" ) {
+			} else if ( modeargstr.Left( 3 ) == "rel" || modeargstr == "r" /* Dangerous but convenient. */ ) {
 				setmode = PSM_WrongRelative;
 
 				int delimIndex = modeargstr.IndexOf( "=" );
@@ -1099,7 +1099,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 					ZCGlobal.Log( LL_Detailed, "$ZCSETP_RELPLAYER" );
 				}
 
-			} else if ( modeargstr == "raw" ) {
+			} else if ( modeargstr == "raw" && modeargstr.IndexOf( "=" ) == -1 && modeargstr.IndexOf( ":" ) == -1 ) {
 				setmode = PSM_Raw;
 
 			} else {

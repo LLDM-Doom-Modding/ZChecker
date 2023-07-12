@@ -148,9 +148,9 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 
 		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
 		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
-		addCategoryNode( "dsl,dil,sl,ls,sld,lsd,li,il,lid,ild", "largeim,largeso,decs,deci,decors,decori,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
+		addCategoryNode( "dsl,dil,dli,sl,ls,sld,lsd,lid,ild,idl", "largeim,largeso,decl,decorl,ldec,larged,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
 		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol,decor", S_DecorSolid );
-		addCategoryNode( "dpl,del,el,le,lp,led,eld,pld,lpd", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl,notsoll,nosoll", S_DecorEtherealLarge );
+		addCategoryNode( "dpl,dlp,pdl,pld,lpd,ldp,del,dle,edl,eld,led,lde", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl,notsoll,nosoll", S_DecorEtherealLarge );
 		addCategoryNode( "dp,de,ed,pd", "deth,dpas,eth,pass,-sol,notsol,nosol", S_DecorEthereal );
 		addCategoryNode( "dd,db,dnbm,dnobl,dnobmap,+nb", "dnobl,nobl,+nobl", S_DecorNoBlockmap );
 		addCategoryNode( "dni,+ni", "nint,noint,dnint,dnoi,+noint" );
