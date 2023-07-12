@@ -269,6 +269,7 @@ ZCHECKER_EVMAPMENUDIV_CODEBASED       = "- Код -";
 ZCHECKER_EVMAPMENU_STEALTH            = "Стелс-акторы (+STEALTH)";
 ZCHECKER_EVMAPMENU_INVISIBLE          = "Невидимые акторы (+INVISIBLE)";
 ZCHECKER_EVMAPMENU_PLAYERCHUNK        = "Наследованные от \'PlayerChunk\'";
+ZCHECKER_EVMAPMENU_BOSSBRAIN          = "Наследованные от \'BossBrain\'";
 ZCHECKER_EVMAPMENUDIV_OTHER           = "Другое";
 ZCHECKER_EVMAPMENU_AUTONOTARGET       = "Автовключение \"notarget\"";
 ZCHECKER_EVMAPMENU_AUTOGOD            = "Автовключение неуязвимости";
@@ -299,8 +300,8 @@ ZCHECKER_EVMAPMENUDIV_WARPOTHER       = "- Переход к остальным 
 
 ZCHECKER_CCMDMENU_TITLE               = "ZChecker: вызов консольных команд";
 ZCHECKER_CCMDMENU_WIP                 = "[В разработке] Здесь будут часто используемые консольные команды.";
-ZCHECKER_CCMDMENU_HELPNOTE1           = "Все команды могут быть показаны через";
-ZCHECKER_CCMDMENU_HELPNOTE2           = "\"zchelp all\"; также можно использовать \"zchelp <команда>\".";
+ZCHECKER_CCMDMENU_HELPNOTE1           = "Все команды могут быть показаны через \"zchelp all\";";
+ZCHECKER_CCMDMENU_HELPNOTE2           = "также можно использовать \"zchelp <команда>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\"\n\cxНе удается найти ZChecker static event handler.\n\ciВозможная причина: \cu\"\crEventHandler = ...\cu\"\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы.";
 ZCHECKER_CCMDMENU_EXAMPLES            = "Примеры команд:";
 ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Добавление цели под курсором в панель";
@@ -321,6 +322,7 @@ ZCHECKER_EVMAPSPAWN_MISSPRITESKIP     = "\c~класс \"\cz%s\c~\" пропущ
 ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP  = "\c~класс \"\cz%s\c~\" пропущен из-за \crискажения спрайта\c~ \"\cs%s\c~\" (попытка стать \"%s\").";
 ZCHECKER_EVMAPSPAWN_INVISSKIP         = "\c~класс \"\cz%s\c~\" пропущен из-за установленных флагов \c-+STEALTH\c~/\c-+INVISIBLE\c~.";
 ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP       = "\c~класс \"\cz%s\c~\" пропущен из-за наследования от \"PlayerChunk\".";
+ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP     = "\c~класс \"\cz%s\c~\" пропущен из-за наследования от \"BossBrain\".";
 ZCHECKER_EVMAPSPAWN_REPLACEDSKIP      = "\c~класс \"\cz%s\c~\" заменен (replaced) и поэтому пропущен.";
 ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "\c~замененный (replaced) классом \"\c-%s\c~\" класс \"\c-%s\c~\" запрещен\c~.";
 ZCHECKER_EVMAPCATEGORY_PREFIX         = "\cuКатегория \cj%s\cu. ";

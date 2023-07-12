@@ -98,7 +98,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	const ZCUDMF_CategoryHeaderOfsX = "user_zcsector_categoryheader_ofsx";
 	const ZCUDMF_CategoryHeaderOfsY = "user_zcsector_categoryheader_ofsy";
 
-	const ZCUDMF_SpecialDef = "user_zcsector_specialdef";
+	const ZCUDMF_SpecialDef = "user_zcsector_specialdef"; // Not more used.
+
+	// Actually no one cannot be sure that a *ZDoom namespace files parsing
+	//will not change in the future. At least from GZDoom 3.3.0 and to
+	//GZDoom 4.8.0 the sorting order has not beed changed.
+	const const_LastEmbeddedActorClass = "LAZDevice";
+
 
 	enum ECategoryIdentifiers {
 		S__Nothing = -1,
@@ -132,6 +138,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 	bool canRecreateEverything;
+	bool embeddedClassesRecreating;
+
 	bool logSpawnInfo;
 	transient bool isNoFontWarningShown;
 
@@ -209,7 +217,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 	// Next classes forces the game to crash/end the level/etc:
-	bool IsClassRestricted( class<Actor> cur ) {
+	bool IsEmbeddedClassRestricted( class<Actor> cur ) {
 		return (
 				// Common dangers:
 				cur is "DynamicLight"
@@ -219,7 +227,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "WeaponPiece"
 				// Specific dangers (usually crashing the game):
 			||  cur is "ParticleFountain"	// Crashes the game on first tic.
-			||  cur is "BossBrain"			// Spawns next to the "ExplosiveBarrel"...
 			||  cur == "Bat" 				// Tries to use a NULL "target" field.
 			||  cur is "ProgLevelEnder" 	// Just ends the level almost immediately.
 			||  cur is "SlideshowStarter" 	// Calls a "level.StartSlideshow()".
@@ -233,7 +240,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		return cur && (
 			  ( cur is "Inventory" && Inventory( cur ).owner )
 			||( cur is "PlayerPawn" && cur.player )
-			||  IsClassRestricted( cur.GetClass() )
+			||  IsEmbeddedClassRestricted( cur.GetClass() )
 		);
 	}
 
@@ -329,6 +336,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
 		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
+		bool spawnBossBrain = CVar.FindCVar( "mcm_zchecker_ev_spawnbossbrains" ).GetBool();
 		bool spawnCorruptedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawncorruptedsprites" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
 		bool spawnMissedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawnmissingsprites" ).GetBool();
@@ -337,6 +345,8 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		int spriteTNT1A0 = Actor.GetSpriteIndex( "TNT1A0" );
 		logSpawnInfo = CVar.FindCVar( "mcm_zchecker_ev_logspawninfo" ).GetBool();
 
+		embeddedClassesRecreating = true;
+
 
 		// Recreate everything:
 		for ( int i = 0; i < AllActorClasses.Size(); i++ ) {
@@ -344,16 +354,25 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			bool skipactor = false;
 
-			if ( IsClassRestricted( cls ) ) {
-				skipactor = true;
+			// Optimization. Skipping only internal dangerous classes:
+			if ( embeddedClassesRecreating ) {
+				if ( cls == const_LastEmbeddedActorClass ) {
+					embeddedClassesRecreating = false;
 
-				if ( logSpawnInfo )
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
+					if ( logSpawnInfo )
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Embedded classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
+
+				} else if ( IsEmbeddedClassRestricted( cls ) ) {
+					skipactor = true;
+
+					if ( logSpawnInfo )
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
+				}
 
 			} else if ( skipRestrictedReplacements ) {
 				class<Actor> clsReplacee = Actor.GetReplacee( cls );
 
-				if ( clsReplacee != cls && IsClassRestricted( clsReplacee ) ) {
+				if ( clsReplacee != cls && IsEmbeddedClassRestricted( clsReplacee ) ) {
 					skipactor = true;
 					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_REPLRESTRICTEDSKIP" ), cls.GetClassName(), clsReplacee.GetClassName() ) );
 				}
@@ -418,6 +437,9 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				} else if ( !spawnPlayerChunks && cls is "PlayerChunk" ) {
 					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_PLCHUNKSKIP" ), cls.GetClassName() ) );
+
+				} else if ( !spawnBossBrain && cls is "BossBrain" ) {
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_BOSSBRAINSKIP" ), cls.GetClassName() ) );
 
 				} else {
 					ECategoryIdentifiers clsType = GetSectorStartForClass( cls );

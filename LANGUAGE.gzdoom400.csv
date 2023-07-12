@@ -289,6 +289,7 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_STEALTH,+STEALTH actors,Стелс-акторы (+STEALTH)
 ,,ZCHECKER_EVMAPMENU_INVISIBLE,+INVISIBLE actors,Невидимые акторы (+INVISIBLE)
 ,,ZCHECKER_EVMAPMENU_PLAYERCHUNK,Inherited from \'PlayerChunk\',Наследованные от \'PlayerChunk\'
+,,ZCHECKER_EVMAPMENU_BOSSBRAIN,Inherited from \'BossBrain\',Наследованные от \'BossBrain\'
 ,,ZCHECKER_EVMAPMENUDIV_OTHER,Other,Другое
 ,,ZCHECKER_EVMAPMENU_AUTONOTARGET,Auto-notarget,"Автовключение ""notarget"""
 ,,ZCHECKER_EVMAPMENU_AUTOGOD,Auto-godmode,Автовключение неуязвимости
@@ -340,8 +341,8 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_TITLE,ZChecker: call console command,ZChecker: вызов консольных команд
 ,,ZCHECKER_CCMDMENU_WIP,[WIP] Some frequently used commands will be here.,[В разработке] Здесь будут часто используемые консольные команды.
-,,ZCHECKER_CCMDMENU_HELPNOTE1,"All commands may be shown via the ""zchelp all""",Все команды могут быть показаны через
-,,ZCHECKER_CCMDMENU_HELPNOTE2,"console command; also you may use ""zchelp <command>"".","""zchelp all""; также можно использовать ""zchelp <команда>""."
+,,ZCHECKER_CCMDMENU_HELPNOTE1,"All commands may be shown via the ""zchelp all""","Все команды могут быть показаны через ""zchelp all"";"
+,,ZCHECKER_CCMDMENU_HELPNOTE2,"console command; also you may use ""zchelp <command>"".","также можно использовать ""zchelp <команда>""."
 ,,ZCHECKER_CCMDMENU_ZCHANDLER_ERROR,"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu""\crEventHandler = ...\cu""\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.","""\n\cxНе удаётся найти ZChecker static event handler.\n\ciВозможная причина: \cu""\crEventHandler = ...\cu""\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы."
 ,,ZCHECKER_CCMDMENU_EXAMPLES,Command examples:,Примеры команд:
 ,,ZCHECKER_CCMDMENU_ZCADD,"""zcadd"": Add linetarget to panel","""zcadd"": Добавление цели под курсором в панель"
@@ -362,6 +363,7 @@ unused),,,,
 ,,ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \crcorrupted sprite\c~ ""\cs%s\c~"" (tends to be ""%s"").","\c~класс ""\cz%s\c~"" пропущен из-за \crискажения спрайта\c~ ""\cs%s\c~"" (попытка стать ""%s"")."
 ,,ZCHECKER_EVMAPSPAWN_INVISSKIP,"\c~class ""\cz%s\c~"" omitted because of \c-+STEALTH\c~/\c-+INVISIBLE\c~ flag set.","\c~класс ""\cz%s\c~"" пропущен из-за установленных флагов \c-+STEALTH\c~/\c-+INVISIBLE\c~."
 ,,ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""PlayerChunk"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""PlayerChunk""."
+,,ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""BossBrain"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""BossBrain""."
 ,,ZCHECKER_EVMAPSPAWN_REPLACEDSKIP,"\c~class ""\cz%s\c~"" replaced and thus omitted.","\c~класс ""\cz%s\c~"" заменён (replaced) и поэтому пропущен."
 ,,ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP,"\c~replaced by ""\c-%s\c~"" class ""\c-%s\c~"" is restricted\c~.","\c~заменённый (replaced) классом ""\c-%s\c~"" класс ""\c-%s\c~"" запрещён\c~."
 ,,ZCHECKER_EVMAPCATEGORY_PREFIX,\cuCategory \cj%s\cu. ,\cuКатегория \cj%s\cu. 
