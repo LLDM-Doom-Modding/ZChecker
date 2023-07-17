@@ -535,7 +535,7 @@ ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully
 // File "ZCCommandsMap.zsc":
 
 //  "zcev (*)":
-ZCHECKER_ZCEV_HELP_TITLE              = "zcev goto <class>|<category>|s[tart];zcev re[create|load];zcev map[2]|level[2]";
+ZCHECKER_ZCEV_HELP_TITLE              = "zcev goto <class>|<category>|s[tart];zcev re[create|load];zcev resec[tors];zcev map[2]|level[2]";
 ZCHECKER_ZCEV_HELP_DESC               = "Operate with the world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warp player to the \"map everything\" and \"map everything_simple\".";
 ZCHECKER_ZCEV_NOTEVMAP                = "Cannot use command on maps other than the Everything map.";
 
@@ -817,14 +817,14 @@ ZCHECKER_TOOLTIP_ZCPANELCTL_EXAMPLES  = "\"`Czcpanel 1 m 3`x\" moves the actor f
 ZCHECKER_TOOLTIP_ZCINTERFACE_TEXT     = "`yThis command is mostly useful for automation via the `x\"`Calias`x\"`y command`x and may be useless in other cases.";
 ZCHECKER_TOOLTIP_ZCINTERFACE_TIPS     = "Command \"`Czcif`x\" is actually an abbreviation of \"`Czcinterface`x\" and not independent.\
 This command returns its integer result to the console variable \"`g%s`x\". You may check it via the built-in \"`Ctest`x\" command, see section \"`HExamples`x\" below.\
-Note, the assigning of that command's result will be delayed by 1 world tic to prevent desynchronizations in multiplayer. Built-in command \"`Cwait`x\" might be helpful.";
+Note, the assigning of that command's result will be delayed by 1 world tic to prevent desynchronizations in multiplayer. Built-in command \"`Cwait`x\" might be helpful. `yWarning: different engine versions processes this command differently!`y You may notice that a \"`Cwait`x\" CCMD will work also in console, menus and a even while the game is paused.";
 ZCHECKER_TOOLTIP_ZCINTERFACE_EXAMPLES = "This alias will `yonly`x summon one specified actor (`g%%1`g) and add it to the first infopanel `yif this panel is not yet linked`x:\
-`Calias zcsa1 `x\"`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \"zcsummon $tmp 1 add:1\"; zcvarsctl rm $tmp`x\";\
+`Calias zcsa1 `x\"`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \\\"zcsummon $tmp 1 add:1\\\"; zcvarsctl rm $tmp`x\";\
 \
 The next alias will check if the last actor added to the panel is a DoomImp `~(via classname saved in the variable `1$last`~)`x:\
-`Calias testforimp3 `x\"`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \"echo Imp.\" \"echo Not an Imp.\"`x\".\
+`Calias testforimp3 `x\"`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\\"echo Imp.\\\" \\\"echo Not an Imp.\\\"`x\".\
 \
 This alias will indefinitely check if the `1self`x pointer equals the `1self.player.camera`x pointer:\
-`Calias isselfcamera `x\"`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \"echo Player camera view was changed from default.\"`~; `2wait 1`~; `2isselfcamera`x\".";
+`Calias isselfcamera `x\"`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \\\"echo Player camera view was changed from default.\\\"`~; `2wait 1`~; `2isselfcamera`x\".";
 
 
