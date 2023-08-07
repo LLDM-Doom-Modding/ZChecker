@@ -280,12 +280,14 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_SPAWNOPTIONS,Spawning options,Настройки создания акторов
 ,,ZCHECKER_EVMAPMENUDIV_GENERAL,- General -,- Общее -
 ,,ZCHECKER_EVMAPMENU_SPAWNREPLACED,Replaced actors,Заменённые акторы
+,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Actors embedded in the engine,"Акторы, встроенные в движок"
 ,,ZCHECKER_EVMAPMENU_RESTRICT,Replacements of restricted actors,Замены запрещённых акторов
 ,,ZCHECKER_EVMAPMENUDIV_SPRITES,- By empty sprites -,- По пустым спрайтам -
 ,,ZCHECKER_EVMAPMENU_MISSING,Actors with missing sprites,Акторы с пропущенными спрайтами
 ,,ZCHECKER_EVMAPMENU_TNT1A0,Actors with the \'TNT1A0\' sprite,Акторы со спрайтами \'TNT1A0\'
 ,,ZCHECKER_EVMAPMENU_PLYC,Actors with corrupted sprite names,Акторы с искажёнными названиями спрайтов
 ,,ZCHECKER_EVMAPMENUDIV_CODEBASED,- Code-based -,- Код -
+,,ZCHECKER_EVMAPMENU_MISSILES,+MISSILE actors,Снаряды (+MISSILE)
 ,,ZCHECKER_EVMAPMENU_STEALTH,+STEALTH actors,Стелс-акторы (+STEALTH)
 ,,ZCHECKER_EVMAPMENU_INVISIBLE,+INVISIBLE actors,Невидимые акторы (+INVISIBLE)
 ,,ZCHECKER_EVMAPMENU_PLAYERCHUNK,Inherited from \'PlayerChunk\',Наследованные от \'PlayerChunk\'
@@ -358,9 +360,11 @@ unused),,,,
 ,,ZCHECKER_EVMAP_AUTOIDDQD,Auto-godmode enabled.,Неуязвимость включена автоматически.
 ,,ZCHECKER_EVMAP_AUTONOTARGET,Auto-notarget enabled.,Команда notarget включена автоматически.
 ,,ZCHECKER_EVMAPSPAWN_SUCCESS,"\cqsummoned class ""\cd%s\cq""\c~ (sprite ""%s"").","\cqсоздан класс ""\cd%s\cq""\c~ (спрайт ""%s"")."
+,,ZCHECKER_EVMAPSPAWN_SKIPBUILTIN,\chAll embedded (built-in) classes has been skipped.,\chВсе встроенные классы были пропущены.
 ,,ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of empty sprite ""%s"".","\c~класс ""\cz%s\c~"" пропущен из-за пустого спрайта ""%s""."
 ,,ZCHECKER_EVMAPSPAWN_MISSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \cpmissing sprite\c~ ""\cs%s\c~"".","\c~класс ""\cz%s\c~"" пропущен из-за \cpнесуществующего спрайта\c~ ""\cs%s\c~""."
 ,,ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \crcorrupted sprite\c~ ""\cs%s\c~"" (tends to be ""%s"").","\c~класс ""\cz%s\c~"" пропущен из-за \crискажения спрайта\c~ ""\cs%s\c~"" (попытка стать ""%s"")."
+,,ZCHECKER_EVMAPSPAWN_MISSILESSKIP,"\c~class ""\cz%s\c~"" omitted because of the \cemissile nature\c~.","\c~класс ""\cz%s\c~"" пропущен из-за того, что он \ceснаряд\c~ (missile)."
 ,,ZCHECKER_EVMAPSPAWN_INVISSKIP,"\c~class ""\cz%s\c~"" omitted because of \c-+STEALTH\c~/\c-+INVISIBLE\c~ flag set.","\c~класс ""\cz%s\c~"" пропущен из-за установленных флагов \c-+STEALTH\c~/\c-+INVISIBLE\c~."
 ,,ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""PlayerChunk"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""PlayerChunk""."
 ,,ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""BossBrain"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""BossBrain""."

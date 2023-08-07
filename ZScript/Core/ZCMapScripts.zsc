@@ -183,8 +183,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					outValue = S_Keys;
 				else
 					outValue = S_OtherItems;
-			} else if ( cls.bMISSILE ) {
-				outValue = S_Missiles;
 			} else if ( testcls is 'PlayerPawn' ) {
 				outValue = S_Players;
 
@@ -196,11 +194,17 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						|| testcls is 'FadeSetter' || testcls is 'PointPuller' || testcls is 'PointPusher' || testcls is 'PathFollower' ) {
 				outValue = S_SpecialActors;
 
-				// Decorations:
-			} else if ( cls.bNOBLOCKMAP ) {
-				outValue = S_DecorNoBlockmap;
+				// Decorations (start):
 			} else if ( cls.bNOINTERACTION || cls.bNOCLIP ) {
 				outValue = S_DecorNoInteraction;
+
+				// Projectiles:
+			} else if ( cls.bMISSILE ) {
+				outValue = S_Missiles;
+
+				// Decorations (continue):
+			} else if ( cls.bNOBLOCKMAP ) {
+				outValue = S_DecorNoBlockmap;
 			} else if ( cls.radius > 256 ) {
 				outValue = S_DecorHuge;
 			} else if ( cls.bSHOOTABLE ) {
@@ -333,14 +337,18 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 		bool spawnReplaced = CVar.FindCVar( "mcm_zchecker_ev_spawnreplaced" ).GetBool();
+		bool spawnBuiltinActors = CVar.FindCVar( "mcm_zchecker_ev_spawnbuiltin" ).GetBool();
+		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
+
 		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
 		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
 		bool spawnBossBrain = CVar.FindCVar( "mcm_zchecker_ev_spawnbossbrains" ).GetBool();
+		bool spawnMissiles = CVar.FindCVar( "mcm_zchecker_ev_spawnmissiles" ).GetBool();
+
 		bool spawnCorruptedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawncorruptedsprites" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
 		bool spawnMissedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawnmissingsprites" ).GetBool();
-		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
 
 		int spriteTNT1A0 = Actor.GetSpriteIndex( "TNT1A0" );
 		logSpawnInfo = CVar.FindCVar( "mcm_zchecker_ev_logspawninfo" ).GetBool();
@@ -359,8 +367,16 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				if ( cls == const_LastEmbeddedActorClass ) {
 					embeddedClassesRecreating = false;
 
-					if ( logSpawnInfo )
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Embedded classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
+					if ( logSpawnInfo ) {
+						if ( spawnBuiltinActors )
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Embedded classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
+						else
+							logCreatingActor( ZCGlobal.Locz( "EVMAPSPAWN_SKIPBUILTIN" ) );
+					}
+				} // of if ( cls == const_LastEmbeddedActorClass ) {}
+
+				if ( !spawnBuiltinActors ) {
+					skipactor = true;
 
 				} else if ( IsEmbeddedClassRestricted( cls ) ) {
 					skipactor = true;
@@ -378,6 +394,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				}
 			}
 
+			// Main handling:
 			if ( !skipactor ) {
 				bool spriteCheckSuccess = spawnTNT1A0 && spawnCorruptedSprites;
 
@@ -444,7 +461,10 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				} else {
 					ECategoryIdentifiers clsType = GetSectorStartForClass( cls );
 
-					if ( clsType != S__Nothing ) {
+					if ( !spawnMissiles && clsType == S_Missiles ) {
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_MISSILESSKIP" ), cls.GetClassName() ) );
+
+					} else if ( clsType != S__Nothing ) {
 						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_SUCCESS" ), cls.GetClassName(), stSpriteName ) );
 
 						ZCheckerEverythingMapCategoryData curCategory = evSectors[ clsType ];

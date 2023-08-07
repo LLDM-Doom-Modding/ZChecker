@@ -93,11 +93,11 @@ user bool mcm_zchecker_infovar_invsortascend= false; //  \_ Descending (false) o
 
 user int  mcm_zchecker_info_states			= 0xFF;	 // States and frames.
 user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states: "Unlimited", 1, 2, ..., 25.
-user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information;
-user int  mcm_zchecker_infovar_stateflags 	= 0;	 //  \_ Current state flags: "Disabled", "Short names", "Long names";
-user bool mcm_zchecker_infovar_stateextras 	= false; //  \_ Current state extra information (TicRange, state scope, PSprite X/Y, etc.);
-user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays";
-user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer;
+user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information.
+user int  mcm_zchecker_infovar_stateflags 	= 0;	 //  \_ Current state flags: "Disabled", "Short names", "Long names".
+user bool mcm_zchecker_infovar_stateextras 	= false; //  \_ Current state extra information (TicRange, state scope, PSprite X/Y, etc.).
+user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays".
+user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer.
 user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
 
 user int  mcm_zchecker_info_visual			= 0x00;	 // Sprite, alpha, RenderStyle, etc.
@@ -121,15 +121,21 @@ user int  mcm_zchecker_info_cheatsdefs      = 0x00;
 // The "Everything" map console variables.
 server bool mcm_zchecker_ev_forcemap		= false; // Skip the Everything map check (use the code attached to it on any map).
 
+
 server bool mcm_zchecker_ev_spawnreplaced			= true;
 server bool mcm_zchecker_ev_restrictreplacements	= true;
+server bool mcm_zchecker_ev_spawnbuiltin			= true;
+
 server bool mcm_zchecker_ev_spawnmissingsprites		= false;
 server bool mcm_zchecker_ev_spawntnt1a0				= false;
 server bool mcm_zchecker_ev_spawncorruptedsprites	= false;
+
+server bool mcm_zchecker_ev_spawnmissiles			= true;
 server bool mcm_zchecker_ev_spawninvisible			= true;
 server bool mcm_zchecker_ev_spawnstealth			= true;
 server bool mcm_zchecker_ev_spawnplrchunks			= false;
 server bool mcm_zchecker_ev_spawnbossbrains			= false;
+
 
 server bool mcm_zchecker_ev_logspawninfo	= false;  // Log information to console about created (or skipped) actors.
 server bool mcm_zchecker_ev_auto_notarget	= true;   // Automatically set a "notarget" cheat when entering an Everything map.
