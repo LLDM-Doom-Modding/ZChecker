@@ -622,7 +622,7 @@ class ZCCopyPasteClass_dummy: ZCConsoleCommand {
 			"",
 			"$ZCCOPYPASTE_HELP_TITLE",
 			"$ZCCOPYPASTE_HELP_DESC",
-			helpaliases: "copy, copyclass, paste, pasteclass"
+			helpaliases: "copy, copyclass, copysummon, paste, pasteclass"
 		);
 	}
 }

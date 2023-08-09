@@ -515,9 +515,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "GETACTOR_WRONGPOS" ), newTesteePosStatus + 1, MaxTestee ) );
 				newTesteePosStatus = PPS_WrongPos;
 			}
+
 		} else if ( arg == "lt" || arg.Left( 5 ) == "linet" ) {
 			newTestee = LinetraceActor();
 			newTesteePosStatus = PPS_Linetarget;
+
 		} else {
 			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "GETACTOR_UNKNOWNKEYWORD" ), arg, argpos + 1, MaxTestee ) );
 		}
@@ -533,9 +535,9 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		int boolstatus = -1;
 		argx.ToLower();
 
-		if ( argx == "0" || argx == "false" || argx == "f" || argx == "reset" )
+		if ( argx == "0" || argx == "false" || argx == "f" || argx == "reset" || argx == "-" )
 			boolstatus = 0;
-		else if ( argx == "1" || argx == "true" || argx == "t" || argx == "set" )
+		else if ( argx == "1" || argx == "true" || argx == "t" || argx == "set" || argx == "+" )
 			boolstatus = 1;
 
 		return boolstatus;

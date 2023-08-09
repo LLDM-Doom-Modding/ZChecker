@@ -70,11 +70,11 @@ extend class ZCheckerHandler {
 
 	// === Configuration setup ===
 
-	protected bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
+	protected bool addConsoleClass( class<ZCConsoleClass> cls, bool importantFlag = false ) {
+		if ( cls ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. cls.GetClassName() .. "\"." );
 
-		if ( classname ) {
-			ZCConsoleClass newCCMD = ZCConsoleClass.Create( classname, importantFlag );
+			ZCConsoleClass newCCMD = ZCConsoleClass.Create( cls, importantFlag );
 			zcConsoleHandleClasses.Push( newCCMD );
 
 			bool important = newCCMD.zcFlags & ZCConsoleClass.CCF_Important;
@@ -82,8 +82,8 @@ extend class ZCheckerHandler {
 			newCCMD.zcFlags = ( newCCMD.zcFlags & ~newCCMD.CCF_Important ) | ( newCCMD.CCF_Important * !!important );
 		}
 
-		return !!classname;
-	} // of protected bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {}
+		return !!cls;
+	} // of protected bool addConsoleClass( class<ZCConsoleClass> cls, bool importantFlag = false ) {}
 
 
 	protected void addConsoleSeparator( bool importantFlag = false ) {
@@ -91,25 +91,67 @@ extend class ZCheckerHandler {
 	}
 
 
-	protected play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		if ( classname ) {
+	protected play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> cls ) {
+		if ( cls ) {
 			ZCBaseInfoPanelPart newPanelPart = NULL;
 
-			if ( classname is "ZCBaseInfoPanelPart_PlayScope" ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add a " .. TEXTCOLOR_DARKGREEN .. "play-scoped " .. LLCOLOR_DEBUG .. "\"" .. classname.GetClassName() .. "\"." );
-				newPanelPart = ZCBaseInfoPanelPart_PlayScope.CreatePlayScope( classname, self );
+			if ( cls is "ZCBaseInfoPanelPart_PlayScope" ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add a " .. TEXTCOLOR_DARKGREEN .. "play-scoped " .. LLCOLOR_DEBUG .. "\"" .. cls.GetClassName() .. "\"." );
+				newPanelPart = ZCBaseInfoPanelPart_PlayScope.CreatePlayScope( cls, self );
 			} else {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. classname.GetClassName() .. "\"." );
-				newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. cls.GetClassName() .. "\"." );
+				newPanelPart = ZCBaseInfoPanelPart.Create( cls, self );
 			}
 
 			panels.defaultPanels.Push( newPanelPart );
-		} else {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::addInfoPanelClass(). No class<ZCBaseInfoPanelPart> defined." );
 		}
 
-		return !!classname;
-	}
+		return !!cls;
+	} // of protected play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> cls ) {}
+
+	protected bool removeConsoleClass( class<ZCConsoleClass> cls ) {
+		if ( cls ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::removeConsoleClass(). Trying to remove \"" .. cls.GetClassName() .. "\"." );
+
+			bool found = false;
+
+			for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ ) {
+				if ( zcConsoleHandleClasses[ i ].GetClass() == cls ) {
+					zcConsoleHandleClasses.Delete( i );
+					found = true;
+					break;
+				}
+			}
+
+			if ( !found )
+				ZCGlobal.Log( LL_APIMessage, LLCOLOR_DARK .. GetClassName() .. "::removeConsoleClass(). " .. LLCOLOR_MAIN .. "\"" .. cls.GetClassName() .. "\" has not yet been stored." );
+		}
+
+		// No critical warning output when nothing to delete.
+		return !!cls;
+	} // of protected bool removeConsoleClass( class<ZCConsoleClass> cls ) {}
+
+	protected bool removeInfoPanelClass( class<ZCBaseInfoPanelPart> cls ) {
+		if ( cls ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::removeInfoPanelClass(). Trying to remove \"" .. cls.GetClassName() .. "\"." );
+
+			bool found = false;
+
+			for ( int i = 0; i < panels.defaultPanels.Size(); i++ ) {
+				if ( panels.defaultPanels[ i ].GetClass() == cls ) {
+					panels.defaultPanels.Delete( i );
+					found = true;
+					break;
+				}
+			}
+
+			if ( !found )
+				ZCGlobal.Log( LL_APIMessage, GetClassName() .. "::removeInfoPanelClass(). \"" .. cls.GetClassName() .. "\" has not yet been stored." );
+		}
+
+		// No critical warning output when nothing to delete.
+		return !!cls;
+	} // of protected bool removeInfoPanelClass( class<ZCBaseInfoPanelPart> cls ) {}
 
 
 	protected void handleConfigFileNewlines( String newlineTypeComment, String replaceeNewlineSeq ) {
@@ -144,7 +186,7 @@ extend class ZCheckerHandler {
         zcConfigFile = Wads.ReadLump( filehandler );
         Array<String> zcConfigLines;
 
-        zcConfigFile.ToLower();
+        zcConfigFile.ToLower(); // Make file case-insensitive.
 		ENewlineTypes newlinesType = ZCGlobal.GetTextNewlinesType( zcConfigFile );
 
 		switch ( newlinesType ) {
@@ -193,27 +235,55 @@ extend class ZCheckerHandler {
 
 				int argsamount = ( curLineWords.Size() - 1 );
 
-				if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
+				String keyword = curLineWords[ 0 ];
+
+				// Well, ZCConsoleClass and ZCConsoleCommand are actually 
+				//added using the same method.
+				if ( keyword == "ccmd" || keyword == "plaintext" || keyword == "consoleclass" ) {
 					if ( argsamount == 1 ) {
 						if ( !addConsoleClass( curLineWords[ 1 ], false ) )
 							printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
+
 					} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
 						if ( !addConsoleClass( curLineWords[ 1 ], true ) )
 							printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
+
 					} else {
-						checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
+						checkKeywordArgsAmount( argsamount, keyword, 1, "class<ZCConsoleClass> [important]" );
 					}
 
-				} else if ( curLineWords[ 0 ] == "ccmdsep" || curLineWords[ 0 ] == "addccmdsep" || curLineWords[ 0 ] == "ccmdseparator" || curLineWords[ 0 ] == "addccmdseparator" ) {
+				} else if ( keyword == "ccmdsep" || keyword == "ccmdseparator" ) {
 					addConsoleSeparator( argsamount == 1 && curLineWords[ 1 ] == "important" );
 
-				} else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
-					if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
+				} else if ( keyword == "panel" || keyword == "infopanel" ) {
+					if ( checkKeywordArgsAmount( argsamount, keyword, 1, "class<ZCBaseInfoPanelPart>" ) )
 						if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
 							printConfigWarning( "Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"" );
 
+				// Destructive section:
+				} else if ( keyword == "removeccmd" || keyword == "removeconsoleclass" || keyword == "ccmdremove" || keyword == "consoleclassremove" ) {
+					if ( argsamount == 0 ) {
+						zcConsoleHandleClasses.Clear();
+						ZCGlobal.Log( LL_APIMessage, GetClassName() .. "::ParseConfigFile(). Cleared all previously defined console classes." );
+
+					} else if ( argsamount == 1 ) {
+						if ( !removeConsoleClass( curLineWords[ 1 ] ) )
+							printConfigWarning( "Wrong console class \"" .. curLineWords[ 1 ] .. "\" to remove" );
+					}
+
+				} else if ( keyword == "panelremove" || keyword == "infopanelremove" || keyword == "removepanel" || keyword == "removeinfopanel" ) {
+					if ( argsamount == 0 ) {
+						panels.defaultPanels.Clear();
+						ZCGlobal.Log( LL_APIMessage, GetClassName() .. "::ParseConfigFile(). Cleared all previously defined information panels." );
+
+					} else if ( argsamount == 1 ) {
+						if ( !removeInfoPanelClass( curLineWords[ 1 ] ) )
+							printConfigWarning( "Wrong infopanel class \"" .. curLineWords[ 1 ] .. "\" to remove" );
+					}
+
+				// Miscellaneous section:
 				} else {
-					printConfigWarning( "Unknown keyword \"" .. curLineWords[ 0 ] .. "\"" );
+					printConfigWarning( "Unknown keyword \"" .. keyword .. "\"" );
 				}
 
 			} else {
@@ -235,7 +305,10 @@ extend class ZCheckerHandler {
 
 			if ( curConfigFileHandler != -1 ) {
 				configFilesAmount++;
-				ZCGlobal.Log( LL_Debug, String.Format( "%s::ParseAllConfigFiles(). Parsing file #%i named \"%s\", handler %i...", GetClassName(), configFilesAmount, const_ZCheckerConfigFileName, curConfigFileHandler ) );
+				ZCGlobal.Log( LL_Debug, String.Format( "%s::ParseAllConfigFiles(). %sParsing file #%i named \"%s\", handler %i...",
+								GetClassName(), TEXTCOLOR_ORANGE,
+								configFilesAmount, const_ZCheckerConfigFileName, curConfigFileHandler ) );
+
 				ParseConfigFile( curConfigFileHandler );
 
 				curConfigFileHandler++; // To prevent infinite loop in the "Wads.FindLump()".
