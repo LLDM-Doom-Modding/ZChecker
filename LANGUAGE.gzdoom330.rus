@@ -148,8 +148,8 @@ ZCHECKER_PANELSUBMENU_DEFAULTLABEL    = "Подменю. ";
 ZCHECKER_PANELSUBMENU_DEFAULTMORE     = "[...далее]";
 
 ZCHECKER_PANELSUBLABEL_MAIN_PREFIX    = "Вывод ";
-ZCHECKER_PANELSUBLABEL_MAIN_TAG       = "тэга";
-ZCHECKER_PANELSUBLABEL_MAIN_TAGAUTO   = "тэга (если не равен имени)";
+ZCHECKER_PANELSUBLABEL_MAIN_TAG       = "тэга (всегда)";
+ZCHECKER_PANELSUBLABEL_MAIN_TAGAUTO   = "тэга (авто)";
 ZCHECKER_PANELSUBLABEL_MAIN_SELFPTR   = "указателя";
 ZCHECKER_PANELSUBLABEL_MAIN_PLRINFO   = "инфо игрока";
 ZCHECKER_PANELSUBLABEL_MAIN_XPREFIX   = "Без дополнительной информации";
@@ -158,7 +158,7 @@ ZCHECKER_PANELSUBMENU_MAIN_TAG        = "Тэг актора";
 ZCHECKER_PANELSUBMENU_MAIN_SELFPTR    = "Внутренний указатель";
 ZCHECKER_PANELSUBMENU_MAIN_PLAYERINFO = "Информация об игроке";
 ZCHECKER_PANELMAINOPT_TAGS_OFF        = "Не отображать";
-ZCHECKER_PANELMAINOPT_TAGS_AUTO       = "Если отличается от названия класса";
+ZCHECKER_PANELMAINOPT_TAGS_AUTO       = "Если не равен названию класса";
 ZCHECKER_PANELMAINOPT_TAGS_ON         = "Отображать всегда";
 
 ZCHECKER_PANELSUBLABEL_WPOS_ROLLON    = "Все углы поворота";
@@ -229,7 +229,7 @@ ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA = "Z-коорд. + дельта до ак
 
 
 ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "Панель ZChecker: Звуки (properties)";
-ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Вывод редкоиспользуемых";
+ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Вывод используемых редко";
 
 
 //  === Visual Settings control menu ===
@@ -304,19 +304,20 @@ ZCHECKER_EVMAPMENUDIV_WARPOTHER       = "- Переход к остальным 
 //  === Console commands control menu ===
 
 ZCHECKER_CCMDMENU_TITLE               = "ZChecker: вызов консольных команд";
-ZCHECKER_CCMDMENU_WIP                 = "[В разработке] Здесь будут часто используемые консольные команды.";
-ZCHECKER_CCMDMENU_HELPNOTE1           = "Все команды могут быть показаны через \"zchelp all\";";
-ZCHECKER_CCMDMENU_HELPNOTE2           = "также можно использовать \"zchelp <команда>\".";
+ZCHECKER_CCMDMENU_HELPNOTE1           = "[В разработке] Часто используемые консольные команды.";
+ZCHECKER_CCMDMENU_HELPNOTE2           = "Все команды могут быть показаны через \"zchelp all\";";
+ZCHECKER_CCMDMENU_HELPNOTE3           = "также можно использовать \"zchelp <команда>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\"\n\cxНе удается найти ZChecker static event handler.\n\ciВозможная причина: \cu\"\crEventHandler = ...\cu\"\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы.";
 ZCHECKER_CCMDMENU_EXAMPLES            = "Примеры команд:";
 ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Добавление цели под курсором в панель";
 ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Добавление себя в панель";
 ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Очистка всех панелей";
+ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Вывести краткую справку в консоль";
 
 
 //  === An Everything" maps ==
 
-ZCHECKER_EVMAP_INITERROR              = "%s::RecreateEverything(). Невозможно продолжить из-за ошибок на карте; останов.";
+ZCHECKER_EVMAP_INITERROR              = "Невозможно продолжить из-за ошибок на карте; останов.";
 ZCHECKER_EVMAP_RECREATEACTORS         = "Пересоздание акторов на карте...";
 ZCHECKER_EVMAP_RELOADSECTORS          = "Перезагрузка свойств всех секторов...";
 ZCHECKER_EVMAP_AUTOIDDQD              = "Неуязвимость включена автоматически.";

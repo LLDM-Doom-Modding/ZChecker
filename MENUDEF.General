@@ -162,9 +162,9 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     Title "$ZCHECKER_CCMDMENU_TITLE"
 
     StaticText " "
-    StaticText "$ZCHECKER_CCMDMENU_WIP", DARKGRAY
-    StaticText "$ZCHECKER_CCMDMENU_HELPNOTE1", DARKGREEN
+    StaticText "$ZCHECKER_CCMDMENU_HELPNOTE1", DARKGRAY
     StaticText "$ZCHECKER_CCMDMENU_HELPNOTE2", DARKGREEN
+    StaticText "$ZCHECKER_CCMDMENU_HELPNOTE3", DARKGREEN
     StaticText " "
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_CCMDMENU_ZCHANDLER_ERROR"
     StaticText " "
@@ -175,6 +175,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 	Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
 	Command "$ZCHECKER_CCMDMENU_ZCADD_SELF", "zcadd self"
 	Command "$ZCHECKER_CCMDMENU_ZCREM", "zcrem"
+    StaticText " "
+	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp"
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
 	//class "ZCOptionMenuCallCCMD" // [WIP]: not written yet.

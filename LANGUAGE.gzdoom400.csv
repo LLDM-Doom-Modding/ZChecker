@@ -146,8 +146,8 @@ unused),,,,
 ,,ZCHECKER_PANELSUBMENU_DEFAULTMORE,[...more],[...далее]
 ,,,,
 ,,ZCHECKER_PANELSUBLABEL_MAIN_PREFIX,Show ,Вывод 
-,,ZCHECKER_PANELSUBLABEL_MAIN_TAG,tag anyway,тэга
-,,ZCHECKER_PANELSUBLABEL_MAIN_TAGAUTO,different tag,тэга (если не равен имени)
+,,ZCHECKER_PANELSUBLABEL_MAIN_TAG,tag anyway,тэга (всегда)
+,,ZCHECKER_PANELSUBLABEL_MAIN_TAGAUTO,tag (auto),тэга (авто)
 ,,ZCHECKER_PANELSUBLABEL_MAIN_SELFPTR,pointer,указателя
 ,,ZCHECKER_PANELSUBLABEL_MAIN_PLRINFO,player info,инфо игрока
 ,,ZCHECKER_PANELSUBLABEL_MAIN_XPREFIX,No extras,Без дополнительной информации
@@ -156,7 +156,7 @@ unused),,,,
 ,,ZCHECKER_PANELSUBMENU_MAIN_SELFPTR,Self pointer,Внутренний указатель
 ,,ZCHECKER_PANELSUBMENU_MAIN_PLAYERINFO,Player information,Информация об игроке
 ,,ZCHECKER_PANELMAINOPT_TAGS_OFF,Never,Не отображать
-,,ZCHECKER_PANELMAINOPT_TAGS_AUTO,If different from classname,Если отличается от названия класса
+,,ZCHECKER_PANELMAINOPT_TAGS_AUTO,If different from classname,Если не равен названию класса
 ,,ZCHECKER_PANELMAINOPT_TAGS_ON,Always,Отображать всегда
 ,,,,
 ,,ZCHECKER_PANELSUBLABEL_WPOS_PREFIX,,
@@ -246,7 +246,7 @@ unused),,,,
 ,<<< Not used in the current version.,ZCHECKER_PANELGEOMLNOPT_SPEC_ALL,Everything,
 ,,,,
 ,,ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE,ZChecker panel: Sound definitions,Панель ZChecker: Звуки (properties)
-,,ZCHECKER_PANELSUBMENU_SNDDEFS_RARE,Output rare sounds,Вывод редкоиспользуемых
+,,ZCHECKER_PANELSUBMENU_SNDDEFS_RARE,Output rare sounds,Вывод используемых редко
 ,,,,
 ,,,,
 , === Visual Settings control menu ===,,,
@@ -342,19 +342,20 @@ unused),,,,
 , === Console commands control menu ===,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_TITLE,ZChecker: call console command,ZChecker: вызов консольных команд
-,,ZCHECKER_CCMDMENU_WIP,[WIP] Some frequently used commands will be here.,[В разработке] Здесь будут часто используемые консольные команды.
-,,ZCHECKER_CCMDMENU_HELPNOTE1,"All commands may be shown via the ""zchelp all""","Все команды могут быть показаны через ""zchelp all"";"
-,,ZCHECKER_CCMDMENU_HELPNOTE2,"console command; also you may use ""zchelp <command>"".","также можно использовать ""zchelp <команда>""."
+,,ZCHECKER_CCMDMENU_HELPNOTE1,[WIP] Some frequently used commands will be here.,[В разработке] Часто используемые консольные команды.
+,,ZCHECKER_CCMDMENU_HELPNOTE2,"All commands may be shown via the ""zchelp all""","Все команды могут быть показаны через ""zchelp all"";"
+,,ZCHECKER_CCMDMENU_HELPNOTE3,"console command; also you may use ""zchelp <command>"".","также можно использовать ""zchelp <команда>""."
 ,,ZCHECKER_CCMDMENU_ZCHANDLER_ERROR,"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu""\crEventHandler = ...\cu""\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.","""\n\cxНе удаётся найти ZChecker static event handler.\n\ciВозможная причина: \cu""\crEventHandler = ...\cu""\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы."
 ,,ZCHECKER_CCMDMENU_EXAMPLES,Command examples:,Примеры команд:
 ,,ZCHECKER_CCMDMENU_ZCADD,"""zcadd"": Add linetarget to panel","""zcadd"": Добавление цели под курсором в панель"
 ,,ZCHECKER_CCMDMENU_ZCADD_SELF,"""zcadd self"": Add self to panel","""zcadd self"": Добавление себя в панель"
 ,,ZCHECKER_CCMDMENU_ZCREM,"""zcrem"": Clear all panels","""zcrem"": Очистка всех панелей"
+,,ZCHECKER_CCMDMENU_ZCHELP,"""zchelp"": Print short help to console","""zchelp"": Вывести краткую справку в консоль"
 ,,,,
 ,,,,
 ," === An Everything"" maps ==",,,
 ,,,,
-,,ZCHECKER_EVMAP_INITERROR,"%s::RecreateEverything(). Cannot run due to the map errors, terminating.",%s::RecreateEverything(). Невозможно продолжить из-за ошибок на карте; останов.
+,,ZCHECKER_EVMAP_INITERROR,"Cannot run due to the map errors, terminating.",Невозможно продолжить из-за ошибок на карте; останов.
 ,,ZCHECKER_EVMAP_RECREATEACTORS,Recreating/reloading map actors...,Пересоздание акторов на карте...
 ,,ZCHECKER_EVMAP_RELOADSECTORS,Reloading general properties for all sectors...,Перезагрузка свойств всех секторов...
 ,,ZCHECKER_EVMAP_AUTOIDDQD,Auto-godmode enabled.,Неуязвимость включена автоматически.

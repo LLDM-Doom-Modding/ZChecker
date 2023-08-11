@@ -151,7 +151,7 @@ ZCHECKER_PANELSUBMENU_DEFAULTMORE     = "[...more]";
 
 ZCHECKER_PANELSUBLABEL_MAIN_PREFIX    = "Show ";
 ZCHECKER_PANELSUBLABEL_MAIN_TAG       = "tag anyway";
-ZCHECKER_PANELSUBLABEL_MAIN_TAGAUTO   = "different tag";
+ZCHECKER_PANELSUBLABEL_MAIN_TAGAUTO   = "tag (auto)";
 ZCHECKER_PANELSUBLABEL_MAIN_SELFPTR   = "pointer";
 ZCHECKER_PANELSUBLABEL_MAIN_PLRINFO   = "player info";
 ZCHECKER_PANELSUBLABEL_MAIN_XPREFIX   = "No extras";
@@ -346,19 +346,20 @@ ZCHECKER_EVMAPMENU_WARPOTHER          = "Special actors\cc: \"\cmzcevg #\cdspeci
 //  === Console commands control menu ===
 
 ZCHECKER_CCMDMENU_TITLE               = "ZChecker: call console command";
-ZCHECKER_CCMDMENU_WIP                 = "[WIP] Some frequently used commands will be here.";
-ZCHECKER_CCMDMENU_HELPNOTE1           = "All commands may be shown via the \"zchelp all\"";
-ZCHECKER_CCMDMENU_HELPNOTE2           = "console command; also you may use \"zchelp <command>\".";
+ZCHECKER_CCMDMENU_HELPNOTE1           = "[WIP] Some frequently used commands will be here.";
+ZCHECKER_CCMDMENU_HELPNOTE2           = "All commands may be shown via the \"zchelp all\"";
+ZCHECKER_CCMDMENU_HELPNOTE3           = "console command; also you may use \"zchelp <command>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.";
 ZCHECKER_CCMDMENU_EXAMPLES            = "Command examples:";
 ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Add linetarget to panel";
 ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Add self to panel";
 ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Clear all panels";
+ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Print short help to console";
 
 
 //  === An Everything" maps ==
 
-ZCHECKER_EVMAP_INITERROR              = "%s::RecreateEverything(). Cannot run due to the map errors, terminating.";
+ZCHECKER_EVMAP_INITERROR              = "Cannot run due to the map errors, terminating.";
 ZCHECKER_EVMAP_RECREATEACTORS         = "Recreating/reloading map actors...";
 ZCHECKER_EVMAP_RELOADSECTORS          = "Reloading general properties for all sectors...";
 ZCHECKER_EVMAP_AUTOIDDQD              = "Auto-godmode enabled.";

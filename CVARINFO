@@ -96,8 +96,8 @@ user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states: "Unl
 user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information.
 user int  mcm_zchecker_infovar_stateflags 	= 0;	 //  \_ Current state flags: "Disabled", "Short names", "Long names".
 user bool mcm_zchecker_infovar_stateextras 	= false; //  \_ Current state extra information (TicRange, state scope, PSprite X/Y, etc.).
-user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays".
-user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer.
+//user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays".
+//user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer.
 user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
 
 user int  mcm_zchecker_info_visual			= 0x00;	 // Sprite, alpha, RenderStyle, etc.

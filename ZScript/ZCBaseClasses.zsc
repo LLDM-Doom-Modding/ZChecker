@@ -277,6 +277,9 @@ struct ZCheckerCCMDInterfaceData {
 	void Update( void ) {
 		helpHeader = ZCGlobal.FreeLocalize( helpHeaderLoczNodeName );
 		helpDesc = ZCGlobal.FreeLocalize( helpDescLoczNodeName );
+
+		if ( helpTooltip )
+			helpTooltip.ResetCachedHelpString();
 	}
 };
 

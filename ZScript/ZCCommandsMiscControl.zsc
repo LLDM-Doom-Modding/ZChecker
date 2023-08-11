@@ -874,6 +874,12 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 		);
 	}
 
+	override void ResetCachedHelpString( void ) {
+		Super.ResetCachedHelpString();
+		ccmdInterfaceData.helpDesc = String.Format( ZCGlobal.Locz( "ZCIF_HELP_DESC" ), const_interfaceCVarName );
+	}
+
+
 	override bool HandleArguments() {
 		int ccmdArgsSize = ccmd.args.Size();
 		if ( ccmdArgsSize == 0 || ccmdArgsSize > 3 )

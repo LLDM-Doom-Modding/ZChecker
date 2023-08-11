@@ -274,7 +274,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	// Clears all previous spawned actors excluding forbidden and summons all of them again:
 	void RecreateEverything( void ) {
 		if ( !canRecreateEverything ) {
-			ZCConsoleCommand.LogLocalize2Str( LL_Emergency, "EVMAP_INITERROR", GetClassName() );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). " .. ZCGlobal.Locz( "EVMAP_INITERROR" ) );
 			return;
 		}
 

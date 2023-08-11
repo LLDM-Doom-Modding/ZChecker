@@ -86,6 +86,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	clearscope bool CheckForResetLocalization( void ) const {
+		// Double call of the "StringTable.Localize()" is for optimization.
 		if ( datascoped.lastLocalizationTestGameTic != gametic && StringTable.Localize( "$ZCHECKER_CURLANGUAGE" ) != datascoped.lastLocalizedTestString ) {
 			datascoped.lastLocalizedTestString = StringTable.Localize( "$ZCHECKER_CURLANGUAGE" );
 			datascoped.lastLocalizationTestGameTic = gametic;
@@ -97,7 +98,6 @@ class ZCheckerHandler: StaticEventHandler {
 	} // of clearscope bool CheckForResetLocalization( void ) {}
 
 	void ResetPlayLocalization( void ) {
-		// Double call of the "StringTable.Localize()" is for optimization.
 		if ( CheckForResetLocalization() ) {
 			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ResetPlayLocalization(). Updating all console classes. New language is " .. datascoped.lastLocalizedTestString );
 
