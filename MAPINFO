@@ -7,14 +7,14 @@ GameInfo {
 	AddEventHandlers = "ZCheckerHandler", "ZCheckerEverythingMapHandler"
 }
 
-Map EVERYTHING "ZChecker: Everything" {
+Map EVERYTHING_SIMPLE "$ZCHECKER_MAPTITLE_EVERYTHING_SIMPLE" {
 	Sky1 = "RSKY3"
 	Music = ""
 	Cluster = 0
 	NoAutosaveHint
 }
 
-Map EVERYTHING_SIMPLE "ZChecker: Everything (simplified map)" {
+Map EVERYTHING_SC77 "$ZCHECKER_MAPTITLE_EVERYTHING_ALT1" {
 	Sky1 = "RSKY3"
 	Music = ""
 	Cluster = 0

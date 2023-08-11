@@ -1,0 +1,172 @@
+//
+// ZChecker renderer core. Actually an "EventHandler::RenderOverlay()".
+//
+
+extend class ZCheckerHandler {
+
+	// Method to update all of the field meta-information:
+	private clearscope Actor UpdateTesteeField( int fieldindex ) {
+		Actor curTestee = NULL;
+
+		if ( Testee[ fieldindex ] && Testee[ fieldindex ].mo )
+			curTestee = Testee[ fieldindex ].mo;
+
+		// Updating info actors type. Usually it's better not to cross the 
+		//ui, data and play scopes in one method...
+		if ( curTestee is "StateProvider" && !( curTestee is "CustomInventory" ) && PlayerPawn( Inventory( curTestee ).owner ) ) {
+			Testee[ fieldindex ].mo = curTestee = PlayerPawn( Inventory( curTestee ).owner ).player.ReadyWeapon;
+			Testee[ fieldindex ].actorType = IAT_StateProvider;
+		} else {
+			Testee[ fieldindex ].actorType = IAT_Normal;
+		}
+
+		return curTestee;
+	}
+
+
+	override void RenderOverlay( RenderEvent e ) {
+		// Pointers to the all of the used CVars are pre-cached in this method.
+
+		Array<ZCInfoPanelNode> infopanelNodes;
+		PlayerInfo pl = players[ consoleplayer ];
+
+		panels.UpdateFont();
+
+		for ( int iCurInfoPanel = 0; iCurInfoPanel < panels.curPanels.Size(); iCurInfoPanel++ ) {
+			ZCInfoPanelNode panelnode = panels.curPanels.nodes[ iCurInfoPanel ];
+
+			if ( panelnode.panelCVar && !!panelnode.panelCVar.GetInt() )
+				infopanelNodes.Push( panelnode );
+		}
+
+		if ( !datascoped.infopanelStartXCVar ) {
+			PlayerInfo pl = players[ consoleplayer ];
+
+			datascoped.infopanelStartXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_startx", pl );
+			datascoped.infopanelStartYCVar = CVar.GetCVar( "mcm_zchecker_infopanel_starty", pl );
+			datascoped.infopanelScaleCVar = CVar.GetCVar( "mcm_zchecker_infopanel_scale", pl );
+			datascoped.infopanelOffsetXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_offsetx", pl );
+			datascoped.infopanelPartsSpaceYCVar = CVar.GetCVar( "mcm_zchecker_infopanelparts_y_gap", pl );
+
+			datascoped.infopanelDimEnabledCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimenabled", pl );
+			datascoped.infopanelDimColorCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimcolor", pl );
+			datascoped.infopanelDimAlphaCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimalpha", pl );
+			datascoped.infopanelDimBorderWidthCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimborderwidth", pl );
+		}
+
+		double infopanelStartX = datascoped.infopanelStartXCVar.GetFloat();
+		double infopanelStartY = datascoped.infopanelStartYCVar.GetFloat();
+		double infopanelScale = datascoped.infopanelScaleCVar.GetFloat();
+		double infopanelOffsetX = datascoped.infopanelOffsetXCVar.GetFloat();
+		double infopanelPartsSpaceY = datascoped.infopanelPartsSpaceYCVar.GetFloat();
+
+		// Thanks to m8f for the "drawTextCenter()" function code from his "Hellscape Navigator".
+		double bordersXMargin = 4.0;
+
+		// Previously, the game crashed on a new game after a "endgame" CCMD (key F7).
+		double scale = 1.0 / ( infopanelScale > 0.0? infopanelScale : 1.0 );
+
+		int height = int( scale * Screen.GetHeight() );
+		int width = int( scale * Screen.GetWidth() );
+
+		int fontSymbolHeight = panels.infopanelsFont.GetHeight() + 1;
+
+		for ( int i = 0; i < MaxTestee; i++ ) {
+			Actor curTestee = UpdateTesteeField( i );
+
+			if ( !curTestee )
+				continue;
+
+			double starty = infopanelStartY * 0.01 * height;
+			double y = starty;
+			double x = infopanelStartX * 0.01 + i * infopanelOffsetX * 0.01;
+			x *= width;
+
+			double maxStringWidth = 0.0;
+
+
+			// Forming a full informational panel:
+			Array<String> panelsstr;
+			Array<double> panelsheights;
+			panelsstr.Clear();
+			panelsheights.Clear();
+
+			for ( int j = 0; j < infopanelNodes.Size(); j++ ) {
+				// Skipping locally disabled panel parts:
+				if ( !infopanelNodes[ j ].EnabledForPanel( i ) )
+					continue;
+
+				ZCBaseInfoPanelPart curinfopart = infopanelNodes[ j ].panel;
+				String outStr;
+
+				// Getting the information:
+				if ( curinfopart.IsPlayScope() )
+					outStr = ZCBaseInfoPanelPart_PlayScope( curinfopart ).InternalGetInfo_clearscope( i );
+				else
+					outStr = curinfopart.GetInfo( curTestee, Testee[ i ] );
+
+				// Skipping empty panel parts:
+				if ( outStr == "" )
+					continue;
+
+
+				panelsstr.Push( String.Format( TEXTCOLOR_GRAY .. "%s\n", outStr ) );
+
+				// Pushing the text out from the borders:
+				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
+
+				if ( x < bordersXMargin )
+					x = bordersXMargin;
+				else if ( x > width - stringWidth - bordersXMargin )
+					x = width - stringWidth - bordersXMargin;
+
+				if ( maxStringWidth < stringWidth )
+					maxStringWidth = stringWidth;
+			}
+
+			// Adjusting heights:
+			int panelsstrAmount = panelsstr.Size();
+			double endy = y;
+
+			for ( int j = 0; j < panelsstrAmount; j++ ) {
+				// Adding an Y-offset for the next panel part:
+				int newlinesAmount = 0;
+				int nextNewlinePos = -1;
+
+				while ( -1 != ( nextNewlinePos = panelsstr[ j ].IndexOf( "\n", nextNewlinePos + 1 ) ) )
+					newlinesAmount++;
+
+				double panelheight = fontSymbolHeight * ( newlinesAmount + infopanelPartsSpaceY );
+				panelsheights.Push( panelheight );
+				endy += panelheight;
+			}
+
+			// Dimming background:
+			bool infopanelDimEnabled = datascoped.infopanelDimEnabledCVar.GetBool();
+
+			if ( infopanelDimEnabled && panelsstrAmount ) {
+				Color dimColor = Color( datascoped.infopanelDimColorCVar.GetInt() );
+				double dimAlpha = datascoped.infopanelDimAlphaCVar.GetFloat();
+				double dimBorderWitdh = datascoped.infopanelDimBorderWidthCVar.GetFloat() * fontSymbolHeight;
+
+				int dimX = int( ( x - dimBorderWitdh ) / scale );
+				int dimY = int( ( starty - dimBorderWitdh ) / scale );
+				int dimWidth = int( ( maxStringWidth + dimBorderWitdh * 2 ) / scale );
+				int dimHeight = int( ( endy - starty - fontSymbolHeight * infopanelPartsSpaceY + dimBorderWitdh * 2 ) / scale );
+
+				Screen.Dim( dimColor, dimAlpha, dimX, dimY, dimWidth, dimHeight );
+			}
+
+			// Printing out infopanel parts:
+			for ( int j = 0; j < panelsstrAmount; j++ ) {
+				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ j ],
+								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
+
+				y += panelsheights[ j ];
+			}
+		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
+
+		Super.RenderOverlay( e );
+	} // of override void RenderOverlay( RenderEvent e ) {}
+
+} // of extend class ZCheckerHandler {}

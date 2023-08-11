@@ -5,14 +5,14 @@
 AddOptionMenu "OptionsMenu" {
 	StaticText " "
 	Submenu "$ZCHECKER_MAINMENU_TITLE", "mcm_ZChecker_ControlMenu"
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_NOHANDLER"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR"
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_ZCHANDLER_ERROR"
 
 	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
 	Submenu "$ZCHECKER_MAINMENU_INFOPANELS", "mcm_ZChecker_ControlMenu_Panels"
@@ -32,19 +32,19 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 	Option "$ZCHECKER_MAINMENU_NETEVENTS", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
     StaticText "$ZCHECKER_MAINMENU_NETEVENTS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_ALLOW_DANGEROUS", "mcm_zchecker_allowdangerccmds", "YesNo"
-    StaticText "$ZCHECKER_MAINMENU_ALLOW_CRASH", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_ALLOWDANGEROUS", "mcm_zchecker_allowdangerccmds", "YesNo"
+    StaticText "$ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_TWICE_BEHAVIOUR", "mcm_zchecker_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
-    StaticText "$ZCHECKER_MAINMENU_ZCADD_BEHAVIOUR", DARKGRAY
-	StaticText "$ZCHECKER_MAINMENU_ALREADY_LIST", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_ZCADDTWICE", "mcm_zchecker_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
+    StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP1", DARKGRAY
+	StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_NO_ZC_HANDLING", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
-    StaticText "$ZCHECKER_MAINMENU_DO_NOT_ALTER", DARKGRAY
-	StaticText "$ZCHECKER_MAINMENU_SPECIAL", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_SPECIALHANDLING", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
+    StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1", DARKGRAY
+	StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_LOG_LEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
-    StaticText "$ZCHECKER_MAINMENU_UPDATE_5_TICS", DARKGRAY
+	Option "$ZCHECKER_MAINMENU_LOGLEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
+    StaticText "$ZCHECKER_MAINMENU_LOGLEVEL_TIP", DARKGRAY
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {
@@ -91,15 +91,18 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "$ZCHECKER_EVMAPMENU_SPAWNOPTIONS", 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_GENERAL", DARKBROWN
 	Option "$ZCHECKER_EVMAPMENU_SPAWNREPLACED", "mcm_zchecker_ev_spawnreplaced", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_SPAWNBUILTIN", "mcm_zchecker_ev_spawnbuiltin", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_RESTRICT", "mcm_zchecker_ev_restrictreplacements", "NoYes"
 	StaticText "$ZCHECKER_EVMAPMENUDIV_SPRITES", DARKBROWN
-	Option "$ZCHECKER_EVMAPMENU_MISSING", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_TNT1A0", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_MISSING", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawncorruptedsprites", "YesNo"
 	StaticText "$ZCHECKER_EVMAPMENUDIV_CODEBASED", DARKBROWN
+	Option "$ZCHECKER_EVMAPMENU_MISSILES", "mcm_zchecker_ev_spawnmissiles", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
 	Option "$ZCHECKER_EVMAPMENU_PLAYERCHUNK", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_BOSSBRAIN", "mcm_zchecker_ev_spawnbossbrains", "YesNo"
 
     StaticText " "
     StaticText "$ZCHECKER_EVMAPMENUDIV_OTHER", 1
@@ -116,11 +119,14 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC1", DARKGRAY
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC2", DARKGRAY
 	StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_EVMAPMENU_ZCHANDLER_ERROR"
 	StaticText "$ZCHECKER_EVMAPMENUDIV_EVCCMDS", 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev recreate", 0, 1
+	SafeCommand "$ZCHECKER_EVMAPMENU_CHANGEMAP1", "map Everything_simple", "$ZCHECKER_EVMAPMENU_CHANGEMAP1ASK"
+	SafeCommand "$ZCHECKER_EVMAPMENU_CHANGEMAP2", "map Everything_SC77", "$ZCHECKER_EVMAPMENU_CHANGEMAP2ASK"
 	Command "$ZCHECKER_EVMAPMENU_WARPSTART", "zcev goto #start", 0, 1
+	StaticText " "
 	StaticText "$ZCHECKER_EVMAPMENUDIV_WARPMONS", DARKBROWN
 	Command "$ZCHECKER_EVMAPMENU_WARPMONSTERS", "zcev goto #mon", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPLMONS", "zcev goto #lmon", 0, 1
@@ -146,17 +152,21 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Command "$ZCHECKER_EVMAPMENU_WARPMISSILES", "zcev goto #proj", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPPLAYERS", "zcev goto #pl", 0, 1
 	Command "$ZCHECKER_EVMAPMENU_WARPOTHER", "zcev goto #spec", 0, 1
+	StaticText " "
+	StaticText "$ZCHECKER_EVMAPMENUDIV_MAINCCMDS", DARKBROWN
+	Command "$ZCHECKER_EVMAPMENU_WARPSTART", "zcev goto #s", 0, 1
+	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev reload", 0, 1
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     Title "$ZCHECKER_CCMDMENU_TITLE"
 
     StaticText " "
-    StaticText "$ZCHECKER_CCMDMENU_WIP", DARKGRAY
-    StaticText "$ZCHECKER_CCMDMENU_HELPNOTE1", DARKGREEN
+    StaticText "$ZCHECKER_CCMDMENU_HELPNOTE1", DARKGRAY
     StaticText "$ZCHECKER_CCMDMENU_HELPNOTE2", DARKGREEN
+    StaticText "$ZCHECKER_CCMDMENU_HELPNOTE3", DARKGREEN
     StaticText " "
-	ZCHandlerExistenceCheckWarning "$ZCHECKER_CCMDMENU_CANNOT_LOCATE"
+	ZCHandlerExistenceCheckWarning "$ZCHECKER_CCMDMENU_ZCHANDLER_ERROR"
     StaticText " "
 
     StaticText "$ZCHECKER_CCMDMENU_EXAMPLES", 1
@@ -165,6 +175,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
 	Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
 	Command "$ZCHECKER_CCMDMENU_ZCADD_SELF", "zcadd self"
 	Command "$ZCHECKER_CCMDMENU_ZCREM", "zcrem"
+    StaticText " "
+	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp"
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
 	//class "ZCOptionMenuCallCCMD" // [WIP]: not written yet.

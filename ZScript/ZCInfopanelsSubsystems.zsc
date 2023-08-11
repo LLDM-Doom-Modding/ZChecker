@@ -122,9 +122,9 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		String itemsSortModeStr = GetSubmenuItemStrSelection( sortmodeMenuItem );
 
 		if ( itemsSortMode > 0 )
-			outlabel = String.Format( "%i %s %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_SORTEDBY" ), itemsSortModeStr );
+			outlabel = String.Format( "%i%s %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_SORTEDBY" ), itemsSortModeStr );
 		else
-			outlabel = String.Format( "%i %s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_UNSORTED" ) );
+			outlabel = String.Format( "%i%s", itemsAmount, ZCGlobal.Locz( "PANELSUBLABEL_INV_UNSORTED" ) );
 
 		if ( !!GetNextSubmenuItemIntSelection( desc ) )
 			outlabel = outlabel .. " " .. ZCGlobal.Locz( "PANELSUBLABEL_INV_REVERSED" );

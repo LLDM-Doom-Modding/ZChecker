@@ -21,6 +21,70 @@ class ZCheckerEverythingMapCategoryData play {
 	Array<ZCheckerCategoryInfoHeader> headerActors;
 }
 
+class ZCheckerEverythingMapInitSectorData play {
+	enum ESectorPlanes {
+		SP_Floor = Sector.floor,
+		SP_Ceiling = Sector.ceiling,
+		_SP_Quantity,
+
+		_SP_First = SP_Floor,
+		_SP_Last = SP_Ceiling
+	}
+
+	FColormap colormap;
+	double friction, movefactor;
+
+	int lightLevel[ _SP_Quantity ];
+	double glowHeight[ _SP_Quantity ];
+	Color glowColor[ _SP_Quantity ];
+	Color specialColor[ _SP_Quantity ];
+
+
+	static ZCheckerEverythingMapInitSectorData Create( Sector sourcesec ) {
+		ZCheckerEverythingMapInitSectorData newdata = new( 'ZCheckerEverythingMapInitSectorData' );
+
+		for ( int plane = _SP_First; plane <= _SP_Last; plane++ ) {
+			newdata.lightLevel[ plane ] = sourcesec.GetPlaneLight( plane );
+
+			newdata.glowHeight[ plane ] = sourcesec.GetGlowHeight( plane );
+			newdata.glowColor[ plane ] = sourcesec.GetGlowColor( plane );
+
+			newdata.specialColor[ plane ] = sourcesec.SpecialColors[ plane ];
+		}
+
+		newdata.colormap.lightColor = sourcesec.colormap.lightColor;
+		newdata.colormap.fadeColor = sourcesec.colormap.fadeColor;
+		newdata.colormap.desaturation = sourcesec.colormap.desaturation;
+		newdata.colormap.blendFactor = sourcesec.colormap.blendFactor;
+		newdata.colormap.fogDensity = sourcesec.colormap.fogDensity;
+
+		newdata.friction = sourcesec.friction;
+		newdata.movefactor = sourcesec.movefactor;
+
+		return newdata;
+	}
+
+	void Apply( Sector targetsec ) {
+		for ( int plane = _SP_First; plane <= _SP_Last; plane++ ) {
+			targetsec.SetPlaneLight( plane, lightLevel[ plane ] );
+
+			targetsec.SetGlowHeight( plane, glowHeight[ plane ] );
+			targetsec.SetGlowColor( plane, glowColor[ plane ] );
+
+			targetsec.SetSpecialColor( plane, specialColor[ plane ] );
+		}
+
+		targetsec.SetColor( colormap.lightColor, colormap.desaturation );
+		targetsec.SetFade( colormap.fadeColor );
+		targetsec.SetFogDensity( colormap.fogDensity );
+
+		targetsec.friction = friction;
+		targetsec.movefactor = movefactor;
+	}
+} // of class ZCheckerEverythingMapInitSectorData play {}
+
+
+
 class ZCheckerEverythingMapHandler: EventHandler {
 	const ZCUDMF_Type = "user_zcsector_type";	// Category.
 	const ZCUDMF_TypeSegment = "user_zcsector_typesegment";	// Current segment index in the category.
@@ -34,7 +98,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	const ZCUDMF_CategoryHeaderOfsX = "user_zcsector_categoryheader_ofsx";
 	const ZCUDMF_CategoryHeaderOfsY = "user_zcsector_categoryheader_ofsy";
 
-	const ZCUDMF_SpecialDef = "user_zcsector_specialdef";
+	const ZCUDMF_SpecialDef = "user_zcsector_specialdef"; // Not more used.
+
+	// Actually no one cannot be sure that a *ZDoom namespace files parsing
+	//will not change in the future. At least from GZDoom 3.3.0 and to
+	//GZDoom 4.8.0 the sorting order has not beed changed.
+	const const_LastEmbeddedActorClass = "LAZDevice";
+
 
 	enum ECategoryIdentifiers {
 		S__Nothing = -1,
@@ -64,8 +134,12 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	};
 
 	ZCheckerEverythingMapCategoryData evSectors[ S__Quantity ];
+	Array<ZCheckerEverythingMapInitSectorData> initsectors;
+
 
 	bool canRecreateEverything;
+	bool embeddedClassesRecreating;
+
 	bool logSpawnInfo;
 	transient bool isNoFontWarningShown;
 
@@ -109,8 +183,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 					outValue = S_Keys;
 				else
 					outValue = S_OtherItems;
-			} else if ( cls.bMISSILE ) {
-				outValue = S_Missiles;
 			} else if ( testcls is 'PlayerPawn' ) {
 				outValue = S_Players;
 
@@ -122,11 +194,17 @@ class ZCheckerEverythingMapHandler: EventHandler {
 						|| testcls is 'FadeSetter' || testcls is 'PointPuller' || testcls is 'PointPusher' || testcls is 'PathFollower' ) {
 				outValue = S_SpecialActors;
 
-				// Decorations:
-			} else if ( cls.bNOBLOCKMAP ) {
-				outValue = S_DecorNoBlockmap;
+				// Decorations (start):
 			} else if ( cls.bNOINTERACTION || cls.bNOCLIP ) {
 				outValue = S_DecorNoInteraction;
+
+				// Projectiles:
+			} else if ( cls.bMISSILE ) {
+				outValue = S_Missiles;
+
+				// Decorations (continue):
+			} else if ( cls.bNOBLOCKMAP ) {
+				outValue = S_DecorNoBlockmap;
 			} else if ( cls.radius > 256 ) {
 				outValue = S_DecorHuge;
 			} else if ( cls.bSHOOTABLE ) {
@@ -143,7 +221,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 	// Next classes forces the game to crash/end the level/etc:
-	bool IsClassRestricted( class<Actor> cur ) {
+	bool IsEmbeddedClassRestricted( class<Actor> cur ) {
 		return (
 				// Common dangers:
 				cur is "DynamicLight"
@@ -153,7 +231,6 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			||  cur is "WeaponPiece"
 				// Specific dangers (usually crashing the game):
 			||  cur is "ParticleFountain"	// Crashes the game on first tic.
-			||  cur is "BossBrain"			// Spawns next to the "ExplosiveBarrel"...
 			||  cur == "Bat" 				// Tries to use a NULL "target" field.
 			||  cur is "ProgLevelEnder" 	// Just ends the level almost immediately.
 			||  cur is "SlideshowStarter" 	// Calls a "level.StartSlideshow()".
@@ -167,11 +244,11 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		return cur && (
 			  ( cur is "Inventory" && Inventory( cur ).owner )
 			||( cur is "PlayerPawn" && cur.player )
-			||  IsClassRestricted( cur.GetClass() )
+			||  IsEmbeddedClassRestricted( cur.GetClass() )
 		);
 	}
 
-	// Really just a wrapper around a some extremely rough algorithm (will be rewritten).
+	// Really just a wrapper around a some extremely rough algorithm (will be rewritten... someday).
 	static int FindNextExistingSectorIndex( ZCheckerEverythingMapCategoryData evSector, int fromIndex = -1 ) {
 		if ( !evSector )
 			return -1;
@@ -197,7 +274,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 	// Clears all previous spawned actors excluding forbidden and summons all of them again:
 	void RecreateEverything( void ) {
 		if ( !canRecreateEverything ) {
-			ZCConsoleCommand.LogLocalize2Str( LL_Emergency, "EVMAP_INITERROR", GetClassName() );
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::RecreateEverything(). " .. ZCGlobal.Locz( "EVMAP_INITERROR" ) );
 			return;
 		}
 
@@ -260,16 +337,23 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 
 		bool spawnReplaced = CVar.FindCVar( "mcm_zchecker_ev_spawnreplaced" ).GetBool();
+		bool spawnBuiltinActors = CVar.FindCVar( "mcm_zchecker_ev_spawnbuiltin" ).GetBool();
+		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
+
 		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
 		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
 		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
+		bool spawnBossBrain = CVar.FindCVar( "mcm_zchecker_ev_spawnbossbrains" ).GetBool();
+		bool spawnMissiles = CVar.FindCVar( "mcm_zchecker_ev_spawnmissiles" ).GetBool();
+
 		bool spawnCorruptedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawncorruptedsprites" ).GetBool();
 		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
 		bool spawnMissedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawnmissingsprites" ).GetBool();
-		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
 
 		int spriteTNT1A0 = Actor.GetSpriteIndex( "TNT1A0" );
 		logSpawnInfo = CVar.FindCVar( "mcm_zchecker_ev_logspawninfo" ).GetBool();
+
+		embeddedClassesRecreating = true;
 
 
 		// Recreate everything:
@@ -278,21 +362,39 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			bool skipactor = false;
 
-			if ( IsClassRestricted( cls ) ) {
-				skipactor = true;
+			// Optimization. Skipping only internal dangerous classes:
+			if ( embeddedClassesRecreating ) {
+				if ( cls == const_LastEmbeddedActorClass ) {
+					embeddedClassesRecreating = false;
 
-				if ( logSpawnInfo )
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
+					if ( logSpawnInfo ) {
+						if ( spawnBuiltinActors )
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Embedded classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
+						else
+							logCreatingActor( ZCGlobal.Locz( "EVMAPSPAWN_SKIPBUILTIN" ) );
+					}
+				} // of if ( cls == const_LastEmbeddedActorClass ) {}
+
+				if ( !spawnBuiltinActors ) {
+					skipactor = true;
+
+				} else if ( IsEmbeddedClassRestricted( cls ) ) {
+					skipactor = true;
+
+					if ( logSpawnInfo )
+						ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). Class \"" .. cls.GetClassName() .. "\" is restricted." );
+				}
 
 			} else if ( skipRestrictedReplacements ) {
 				class<Actor> clsReplacee = Actor.GetReplacee( cls );
 
-				if ( clsReplacee != cls && IsClassRestricted( clsReplacee ) ) {
+				if ( clsReplacee != cls && IsEmbeddedClassRestricted( clsReplacee ) ) {
 					skipactor = true;
 					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_REPLRESTRICTEDSKIP" ), cls.GetClassName(), clsReplacee.GetClassName() ) );
 				}
 			}
 
+			// Main handling:
 			if ( !skipactor ) {
 				bool spriteCheckSuccess = spawnTNT1A0 && spawnCorruptedSprites;
 
@@ -338,26 +440,32 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 				if ( !spriteCheckSuccess ) {
 					if ( stInternalSprite == spriteTNT1A0 )
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_EMPTYSPRITESKIP" ), cls.GetClassName(), stSpriteName ) );
 					else if ( stSpriteName4 == "TNT1" )
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_MISSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName ) );
 					else
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_CORRUPSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName, stSpriteName ) );
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_CORRUPSPRITESKIP" ), cls.GetClassName(), stInternalSpriteName, stSpriteName ) );
 
 				} else if ( ( GetDefaultByType( cls ).bSTEALTH && !spawnStealth ) || ( GetDefaultByType( cls ).bINVISIBLE && !spawnInvis ) ) {
-					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_INVISSKIP" ), cls.GetClassName() ) );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_INVISSKIP" ), cls.GetClassName() ) );
 
 				} else if ( !spawnReplaced && Actor.GetReplacement( cls ) != cls ) {
-					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_REPLACEDSKIP" ), cls.GetClassName() ) );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_REPLACEDSKIP" ), cls.GetClassName() ) );
 
 				} else if ( !spawnPlayerChunks && cls is "PlayerChunk" ) {
-					logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_PLCHUNKSKIP" ), cls.GetClassName() ) );
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_PLCHUNKSKIP" ), cls.GetClassName() ) );
+
+				} else if ( !spawnBossBrain && cls is "BossBrain" ) {
+					logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_BOSSBRAINSKIP" ), cls.GetClassName() ) );
 
 				} else {
 					ECategoryIdentifiers clsType = GetSectorStartForClass( cls );
 
-					if ( clsType != S__Nothing ) {
-						logCreatingActor( String.Format( ZCGlobal.Loc( "EVMAPSPAWN_SUCCESS" ), cls.GetClassName(), stSpriteName ) );
+					if ( !spawnMissiles && clsType == S_Missiles ) {
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_MISSILESSKIP" ), cls.GetClassName() ) );
+
+					} else if ( clsType != S__Nothing ) {
+						logCreatingActor( String.Format( ZCGlobal.Locz( "EVMAPSPAWN_SUCCESS" ), cls.GetClassName(), stSpriteName ) );
 
 						ZCheckerEverythingMapCategoryData curCategory = evSectors[ clsType ];
 
@@ -393,6 +501,15 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 	} // of void RecreateEverything( void ) {}
 
+	void ReloadAllSectors( void ) {
+		//ZCGlobal.Log( LL_Main, GetClassName() .. "::ReloadCategorySectors(). Not released yet." );
+
+		for ( int i = 0; i < level.sectors.Size(); i++ )
+			initsectors[ i ].Apply( level.sectors[ i ] );
+
+	} // of void ReloadAllSectors( void ) {}
+
+
 
 	override void OnRegister() {
 		SetOrder( ZCheckerMapHandlerOrder );
@@ -411,6 +528,13 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			evSectors[ i ] = new( 'ZCheckerEverythingMapCategoryData' );
 			evSectors[ i ].evType = i;
 		}
+
+
+		for ( int i = 0; i < level.sectors.Size(); i++ )
+			initsectors.Push( ZCheckerEverythingMapInitSectorData.Create( level.sectors[ i ] ) );
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::WorldLoaded(). Saved common data fields for the total of " .. initsectors.Size() .. " sectors." );
+
 
 		canRecreateEverything = true;
 
@@ -562,8 +686,12 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 
 			if ( e.Name == "zc_evmap_recreate" ) {
-				ZCGlobal.Log( LL_Main, "$EVMAP_TOTALRECREATE" );
+				ZCGlobal.Log( LL_Main, "$EVMAP_RECREATEACTORS" );
 				RecreateEverything();
+
+			} else if ( e.Name == "zc_evmap_reloadsectors" ) {
+				ZCGlobal.Log( LL_Main, "$EVMAP_RELOADSECTORS" );
+				ReloadAllSectors();
 			}
 
 		} // of if ( ZCGlobal.IsEverythingLevel() ) {}

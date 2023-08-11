@@ -88,8 +88,9 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 
 	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_GENERAL", 1
 	ScaleSlider "$ZCHECKER_PANELSUBMENU_STATES_AMNT", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "$ZCHECKER_PANELSTATESOPT_UNLIMITED"
-	Option "$ZCHECKER_PANELSUBMENU_STATES_CONLOG", "mcm_zchecker_infovar_stateslogging", "YesNo"
 	StaticText "$ZCHECKER_PANELSUBMENU_STATESNOTE_CONLOG", DARKGRAY
+	StaticText " "
+	Option "$ZCHECKER_PANELSUBMENU_STATES_CONLOG", "mcm_zchecker_infovar_stateslogging", "YesNo"
 
 	StaticText " "
 	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_CUR", 1

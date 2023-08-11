@@ -21,11 +21,14 @@ version "3.3.0"
 
 // General, base, utility and miscellaneous code; constants are in "ZCUtils.zsc":
 #include "ZScript/ZCUtils.zsc"
-#include "ZScript/ZCBranchSpecific.zsc"
-#include "ZScript/ZCDataStructures.zsc"
+#include "ZScript/Core/ZCBranchSpecific.zsc"
+#include "ZScript/Core/ZCDataStructures.zsc"
 #include "ZScript/ZCBaseClasses.zsc"
-#include "ZScript/ZCMenus.zsc"
-#include "ZScript/ZCMapScripts.zsc"
+#include "ZScript/Core/ZCMenus.zsc"
+#include "ZScript/Core/ZCMapScripts.zsc"
+
+#include "ZScript/Core/ZCInitializationCore.zsc"
+#include "ZScript/Core/ZCRendererCore.zsc"
 
 // Console classes and CCMDs:
 #include "ZScript/ZCCommandsGeneral.zsc"
@@ -42,7 +45,7 @@ version "3.3.0"
 #include "ZScript/ZCInfopanelsOther.zsc"
 
 
-const ZCheckerVersionNumber = "0.85";
+const ZCheckerVersionNumber = "0.86";
 
 const ZCheckerVersion = ZCheckerVersionNumber .. ", branch \"" .. ZCheckerVersionBranch .. "\"";
 
@@ -50,7 +53,7 @@ const MaxTestee = 3; // [McM] A legacy constant from 2018. Will rename someday..
 
 
 
-// Internal core of the project.
+// === Internal core of the project.
 
 class ZCheckerHandler: StaticEventHandler {
 	ZCGlobal globalclass;
@@ -58,8 +61,8 @@ class ZCheckerHandler: StaticEventHandler {
 	ZCheckerHandlerDatascopeVariables datascoped;
 
 	Array<ZCConsoleClass> zcConsoleHandleClasses;
-
 	Array<ZCInternalActorNameCell> allActorNames;
+
 
 	// In current structure it's impossible to avoid unloading pointers to 
 	//actors from memory on level reloading. Found this too late for a 
@@ -68,400 +71,41 @@ class ZCheckerHandler: StaticEventHandler {
 
 	ZCheckerCCMDInfo zcCCMDInfo;
 
-	bool handlerInitSuccess;
-	String zcConfigFile;
-	int zcConfigCurLineIndex;
-
 
 	void UpdateInternalClassnameByField( uint fieldnum ) {
-		if ( fieldnum < MaxTestee ) {
-			String newClassname = "";
+		if ( fieldnum >= MaxTestee )
+			return;
 
-			if ( Testee[ fieldnum ].mo )
-				newClassname = Testee[ fieldnum ].mo.GetClassName();
+		String newClassname = "";
 
-			globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
-		}
+		if ( Testee[ fieldnum ].mo )
+			newClassname = Testee[ fieldnum ].mo.GetClassName();
+
+		globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
 	} // of void UpdateInternalClassnameByField( uint fieldnum ) {}
 
 
-	private bool addConsoleClass( class<ZCConsoleClass> classname, bool importantFlag = false ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::addConsoleClass(). Trying to add \"" .. ( classname? classname.GetClassName() .. "" : "<NULL>" ) .. "\"." );
+	clearscope bool CheckForResetLocalization( void ) const {
+		// Double call of the "StringTable.Localize()" is for optimization.
+		if ( datascoped.lastLocalizationTestGameTic != gametic && StringTable.Localize( "$ZCHECKER_CURLANGUAGE" ) != datascoped.lastLocalizedTestString ) {
+			datascoped.lastLocalizedTestString = StringTable.Localize( "$ZCHECKER_CURLANGUAGE" );
+			datascoped.lastLocalizationTestGameTic = gametic;
 
-		if ( classname ) {
-			ZCConsoleClass newCCMD = ZCConsoleClass.Create( classname, importantFlag );
-			zcConsoleHandleClasses.Push( newCCMD );
-
-			bool important = newCCMD.zcFlags & ZCConsoleClass.CCF_Important;
-			newCCMD.OnLoad();
-			newCCMD.zcFlags = ( newCCMD.zcFlags & ~newCCMD.CCF_Important ) | ( newCCMD.CCF_Important * !!important );
+			return true;
 		}
 
-		return !!classname;
-	}
+		return false;
+	} // of clearscope bool CheckForResetLocalization( void ) {}
 
-	private void addConsoleSeparator( bool importantFlag = false ) {
-		zcConsoleHandleClasses.Push( ZCConsoleClass.Create( 'ZCConsoleSeparator', importantFlag ) );
-	}
+	void ResetPlayLocalization( void ) {
+		if ( CheckForResetLocalization() ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ResetPlayLocalization(). Updating all console classes. New language is " .. datascoped.lastLocalizedTestString );
 
-	private play bool addInfoPanelClass( class<ZCBaseInfoPanelPart> classname ) {
-		if ( classname ) {
-			ZCBaseInfoPanelPart newPanelPart = NULL;
-
-			if ( classname is "ZCBaseInfoPanelPart_PlayScope" ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add a " .. TEXTCOLOR_DARKGREEN .. "play-scoped " .. LLCOLOR_DEBUG .. "\"" .. classname.GetClassName() .. "\"." );
-				newPanelPart = ZCBaseInfoPanelPart_PlayScope.CreatePlayScope( classname, self );
-			} else {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::addInfoPanelClass(). Trying to add \"" .. classname.GetClassName() .. "\"." );
-				newPanelPart = ZCBaseInfoPanelPart.Create( classname, self );
-			}
-
-			panels.defaultPanels.Push( newPanelPart );
-		} else {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::addInfoPanelClass(). No class<ZCBaseInfoPanelPart> defined." );
+			for ( int i = 0; i < zcConsoleHandleClasses.Size(); i++ )
+				zcConsoleHandleClasses[ i ].ResetCachedHelpString();
 		}
+	} // of void ResetPlayLocalization( void ) {}
 
-		return !!classname;
-	}
-
-
-	private void handleConfigFileNewlines( String newlineTypeComment, String replaceeNewlineSeq ) {
-		ZCGlobal.Log( LL_Debug, "New lines type for file \"ZChecker.cfg\" recognized as " .. newlineTypeComment );
-
-		if ( replaceeNewlineSeq != "\n" )
-			zcConfigFile.Replace( replaceeNewlineSeq, "\n" );
-	}
-
-	private bool checkKeywordArgsAmount( uint argsAmount, String keyword, uint rightAmount, String argsDescription ) {
-		if ( argsAmount != rightAmount ) {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::checkKeywordArgsAmount(). Wrong arguments for keyword \"" .. keyword .. "\" at line " .. zcConfigCurLineIndex .. ": has " .. argsAmount .. ", must be " .. rightAmount .. " (" .. TEXTCOLOR_RED .. "\"" .. argsDescription .. "\"" .. LLCOLOR_EMERGENCY .. ")." );
-			handlerInitSuccess = false;
-			return false;
-		}
-
-		return true;
-	}
-
-	private void printConfigWarning( String message ) {
-		ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). " .. message .. " at line " .. zcConfigCurLineIndex .. "." );
-		handlerInitSuccess = false;
-	}
-
-	protected void ParseConfigFile( void ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::IncludeConsoleClasses(). Parsing a *.cfg file; creating CCMD handlers and info panel classes..." );
-
-        int zcConfigFileHandler = Wads.FindLump( "zchecker.cfg" );
-
-        if ( zcConfigFileHandler != -1 ) {
-            zcConfigFile = Wads.ReadLump( zcConfigFileHandler );
-            Array<String> zcConfigLines;
-
-            zcConfigFile.ToLower();
-			ENewlineTypes newlinesType = ZCGlobal.GetTextNewlinesType( zcConfigFile );
-
-			switch ( newlinesType ) {
-				case ZCNL_Unix: handleConfigFileNewlines( "*nix (LF)", "\n" ); break;
-				case ZCNL_DOS: handleConfigFileNewlines( "DOS/Windows (CR/LF)", "\r\n" ); break;
-				case ZCNL_Mac: handleConfigFileNewlines( "MacOS (CR)", "\r" ); break;
-				case ZCNL_DOSReversed: handleConfigFileNewlines( "DOS reversed (LF/CR)", "\n\r" ); break;
-				default:
-					ZCGlobal.Log( LL_Debug, TEXTCOLOR_YELLOW .. "Cannot recognize new lines type, using *nix" .. LLCOLOR_DEBUG .. "." );
-					newlinesType = ZCNL_Unix;
-					break;
-			}
-
-			zcConfigFile.Split( zcConfigLines, "\n" );
-
-
-			int zcConfigLinesSize = zcConfigLines.Size();
-
-			// Fixing a non-POSIX end-of-file marker:
-			if ( zcConfigLinesSize ) {
-				String lastline = zcConfigLines[ zcConfigLinesSize - 1 ];
-
-				if ( lastline.CharCodeAt( lastline.Length() - 1 ) == 0 )
-					zcConfigLines[ zcConfigLinesSize - 1 ] = lastline.Left( lastline.Length() - 1 );
-			}
-
-			zcConfigCurLineIndex = 1;
-
-			for ( int i = 0; i < zcConfigLinesSize; i++, zcConfigCurLineIndex++ ) {
-				String curLine = zcConfigLines[ i ];
-
-				// Comments and extra spaces delete:
-				int IndexOfCommentStart = curLine.IndexOf( "#" );
-				if ( IndexOfCommentStart != -1 )
-					curLine.Truncate( IndexOfCommentStart );
-
-				curLine = ZCGlobal.TruncateStringBySpaces( curLine );
-
-				// Try to unparse current line if it isn't empty or remove it elsewere:
-				if ( curLine != "" ) {
-					Array<String> curLineWords;
-
-					curLineWords.Clear();
-					curLine.Replace( "\t", " " );
-					curLine.Split( curLineWords, " ", TOK_SKIPEMPTY );
-
-					int argsamount = ( curLineWords.Size() - 1 );
-
-					if ( curLineWords[ 0 ] == "ccmd" || curLineWords[ 0 ] == "addccmd" || curLineWords[ 0 ] == "plaintext" || curLineWords[ 0 ] == "addtext" || curLineWords[ 0 ] == "addplaintext" ) {
-						if ( argsamount == 1 ) {
-							if ( !addConsoleClass( curLineWords[ 1 ], false ) )
-								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
-						} else if ( argsamount == 2 && curLineWords[ 2 ] == "important" ) {
-							if ( !addConsoleClass( curLineWords[ 1 ], true ) )
-								printConfigWarning( "Wrong ZCConsoleClass class \"" .. curLineWords[ 1 ] .. "\"" );
-						} else {
-							checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCConsoleClass> [important]" );
-						}
-
-					} else if ( curLineWords[ 0 ] == "ccmdsep" || curLineWords[ 0 ] == "addccmdsep" || curLineWords[ 0 ] == "ccmdseparator" || curLineWords[ 0 ] == "addccmdseparator" ) {
-						addConsoleSeparator( argsamount == 1 && curLineWords[ 1 ] == "important" );
-
-					} else if ( curLineWords[ 0 ] == "panel" || curLineWords[ 0 ] == "addpanel" || curLineWords[ 0 ] == "infopanel" || curLineWords[ 0 ] == "addinfopanel" ) {
-						if ( checkKeywordArgsAmount( argsamount, curLineWords[ 0 ], 1, "class<ZCBaseInfoPanelPart>" ) )
-							if ( !addInfoPanelClass( curLineWords[ 1 ] ) )
-								printConfigWarning( "Wrong PanelInfo class \"" .. curLineWords[ 1 ] .. "\"" );
-
-					} else {
-						printConfigWarning( "Unknown keyword \"" .. curLineWords[ 0 ] .. "\"" );
-					}
-
-				} else {
-					zcConfigLines.Delete( i, 1 );
-					zcConfigLinesSize--;
-					i--;
-				} // of else of if ( curLine != "" ) {}
-
-			} // of for ( int i = 0; i < zcConfigLines.Size(); i++, zcConfigCurLineIndex++ ) {}
-		} else {
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::IncludeConsoleClasses(). Cannot find file \"ZChecker.cfg\"." );
-			handlerInitSuccess = false;
-		} // of else of if ( zcConfigFileHandler != -1 ) {}
-
-	} // of protected void ParseConfigFile( void ) {}
-
-	protected void InitAllActorNames( void ) {
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::InitAllActorNames(). Creating storage cells for actor names..." );
-
-		for ( int i = 0; i < ZCInternalActorNameCell.ARRAY_Quantity; i++ )
-			allActorNames.Push( ZCInternalActorNameCell.Create( i ) );
-
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::InitAllActorNames(). Saving actor names by first char..." );
-
-		for ( int i = 0; i < AllActorClasses.Size(); i++ ) {
-			String curclass = AllActorClasses[ i ].GetClassName();
-			int index = ZCInternalActorNameCell.GetClassnameCellIndex( curclass );
-
-			allActorNames[ index ].orignames.Push( curclass );
-			curclass.ToLower();
-			allActorNames[ index ].names.Push( curclass ); // To speed up a comparing process.
-		}
-
-		if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {
-			for ( int i = 0; i< ZCInternalActorNameCell.ARRAY_Quantity; i++ ) {
-				ZCInternalActorNameCell nameCell = allActorNames[ i ];
-				int nameCellSize = nameCell.names.Size();
-
-				ZCGlobal.ClearscopeLog( LL_Debug, String.Format( "%s::InitAllActorNames(). allActorNames[%2i] quantity: %3i." .. ( nameCellSize > 0? " First is \"" .. nameCell.names[ 0 ] .. "\"." : "" ), GetClassName(), i, nameCellSize ) );
-			}
-		} // of if ( ZCGlobal.GetLoglevel() >= LL_Debug ) {}
-	} // of protected void InitAllActorNames( void ) {}
-
-
-
-	override void OnRegister() {
-		handlerInitSuccess = true;
-		SetOrder( ZCheckerHandlerOrder );
-
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::OnRegister(). ZChecker v" .. ZCheckerVersion .. " initializes..." );
-		ZCGlobal.Log( LL_Debug, String.Format( "%s::OnRegister(). EGameType 0x%03x, EGameAction %i, multiplayer %i, dm %i.",
-							GetClassName(), gameinfo.gametype, gameaction, multiplayer, deathmatch ) );
-
-		panels = ZCPanelsStorage.Create();
-
-		for ( int i = 0; i < MaxTestee; i++ )
-			Testee[ i ] = ZCheckerField.Create( i );
-
-		zcCCMDInfo = new( 'ZCheckerCCMDInfo' );
-		zcCCMDInfo.handler = self;
-
-		ParseConfigFile();
-		InitAllActorNames();
-
-		ZCGlobal.Log( LL_Detailed, String.Format( ( handlerInitSuccess? ZCGlobal.Loc( "GREETINGS_SUCCESS" ) : ZCGlobal.Loc( "GREETINGS_WARNINGS" ) ),
-									ZCheckerVersionNumber, zcConsoleHandleClasses.Size(), panels.defaultPanels.Size() ) );
-
-		Super.OnRegister();
-	}
-
-	// Method to update all of the field meta-information:
-	private clearscope Actor UpdateTesteeField( int fieldindex ) {
-		Actor curTestee = NULL;
-
-		if ( Testee[ fieldindex ] && Testee[ fieldindex ].mo )
-			curTestee = Testee[ fieldindex ].mo;
-
-		// Updating info actors type. Usually it's better not to cross the 
-		//ui, data and play scopes in one method...
-		if ( curTestee is "StateProvider" && PlayerPawn( Inventory( curTestee ).owner ) ) {
-			Testee[ fieldindex ].mo = curTestee = PlayerPawn( Inventory( curTestee ).owner ).player.ReadyWeapon;
-			Testee[ fieldindex ].actorType = IAT_StateProvider;
-		} else {
-			Testee[ fieldindex ].actorType = IAT_Normal;
-		}
-
-		return curTestee;
-	}
-
-
-
-
-	override void RenderOverlay( RenderEvent e ) {
-		// Pointers to the all of the used CVars are pre-cached in this method.
-
-		Array<ZCInfoPanelNode> infopanelNodes;
-		PlayerInfo pl = players[ consoleplayer ];
-
-		panels.UpdateFont();
-
-		for ( int iCurInfoPanel = 0; iCurInfoPanel < panels.curPanels.Size(); iCurInfoPanel++ ) {
-			ZCInfoPanelNode panelnode = panels.curPanels.nodes[ iCurInfoPanel ];
-
-			if ( panelnode.panelCVar && !!panelnode.panelCVar.GetInt() )
-				infopanelNodes.Push( panelnode );
-		}
-
-		if ( !datascoped.infopanelStartXCVar ) {
-			PlayerInfo pl = players[ consoleplayer ];
-
-			datascoped.infopanelStartXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_startx", pl );
-			datascoped.infopanelStartYCVar = CVar.GetCVar( "mcm_zchecker_infopanel_starty", pl );
-			datascoped.infopanelScaleCVar = CVar.GetCVar( "mcm_zchecker_infopanel_scale", pl );
-			datascoped.infopanelOffsetXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_offsetx", pl );
-			datascoped.infopanelPartsSpaceYCVar = CVar.GetCVar( "mcm_zchecker_infopanelparts_y_gap", pl );
-
-			datascoped.infopanelDimEnabledCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimenabled", pl );
-			datascoped.infopanelDimColorCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimcolor", pl );
-			datascoped.infopanelDimAlphaCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimalpha", pl );
-			datascoped.infopanelDimBorderWidthCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimborderwidth", pl );
-		}
-
-		double infopanelStartX = datascoped.infopanelStartXCVar.GetFloat();
-		double infopanelStartY = datascoped.infopanelStartYCVar.GetFloat();
-		double infopanelScale = datascoped.infopanelScaleCVar.GetFloat();
-		double infopanelOffsetX = datascoped.infopanelOffsetXCVar.GetFloat();
-		double infopanelPartsSpaceY = datascoped.infopanelPartsSpaceYCVar.GetFloat();
-
-		// Thanks to m8f for the "drawTextCenter()" function code from his "Hellscape Navigator".
-		double bordersXMargin = 4.0;
-
-		// Previously, the game crashed on a new game after a "endgame" CCMD (key F7).
-		double scale = 1.0 / ( infopanelScale > 0.0? infopanelScale : 1.0 );
-
-		int height = int( scale * Screen.GetHeight() );
-		int width = int( scale * Screen.GetWidth() );
-
-		int fontSymbolHeight = panels.infopanelsFont.GetHeight() + 1;
-
-		for ( int i = 0; i < MaxTestee; i++ ) {
-			Actor curTestee = UpdateTesteeField( i );
-
-			if ( !curTestee )
-				continue;
-
-			double starty = infopanelStartY * 0.01 * height;
-			double y = starty;
-			double x = infopanelStartX * 0.01 + i * infopanelOffsetX * 0.01;
-			x *= width;
-
-			double maxStringWidth = 0.0;
-
-
-			// Forming a full informational panel:
-			Array<String> panelsstr;
-			Array<double> panelsheights;
-			panelsstr.Clear();
-			panelsheights.Clear();
-
-			for ( int j = 0; j < infopanelNodes.Size(); j++ ) {
-				// Skipping locally disabled panel parts:
-				if ( !infopanelNodes[ j ].EnabledForPanel( i ) )
-					continue;
-
-				ZCBaseInfoPanelPart curinfopart = infopanelNodes[ j ].panel;
-				String outStr;
-
-				// Getting the information:
-				if ( curinfopart.IsPlayScope() )
-					outStr = ZCBaseInfoPanelPart_PlayScope( curinfopart ).InternalGetInfo_clearscope( i );
-				else
-					outStr = curinfopart.GetInfo( curTestee, Testee[ i ] );
-
-				// Skipping empty panel parts:
-				if ( outStr == "" )
-					continue;
-
-
-				panelsstr.Push( String.Format( TEXTCOLOR_GRAY .. "%s\n", outStr ) );
-
-				// Push the text out from the borders:
-				double stringWidth = panels.infopanelsFont.StringWidth( outStr );
-
-				if ( x < bordersXMargin )
-					x = bordersXMargin;
-				else if ( x > width - stringWidth - bordersXMargin )
-					x = width - stringWidth - bordersXMargin;
-
-				if ( maxStringWidth < stringWidth )
-					maxStringWidth = stringWidth;
-			}
-
-			// Printing infopanels parts:
-			int panelsstrAmount = panelsstr.Size();
-			double endy = y;
-
-			for ( int j = 0; j < panelsstrAmount; j++ ) {
-				// Adding an Y-offset for the next panel part:
-				int newlinesAmount = 0;
-				int nextNewlinePos = -1;
-
-				while ( -1 != ( nextNewlinePos = panelsstr[ j ].IndexOf( "\n", nextNewlinePos + 1 ) ) )
-					newlinesAmount++;
-
-				double panelheight = fontSymbolHeight * ( newlinesAmount + infopanelPartsSpaceY );
-				panelsheights.Push( panelheight );
-				endy += panelheight;
-			}
-
-			// Dimming background:
-			bool infopanelDimEnabled = datascoped.infopanelDimEnabledCVar.GetBool();
-
-			if ( infopanelDimEnabled && panelsstrAmount ) {
-				Color dimColor = Color( datascoped.infopanelDimColorCVar.GetInt() );
-				double dimAlpha = datascoped.infopanelDimAlphaCVar.GetFloat();
-				double dimBorderWitdh = datascoped.infopanelDimBorderWidthCVar.GetFloat() * fontSymbolHeight;
-
-				int dimX = int( ( x - dimBorderWitdh ) / scale );
-				int dimY = int( ( starty - dimBorderWitdh ) / scale );
-				int dimWidth = int( ( maxStringWidth + dimBorderWitdh * 2 ) / scale );
-				int dimHeight = int( ( endy - starty - fontSymbolHeight * infopanelPartsSpaceY + dimBorderWitdh * 2 ) / scale );
-
-				Screen.Dim( dimColor, dimAlpha, dimX, dimY, dimWidth, dimHeight );
-			}
-
-			// Printing out infopanel parts:
-			for ( int j = 0; j < panelsstrAmount; j++ ) {
-				Screen.DrawText( panels.infopanelsFont, Font.CR_GRAY, x, y, panelsstr[ j ],
-								DTA_KeepRatio, true, DTA_VirtualWidth, width, DTA_VirtualHeight, height );
-
-				y += panelsheights[ j ];
-			}
-		} // of for ( int i = 0; i < MaxTestee; i++ ) {}
-
-		Super.RenderOverlay( e );
-	} // of override void RenderOverlay( RenderEvent e ) {}
 
 
 	private String neteventArgColored( int value ) {
@@ -542,24 +186,62 @@ class ZCheckerHandler: StaticEventHandler {
 				continue; // Skipping tooltips and other plaintext classes.
 
 			ZCConsoleCommand curCCMD = ZCConsoleCommand( zcConsoleHandleClasses[ i ] );
+			String curCCMDNeteventName = curCCMD.ccmdInterfaceData.neteventName;
 
-			if ( ccmdName ~== curCCMD.ccmdInterfaceData.neteventName ) {
+
+			if ( curCCMDNeteventName != "" && ccmdName ~== curCCMDNeteventName ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
 				if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.argsamount );
+					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.maxArgsAmount );
 
-				if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
+				if ( zcCCMDInfo.paramCallHelp && !( curCCMD.zcFlags & curCCMD.CCF_HelpArgOverride ) ) {
+					// Converts a "zc<ccmd> help" to a "zchelp <ccmd>".
+					//Too subtly realisation, actually.
+					if ( curCCMD.ccmdInterfaceData.helpInternalAliases.Size() == 0 ) {
+						ZCGlobal.Log( LL_Emergency, GetClassName() .. "::NetworkProcess(). No internal help aliases for the \"" .. curCCMD.GetClassName() .. "\"." );
+						break;
+					}
+
+					zcCCMDInfo.paramCallHelp = false;
+
+					zcCCMDInfo.args.Clear();
+					zcCCMDInfo.args.Push( curCCMD.ccmdInterfaceData.helpInternalAliases[ 0 ] );
+					ccmdName = "zc_help";
+
+					ZCGlobal.Log( LL_APIMessage, String.Format(
+									"%s::NetworkProcess(). Command was changed to the \"" .. TEXTCOLOR_ORANGE .. "%s %s" .. LLCOLOR_MAIN .. "\".",
+									GetClassName(), "zchelp", zcCCMDInfo.args[ 0 ]
+								) );
+
+					i = -1;
+					continue;
+
+				} else if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
+					// Requires a non-blocking execution.
 					if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
 						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_OLIVE .. "Requested a non-blocking execution" .. LLCOLOR_DEBUG .. "." );
 
 					zcCCMDInfo.nonblockingCommands.Push( curCCMD );
 					nonblockingCommandsAmount++;
+
 				} else {
+					// Default execution.
+
+					// Saving original log level:
+					int realLogLevel = ZCGlobal.GetLoglevel();
+					ZCGlobal.ForceSetLogLevel( zcCCMDInfo.paramLogLevelOverride );
+
+					ResetPlayLocalization();
+
+					// Command call:
 					if ( curCCMD.HandleArguments() )
 						curCCMD.DoCommand();
-					else
+					else if ( !zcCCMDInfo.paramNoUsage )
 						ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. ZCGlobal.Locz( "CCMDSHELP_USAGE" ) .. LLCOLOR_MAIN .. ":\n" .. curCCMD.GetHelpString() );
+
+					// Restoring log level:
+					ZCGlobal.ForceSetLogLevel( realLogLevel );
 
 					interceptNeteventsMode = 0;
 					break;
@@ -591,8 +273,13 @@ class ZCheckerHandler: StaticEventHandler {
 				ZCConsoleCommand curCCMD = zcCCMDInfo.nonblockingCommands[ curCCMDIndex ];
 
 				if ( curCCMD.HandleArguments() ) {
+					int realLogLevel = ZCGlobal.GetLoglevel();
+					ZCGlobal.ForceSetLogLevel( zcCCMDInfo.paramLogLevelOverride );
+
 					curCCMD.DoCommand();
 					printUsage = false;
+
+					ZCGlobal.ForceSetLogLevel( realLogLevel );
 
 					if ( !( curCCMD.zcFlags & curCCMD.CCF_NonblockingSuccess ) )
 						break;
@@ -602,14 +289,15 @@ class ZCheckerHandler: StaticEventHandler {
 				}
 			}
 
-			if ( printUsage && zcCCMDInfo.usageNonblockingCommand )
+			if ( printUsage && zcCCMDInfo.usageNonblockingCommand && !zcCCMDInfo.paramNoUsage )
 				ZCGlobal.Log( LL_Normal | LL_NoPrefix, TEXTCOLOR_YELLOW .. ZCGlobal.Locz( "CCMDSHELP_USAGE" ) .. LLCOLOR_MAIN .. ":\n" .. zcCCMDInfo.usageNonblockingCommand.GetHelpString() );
 
 			interceptNeteventsMode = 0;
 			zcCCMDInfo.nonblockingCommands.Clear();
 		} // of if ( nonblockingCommandsAmount != 0 ) {}
 
-		if ( e.name == "zc_evmap_recreate" /*|| e.name == "zc_evmap_pause_level_part"*/ )
+
+		if ( e.name == "zc_evmap_recreate" || e.name == "zc_evmap_reloadsectors" /*|| e.name == "zc_evmap_pause_level_part"*/ )
 			interceptNeteventsMode = 0;
 
 		if ( interceptNeteventsMode ) {
@@ -648,6 +336,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 		Super.NetworkProcess( e );
 	} // of override void NetworkProcess( ConsoleEvent e ) {}
+
 
 
 	override void WorldTick() {

@@ -36,32 +36,20 @@ class ZCHelpCommand: ZCConsoleCommand {
 				for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {
 					ZCConsoleCommand curccmd = ZCConsoleCommand( ccmd.handler.zcConsoleHandleClasses[ i ] );
 
-					if ( curccmd ) {
-						Array<String> aliases;
-						aliases.Clear();
+					if ( !curccmd || curccmd.ccmdInterfaceData.helpInternalAliases.Size() == 0 )
+						continue;
 
-						curccmd.ccmdInterfaceData.helpHeader.Split( aliases, ";", TOK_SKIPEMPTY );
+					for ( int j = 0; j < curccmd.ccmdInterfaceData.helpInternalAliases.Size(); j++ ) {
+						String curalias = curccmd.ccmdInterfaceData.helpInternalAliases[ j ];
 
-						for ( int j = 0; j < aliases.Size(); j++ ) {
-							String curalias = aliases[ j ];
-							int firstSpaceIndex = curalias.IndexOf( " " );
+						if ( arg ~== curalias ) {
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::HandleArguments(). Usage search for \"" .. arg .. "\": found CCMD " .. curccmd.GetClassName() .. "." );
+							infoclass = curccmd;
+							outValue = true;
+							break;
+						}
+					} // of for ( int j = 0; j < curccmd.ccmdInterfaceData.helpInternalAliases.Size(); j++ ) {}
 
-							if ( firstSpaceIndex >= 0 )
-								curalias.Truncate( firstSpaceIndex );
-							if ( curalias.Length() > 2 )
-								curalias = curalias.Mid( 2, curalias.Length() - 1 );
-
-							ZCGlobal.Log( LL_Debug, GetClassName() .. "::HandleArguments(). Arg \"" .. arg .. "\" compare alias \"" .. curalias .. "\"." );
-
-							if ( arg ~== curalias ) {
-								ZCGlobal.Log( LL_Debug, GetClassName() .. "::HandleArguments(). Usage search for \"" .. arg .. "\": found CCMD " .. curccmd.GetClassName() .. "." );
-								infoclass = curccmd;
-								outValue = true;
-								break;
-							}
-						} // of for ( int j = 0; j < aliases.Size(); j++ ) {}
-
-					} // of if ( curccmd ) {}
 				} // of for ( int i = 0; i < ccmd.handler.zcConsoleHandleClasses.Size() && !outValue; i++ ) {}
 
 				if ( !outValue )

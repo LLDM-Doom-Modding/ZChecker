@@ -54,11 +54,6 @@ enum EZCheckerInfoActorType {
 	IAT_StateProvider
 };
 
-const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
-const CCMDCOLOR_TITLEARGS = TEXTCOLOR_GREEN;
-const CCMDCOLOR_TITLEWIP = TEXTCOLOR_DARKGRAY;
-const CCMDCOLOR_DESC = "\c-";
-
 
 // Internal constants of limited use in API:
 enum ENewlineTypes {
@@ -94,6 +89,10 @@ class ZCGlobal: Thinker {
 			zcLoglevelCVar = CVar.FindCVar( "mcm_zchecker_loglevel" );
 
 		zcCurLogLevel = zcLoglevelCVar.GetInt();
+	}
+
+	static void ForceSetLogLevel( EZCheckerLogLevels loglevel ) {
+		Get().zcCurLogLevel = clamp( loglevel, LL_Emergency, LL_Debug );
 	}
 
 	static clearscope ZCGlobal ClearscopeGet( void ) {
@@ -213,14 +212,17 @@ class ZCGlobal: Thinker {
 			ClearscopeLog( loglevel, text );
 	}
 
+	// Compatibility with GZDoom higher than 4.0.0, because '$EMPTY_NODE = ""'
+	//strangely localizes as string "EMPTY_NODE", not "":
 	static clearscope String Localize( String textid ) {
-		return StringTable.Localize( "$ZCHECKER_" .. textid );
+		String localized = StringTable.Localize( "$ZCHECKER_" .. textid );
+
+		return ( localized == "ZCHECKER_" .. textid? "" : localized );
 	}
 	static clearscope String Locz( String textid ) {
-		return StringTable.Localize( "$ZCHECKER_" .. textid );
-	}
-	static clearscope String Loc( String textid ) {
-		return StringTable.Localize( "$ZCHECKER_" .. textid );
+		String localized = StringTable.Localize( "$ZCHECKER_" .. textid );
+
+		return ( localized == "ZCHECKER_" .. textid? "" : localized );
 	}
 
 	// Much more convenient method to localize ZChecker (and maybe user) strings.
@@ -245,8 +247,8 @@ class ZCGlobal: Thinker {
 		// Got from "mapchecksum everything" CCMD:
 		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
 
-		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLE" )
-			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
+		return ( ( level.mapname.Left( 11 ) ~== "EVERYTHING_" && level.levelname.IndexOf( "ZChecker" ) != -1 )
+			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() ) );
 	}
 
 	static clearscope bool DangerousCCMDsAllowed( String desc = "executing dangerous command" ) {
@@ -425,6 +427,70 @@ class ZCGlobal: Thinker {
 		return ( cls? cls.GetClassName() .. "" : "<NULL>" );
 	}
 
+	// Returns "true" is string is an integer; "converted" is a pointer:
+	static clearscope bool str2int_Ptr( in String str, out int converted, bool usesign = false ) {
+		bool isInteger = false;
+
+		if ( str.Length() ) {
+			bool isSigned = false;
+
+			int firstChar = str.CharCodeAt( 0 );
+
+			if ( firstChar == 0x2D /* '-' */ && usesign ) {
+				isSigned = true;
+				str = str.Mid( 1, str.Length() - 1 );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			int tempConverted = str.ToInt();
+
+			if ( ( firstChar >= 0x31 && firstChar <= 0x39 ) || ( firstChar == 0x30 && str.Length() == 1 ) ) {
+				isInteger = ( usesign || !isSigned );
+				converted = ( isSigned? -tempConverted : tempConverted );
+			}
+		}
+
+		return isInteger;
+	}
+
+	// Returns "true" is string is a float-value; "converted" is a pointer:
+	static clearscope bool str2double_Ptr( in String str, out double converted ) {
+		bool isDouble = false;
+
+		if ( str.Length() ) {
+			bool isSigned = false;
+
+			int firstChar = str.CharCodeAt( 0 );
+
+			if ( firstChar == 0x2D /* '-' */ ) {
+				isSigned = true;
+				str = str.Mid( 1, str.Length() - 1 );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			double tempConverted = str.ToDouble();
+			int tempStrlen = str.Length();
+
+			// Removing leading zeros:
+			while ( firstChar == 0x30 && tempStrlen > 1 ) {
+				tempStrlen--;
+				str = str.Mid( 1, tempStrlen );
+				firstChar = str.CharCodeAt( 0 );
+			}
+
+			// Treat as a float-point digit if first char is '0'..'9' or '.':
+			if ( ( firstChar >= 0x30 && firstChar <= 0x39 ) || ( firstChar == 0x2E /* '.' */ ) ) {
+				isDouble = true;
+				converted = ( isSigned? -tempConverted : tempConverted );
+			}
+		}
+
+		return isDouble;
+	}
+
+
+	/* === Specific utils. May be useless in the non-core scripts === */
+
 	// Remove all first and all last spaces and tabs in the string.
 	static clearscope String TruncateStringBySpaces( String str ) {
 
@@ -446,6 +512,7 @@ class ZCGlobal: Thinker {
 		return str;
 	}
 
+	// Parses newline type in the text file (DOS, Linux, MacOS).
 	static clearscope ENewlineTypes GetTextNewlinesType( String text ) {
 		ENewlineTypes nltype = ZCNL_Unknown;
 

@@ -463,7 +463,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 					bool isInternalThinker = ( accessTestClass == NULL );
 
 
-					String extrainfo;
+					String extrainfo; // Initialized with "" by default.
 
 					if ( curThinker is "Actor" ) {
 						Actor curActor = Actor( curThinker );
@@ -476,12 +476,17 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 														"" .. invowner.GetClassName(),
 														invowner.bNOSECTOR? str_NOSECTOR : TEXTCOLOR_DARKGRAY .. " " .. str_ATPOS .. ZCGlobal.squeezeVector3( invowner.pos ) );
 
-						} else if ( curActor.bNOSECTOR ) {
-							extrainfo = str_NOSECTOR;
 						} else {
 							extrainfo = str_ATPOS .. ZCGlobal.squeezeVector3( curActor.pos );
 						}
-					} // of if ( curThinker is "Actor" ) {}
+
+						if ( curActor.bNOSECTOR )
+							extrainfo = extrainfo .. str_NOSECTOR;
+
+					} else if ( curThinker is "SectorEffect" ) {
+						extrainfo = String.Format( ZCGlobal.Locz( "ZCTHINKERS_LISTSECTORNUM" ), SectorEffect( curThinker ).GetSector().Index() );
+
+					} // of else of if ( curThinker is "" ) {}
 
 					class<Object> parentClass = curThinker.GetParentClass();
 					String parentClassName = parentClass.GetClassName();
@@ -494,7 +499,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 						parentClassName = TEXTCOLOR_BLACK .. "[" .. TEXTCOLOR_TEAL .. parentClassName .. TEXTCOLOR_BLACK .. "]";
 
 					console.printf( TEXTCOLOR_DARKGRAY .. "%2i. " .. ( isInternalThinker? TEXTCOLOR_BRICK .. "%-21s" : TEXTCOLOR_WHITE .. "%-15s" )
-										.. TEXTCOLOR_GRAY .. ": %s" .. ( extrainfo != ""? TEXTCOLOR_DARKGRAY .. ", " .. extrainfo : "" ),
+										.. TEXTCOLOR_GRAY .. ": %s" .. ( extrainfo != ""? TEXTCOLOR_DARKGRAY .. extrainfo : "" ),
 									thinkersAmount, curThinkerName, parentClassName );
 
 				} // of while ( curThinker = it.Next( false ) ) {}
@@ -622,7 +627,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 					if ( index != -1 ) {
 						if ( aliases[ index ].thing ) {
-							LogLocalize2Str( LL_Main, "ZCPANELSAVE_ALIASEXISTS", zcAliasName );
+							ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANELSAVE_ALIASEXISTS" ), zcAliasName, aliases[ index ].thing.GetClassName() ) );
 							continueFlag = false;
 						} else {
 							LogLocalize2Str( LL_Detailed, "ZCPANELSAVE_RELINKINGALIAS", zcAliasName );
@@ -869,6 +874,12 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 		);
 	}
 
+	override void ResetCachedHelpString( void ) {
+		Super.ResetCachedHelpString();
+		ccmdInterfaceData.helpDesc = String.Format( ZCGlobal.Locz( "ZCIF_HELP_DESC" ), const_interfaceCVarName );
+	}
+
+
 	override bool HandleArguments() {
 		int ccmdArgsSize = ccmd.args.Size();
 		if ( ccmdArgsSize == 0 || ccmdArgsSize > 3 )
@@ -1066,7 +1077,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				break;
 		}
 
-		// [McM]: Backward *ZDoom compatibility... In newer verisons it's better to use the "nosave" CVar scope.
+		// [McM]: Multiplayer and *ZDoom compatibility...
 		interfaceCVar.SetInt( outval );
 		ACS_ExecuteAlways( -int( 'ZChecker_SetExternalInterfaceCVar' ), 0, consoleplayer );
 

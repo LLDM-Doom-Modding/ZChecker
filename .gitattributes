@@ -9,4 +9,6 @@ LANGUAGE.*	linguist-language=C
 FONTDEFS	linguist-language=C
 zchecker.cfg linguist-language=Python
 
+
+LANGUAGE.gzdoom330.rus			text working-tree-encoding=CP1251
 ZScript/ZCBranchSpecific.zsc	merge=ours

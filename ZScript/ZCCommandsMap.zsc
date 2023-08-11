@@ -3,15 +3,16 @@
 //
 
 class ZCEvmapCommand: ZCConsoleCommand {
-	protected void InitEvmapCCMD( String helpheader, String helpdesc, class<ZCTooltipClass> helptooltip = NULL ) {
+	protected void InitEvmapCCMD( String helpheader, String helpdesc, String helpaliases = "", class<ZCTooltipClass> helptooltip = NULL ) {
 		zcFlags = CCF_NonblockingFailure;
-		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, helptooltip );
+		SetupCCMDInterface( "zc_ev", helpheader, helpdesc, tooltipClass: helptooltip, helpaliases: helpaliases );
 	}
 
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEV_HELP_TITLE",
 			"$ZCEV_HELP_DESC",
+			"ev, map, everything, everything_sc77, everything_simple",
 			'ZCTooltipEvmapCommand'
 		);
 	}
@@ -128,6 +129,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		InitEvmapCCMD(
 			"$ZCEVGOTO_HELP_TITLE",
 			"$ZCEVGOTO_HELP_DESC",
+			"evg, evgoto, goto",
 			'ZCTooltipEvmapGotoCommand'
 		);
 
@@ -137,26 +139,26 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 		addCategoryNode( "hm,mh,mhuge", "hugem,hmon,monh,monsh,monstersh", S_MonstersHuge );
 		addCategoryNode( "m,mstr", "mon", S_Monsters );
 
-		addCategoryNode( "iw,wp,arms,guns", "iweap,weap", S_Weapons );
+		addCategoryNode( "iw,wp,arms,guns,items", "iweap,weap", S_Weapons );
 		addCategoryNode( "ia,ammo", "iammo" );
 		addCategoryNode( ashort: "ih,arm,health,hp,iarm" );
 		addCategoryNode( "ip,pwup,pwups", "ipow,powerup,pwrup" );
 		addCategoryNode( "ik", "ikey,key" );
-		addCategoryNode( "io", "ioth,othi" );
+		addCategoryNode( "io", "ioth,othi,otheri" );
 
 		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
 		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
-		addCategoryNode( "dsl,dil,sl,ls,sld,lsd,li,il,lid,ild", "largeim,largeso,decs,deci,decors,decori,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
-		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol", S_DecorSolid );
-		addCategoryNode( "dpl,del,el,le,lp,led,eld,pld,lpd", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl", S_DecorEtherealLarge );
-		addCategoryNode( "dp,de,ed,pd,-sld", "deth,dpas,eth,pass,-sol", S_DecorEthereal );
-		addCategoryNode( "dd,nbm,dnbm,dnobl,dnobmap,+nb", "dnobl,nobl,+nobl", S_DecorNoBlockmap );
+		addCategoryNode( "dsl,dil,dli,sl,ls,sld,lsd,lid,ild,idl", "largeim,largeso,decl,decorl,ldec,larged,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
+		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol,decor", S_DecorSolid );
+		addCategoryNode( "dpl,dlp,pdl,pld,lpd,ldp,del,dle,edl,eld,led,lde", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl,notsoll,nosoll", S_DecorEtherealLarge );
+		addCategoryNode( "dp,de,ed,pd", "deth,dpas,eth,pass,-sol,notsol,nosol", S_DecorEthereal );
+		addCategoryNode( "dd,db,dnbm,dnobl,dnobmap,+nb", "dnobl,nobl,+nobl", S_DecorNoBlockmap );
 		addCategoryNode( "dni,+ni", "nint,noint,dnint,dnoi,+noint" );
 		addCategoryNode( "dh,hd,dhuge", "hdec,dech,huged" );
 
 		addCategoryNode( "mis,miss,msl,misl,prj,pj", "missil,proj" );
-		addCategoryNode( "", "pl" );
-		addCategoryNode( "oth", "spec,other" );
+		addCategoryNode( "players,pl", "playerclass,plclass" );
+		addCategoryNode( "oth,other,spec,special", "speca,speciala,othera,actorss,actorso" );
 	}
 
 	override bool HandleArguments() {
@@ -300,17 +302,22 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 } // of class ZCEvmapCommand_goto: ZCEvmapCommand {}
 
 
-class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
+class ZCEvmapCommand_recreate: ZCEvmapCommand {
+	String neteventName;
+
 	override void InitCCMD() {
 		InitEvmapCCMD(
 			"$ZCEVRE_HELP_TITLE",
-			"$ZCEVRE_HELP_DESC"
+			"$ZCEVRE_HELP_DESC",
+			"evre, recreate, reload"
 		);
+
+		neteventName = "zc_evmap_recreate";
 	}
 
-	override bool HandleArguments() {
+	// It seems to be a dumb method name. Also used in the "ZCEvmapCommand_reloadsectors".
+	protected bool isArgsTestSuccess( int ccmdArgsSize ) {
 		bool outValue = false;
-		int ccmdArgsSize = complexArgsTest( "re" );
 
 		if ( ccmdArgsSize && testForEverythingLevel() ) {
 			if ( ccmdArgsSize == 1 )
@@ -320,11 +327,47 @@ class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {
 		}
 
 		return outValue;
+	} // of protected bool isArgsTestSuccess( int ccmdArgsSize ) {}
+
+	override bool HandleArguments() {
+		return isArgsTestSuccess( complexArgsTest( "re" ) );
 	}
+
 	override void DoCommand( void ) {
-		EventHandler.SendNetworkEvent( "zc_evmap_recreate" );
+		if ( IsConsoleplayer() )
+			EventHandler.SendNetworkEvent( neteventName );
+		else
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::DoCommand(). Skipped sending of the \"" .. neteventName .. "\" network event for the consoleplayer." );
 	}
-} // of class ZCEvmapCommand_recreate: ZCEvmapCommand_goto {}
+} // of class ZCEvmapCommand_recreate: ZCEvmapCommand {}
+
+class ZCEvmapCommand_reloadsectors: ZCEvmapCommand_recreate {
+	override void InitCCMD() {
+		InitEvmapCCMD(
+			"$ZCEVRESECTOR_HELP_TITLE",
+			"$ZCEVRESECTOR_HELP_DESC",
+			"evresec, evres, res, resec, evsec, evsectors, recreatesec, recreatesectors, reloadsec, reloadsectors"
+		);
+
+		neteventName = "zc_evmap_reloadsectors";
+	}
+
+	override bool HandleArguments() {
+		int ccmdArgsSize = complexArgsTest( "res" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "sec" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "reloads" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "recreates" );
+
+		return isArgsTestSuccess( ccmdArgsSize );
+	}
+} // of class ZCEvmapCommand_reloadsectors: ZCEvmapCommand_recreate {}
+
 
 class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 	override void InitCCMD() {
@@ -336,10 +379,14 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 
 	override bool HandleArguments() {
 		bool outValue = false;
+
 		int ccmdArgsSize = complexArgsTest( "map" );
 
 		if ( ccmdArgsSize == 0 )
 			ccmdArgsSize = complexArgsTest( "lev" );
+
+		if ( ccmdArgsSize == 0 )
+			ccmdArgsSize = complexArgsTest( "lvl" );
 
 		if ( ccmdArgsSize ) {
 			if ( ccmdArgsSize == 1 )
@@ -351,10 +398,10 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 		return outValue;
 	}
 	override void DoCommand( void ) {
-		// [McM] Compatibility. Again.
-		//LevelLocals.ChangeLevel( "Everything", 0, 0 );
+		// [McM] Compatibility. Again. There's no "LevelLocals.ChangeLevel()"
+		//in the old versions of the engine.
 
-		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) != -1 );
+		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) == -1 );
 
 		ACS_ExecuteAlways( -int( 'ZChecker_WarpToEverything' ), 0, isSimplified );
 		console.HideConsole();
