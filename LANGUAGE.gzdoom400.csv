@@ -21,8 +21,8 @@ unused),,,,
 ,,ZCHECKER_CCMDS_DANGERALLOWEDWARN,Warning,Предупреждение
 ,,ZCHECKER_LOG_EMERGENCY_PREFIX,[ZChecker emergency],
 ,,,,
-,,ZCHECKER_MAPTITLE_EVERYTHING,ZChecker: Everything,ZChecker: Everything
-,,ZCHECKER_MAPTITLE_EVERYTHING2,ZChecker: Everything (simplified),ZChecker: Everything (упрощённая)
+,,ZCHECKER_MAPTITLE_EVERYTHING_SIMPLE,ZChecker: Everything (simple),ZChecker: Everything (упрощённая)
+,,ZCHECKER_MAPTITLE_EVERYTHING_ALT1,ZChecker: Everything (alternative),ZChecker: Everything (альтернативная)
 ,,,,
 ,Network events intercepting:,,,
 ,,ZCHECKER_NETEVENTINTC_NETEVENT,Netevent,Netevent
@@ -308,10 +308,10 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENUDIV_EVCCMDS,Related CCMDs (closes menu),Связанные команды (с закрытием меню)
 ,,ZCHECKER_EVMAPMENUDIV_MAINCCMDS,- General CCMDs -,- Общие консольные команды -
 ,,ZCHECKER_EVMAPMENU_RECREATEACTORS,"Recreate actors\cc: ""\cbzcevre\cc""","Пересоздать акторов\cc: ""\cbzcevre\cc"""
-,,ZCHECKER_EVMAPMENU_CHANGEMAP1,"To Everything map\cc: ""\cuzcev map\cc""","На карту Everything\cc: ""\cuzcev map\cc"""
-,,ZCHECKER_EVMAPMENU_CHANGEMAP2,"To simple Everything map\cc: ""\cuzcev map2\cc""","На упрощённую карту Everything\cc: ""\cuzcev map2\cc"""
+,,ZCHECKER_EVMAPMENU_CHANGEMAP1,"To simple Everything map\cc: ""\cuzcev map\cc""","На простую карту Everything\cc: ""\cuzcev map\cc"""
+,,ZCHECKER_EVMAPMENU_CHANGEMAP2,"To alternative Everything map\cc: ""\cuzcev map2\cc""","На альтернативную карту Everything\cc: ""\cuzcev map2\cc"""
 ,,ZCHECKER_EVMAPMENU_CHANGEMAP1ASK,This command will warp you to the Everything map\nwithout saving current progress. \n\nAre you sure? [Y/N],Вы будете перенесены на карту Everything\nбез сохранения текущего прогресса. \n\nВы уверены? [Y/N]
-,,ZCHECKER_EVMAPMENU_CHANGEMAP2ASK,This command will warp you to the\nEverything map (simplified version)\nwithout saving current progress. \n\nAre you sure? [Y/N],Вы будете перенесены на упрощённую версию карты Everything\nбез сохранения текущего прогресса. \n\nВы уверены? [Y/N]
+,,ZCHECKER_EVMAPMENU_CHANGEMAP2ASK,This command will warp you to the\nEverything map (alternative version by StormCatcher.77)\nwithout saving current progress. \n\nAre you sure? [Y/N],Вы будете перенесены на альтернативную версию \nкарты Everything от StormCatcher.77\nбез сохранения текущего прогресса. \n\nВы уверены? [Y/N]
 ,,ZCHECKER_EVMAPMENU_WARPSTART,"Teleport to start\cc: ""\cmzcevg #\cqstart\cc""","Перейти на старт\cc: ""\cmzcevg #\cqstart\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPMONS,- Teleport to monsters -,- Переход к категориям монстров -
 ,,ZCHECKER_EVMAPMENU_WARPMONSTERS,"Monsters, regular\cc: ""\cmzcevg #\cdmons\cc""",
@@ -550,7 +550,7 @@ unused),,,,
 ,,,,
 ," ""zcev (*)"":",,,
 ,,ZCHECKER_ZCEV_HELP_TITLE,zcev goto <class>|<category>|s[tart];zcev re[create|load];zcev resec[tors];zcev map[2]|level[2],zcev goto <класс>|<категория>|start;zcev re[create|load];zcev resec[tors];zcev map[2]|level[2]
-,,ZCHECKER_ZCEV_HELP_DESC,"Operate with the world on the Everything map. Exceptions are ""map""/""level"" commands, which warp player to the ""map everything"" and ""map everything_simple"".","Управление миром на картах Everything. Исключением являются команды ""map""/""level"", которые переносят игрока на карты ""map everything"" и ""map everything_simple""."
+,,ZCHECKER_ZCEV_HELP_DESC,"Operate with the world on the Everything map. Exceptions are ""map""/""level"" commands, which warp player to the ""map everything_simple"" and ""map everything_sc77"".","Управление миром на картах Everything. Исключением являются команды ""map""/""level"", которые переносят игрока на карты ""map everything_simple"" и ""map everything_sc77""."
 ,,ZCHECKER_ZCEV_NOTEVMAP,Cannot use command on maps other than the Everything map.,Использование этой команды невозможно вне карт Everything.
 ,,,,
 ,,ZCHECKER_ZCEVGOTO_HELP_TITLE,zcev goto <class>|<category>|start;zcevg <class>|<category>|start,zcev goto <класс>|<категория>|start;zcevg <класс>|<категория>|start
@@ -571,7 +571,7 @@ unused),,,,
 ,,ZCHECKER_ZCEVRESECTOR_HELP_DESC,Reload general parameters for all sectors on the Everything map. May be useful if some actor change properties of its current sector.,"Перезагружает основные свойства секторов на всей карте Everything. Полезно, когда какие-либо акторы кардинально изменяют атрибуты секторов."
 ,,,,
 ,,ZCHECKER_ZCEVMAPWARP_HELP_TITLE,zcev map|level;zcev map2|level2,
-,,ZCHECKER_ZCEVMAPWARP_HELP_DESC,"Warp to the ""Everything"" map when no digit provided at the end of the argument; otherwise warp to the ""Everything_simple"" map.","Переносит игрока на карту ""Everything"", если в конце аргумента не вписано число ""2""; переносит на ""Everything_simple"" в ином случае."
+,,ZCHECKER_ZCEVMAPWARP_HELP_DESC,"Warp to the ""Everything (simple)"" map when no digit provided at the end of the argument; otherwise warp to the ""Everything (alternative)"" map.","Переносит игрока на простую карту ""Everything"", если в конце аргумента не вписано число ""2""; переносит на альтернативную версию ""Everything"" в ином случае."
 ,,,,
 ,,,,
 ,"File ""ZCCommandsMiscControl.zsc"":",,,
@@ -707,16 +707,18 @@ You can find more specific examples in the help pages of almost all of the comma
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER,"About ""Everything"" maps","О картах ""Everything"""
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT,"A map named ""`2Everything`2"" is an universal actors card-index.
 Right now there are two maps:
-""`2Everything`2"" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x
 ""`2Everything_simple`2"", a lightweight but fully functional variant.
+""`2Everything_SC77`2"" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x
 \t`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or the LLDM Team, but in most cases we will redirect you to them as well.","Уровни с названием ""`2Everything`2"" являются универсальными картотеками акторов.
 На данный момент в ZChecker присутствуют две карты:
-""`2Everything`2"" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей; `~и`x
 ""`2Everything_simple`2"", легковесный, но полностью функциональный вариант.
+""`2Everything_SC77`2"" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей; `~и`x
 \t`yВнимание: в некоторых модификациях обычное создание акторов — без специальных условий — может блокироваться `d(впрочем, вполне возможно, что не намеренно)`y. `xПоследствия могут быть совершенно разными, от спама в консоль предупреждающими сообщениями до вылета игрового движка. Если Вы обнаружите подобное поведение, имеет смысл связаться с авторами той модификации. Или с разработчиками ZChecker (командой LLDM), но в большинстве случаев мы в итоге переадресуем Вас на них же."
-,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES,"""`Cmap everything_simple`C"" changes the level to the Everything map (simplified version);
-""`Czcev map2`x"" does pretty much the same.","""`Cmap everything_simple`C"" сменяет уровень на карту Everything (упрощённую версию);
-""`Czcev map2`x"" на практике делает то же самое."
+,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES,"""`Cmap everything_simple`C"" changes the level to the Everything map (simple version);
+""`Czcev map`x"" does pretty much the same.
+This commands are also available in the \""Everything\"" map settings menu.","""`Cmap everything_simple`C"" сменяет уровень на карту Everything (упрощённую версию);
+""`Czcev map`x"" на практике делает то же самое.
+Эти же команды можно вызывать через меню карт \""Everything\""."
 ,,,,
 ,,,,
 ,Console commands tooltips:,,,

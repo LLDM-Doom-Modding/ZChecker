@@ -247,8 +247,8 @@ class ZCGlobal: Thinker {
 		// Got from "mapchecksum everything" CCMD:
 		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
 
-		return ( level.mapname ~== "EVERYTHING" ) || ( level.mapname ~== "EVERYTHING_SIMPLE" )
-			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() );
+		return ( ( level.mapname.Left( 11 ) ~== "EVERYTHING_" && level.levelname.IndexOf( "ZChecker" ) != -1 )
+			|| ( CVar.FindCVar( "mcm_zchecker_ev_forcemap" ).GetBool() ) );
 	}
 
 	static clearscope bool DangerousCCMDsAllowed( String desc = "executing dangerous command" ) {
@@ -512,6 +512,7 @@ class ZCGlobal: Thinker {
 		return str;
 	}
 
+	// Parses newline type in the text file (DOS, Linux, MacOS).
 	static clearscope ENewlineTypes GetTextNewlinesType( String text ) {
 		ENewlineTypes nltype = ZCNL_Unknown;
 

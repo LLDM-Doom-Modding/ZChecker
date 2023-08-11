@@ -25,8 +25,8 @@ ZCHECKER_CCMDSHELP_EXAMPLES           = "Examples";
 ZCHECKER_CCMDS_DANGERALLOWEDWARN      = "Warning";
 ZCHECKER_LOG_EMERGENCY_PREFIX         = "[ZChecker emergency]";
 
-ZCHECKER_MAPTITLE_EVERYTHING          = "ZChecker: Everything";
-ZCHECKER_MAPTITLE_EVERYTHING2         = "ZChecker: Everything (simplified)";
+ZCHECKER_MAPTITLE_EVERYTHING_SIMPLE   = "ZChecker: Everything (simple)";
+ZCHECKER_MAPTITLE_EVERYTHING_ALT1     = "ZChecker: Everything (alternative)";
 
 // Network events intercepting:
 ZCHECKER_NETEVENTINTC_NETEVENT        = "Netevent";
@@ -312,10 +312,10 @@ ZCHECKER_EVMAPMENU_ZCHANDLER_ERROR    = "\"\n\cxCannot locate ZChecker static ev
 ZCHECKER_EVMAPMENUDIV_EVCCMDS         = "Related CCMDs (closes menu)";
 ZCHECKER_EVMAPMENUDIV_MAINCCMDS       = "- General CCMDs -";
 ZCHECKER_EVMAPMENU_RECREATEACTORS     = "Recreate actors\cc: \"\cbzcevre\cc\"";
-ZCHECKER_EVMAPMENU_CHANGEMAP1         = "To Everything map\cc: \"\cuzcev map\cc\"";
-ZCHECKER_EVMAPMENU_CHANGEMAP2         = "To simple Everything map\cc: \"\cuzcev map2\cc\"";
+ZCHECKER_EVMAPMENU_CHANGEMAP1         = "To simple Everything map\cc: \"\cuzcev map\cc\"";
+ZCHECKER_EVMAPMENU_CHANGEMAP2         = "To alternative Everything map\cc: \"\cuzcev map2\cc\"";
 ZCHECKER_EVMAPMENU_CHANGEMAP1ASK      = "This command will warp you to the Everything map\nwithout saving current progress. \n\nAre you sure? [Y/N]";
-ZCHECKER_EVMAPMENU_CHANGEMAP2ASK      = "This command will warp you to the\nEverything map (simplified version)\nwithout saving current progress. \n\nAre you sure? [Y/N]";
+ZCHECKER_EVMAPMENU_CHANGEMAP2ASK      = "This command will warp you to the\nEverything map (alternative version by StormCatcher.77)\nwithout saving current progress. \n\nAre you sure? [Y/N]";
 ZCHECKER_EVMAPMENU_WARPSTART          = "Teleport to start\cc: \"\cmzcevg #\cqstart\cc\"";
 ZCHECKER_EVMAPMENUDIV_WARPMONS        = "- Teleport to monsters -";
 ZCHECKER_EVMAPMENU_WARPMONSTERS       = "Monsters, regular\cc: \"\cmzcevg #\cdmons\cc\"";
@@ -544,7 +544,7 @@ ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully
 
 //  "zcev (*)":
 ZCHECKER_ZCEV_HELP_TITLE              = "zcev goto <class>|<category>|s[tart];zcev re[create|load];zcev resec[tors];zcev map[2]|level[2]";
-ZCHECKER_ZCEV_HELP_DESC               = "Operate with the world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warp player to the \"map everything\" and \"map everything_simple\".";
+ZCHECKER_ZCEV_HELP_DESC               = "Operate with the world on the Everything map. Exceptions are \"map\"/\"level\" commands, which warp player to the \"map everything_simple\" and \"map everything_sc77\".";
 ZCHECKER_ZCEV_NOTEVMAP                = "Cannot use command on maps other than the Everything map.";
 
 ZCHECKER_ZCEVGOTO_HELP_TITLE          = "zcev goto <class>|<category>|start;zcevg <class>|<category>|start";
@@ -565,7 +565,7 @@ ZCHECKER_ZCEVRESECTOR_HELP_TITLE      = "zcev recreatesec[tors]|reloadsector[s];
 ZCHECKER_ZCEVRESECTOR_HELP_DESC       = "Reload general parameters for all sectors on the Everything map. May be useful if some actor change properties of its current sector.";
 
 ZCHECKER_ZCEVMAPWARP_HELP_TITLE       = "zcev map|level;zcev map2|level2";
-ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Warp to the \"Everything\" map when no digit provided at the end of the argument; otherwise warp to the \"Everything_simple\" map.";
+ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Warp to the \"Everything (simple)\" map when no digit provided at the end of the argument; otherwise warp to the \"Everything (alternative)\" map.";
 
 
 // File "ZCCommandsMiscControl.zsc":
@@ -674,11 +674,12 @@ You can find more specific examples in the help pages of almost all of the comma
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER = "About \"Everything\" maps";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT   = "A map named \"`2Everything`2\" is an universal actors card-index.\
 Right now there are two maps:\
-\"`2Everything`2\" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x\
 \"`2Everything_simple`2\", a lightweight but fully functional variant.\
+\"`2Everything_SC77`2\" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x\
 \t`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or the LLDM Team, but in most cases we will redirect you to them as well.";
-ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES = "\"`Cmap everything_simple`C\" changes the level to the Everything map (simplified version);\
-\"`Czcev map2`x\" does pretty much the same.";
+ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES = "\"`Cmap everything_simple`C\" changes the level to the Everything map (simple version);\
+\"`Czcev map`x\" does pretty much the same.\
+This commands are also available in the \\"Everything\\" map settings menu.";
 
 
 // Console commands tooltips:

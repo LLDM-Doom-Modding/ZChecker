@@ -51,11 +51,11 @@ These maps add CCMDs with the "zcev" prefix:
 
 - `zcev goto <class>|start` or `zcevg <class>|start`. Teleports the player next to the specified actor or to map start. Wildcards are also recognized.
 
-- `zcev map` or `zcev level`. Warp to the `Everything` map.
+- `zcev map` or `zcev level`. Warp to the `Everything_simple` map.
 
-- `zcev map2` or `zcev level2`. Warp to the `Everything_simple` map.
+- `zcev map2` or `zcev level2`. Warp to the `Everything_SC77` (alternative) map.
 
-Note: the Everything map may be outdated in the beta versions of the project, so, if you're using one of them, it's recommended to warp to the `Everything_simple` instead.
+Note: the alternative Everything map may be outdated in the beta versions of the project, so, if you're using one of them, it's recommended to warp to the `Everything_simple` instead.
 
 
 ## General notes
@@ -76,7 +76,7 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 ### LLDM crew
 
 - **JSO_x** a.k.a. **Morthimer McMare**: idea, most of the code, the "Everything_simple" map;
-- **StormCatcher.77**: the "Everything" map;
+- **StormCatcher.77**: the "Everything_SC77" map;
 - **ika707**: beta-testing, bug reporting.
 
 

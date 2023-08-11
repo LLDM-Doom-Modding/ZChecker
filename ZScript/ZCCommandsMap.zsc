@@ -12,7 +12,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		InitEvmapCCMD(
 			"$ZCEV_HELP_TITLE",
 			"$ZCEV_HELP_DESC",
-			"ev, map, everything, everything_simple",
+			"ev, map, everything, everything_sc77, everything_simple",
 			'ZCTooltipEvmapCommand'
 		);
 	}
@@ -401,7 +401,7 @@ class ZCEvmapCommand_warptomap: ZCEvmapCommand {
 		// [McM] Compatibility. Again. There's no "LevelLocals.ChangeLevel()"
 		//in the old versions of the engine.
 
-		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) != -1 );
+		int isSimplified = !!( ccmd.args[ 0 ].IndexOf( "2" ) == -1 );
 
 		ACS_ExecuteAlways( -int( 'ZChecker_WarpToEverything' ), 0, isSimplified );
 		console.HideConsole();

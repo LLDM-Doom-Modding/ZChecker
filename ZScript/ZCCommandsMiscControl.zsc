@@ -1077,7 +1077,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 				break;
 		}
 
-		// [McM]: Backward *ZDoom compatibility... In newer verisons it's better to use the "nosave" CVar scope.
+		// [McM]: Multiplayer and *ZDoom compatibility...
 		interfaceCVar.SetInt( outval );
 		ACS_ExecuteAlways( -int( 'ZChecker_SetExternalInterfaceCVar' ), 0, consoleplayer );
 
