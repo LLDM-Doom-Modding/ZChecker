@@ -83,7 +83,7 @@ class ZCheckerHandler: StaticEventHandler {
 		if ( Testee[ fieldnum ].mo )
 			newClassname = Testee[ fieldnum ].mo.GetClassName();
 
-		globalclass.SetZCheckerString( "$" .. ( fieldnum + 1 ), newClassname );
+		globalclass.SetClassnameVariable( "$" .. ( fieldnum + 1 ), newClassname );
 	} // of void UpdateInternalClassnameByField( uint fieldnum ) {}
 
 
@@ -385,10 +385,10 @@ class ZCheckerHandler: StaticEventHandler {
 		globalclass = ZCGlobal.Get();
 		globalclass.SaveHandler( self );
 
-		globalclass.SetZCheckerString( "$1", "" );
-		globalclass.SetZCheckerString( "$2", "" );
-		globalclass.SetZCheckerString( "$3", "" );
-		globalclass.SetZCheckerString( "$last", "" );
+		globalclass.SetClassnameVariable( "$1", "" );
+		globalclass.SetClassnameVariable( "$2", "" );
+		globalclass.SetClassnameVariable( "$3", "" );
+		globalclass.SetClassnameVariable( "$last", "" );
 
 		if ( panels.panelsorderChanged )
 			panels.UpdatePanels( true );

@@ -396,7 +396,7 @@ unused),,,,
 ," ""ZCConsoleCommand::ParseSpecialActorName()""",,,
 ,,ZCHECKER_PARSENAME_WRONGSELECT,"\c!Selection ""%s"" isn't a positive integer.","\c!Указание ""%s"" — не положительное целое число."
 ,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". You may use ""%%null"" or ""%%none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. Для обхода этого можно использовать ""%%null"" или ""%%none""."
-,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset internal variable ""%s"".","\c!Пропущена\c- ещё не установленная внутренняя переменная ""%s""."
+,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset classname variable ""%s"".","\c!Пропущена\c- ещё не установленная переменная имени класса ""%s""."
 ,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided.,"\c!Нет ни одного символа, определяющего класс."
 ,,ZCHECKER_PARSENAME_WITHFILTER,\c~ with filter \cj%s\c~,\c~ с фильтром \cj%s\c~
 ,,ZCHECKER_PARSENAME_NOTFOUND,Cannot find any suitable actor name candidates,Подходящих под регулярное выражение кандидатов не найдено
@@ -508,7 +508,7 @@ unused),,,,
 ,,,,
 ," ""zccopyclass""/""zccopysummon"":",,,
 ,,ZCHECKER_ZCCOPYPASTE_HELP_TITLE,"zccopyclass;zccopysummon [<amount=1>] [<comma-separated list as in ""zcsummon"">]","zccopyclass;zccopysummon [<количество=1>] [<разделённый запятыми список как в ""zcsummon"">]"
-,,ZCHECKER_ZCCOPYPASTE_HELP_DESC,"A paired command. ""zccopyclass"" saves a linetarget actor class into $savedclass internal variable; ""zccopysummon"" summons a $savedclass actor(s).","Сдвоенная команда. ""zccopyclass"" сохраняет название актора под курсором во внутреннюю переменную $savedclass; ""zccopysummon"" создаёт актор(ов) класса $savedclass."
+,,ZCHECKER_ZCCOPYPASTE_HELP_DESC,"A paired command. ""zccopyclass"" saves a linetarget actor class into $savedclass classname variable; ""zccopysummon"" summons a $savedclass actor(s).","Сдвоенная команда. ""zccopyclass"" сохраняет название актора под курсором в переменную $savedclass; ""zccopysummon"" создаёт актор(ов) класса $savedclass."
 ,,,,
 ," ""zcsetflag"":",,,
 ,,ZCHECKER_ZCSETFLAG_HELP_TITLE,"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]","zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]];zcbud [<кому>] [<значение>]"
@@ -626,9 +626,9 @@ unused),,,,
 ,,,,
 ," ""zcvarsctl"":",,,
 ,,ZCHECKER_ZCVARSCTL_HELP_TITLE,zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo],zcvarsctl set|new <$название> <строка или подстановка>;zcvarsctl del[ete]|rm|rem[ove] <$название>|all;zcvarsctl l[ist]|i[nfo]
-,,ZCHECKER_ZCVARSCTL_HELP_DESC,"Perform control on internal ZChecker class variables; identifiers must be started with ""$"".\n  Possible placeholders for the <string value> (first symbol must be ""%"" or ""$""): ""$self"" (caller itself), ""$lt""|""$linetarget"" (caller's linetarget), ""$target"" (caller's target field), ""$master"" (its master), ""$tracer"" (its tracer).","Управление внутренними переменными классов ZChecker; идентификаторы должны начинаться с ""$"".\n  Доступные подстановки (должны начинаться с ""%"" или ""$""):  ""$self"" (сам игрок), ""$lt""|""$linetarget"" (его цель), ""$target"" (его поле target), ""$master"" (его поле master), ""$tracer"" (его поле tracer)."
-,,ZCHECKER_ZCVARSCTL_SETSUCCESS,"Internal variable ""\cn%s\c-"" is \cdset\c- to ""%s"".","Внутренняя переменная ""\cn%s\c-"" \cdустановлена\c- в ""%s""."
-,,ZCHECKER_ZCVARSCTL_LISTHEADER,\cyInternal variables \c~(total \c-%i\c~): ,\cyВнутренние переменные \c~(всего \c-%i\c~): 
+,,ZCHECKER_ZCVARSCTL_HELP_DESC,"Perform control on classname ZChecker variables; identifiers must be started with ""$"".\n  Possible placeholders for the <string value> (first symbol must be ""$""): ""$self"" (caller itself), ""$lt""|""$linetarget"" (caller's linetarget), ""$target"" (caller's target field), ""$master"" (its master), ""$tracer"" (its tracer).","Управление переменными ZChecker для названий классов; идентификаторы должны начинаться с ""$"".\n  Доступные подстановки (должны начинаться с ""$""):  ""$self"" (сам игрок), ""$lt""|""$linetarget"" (его цель), ""$target"" (его поле target), ""$master"" (его поле master), ""$tracer"" (его поле tracer)."
+,,ZCHECKER_ZCVARSCTL_SETSUCCESS,"Variable ""\cn%s\c-"" is \cdset\c- to ""%s"".","Переменная ""\cn%s\c-"" \cdустановлена\c- в ""%s""."
+,,ZCHECKER_ZCVARSCTL_LISTHEADER,\cyClassname variables \c~(total \c-%i\c~): ,\cyПеременные названий классов \c~(всего \c-%i\c~): 
 ,,,,
 ," ""zcinterface""/""zcif"":",,,
 ,,ZCHECKER_ZCIF_HELP_TITLE,zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree,zcif strequal <имя1>|<$переменная1> <имя2>|<$переменная2>;zcif dangerccmds|ev[map|erything];zcif panel <панель>;zcif panelinherit <панель> <класс>|<$переменная>;zcif panelequal <панель1> <панель2>;zcif validplacepos <строка>;zcif validpos <строка>;zcinterface panelfind <имя класса>;zcinterface panelfindfree
@@ -646,7 +646,7 @@ unused),,,,
 \t'`2-`2' for any number of characters greater than 0.
 If more than one actor class candidate is found, only `2numbered list`x will be printed. A value may be selected from it by using `2:N`x or `2,N`x.
 Note that a class inheritance filter is applied for some commands.
-Also, you may substitute values from `1ZChecker variables`1 `d(must begin with ""`2$`d"" or ""`2%`d"")`x like:
+Also, you may substitute values from `1ZChecker classname variables`1 `d(must begin with ""`2$`d"")`x like:
 \t'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;
 \t'`1$last`1' for the last class added to any panel;
 \tAny other `1$zchecker_variable`1 defined internally or via ""`Czcvarsctl`x"".","Практически для всех команд, которые принимают первым аргументом название класса (""`Czcsummon`x"", ""`Czcgive`x"", ""`Czctake`x"", ""`Czcev goto`x"", ...) можно использовать два подстановочных символа регулярных выражений:
@@ -707,12 +707,12 @@ You can find more specific examples in the help pages of almost all of the comma
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER,"About ""Everything"" maps","О картах ""Everything"""
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT,"A map named ""`2Everything`2"" is an universal actors card-index.
 Right now there are two maps:
-""`2Everything_simple`2"", a lightweight but fully functional variant.
-""`2Everything_SC77`2"" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x
+""`2Everything_simple`2"", a lightweight but fully functional variant; `~and`x
+""`2Everything_SC77`2"" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker.
 \t`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or the LLDM Team, but in most cases we will redirect you to them as well.","Уровни с названием ""`2Everything`2"" являются универсальными картотеками акторов.
 На данный момент в ZChecker присутствуют две карты:
-""`2Everything_simple`2"", легковесный, но полностью функциональный вариант.
-""`2Everything_SC77`2"" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей; `~и`x
+""`2Everything_simple`2"", легковесный, но полностью функциональный вариант; `~и`x
+""`2Everything_SC77`2"" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей.
 \t`yВнимание: в некоторых модификациях обычное создание акторов — без специальных условий — может блокироваться `d(впрочем, вполне возможно, что не намеренно)`y. `xПоследствия могут быть совершенно разными, от спама в консоль предупреждающими сообщениями до вылета игрового движка. Если Вы обнаружите подобное поведение, имеет смысл связаться с авторами той модификации. Или с разработчиками ZChecker (командой LLDM), но в большинстве случаев мы в итоге переадресуем Вас на них же."
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES,"""`Cmap everything_simple`C"" changes the level to the Everything map (simple version);
 ""`Czcev map`x"" does pretty much the same.

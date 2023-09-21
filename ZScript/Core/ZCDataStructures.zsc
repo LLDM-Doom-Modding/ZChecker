@@ -124,6 +124,35 @@ class ZCheckerCCMDInfo play {
 } // of class ZCheckerCCMDInfo play {}
 
 
+// External interface group of the CCMD for "zchelp" and similar things.
+//Also, ZChecker handler works in general only with this structure.
+struct ZCheckerCCMDInterfaceData {
+	// Linked netevent command name (see KEYCONF):
+	String neteventName;
+
+	// Header aliases separated by a semicolon ("zcadd [weap[on]|self|force] [<panel>]"):
+	String helpHeaderLoczNodeName;
+	String helpHeader;
+	// Usage quick help (command description):
+	String helpDescLoczNodeName;
+	String helpDesc;
+
+	// Internal help aliases ("zcadd;zcaddweap;zcaddself;zcaddforce"):
+	Array<String> helpInternalAliases;
+
+	// A tooltip class (extra information which is being printed via "zchelp <command>"):
+	ZCTooltipClass helpTooltip;
+
+	void Update( void ) {
+		helpHeader = ZCGlobal.FreeLocalize( helpHeaderLoczNodeName );
+		helpDesc = ZCGlobal.FreeLocalize( helpDescLoczNodeName );
+
+		if ( helpTooltip )
+			helpTooltip.ResetCachedHelpString();
+	}
+} // of struct ZCheckerCCMDInterfaceData {}
+
+
 // A panel field storing object in question; right now only for Actors.
 class ZCheckerField {
 	private uint fieldPos;
@@ -139,7 +168,7 @@ class ZCheckerField {
 		if ( !mo )
 			return;
 
-		ZCGlobal.Get().SetZCheckerString( "$last", mo.GetClassName() );
+		ZCGlobal.Get().SetClassnameVariable( "$last", mo.GetClassName() );
 		fccmd.handler.UpdateInternalClassnameByField( fieldPos );
 		UpdateHash( fccmd.e.Player );
 	}

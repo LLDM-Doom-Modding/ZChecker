@@ -362,14 +362,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			bool skipactor = false;
 
-			// Optimization. Skipping only internal dangerous classes:
+			// Optimization. Skipping only built-in dangerous classes:
 			if ( embeddedClassesRecreating ) {
 				if ( cls == const_LastEmbeddedActorClass ) {
 					embeddedClassesRecreating = false;
 
 					if ( logSpawnInfo ) {
 						if ( spawnBuiltinActors )
-							ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Embedded classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Built-in classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
 						else
 							logCreatingActor( ZCGlobal.Locz( "EVMAPSPAWN_SKIPBUILTIN" ) );
 					}

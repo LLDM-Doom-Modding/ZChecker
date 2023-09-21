@@ -80,7 +80,7 @@ class ZCGlobal: Thinker {
 	private ZCheckerHandler zcHandler;
 	private transient CVar zcLoglevelCVar;
 
-	Array<ZCInternalStringDictionaryCell> internalStrings;
+	Array<ZCInternalStringDictionaryCell> savedClassnameVariables;
 
 	/* === ZChecker utils === */
 
@@ -107,7 +107,7 @@ class ZCGlobal: Thinker {
 			it = new( "ZCGlobal" );
 			it.ChangeStatNum( STAT_STATIC );
 			it.UpdateLogLevel();
-			it.internalStrings.Clear();
+			it.savedClassnameVariables.Clear();
 		}
 
 		return it;
@@ -302,16 +302,17 @@ class ZCGlobal: Thinker {
 	}
 
 
-	clearscope String GetZCheckerString( String zcname ) {
+
+	clearscope String GetClassnameVariable( String zcname ) {
 		if ( zcname.CharAt( 0 ) != "$" )
 			return "$";
 
 		String outStr = "";
 
-		for ( int i = 0; i < internalStrings.Size(); i++ ) {
-			//console.printf( "#" .. i .. ": dict[ '" .. internalStrings[ i ].key .. "' ] == '" .. internalStrings[ i ].value .. "'. Arg is " .. zcname );
-			if ( internalStrings[ i ].key == zcname ) {
-				outStr = internalStrings[ i ].value;
+		for ( int i = 0; i < savedClassnameVariables.Size(); i++ ) {
+			//console.printf( "#" .. i .. ": dict[ '" .. savedClassnameVariables[ i ].key .. "' ] == '" .. savedClassnameVariables[ i ].value .. "'. Arg is " .. zcname );
+			if ( savedClassnameVariables[ i ].key == zcname ) {
+				outStr = savedClassnameVariables[ i ].value;
 				break;
 			}
 		}
@@ -319,47 +320,47 @@ class ZCGlobal: Thinker {
 		return outStr;
 	}
 
-	play bool DeleteZCheckerString( String zcname ) {
+	play bool DeleteClassnameVariable( String zcname ) {
 		if ( zcname.CharAt( 0 ) != "$" ) {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). " .. LLCOLOR_WARNING .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteClassnameVariable(). " .. LLCOLOR_WARNING .. "Classname variable name must start with \"$\" " .. LLCOLOR_MAIN .. "(got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
 			return false;
 		}
 
 		bool found = false;
 
-		for ( int i = 0; i < internalStrings.Size(); i++ ) {
-			if ( internalStrings[ i ].key == zcname ) {
-				ZCGlobal.Log( LL_Debug, GetClassName() .. "::DeleteZCheckerString(). Found dict[\"" .. zcname .. "\"] (index " .. i .. "/" .. internalStrings.Size() .. ")." );
+		for ( int i = 0; i < savedClassnameVariables.Size(); i++ ) {
+			if ( savedClassnameVariables[ i ].key == zcname ) {
+				ZCGlobal.Log( LL_Debug, GetClassName() .. "::DeleteClassnameVariable(). Found dict[\"" .. zcname .. "\"] (index " .. i .. "/" .. savedClassnameVariables.Size() .. ")." );
 
-				internalStrings.Delete( i, 1 );
+				savedClassnameVariables.Delete( i, 1 );
 				found = true;
 				break;
 			}
 		}
 
 		if ( !found ) {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteZCheckerString(). Internal variable \"" .. zcname .. "\"" .. LLCOLOR_WARNING  .. " not found." );
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::DeleteClassnameVariable(). Classname variable \"" .. zcname .. "\"" .. LLCOLOR_WARNING  .. " not found." );
 			return false;
 		}
 
 		return found;
 	}
 
-	play void ClearAllZCheckerStrings( void ) {
-		internalStrings.Clear();
+	play void ClearAllClassnameVariables( void ) {
+		savedClassnameVariables.Clear();
 	}
 
-	play bool SetZCheckerString( String zcname, String zcvalue ) {
+	play bool SetClassnameVariable( String zcname, String zcvalue ) {
 		if ( zcname.CharAt( 0 ) != "$" ) {
-			ZCGlobal.Log( LL_Main, GetClassName() .. "::SetZCheckerString(). " .. LLCOLOR_WARNING .. "Internal variable name must start with \"$\" or \"%\"" .. LLCOLOR_MAIN .. " (got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
+			ZCGlobal.Log( LL_Main, GetClassName() .. "::SetClassnameVariable(). " .. LLCOLOR_WARNING .. "Classname variable name must start with \"$\" " .. LLCOLOR_MAIN .. "(got \"" .. TEXTCOLOR_RED .. zcname .. LLCOLOR_MAIN .. "\")." );
 			return false;
 		}
 
 		ZCInternalStringDictionaryCell dictcell = NULL;
 
-		for ( int i = 0; i < internalStrings.Size(); i++ ) {
-			if ( internalStrings[ i ].key == zcname ) {
-				dictcell = internalStrings[ i ];
+		for ( int i = 0; i < savedClassnameVariables.Size(); i++ ) {
+			if ( savedClassnameVariables[ i ].key == zcname ) {
+				dictcell = savedClassnameVariables[ i ];
 				break;
 			}
 		}
@@ -368,12 +369,12 @@ class ZCGlobal: Thinker {
 			dictcell = new( 'ZCInternalStringDictionaryCell' );
 			dictcell.key = zcname;
 
-			internalStrings.Push( dictcell );
+			savedClassnameVariables.Push( dictcell );
 		}
 
 		dictcell.value = zcvalue;
 
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::SetZCheckerString(). Dict[\"" .. zcname .. "\"] == \"" .. GetZCheckerString( zcname ) .. "\"." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::SetClassnameVariable(). Dict[\"" .. zcname .. "\"] == \"" .. GetClassnameVariable( zcname ) .. "\"." );
 
 		return true;
 	}

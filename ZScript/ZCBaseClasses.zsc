@@ -52,7 +52,6 @@ class ZCConsoleSeparator: ZCConsoleClass {
 	}
 
 	final override String GetHelpString( void ) {
-		// Attempt to speed up help strings processing:
 		if ( helpCacheString == "" || zcFlags & CCF_NoCacheHelp ) {
 			helpCacheString = "";
 			String title = GetHelpSeparatorName();
@@ -257,32 +256,6 @@ class ZCTooltipClass: ZCConsoleClass {
 
 
 
-struct ZCheckerCCMDInterfaceData {
-	// Linked netevent command name (see KEYCONF):
-	String neteventName;
-
-	// Header aliases separated by a semicolon ("zcadd [weap[on]|self|force] [<panel>]"):
-	String helpHeaderLoczNodeName;
-	String helpHeader;
-	// Usage quick help (command description):
-	String helpDescLoczNodeName;
-	String helpDesc;
-
-	// Internal help aliases ("zcadd;zcaddweap;zcaddself;zcaddforce"):
-	Array<String> helpInternalAliases;
-
-	// A tooltip class (extra information which is being printed via "zchelp <command>"):
-	ZCTooltipClass helpTooltip;
-
-	void Update( void ) {
-		helpHeader = ZCGlobal.FreeLocalize( helpHeaderLoczNodeName );
-		helpDesc = ZCGlobal.FreeLocalize( helpDescLoczNodeName );
-
-		if ( helpTooltip )
-			helpTooltip.ResetCachedHelpString();
-	}
-};
-
 // Main CCMD base class.
 class ZCConsoleCommand: ZCConsoleClass abstract play {
 	const CCMDCOLOR_TITLE = TEXTCOLOR_ICE;
@@ -306,6 +279,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	enum EClassnameParseStatus {
 		CPS_Default = 0,
 		CPS_Variable,
+		CPS_EmptyVariable,
 		CPS_RegexFound,
 		CPS_RegexFailed
 	};
@@ -321,7 +295,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	EClassnameParseStatus classnameParseStatus;
 
-	// Main internal interface. Parsed arguments etc. are stored here.
+	// Main interface. Parsed arguments etc. are stored here.
 	ZCheckerCCMDInfo ccmd;
 
 	// External interface (see "SetupCCMDInterface()"). ZChecker handler works in general only with this structure:
@@ -638,7 +612,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 
 	// Extremely long auxiliary method which tries to parse an arg string as:
-	//  1) Internal variable ("$last", ...);
+	//  1) Classname variable ("$last", ...);
 	//	2) Placeholder ("%target", ...);
 	//	3) Actor mask ("z*man", ...; <parentfilter> may be applied).
 	//
@@ -648,12 +622,15 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {
 		classnameParseStatus = CPS_Default;
 
-		if ( classname.CharAt( 0 ) == "%" || classname.CharAt( 0 ) == "%%" )
+		String firstOrigValueChar = classname.CharAt( 0 );
+
+		// Different engine versions has different '%' char representation in FString.
+		if ( firstOrigValueChar == "%" || firstOrigValueChar == "%%" )
 			classname = "$" .. classname.Mid( 1, classname.Length() - 1 );
 
 		if ( classname.Length() > 63 ) {
 			classname.Truncate( 63 );
-			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::ParseSpecialActorName(). " .. LLCOLOR_WARNING .. "Value truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
+			ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. GetClassName() .. "::ParseSpecialActorName(). " .. LLCOLOR_WARNING .. "Identifier truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. classname .. "\")." );
 		}
 
 		String origValue = classname;
@@ -663,7 +640,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		bool isSpecial = false;
 		Actor caller = ( ccmd? players[ ccmd.e.Player ].mo : NULL );
 
-		if ( caller ) {
+		if ( caller && firstOrigValueChar == "$" ) {
 			Actor found = NULL;
 
 			if ( testSpecialValue == "linetarget" || testSpecialValue == "lt" ) {
@@ -690,8 +667,41 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		if ( testSpecialValue == "null" || testSpecialValue == "none" ) {
 			classnameParseStatus = CPS_Variable;
 			classname = "";
+			// No "isSpecial" is set to sneak through next conditions.
 		}
 
+		if ( isSpecial ) {
+			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialActorName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
+
+			if ( classname == "" ) {
+				classnameParseStatus = CPS_EmptyVariable;
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_EMPTYKEYWORD" ), origValue ) );
+			} else {
+				classnameParseStatus = CPS_Variable;
+			}
+
+		} else if ( classname.CharAt( 0 ) == "$" ) {
+			// Classname variable:
+			classname = GetGlobalClassnameVariable( classname );
+
+			if ( classname == "" ) {
+				classnameParseStatus = CPS_EmptyVariable;
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_UNSETVAR" ), origValue ) );
+			} else {
+				classnameParseStatus = CPS_Variable;
+			}
+
+			isSpecial = true;
+		}
+
+		if ( isSpecial ) {
+			ZCGlobal.Get().SetClassnameVariable( "$parsed", classname );
+			return classname;
+		}
+
+
+
+		// Classname or mask:
 
 		int preventiveChoice = -1;
 		int preventiveChoiceStrStart;
@@ -715,21 +725,8 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		} // of if ( preventiveChoiceStrStart != -1 ) {}
 
 
-		if ( isSpecial ) {
-			classnameParseStatus = CPS_Variable;
-			ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParseSpecialActorName(). Value \"" .. origValue .. "\" parsed as special placeholder and thus set to \"" .. classname .. "\"." );
-
-			if ( classname == "" )
-				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_EMPTYKEYWORD" ), origValue ) );
-		} else if ( classname.CharAt( 0 ) == "$" ) {
-			classnameParseStatus = CPS_Variable;
-			classname = GetInternalZCheckerString( classname );
-
-			if ( classname == "" )
-				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_UNSETVAR" ), origValue ) );
-
-			isSpecial = true;
-		} else if ( ccmd && ccmd.handler && ( classname.IndexOf( "*" ) != -1 || classname.IndexOf( "-" ) != -1 ) ) {
+		if ( ccmd && ccmd.handler && ( classname.IndexOf( "*" ) != -1 || classname.IndexOf( "-" ) != -1 ) ) {
+			// Regexp mask parsing:
 			String curpart = "";
 			int lastpart = 0;
 			int lastpartStartIndex = 0;
@@ -874,7 +871,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				if ( nameCandidatesSize == 1 ) {
 					classnameParseStatus = CPS_RegexFound;
 					classname = nameCandidates[ 0 ];
-					ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
 				} else if ( nameCandidatesSize == 0 ) {
 					classname = "";
 					classnameParseStatus = CPS_RegexFailed;
@@ -888,7 +884,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 					if ( preventiveChoice != -1 ) {
 						classname = nameCandidates[ preventiveChoice - 1 ];
 						classnameParseStatus = CPS_RegexFound;
-						ZCGlobal.Get().SetZCheckerString( "$parsed", classname );
 					} else {
 						classname = "";
 						classnameParseStatus = CPS_RegexFailed;
@@ -900,12 +895,14 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 							ZCGlobal.ClearscopeLog( LL_Main | LL_NoLocalize | LL_NoDot, String.Format( TEXTCOLOR_DARKGRAY .. "%i. \"" .. TEXTCOLOR_WHITE .. "%s" .. TEXTCOLOR_DARKGRAY .. "\".", i + 1, nameCandidates[ i ] ) );
 					}
 				}
+
 			} // of if ( parts.Size() > 1 ) {}
 
 		} else if ( preventiveChoice != -1 ) {
 			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_IGNORESELECT" ), preventiveChoice ) );
 		}
 
+		ZCGlobal.Get().SetClassnameVariable( "$parsed", classname );
 		return classname;
 	} // of protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {}
 
@@ -934,25 +931,25 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	} // of protected bool RemoveWorldThinker( Thinker th ) {}
 
 
-	protected String GetInternalZCheckerString( String zcname ) {
-		return ZCGlobal.Get().GetZCheckerString( zcname );
+	protected String GetGlobalClassnameVariable( String zcname ) {
+		return ZCGlobal.Get().GetClassnameVariable( zcname );
 	}
 
-	protected bool SetInternalZCheckerString( String zcname, String value ) {
+	protected bool SetGlobalClassnameVariable( String zcname, String value ) {
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
 			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );
 
 		if ( zcname.Length() > 63 ) {
 			zcname.Truncate( 63 );
-			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Variable name truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. zcname .. "\")." );
+			ZCGlobal.Log( LL_Main, LLCOLOR_WARNING .. "Variable identifier truncated " .. LLCOLOR_MAIN .. "to 63 characters (\"" .. zcname .. "\")." );
 		}
 
 		String newValue;
 
 		newValue = ParseSpecialActorName( value );
 
-		if ( newValue != "" )
-			return ZCGlobal.Get().SetZCheckerString( zcname, newValue );
+		if ( newValue != "" || classnameParseStatus == CPS_Variable )
+			return ZCGlobal.Get().SetClassnameVariable( zcname, newValue );
 
 		return false;
 	}
