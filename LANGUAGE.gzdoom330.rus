@@ -57,7 +57,7 @@ ZCHECKER_MAINMENU_DIV_HOTKEYS         = "Горячие клавиши";
 ZCHECKER_MAINMENU_NETEVENTS           = "Перехват Netevents";
 ZCHECKER_MAINMENU_NETEVENTS_TIP       = "Перехватывает информацию с сетевых событий.";
 ZCHECKER_MAINMENU_ALLOWDANGEROUS      = "Разрешить опасные действия";
-ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP  = "Действия, при обычных условиях ломающие игровой движок.";
+ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP  = "Действия, при обычных условиях всегда ломающие игровой движок.";
 ZCHECKER_MAINMENU_ZCADDTWICE          = "Поведение при дублировании указателя";
 ZCHECKER_MAINMENU_ZCADDTWICE_TIP1     = "Поведение при использовании команд вроде \"zcadd\" на акторе,";
 ZCHECKER_MAINMENU_ZCADDTWICE_TIP2     = "который уже присутствует в инфопанелях.";
@@ -162,7 +162,7 @@ ZCHECKER_PANELMAINOPT_TAGS_AUTO       = "Если не равен названи
 ZCHECKER_PANELMAINOPT_TAGS_ON         = "Отображать всегда";
 
 ZCHECKER_PANELSUBLABEL_WPOS_ROLLON    = "Все углы поворота";
-ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF   = "Курс и тангаж (angle, pitch)";
+ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF   = "Рыскание, тангаж (angle, pitch)";
 ZCHECKER_PANELSUBLABEL_WPOS_FRACLEN   = ", длина дроби";
 ZCHECKER_PANELSUBLABEL_WPOS_BUTTONS   = "; клавиши";
 ZCHECKER_PANELSUBMENU_WPOS_TITLE      = "Панель ZChecker: Позиционирование";
@@ -207,7 +207,7 @@ ZCHECKER_PANELSUBLABEL_GSEC_LIGHT     = "свет";
 ZCHECKER_PANELSUBLABEL_GSEC_TEXTURES  = "ткстр";
 ZCHECKER_PANELSUBLABEL_GSEC_FLAGS     = "флаги";
 ZCHECKER_PANELSUBLABEL_GSEC_DAMAGE    = "урон";
-ZCHECKER_PANELSUBLABEL_GSEC_PHYSICS   = "физ.";
+ZCHECKER_PANELSUBLABEL_GSEC_PHYSICS   = "физ";
 ZCHECKER_PANELSUBLABEL_GSEC_PORTALS   = "порталы";
 ZCHECKER_PANELSUBLABEL_GSEC_TERRAIN   = "terrain";
 ZCHECKER_PANELSUBLABEL_GSEC_OTHER     = "другое";
@@ -235,7 +235,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Вывод используемых р�
 //  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: настройки отображения";
-ZCHECKER_VISUAL_POSITIONING           = "Положение панелей";
+ZCHECKER_VISUALDIV_POSITIONING        = "Положение панелей";
 ZCHECKER_VISUAL_START_X               = "Начало по X, %";
 ZCHECKER_VISUAL_START_X_10            = "Начало по X, x10%";
 ZCHECKER_VISUAL_START_Y               = "Начало по Y, %";
@@ -243,18 +243,18 @@ ZCHECKER_VISUAL_START_Y_10            = "Начало по Y, x10%";
 ZCHECKER_VISUAL_OFFSET_X              = "Смещение по X, %";
 ZCHECKER_VISUAL_PANELS_SCALE          = "Масштабирование";
 ZCHECKER_VISUAL_PANELS_Y_GAP          = "Интервал по Y, множитель";
-ZCHECKER_VISUAL_BACKGROUND            = "Настройки фона панелей";
+ZCHECKER_VISUALDIV_BACKGROUND         = "Настройки фона панелей";
 ZCHECKER_VISUAL_ENABLED               = "Включен";
 ZCHECKER_VISUAL_DIMCOLOR              = "Цвет фона";
 ZCHECKER_VISUAL_DIMALPHA              = "Прозрачность фона";
 ZCHECKER_VISUAL_DIMBORDERWIDTH        = "Ширина границ";
-ZCHECKER_VISUAL_EVERYTHINGMAP_INFO    = "Информационный актор на картах \"Everything\"";
+ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO = "Информационный актор на картах \"Everything\"";
 ZCHECKER_VISUAL_INFOSTR_X             = "Начало строки по X, %";
 ZCHECKER_VISUAL_INFOSTR_X10           = "Начало строки по X, x10%";
 ZCHECKER_VISUAL_INFOSTR_Y             = "Начало строки по Y, %";
 ZCHECKER_VISUAL_INFOSTR_Y10           = "Начало строки по Y, x10%";
 ZCHECKER_VISUAL_INFOSTR_SCALE         = "Масштабирование строки";
-ZCHECKER_VISUAL_OTHER                 = "Остальное";
+ZCHECKER_VISUALDIV_OTHER              = "Остальное";
 ZCHECKER_VISUAL_FONTTYPES             = "Глобальный шрифт";
 
 //  === Control menu for the "Everything" map ==
@@ -264,7 +264,7 @@ ZCHECKER_EVMAPMENU_SPAWNOPTIONS       = "Настройки создания а�
 ZCHECKER_EVMAPMENUDIV_GENERAL         = "- Общее -";
 ZCHECKER_EVMAPMENU_SPAWNREPLACED      = "Замененные акторы";
 ZCHECKER_EVMAPMENU_SPAWNBUILTIN       = "Акторы, встроенные в движок";
-ZCHECKER_EVMAPMENU_RESTRICT           = "Замены запрещенных акторов";
+ZCHECKER_EVMAPMENU_RESTRICT           = "Замены встроенных запрещенных акторов";
 ZCHECKER_EVMAPMENUDIV_SPRITES         = "- По пустым спрайтам -";
 ZCHECKER_EVMAPMENU_MISSING            = "Акторы с пропущенными спрайтами";
 ZCHECKER_EVMAPMENU_TNT1A0             = "Акторы со спрайтами \'TNT1A0\'";
@@ -297,9 +297,30 @@ ZCHECKER_EVMAPMENU_CHANGEMAP1ASK      = "Вы будете перенесены 
 ZCHECKER_EVMAPMENU_CHANGEMAP2ASK      = "Вы будете перенесены на альтернативную версию \nкарты Everything от StormCatcher.77\nбез сохранения текущего прогресса. \n\nВы уверены? [Y/N]";
 ZCHECKER_EVMAPMENU_WARPSTART          = "Перейти на старт\cc: \"\cmzcevg #\cqstart\cc\"";
 ZCHECKER_EVMAPMENUDIV_WARPMONS        = "- Переход к категориям монстров -";
+ZCHECKER_EVMAPMENU_WARPMONSTERS       = "Монстры, обычные\cc: \"\cmzcevg #\cdmons\cc\"";
+ZCHECKER_EVMAPMENU_WARPLMONS          = "Монстры, крупные\cc: \"\cmzcevg #\cdlmons\cc\"";
+ZCHECKER_EVMAPMENU_WARPHMONS          = "Монстры, огромные\cc: \"\cmzcevg #\cdhmons\cc\"";
 ZCHECKER_EVMAPMENUDIV_WARPITEMS       = "- Переход к категориям предметов -";
+ZCHECKER_EVMAPMENU_WARPWEAPS          = "Оружие\cc: \"\cmzcevg #\cdweaps\cc\"";
+ZCHECKER_EVMAPMENU_WARPAMMO           = "Патроны\cc: \"\cmzcevg #\cdammo\cc\"";
+ZCHECKER_EVMAPMENU_WARPHPARMOR        = "Здоровье/броня\cc: \"\cmzcevg #\cdhealth\cc\"";
+ZCHECKER_EVMAPMENU_WARPPOWERUPS       = "Усиления (powerups)\cc: \"\cmzcevg #\cdpowerups\cc\"";
+ZCHECKER_EVMAPMENU_WARPKEYS           = "Ключи\cc: \"\cmzcevg #\cdkeys\cc\"";
+ZCHECKER_EVMAPMENU_WARPOTHITEMS       = "Другие предметы\cc: \"\cmzcevg #\cdothitems\cc\"";
 ZCHECKER_EVMAPMENUDIV_WARPDECOR       = "- Переход к категориям декораций и объектов -";
+ZCHECKER_EVMAPMENU_WARPDSOLID         = "Непроходимые, обычные\cc: \"\cmzcevg #\cdsolid\cc\"";
+ZCHECKER_EVMAPMENU_WARPDLSOLID        = "Непроходимые, крупные\cc: \"\cmzcevg #\cdsolidl\cc\"";
+ZCHECKER_EVMAPMENU_WARPDETHER         = "Бесплотные, обычные\cc: \"\cmzcevg #\cdpass\cc\"";
+ZCHECKER_EVMAPMENU_WARPDLETHER        = "Бесплотные, крупные\cc: \"\cmzcevg #\cdpassl\cc\"";
+ZCHECKER_EVMAPMENU_WARPDSHOOT         = "Атакуемые, обычные\cc: \"\cmzcevg #\cdshoot\cc\"";
+ZCHECKER_EVMAPMENU_WARPDLSHOOT        = "Атакуемые, крупные\cc: \"\cmzcevg #\cdshootl\cc\"";
+ZCHECKER_EVMAPMENU_WARPDNOBLKMAP      = "Флаг NOBLOCKMAP\cc: \"\cmzcevg #\cdnoblockmap\cc\"";
+ZCHECKER_EVMAPMENU_WARPDNOINTRCT      = "Флаг NOINTERACTION\cc: \"\cmzcevg #\cdnoint\cc\"";
+ZCHECKER_EVMAPMENU_WARPDHUGE          = "Огромные декорации\cc: \"\cmzcevg #\cddhuge\cc\"";
 ZCHECKER_EVMAPMENUDIV_WARPOTHER       = "- Переход к остальным категориям -";
+ZCHECKER_EVMAPMENU_WARPMISSILES       = "Снаряды (projectiles)\cc: \"\cmzcevg #\cdproj\cc\"";
+ZCHECKER_EVMAPMENU_WARPPLAYERS        = "Классы игроков\cc: \"\cmzcevg #\cdplayers\cc\"";
+ZCHECKER_EVMAPMENU_WARPOTHER          = "Особые акторы\cc: \"\cmzcevg #\cdspecial\cc\"";
 
 //  === Console commands control menu ===
 
@@ -320,8 +341,8 @@ ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Вывести кратку
 ZCHECKER_EVMAP_INITERROR              = "Невозможно продолжить из-за ошибок на карте; останов.";
 ZCHECKER_EVMAP_RECREATEACTORS         = "Пересоздание акторов на карте...";
 ZCHECKER_EVMAP_RELOADSECTORS          = "Перезагрузка свойств всех секторов...";
-ZCHECKER_EVMAP_AUTOIDDQD              = "Неуязвимость включена автоматически.";
-ZCHECKER_EVMAP_AUTONOTARGET           = "Команда notarget включена автоматически.";
+ZCHECKER_EVMAP_AUTOIDDQD              = "Неуязвимость автоматически включена.";
+ZCHECKER_EVMAP_AUTONOTARGET           = "Команда notarget автоматически включена.";
 ZCHECKER_EVMAPSPAWN_SUCCESS           = "\cqсоздан класс \"\cd%s\cq\"\c~ (спрайт \"%s\").";
 ZCHECKER_EVMAPSPAWN_SKIPBUILTIN       = "\chВсе встроенные классы были пропущены.";
 ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP   = "\c~класс \"\cz%s\c~\" пропущен из-за пустого спрайта \"%s\".";
@@ -338,7 +359,7 @@ ZCHECKER_EVMAPCATEGORY_NORMALSPAWN    = "Всего акторов создан�
 ZCHECKER_EVMAPCATEGORY_EMPTYSPAWN     = "Акторов нет";
 ZCHECKER_EVMAPCATEGORY_PARTIALSPAWN   = "Всего акторов создано: \ca%i/%i\cu";
 ZCHECKER_EVMAP_RESUMMON               = "\c~Создан актор \c-%s\c~.";
-ZCHECKER_EVMAP_INFOSTR_REPLACES       = "%s \cnзаменяет\c- %s";
+ZCHECKER_EVMAP_INFOSTR_REPLACES       = "%s \cnreplaces\c- %s";
 
 
 
@@ -367,9 +388,9 @@ ZCHECKER_PARSENAME_SELECTBOUNDS       = "\c!Выбранный индекс \cn%
 ZCHECKER_PARSENAME_IGNORESELECT       = "\c!Пропуск числового указания %i\c-";
 
 //  "ZCConsoleCommand::RemoveWorldThinker()"
-ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crПопытка уничтожения живого игрока %i\c-, \c!пропущено\c-. Вы можете переопределить это с помощью опции \"Разрешить опасные действия\".";
+ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crПопытка уничтожения живого игрока %i, отмена\c-. Переопределить можно с помощью опции \"Разрешить опасные действия\".";
 ZCHECKER_REMOVEWARNING_LIVEPLAYER     = "уничтожение живого игрока";
-ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crВнутренний класс ZChecker \"\c-%s\cr\" в списке на уничтожение, \c!пропущен\c-. Вы можете переопределить это с помощью опции \"Разрешить опасные действия\".";
+ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crВнутренний класс ZChecker \"\c-%s\cr\" в списке на уничтожение, отмена\c-. Переопределить можно с помощью опции \"Разрешить опасные действия\".";
 ZCHECKER_REMOVEWARNING_ZCINTERNAL     = "уничтожение внутреннего класса ZChecker";
 
 //  "ZCAddCommand::HandleDuplicateActorFields()"
@@ -453,9 +474,9 @@ ZCHECKER_ZCSUMMON_WRONGDIGIT          = "\c!Значение \"%s\" \c-для п
 ZCHECKER_ZCSUMMON_EMPTYVALUE          = "\c!Пустое значение в параметре \"%s\".";
 ZCHECKER_ZCSUMMON_UNKNOWNPARAM        = "\c!Неизвевстный параметр \"%s\"";
 ZCHECKER_ZCSUMMON_UNKNOWNFLAG         = "\c!Неизвестный флаг \"%s\".";
-ZCHECKER_ZCSUMMON_LIMITPREVENT        = "Попытка создать более 200 акторов за раз. \c~Отключить это можно через опцию \"Разрешить опасные действия\".";
-ZCHECKER_ZCSUMMON_LIMITWARNING        = "создание более чем 200 акторов";
-ZCHECKER_ZCSUMMON_SUCCESS             = "Создан(о) %i %s \c~класса \"\cd%s\c~\".";
+ZCHECKER_ZCSUMMON_LIMITPREVENT        = "Попытка создать более 256 акторов за раз. \c~Отключить это можно через опцию \"Разрешить опасные действия\".";
+ZCHECKER_ZCSUMMON_LIMITWARNING        = "создание более чем 256 акторов";
+ZCHECKER_ZCSUMMON_SUCCESS             = "Создано: %i %s \c~класса \"\cd%s\c~\".";
 ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR      = "актор";
 ZCHECKER_ZCSUMMON_SUCCESS_ACTORS      = "актор(ов)";
 ZCHECKER_ZCSUMMON_ADDINSUFFPLACE      = "Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определенную панель через значение параметра \"panel:1\"..\"panel:%i\".";
@@ -752,7 +773,7 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 \"`Czcevg z*man`C\" телепортирует игрока к актору `2Z`~ombie`2man`x;\
 \"`Czcevg *armor`C\" выведет список всех предметов с окончанием \"armor\";\
 \"`Czcevg *armor:4`C\" перенесет игрока к `2BlueArmor`2;\
-\"`Czcevg $last`C\" телепортирует игрока к последнему актору, добавленному в инфопанели (если он существует на карте);\
+\"`Czcevg $last`C\" телепортирует игрока к последнему актору, добавленному в инфопанель;\
 \"`Czcevg #monsters`C\" или \"`Czcevg #m`C\" перенесет игрока к категории \"Monsters\";\
 \"`Czcevg mons`C\" сделает то же, что и команда выше, если актора \"`2mons`2\" не существует. Иначе - телепортирует к нему;\
 \"`Czcevg #ammo`C\" перенесет игрока к категории \"Ammo\". Без \"решетки\" - к актору под названием \"Ammo\" (если он существует на карте).";

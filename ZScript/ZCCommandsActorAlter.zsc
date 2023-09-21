@@ -550,7 +550,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 		if ( classnameParseStatus == CPS_RegexFailed )
 			return;
 
-		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "ZCSUMMON_LIMITWARNING" ) ) ) {
+		if ( summoneeAmount > 256 && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "ZCSUMMON_LIMITWARNING" ) ) ) {
 			ZCGlobal.Log( LL_Main, ZCGlobal.Locz( "ZCSUMMON_LIMITPREVENT" ) );
 			return;
 		}

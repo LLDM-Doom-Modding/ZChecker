@@ -55,7 +55,7 @@ unused),,,,
 ,,ZCHECKER_MAINMENU_NETEVENTS,Netevent info intercepting,Перехват Netevents
 ,,ZCHECKER_MAINMENU_NETEVENTS_TIP,Try to obtain information from network events.,Перехватывает информацию с сетевых событий.
 ,,ZCHECKER_MAINMENU_ALLOWDANGEROUS,Allow dangerous actions,Разрешить опасные действия
-,,ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP,Allow operations that are known to crash the game.,"Действия, при обычных условиях ломающие игровой движок."
+,,ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP,Allow operations that are known to crash the game.,"Действия, при обычных условиях всегда ломающие игровой движок."
 ,,ZCHECKER_MAINMENU_ZCADDTWICE,Repeated actor addition handling,Поведение при дублировании указателя
 ,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP1,"Behaviour when using ""zcadd"" on an actor which","Поведение при использовании команд вроде ""zcadd"" на акторе,"
 ,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP2,is already present in the information panels list.,который уже присутствует в инфопанелях.
@@ -161,7 +161,7 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_PANELSUBLABEL_WPOS_PREFIX,,
 ,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLON,All rotations ,Все углы поворота
-,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF,Angle and pitch ,"Курс и тангаж (angle, pitch)"
+,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF,Angle and pitch ,"Рыскание, тангаж (angle, pitch)"
 ,,ZCHECKER_PANELSUBLABEL_WPOS_FRACLEN,with frac of length,", длина дроби"
 ,,ZCHECKER_PANELSUBLABEL_WPOS_BUTTONS,", show inputs",; клавиши
 ,,ZCHECKER_PANELSUBMENU_WPOS_TITLE,ZChecker panel: World positioning,Панель ZChecker: Позиционирование
@@ -217,7 +217,7 @@ unused),,,,
 ,,ZCHECKER_PANELSUBLABEL_GSEC_TEXTURES,txtrs,ткстр
 ,,ZCHECKER_PANELSUBLABEL_GSEC_FLAGS,flags,флаги
 ,,ZCHECKER_PANELSUBLABEL_GSEC_DAMAGE,damage,урон
-,,ZCHECKER_PANELSUBLABEL_GSEC_PHYSICS,phys,физ.
+,,ZCHECKER_PANELSUBLABEL_GSEC_PHYSICS,phys,физ
 ,,ZCHECKER_PANELSUBLABEL_GSEC_PORTALS,portal,порталы
 ,,ZCHECKER_PANELSUBLABEL_GSEC_TERRAIN,terrain,terrain
 ,,ZCHECKER_PANELSUBLABEL_GSEC_OTHER,other,другое
@@ -234,7 +234,7 @@ unused),,,,
 ,,ZCHECKER_PANELSUBMENU_GSECNOTE_WIP,(Not released yet):,(Пока не реализровано):
 ,,ZCHECKER_PANELSUBMENU_GSEC_OTHER,"Other: water level, special, ...","Другое: уровень воды, действие, ..."
 ,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF,Disabled,Не выводить
-,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY,Z coordinates,Z-координата
+,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY,Z coordinate,Z-координата
 ,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA,Z coord + actor delta,Z-коорд. + дельта до актора
 ,,,,
 ,Not used in the current version. >>>,ZCHECKER_PANELGEOMLNOPT_TYPE_LOS,On line of sight,
@@ -252,7 +252,7 @@ unused),,,,
 , === Visual Settings control menu ===,,,
 ,,,,
 ,,ZCHECKER_VISUAL_TITLE,ZChecker: HUD and visual settings,ZChecker: настройки отображения
-,,ZCHECKER_VISUAL_POSITIONING,Panels positioning,Положение панелей
+,,ZCHECKER_VISUALDIV_POSITIONING,Panels positioning,Положение панелей
 ,,ZCHECKER_VISUAL_START_X,"Panels start X, %","Начало по X, %"
 ,,ZCHECKER_VISUAL_START_X_10,"Panels start X, x10%","Начало по X, x10%"
 ,,ZCHECKER_VISUAL_START_Y,"Panels start Y, %","Начало по Y, %"
@@ -260,18 +260,18 @@ unused),,,,
 ,,ZCHECKER_VISUAL_OFFSET_X,"Next panels X offset, %","Смещение по X, %"
 ,,ZCHECKER_VISUAL_PANELS_SCALE,Panels scale,Масштабирование
 ,,ZCHECKER_VISUAL_PANELS_Y_GAP,"Panels interval Y, multiplier","Интервал по Y, множитель"
-,,ZCHECKER_VISUAL_BACKGROUND,Panels background,Настройки фона панелей
+,,ZCHECKER_VISUALDIV_BACKGROUND,Panels background,Настройки фона панелей
 ,,ZCHECKER_VISUAL_ENABLED,Enabled,Включён
 ,,ZCHECKER_VISUAL_DIMCOLOR,Background color,Цвет фона
 ,,ZCHECKER_VISUAL_DIMALPHA,Background alpha,Прозрачность фона
 ,,ZCHECKER_VISUAL_DIMBORDERWIDTH,Border width,Ширина границ
-,,ZCHECKER_VISUAL_EVERYTHINGMAP_INFO,"""Everything"" map actor info","Информационный актор на картах ""Everything"""
+,,ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO,"""Everything"" map actor info","Информационный актор на картах ""Everything"""
 ,,ZCHECKER_VISUAL_INFOSTR_X,"Actor info string X, %","Начало строки по X, %"
 ,,ZCHECKER_VISUAL_INFOSTR_X10,"Actor info string X, x10%","Начало строки по X, x10%"
 ,,ZCHECKER_VISUAL_INFOSTR_Y,"Actor info string Y, %","Начало строки по Y, %"
 ,,ZCHECKER_VISUAL_INFOSTR_Y10,"Actor info string Y, x10%","Начало строки по Y, x10%"
 ,,ZCHECKER_VISUAL_INFOSTR_SCALE,Actor info string scale,Масштабирование строки
-,,ZCHECKER_VISUAL_OTHER,Other,Остальное
+,,ZCHECKER_VISUALDIV_OTHER,Other,Остальное
 ,,ZCHECKER_VISUAL_FONTTYPES,General font,Глобальный шрифт
 ,,,,
 ," === Control menu for the ""Everything"" map ==",,,
@@ -280,8 +280,8 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_SPAWNOPTIONS,Spawning options,Настройки создания акторов
 ,,ZCHECKER_EVMAPMENUDIV_GENERAL,- General -,- Общее -
 ,,ZCHECKER_EVMAPMENU_SPAWNREPLACED,Replaced actors,Заменённые акторы
-,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Actors embedded in the engine,"Акторы, встроенные в движок"
-,,ZCHECKER_EVMAPMENU_RESTRICT,Replacements of restricted actors,Замены запрещённых акторов
+,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Actors built-in to the engine,"Акторы, встроенные в движок"
+,,ZCHECKER_EVMAPMENU_RESTRICT,Unsafe built-in actors replacement,Замены встроенных запрещённых акторов
 ,,ZCHECKER_EVMAPMENUDIV_SPRITES,- By empty sprites -,- По пустым спрайтам -
 ,,ZCHECKER_EVMAPMENU_MISSING,Actors with missing sprites,Акторы с пропущенными спрайтами
 ,,ZCHECKER_EVMAPMENU_TNT1A0,Actors with the \'TNT1A0\' sprite,Акторы со спрайтами \'TNT1A0\'
@@ -314,30 +314,30 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_CHANGEMAP2ASK,This command will warp you to the\nEverything map (alternative version by StormCatcher.77)\nwithout saving current progress. \n\nAre you sure? [Y/N],Вы будете перенесены на альтернативную версию \nкарты Everything от StormCatcher.77\nбез сохранения текущего прогресса. \n\nВы уверены? [Y/N]
 ,,ZCHECKER_EVMAPMENU_WARPSTART,"Teleport to start\cc: ""\cmzcevg #\cqstart\cc""","Перейти на старт\cc: ""\cmzcevg #\cqstart\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPMONS,- Teleport to monsters -,- Переход к категориям монстров -
-,,ZCHECKER_EVMAPMENU_WARPMONSTERS,"Monsters, regular\cc: ""\cmzcevg #\cdmons\cc""",
-,,ZCHECKER_EVMAPMENU_WARPLMONS,"Monsters, large\cc: ""\cmzcevg #\cdlmons\cc""",
-,,ZCHECKER_EVMAPMENU_WARPHMONS,"Monsters, huge\cc: ""\cmzcevg #\cdhmons\cc""",
+,,ZCHECKER_EVMAPMENU_WARPMONSTERS,"Monsters, regular\cc: ""\cmzcevg #\cdmons\cc""","Монстры, обычные\cc: ""\cmzcevg #\cdmons\cc"""
+,,ZCHECKER_EVMAPMENU_WARPLMONS,"Monsters, large\cc: ""\cmzcevg #\cdlmons\cc""","Монстры, крупные\cc: ""\cmzcevg #\cdlmons\cc"""
+,,ZCHECKER_EVMAPMENU_WARPHMONS,"Monsters, huge\cc: ""\cmzcevg #\cdhmons\cc""","Монстры, огромные\cc: ""\cmzcevg #\cdhmons\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPITEMS,- Teleport to items -,- Переход к категориям предметов -
-,,ZCHECKER_EVMAPMENU_WARPWEAPS,"Weapons\cc: ""\cmzcevg #\cdweaps\cc""",
-,,ZCHECKER_EVMAPMENU_WARPAMMO,"Ammo\cc: ""\cmzcevg #\cdammo\cc""",
-,,ZCHECKER_EVMAPMENU_WARPHPARMOR,"Health/armor items\cc: ""\cmzcevg #\cdhealth\cc""",
-,,ZCHECKER_EVMAPMENU_WARPPOWERUPS,"Powerups\cc: ""\cmzcevg #\cdpowerups\cc""",
-,,ZCHECKER_EVMAPMENU_WARPKEYS,"Keys\cc: ""\cmzcevg #\cdkeys\cc""",
-,,ZCHECKER_EVMAPMENU_WARPOTHITEMS,"Other items\cc: ""\cmzcevg #\cdothitems\cc""",
+,,ZCHECKER_EVMAPMENU_WARPWEAPS,"Weapons\cc: ""\cmzcevg #\cdweaps\cc""","Оружие\cc: ""\cmzcevg #\cdweaps\cc"""
+,,ZCHECKER_EVMAPMENU_WARPAMMO,"Ammo\cc: ""\cmzcevg #\cdammo\cc""","Патроны\cc: ""\cmzcevg #\cdammo\cc"""
+,,ZCHECKER_EVMAPMENU_WARPHPARMOR,"Health/armor items\cc: ""\cmzcevg #\cdhealth\cc""","Здоровье/броня\cc: ""\cmzcevg #\cdhealth\cc"""
+,,ZCHECKER_EVMAPMENU_WARPPOWERUPS,"Powerups\cc: ""\cmzcevg #\cdpowerups\cc""","Усиления (powerups)\cc: ""\cmzcevg #\cdpowerups\cc"""
+,,ZCHECKER_EVMAPMENU_WARPKEYS,"Keys\cc: ""\cmzcevg #\cdkeys\cc""","Ключи\cc: ""\cmzcevg #\cdkeys\cc"""
+,,ZCHECKER_EVMAPMENU_WARPOTHITEMS,"Other items\cc: ""\cmzcevg #\cdothitems\cc""","Другие предметы\cc: ""\cmzcevg #\cdothitems\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPDECOR,- Teleport to decorations and objects -,- Переход к категориям декораций и объектов -
-,,ZCHECKER_EVMAPMENU_WARPDSOLID,"Impassable, regular\cc: ""\cmzcevg #\cdsolid\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDLSOLID,"Impassable, large\cc: ""\cmzcevg #\cdsolidl\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDETHER,"Passable, regular\cc: ""\cmzcevg #\cdpass\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDLETHER,"Passable, large\cc: ""\cmzcevg #\cdpassl\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDSHOOT,"Shootable, regular\cc: ""\cmzcevg #\cdshoot\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDLSHOOT,"Shootable, large\cc: ""\cmzcevg #\cdshootl\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDNOBLKMAP,"NOBLOCKMAP-flagged\cc: ""\cmzcevg #\cdnoblockmap\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDNOINTRCT,"NOINTERACTION-flagged\cc: ""\cmzcevg #\cdnoint\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDHUGE,"Huge decorations\cc: ""\cmzcevg #\cddhuge\cc""",
+,,ZCHECKER_EVMAPMENU_WARPDSOLID,"Impassable, regular\cc: ""\cmzcevg #\cdsolid\cc""","Непроходимые, обычные\cc: ""\cmzcevg #\cdsolid\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDLSOLID,"Impassable, large\cc: ""\cmzcevg #\cdsolidl\cc""","Непроходимые, крупные\cc: ""\cmzcevg #\cdsolidl\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDETHER,"Passable, regular\cc: ""\cmzcevg #\cdpass\cc""","Бесплотные, обычные\cc: ""\cmzcevg #\cdpass\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDLETHER,"Passable, large\cc: ""\cmzcevg #\cdpassl\cc""","Бесплотные, крупные\cc: ""\cmzcevg #\cdpassl\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDSHOOT,"Shootable, regular\cc: ""\cmzcevg #\cdshoot\cc""","Атакуемые, обычные\cc: ""\cmzcevg #\cdshoot\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDLSHOOT,"Shootable, large\cc: ""\cmzcevg #\cdshootl\cc""","Атакуемые, крупные\cc: ""\cmzcevg #\cdshootl\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDNOBLKMAP,"NOBLOCKMAP-flagged\cc: ""\cmzcevg #\cdnoblockmap\cc""","Флаг NOBLOCKMAP\cc: ""\cmzcevg #\cdnoblockmap\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDNOINTRCT,"NOINTERACTION-flagged\cc: ""\cmzcevg #\cdnoint\cc""","Флаг NOINTERACTION\cc: ""\cmzcevg #\cdnoint\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDHUGE,"Huge decorations\cc: ""\cmzcevg #\cddhuge\cc""","Огромные декорации\cc: ""\cmzcevg #\cddhuge\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPOTHER,- Teleport to other actors -,- Переход к остальным категориям -
-,,ZCHECKER_EVMAPMENU_WARPMISSILES,"Projectiles\cc: ""\cmzcevg #\cdproj\cc""",
-,,ZCHECKER_EVMAPMENU_WARPPLAYERS,"Player classes\cc: ""\cmzcevg #\cdplayers\cc""",
-,,ZCHECKER_EVMAPMENU_WARPOTHER,"Special actors\cc: ""\cmzcevg #\cdspecial\cc""",
+,,ZCHECKER_EVMAPMENU_WARPMISSILES,"Projectiles\cc: ""\cmzcevg #\cdproj\cc""","Снаряды (projectiles)\cc: ""\cmzcevg #\cdproj\cc"""
+,,ZCHECKER_EVMAPMENU_WARPPLAYERS,"Player classes\cc: ""\cmzcevg #\cdplayers\cc""","Классы игроков\cc: ""\cmzcevg #\cdplayers\cc"""
+,,ZCHECKER_EVMAPMENU_WARPOTHER,"Special actors\cc: ""\cmzcevg #\cdspecial\cc""","Особые акторы\cc: ""\cmzcevg #\cdspecial\cc"""
 ,,,,
 , === Console commands control menu ===,,,
 ,,,,
@@ -358,10 +358,10 @@ unused),,,,
 ,,ZCHECKER_EVMAP_INITERROR,"Cannot run due to the map errors, terminating.",Невозможно продолжить из-за ошибок на карте; останов.
 ,,ZCHECKER_EVMAP_RECREATEACTORS,Recreating/reloading map actors...,Пересоздание акторов на карте...
 ,,ZCHECKER_EVMAP_RELOADSECTORS,Reloading general properties for all sectors...,Перезагрузка свойств всех секторов...
-,,ZCHECKER_EVMAP_AUTOIDDQD,Auto-godmode enabled.,Неуязвимость включена автоматически.
-,,ZCHECKER_EVMAP_AUTONOTARGET,Auto-notarget enabled.,Команда notarget включена автоматически.
+,,ZCHECKER_EVMAP_AUTOIDDQD,Auto-godmode enabled.,Неуязвимость автоматически включена.
+,,ZCHECKER_EVMAP_AUTONOTARGET,Auto-notarget enabled.,Команда notarget автоматически включена.
 ,,ZCHECKER_EVMAPSPAWN_SUCCESS,"\cqsummoned class ""\cd%s\cq""\c~ (sprite ""%s"").","\cqсоздан класс ""\cd%s\cq""\c~ (спрайт ""%s"")."
-,,ZCHECKER_EVMAPSPAWN_SKIPBUILTIN,\chAll embedded (built-in) classes has been skipped.,\chВсе встроенные классы были пропущены.
+,,ZCHECKER_EVMAPSPAWN_SKIPBUILTIN,\chAll built-in classes has been skipped.,\chВсе встроенные классы были пропущены.
 ,,ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of empty sprite ""%s"".","\c~класс ""\cz%s\c~"" пропущен из-за пустого спрайта ""%s""."
 ,,ZCHECKER_EVMAPSPAWN_MISSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \cpmissing sprite\c~ ""\cs%s\c~"".","\c~класс ""\cz%s\c~"" пропущен из-за \cpнесуществующего спрайта\c~ ""\cs%s\c~""."
 ,,ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \crcorrupted sprite\c~ ""\cs%s\c~"" (tends to be ""%s"").","\c~класс ""\cz%s\c~"" пропущен из-за \crискажения спрайта\c~ ""\cs%s\c~"" (попытка стать ""%s"")."
@@ -370,13 +370,13 @@ unused),,,,
 ,,ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""PlayerChunk"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""PlayerChunk""."
 ,,ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""BossBrain"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""BossBrain""."
 ,,ZCHECKER_EVMAPSPAWN_REPLACEDSKIP,"\c~class ""\cz%s\c~"" replaced and thus omitted.","\c~класс ""\cz%s\c~"" заменён (replaced) и поэтому пропущен."
-,,ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP,"\c~replaced by ""\c-%s\c~"" class ""\c-%s\c~"" is restricted\c~.","\c~заменённый (replaced) классом ""\c-%s\c~"" класс ""\c-%s\c~"" запрещён\c~."
+,,ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP,"\c~replaced by ""\c-%s\c~"" class ""\c-%s\c~"" is unsafe\c~.","\c~заменённый (replaced) классом ""\c-%s\c~"" класс ""\c-%s\c~"" запрещён\c~."
 ,,ZCHECKER_EVMAPCATEGORY_PREFIX,\cuCategory \cj%s\cu. ,\cuКатегория \cj%s\cu. 
 ,,ZCHECKER_EVMAPCATEGORY_NORMALSPAWN,Spawned %i actor(s) in total,Всего акторов создано: %i
 ,,ZCHECKER_EVMAPCATEGORY_EMPTYSPAWN,No actors spawned,Акторов нет
 ,,ZCHECKER_EVMAPCATEGORY_PARTIALSPAWN,Spawned \ca%i/%i\cu actor(s) in total,Всего акторов создано: \ca%i/%i\cu
 ,,ZCHECKER_EVMAP_RESUMMON,\c~Spawned \c-%s\c~.,\c~Создан актор \c-%s\c~.
-,,ZCHECKER_EVMAP_INFOSTR_REPLACES,%s \cnreplaces\c- %s,%s \cnзаменяет\c- %s
+,,ZCHECKER_EVMAP_INFOSTR_REPLACES,%s \cnreplaces\c- %s,%s \cnreplaces\c- %s
 ,,,,
 ,,,,
 ,,,,
@@ -405,9 +405,9 @@ unused),,,,
 ,,ZCHECKER_PARSENAME_IGNORESELECT,\c!Ignoring numerical selection %i\c-,\c!Пропуск числового указания %i\c-
 ,,,,
 ," ""ZCConsoleCommand::RemoveWorldThinker()""",,,
-,,ZCHECKER_REMOVEPREVENT_LIVEPLAYER,"\crTried to destroy a live player %i\c-, \c!skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crПопытка уничтожения живого игрока %i\c-, \c!пропущено\c-. Вы можете переопределить это с помощью опции ""Разрешить опасные действия""."
+,,ZCHECKER_REMOVEPREVENT_LIVEPLAYER,"\crTried to destroy a live player %i, skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crПопытка уничтожения живого игрока %i, отмена\c-. Переопределить можно с помощью опции ""Разрешить опасные действия""."
 ,,ZCHECKER_REMOVEWARNING_LIVEPLAYER,destroying live player,уничтожение живого игрока
-,,ZCHECKER_REMOVEPREVENT_ZCINTERNAL,"\crInternal ZChecker class ""\c-%s\cr"" in the destroy list, \c!skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crВнутренний класс ZChecker ""\c-%s\cr"" в списке на уничтожение, \c!пропущен\c-. Вы можете переопределить это с помощью опции ""Разрешить опасные действия""."
+,,ZCHECKER_REMOVEPREVENT_ZCINTERNAL,"\crInternal ZChecker class ""\c-%s\cr"" in the destroy list, skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crВнутренний класс ZChecker ""\c-%s\cr"" в списке на уничтожение, отмена\c-. Переопределить можно с помощью опции ""Разрешить опасные действия""."
 ,,ZCHECKER_REMOVEWARNING_ZCINTERNAL,destroying internal ZChecker class,уничтожение внутреннего класса ZChecker
 ,,,,
 ," ""ZCAddCommand::HandleDuplicateActorFields()""",,,
@@ -496,9 +496,9 @@ unused),,,,
 ,,ZCHECKER_ZCSUMMON_EMPTYVALUE,"\c!Empty value for parameter ""%s"".","\c!Пустое значение в параметре ""%s""."
 ,,ZCHECKER_ZCSUMMON_UNKNOWNPARAM,"\c!Unknown parameter ""%s""","\c!Неизвевстный параметр ""%s"""
 ,,ZCHECKER_ZCSUMMON_UNKNOWNFLAG,"\c!Unknown flag ""%s"".","\c!Неизвестный флаг ""%s""."
-,,ZCHECKER_ZCSUMMON_LIMITPREVENT,"Trying to summon more than 200 actors in once. \c~You may disable this limit using the ""Allow dangerous actions"" option.","Попытка создать более 200 акторов за раз. \c~Отключить это можно через опцию ""Разрешить опасные действия""."
-,,ZCHECKER_ZCSUMMON_LIMITWARNING,summoning more than 200 actors,создание более чем 200 акторов
-,,ZCHECKER_ZCSUMMON_SUCCESS,"Summoned %i %s \c~of class ""\cd%s\c~"".","Создан(о) %i %s \c~класса ""\cd%s\c~""."
+,,ZCHECKER_ZCSUMMON_LIMITPREVENT,"Trying to summon more than 256 actors in once. \c~You may disable this limit using the ""Allow dangerous actions"" option.","Попытка создать более 256 акторов за раз. \c~Отключить это можно через опцию ""Разрешить опасные действия""."
+,,ZCHECKER_ZCSUMMON_LIMITWARNING,summoning more than 256 actors,создание более чем 256 акторов
+,,ZCHECKER_ZCSUMMON_SUCCESS,"Summoned %i %s \c~of class ""\cd%s\c~"".","Создано: %i %s \c~класса ""\cd%s\c~""."
 ,,ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR,actor,актор
 ,,ZCHECKER_ZCSUMMON_SUCCESS_ACTORS,actors,актор(ов)
 ,,ZCHECKER_ZCSUMMON_ADDINSUFFPLACE,"Cannot add actor to list, insufficient space. Try adding the target to the list directly via parameter ""panel:1""..""panel:%i"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через значение параметра ""panel:1""..""panel:%i""."
@@ -914,7 +914,7 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ""`Czcevg z*man`C"" teleports player next to the spawned `2Z`~ombie`2man`x actor;
 ""`Czcevg *armor`C"" prints a list of all actors with this postfix;
 ""`Czcevg *armor:4`C"" teleports player next to the `2BlueArmor`2;
-""`Czcevg $last`C"" teleports player next to the last actor class added to infopanels (if it exists on the map);
+""`Czcevg $last`C"" teleports player next to the last actor class added to infopanels;
 ""`Czcevg #monsters`C"" or ""`Czcevg #m`C"" warps player to the header of the category ""Monsters"";
 ""`Czcevg mons`C"" does the same if the actor class ""`2mons`2"" not defined, else teleports to it;
 ""`Czcevg #ammo`C"" warps player to the header of the category ""Ammo"". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).","""`Czcev goto doomimp`C"", ""`Czcev g doomimp`C"" и ""`Czcevg doomimp`C"" переместит игрока к указанному актору (здесь, очевидно, к `2DoomImp`2).
@@ -922,7 +922,7 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ""`Czcevg z*man`C"" телепортирует игрока к актору `2Z`~ombie`2man`x;
 ""`Czcevg *armor`C"" выведет список всех предметов с окончанием ""armor"";
 ""`Czcevg *armor:4`C"" перенесёт игрока к `2BlueArmor`2;
-""`Czcevg $last`C"" телепортирует игрока к последнему актору, добавленному в инфопанели (если он существует на карте);
+""`Czcevg $last`C"" телепортирует игрока к последнему актору, добавленному в инфопанель;
 ""`Czcevg #monsters`C"" или ""`Czcevg #m`C"" перенесёт игрока к категории ""Monsters"";
 ""`Czcevg mons`C"" сделает то же, что и команда выше, если актора ""`2mons`2"" не существует. Иначе — телепортирует к нему;
 ""`Czcevg #ammo`C"" перенесёт игрока к категории ""Ammo"". Без ""решётки"" — к актору под названием ""Ammo"" (если он существует на карте)."

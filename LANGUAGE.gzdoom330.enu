@@ -238,7 +238,7 @@ ZCHECKER_PANELSUBMENU_GSEC_TERRAIN    = "Floor terrain data";
 ZCHECKER_PANELSUBMENU_GSECNOTE_WIP    = "(Not released yet):";
 ZCHECKER_PANELSUBMENU_GSEC_OTHER      = "Other: water level, special, ...";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF   = "Disabled";
-ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z coordinates";
+ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z coordinate";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA = "Z coord + actor delta";
 
 ZCHECKER_PANELGEOMLNOPT_TYPE_LOS      = "On line of sight"; // Not used in the current version. >>>
@@ -256,7 +256,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Output rare sounds";
 //  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: HUD and visual settings";
-ZCHECKER_VISUAL_POSITIONING           = "Panels positioning";
+ZCHECKER_VISUALDIV_POSITIONING        = "Panels positioning";
 ZCHECKER_VISUAL_START_X               = "Panels start X, %";
 ZCHECKER_VISUAL_START_X_10            = "Panels start X, x10%";
 ZCHECKER_VISUAL_START_Y               = "Panels start Y, %";
@@ -264,18 +264,18 @@ ZCHECKER_VISUAL_START_Y_10            = "Panels start Y, x10%";
 ZCHECKER_VISUAL_OFFSET_X              = "Next panels X offset, %";
 ZCHECKER_VISUAL_PANELS_SCALE          = "Panels scale";
 ZCHECKER_VISUAL_PANELS_Y_GAP          = "Panels interval Y, multiplier";
-ZCHECKER_VISUAL_BACKGROUND            = "Panels background";
+ZCHECKER_VISUALDIV_BACKGROUND         = "Panels background";
 ZCHECKER_VISUAL_ENABLED               = "Enabled";
 ZCHECKER_VISUAL_DIMCOLOR              = "Background color";
 ZCHECKER_VISUAL_DIMALPHA              = "Background alpha";
 ZCHECKER_VISUAL_DIMBORDERWIDTH        = "Border width";
-ZCHECKER_VISUAL_EVERYTHINGMAP_INFO    = "\"Everything\" map actor info";
+ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO = "\"Everything\" map actor info";
 ZCHECKER_VISUAL_INFOSTR_X             = "Actor info string X, %";
 ZCHECKER_VISUAL_INFOSTR_X10           = "Actor info string X, x10%";
 ZCHECKER_VISUAL_INFOSTR_Y             = "Actor info string Y, %";
 ZCHECKER_VISUAL_INFOSTR_Y10           = "Actor info string Y, x10%";
 ZCHECKER_VISUAL_INFOSTR_SCALE         = "Actor info string scale";
-ZCHECKER_VISUAL_OTHER                 = "Other";
+ZCHECKER_VISUALDIV_OTHER              = "Other";
 ZCHECKER_VISUAL_FONTTYPES             = "General font";
 
 //  === Control menu for the "Everything" map ==
@@ -284,8 +284,8 @@ ZCHECKER_EVMAPMENU_TITLE              = "ZChecker: \"Everything\" map settings";
 ZCHECKER_EVMAPMENU_SPAWNOPTIONS       = "Spawning options";
 ZCHECKER_EVMAPMENUDIV_GENERAL         = "- General -";
 ZCHECKER_EVMAPMENU_SPAWNREPLACED      = "Replaced actors";
-ZCHECKER_EVMAPMENU_SPAWNBUILTIN       = "Actors embedded in the engine";
-ZCHECKER_EVMAPMENU_RESTRICT           = "Replacements of restricted actors";
+ZCHECKER_EVMAPMENU_SPAWNBUILTIN       = "Actors built-in to the engine";
+ZCHECKER_EVMAPMENU_RESTRICT           = "Unsafe built-in actors replacement";
 ZCHECKER_EVMAPMENUDIV_SPRITES         = "- By empty sprites -";
 ZCHECKER_EVMAPMENU_MISSING            = "Actors with missing sprites";
 ZCHECKER_EVMAPMENU_TNT1A0             = "Actors with the \'TNT1A0\' sprite";
@@ -365,7 +365,7 @@ ZCHECKER_EVMAP_RELOADSECTORS          = "Reloading general properties for all se
 ZCHECKER_EVMAP_AUTOIDDQD              = "Auto-godmode enabled.";
 ZCHECKER_EVMAP_AUTONOTARGET           = "Auto-notarget enabled.";
 ZCHECKER_EVMAPSPAWN_SUCCESS           = "\cqsummoned class \"\cd%s\cq\"\c~ (sprite \"%s\").";
-ZCHECKER_EVMAPSPAWN_SKIPBUILTIN       = "\chAll embedded (built-in) classes has been skipped.";
+ZCHECKER_EVMAPSPAWN_SKIPBUILTIN       = "\chAll built-in classes has been skipped.";
 ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP   = "\c~class \"\cz%s\c~\" omitted because of empty sprite \"%s\".";
 ZCHECKER_EVMAPSPAWN_MISSPRITESKIP     = "\c~class \"\cz%s\c~\" omitted because of \cpmissing sprite\c~ \"\cs%s\c~\".";
 ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP  = "\c~class \"\cz%s\c~\" omitted because of \crcorrupted sprite\c~ \"\cs%s\c~\" (tends to be \"%s\").";
@@ -374,7 +374,7 @@ ZCHECKER_EVMAPSPAWN_INVISSKIP         = "\c~class \"\cz%s\c~\" omitted because o
 ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP       = "\c~class \"\cz%s\c~\" omitted due to inheritance from the \"PlayerChunk\".";
 ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP     = "\c~class \"\cz%s\c~\" omitted due to inheritance from the \"BossBrain\".";
 ZCHECKER_EVMAPSPAWN_REPLACEDSKIP      = "\c~class \"\cz%s\c~\" replaced and thus omitted.";
-ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "\c~replaced by \"\c-%s\c~\" class \"\c-%s\c~\" is restricted\c~.";
+ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "\c~replaced by \"\c-%s\c~\" class \"\c-%s\c~\" is unsafe\c~.";
 ZCHECKER_EVMAPCATEGORY_PREFIX         = "\cuCategory \cj%s\cu. ";
 ZCHECKER_EVMAPCATEGORY_NORMALSPAWN    = "Spawned %i actor(s) in total";
 ZCHECKER_EVMAPCATEGORY_EMPTYSPAWN     = "No actors spawned";
@@ -409,9 +409,9 @@ ZCHECKER_PARSENAME_SELECTBOUNDS       = "\c!Selected index \cn%i \c!is out of ra
 ZCHECKER_PARSENAME_IGNORESELECT       = "\c!Ignoring numerical selection %i\c-";
 
 //  "ZCConsoleCommand::RemoveWorldThinker()"
-ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crTried to destroy a live player %i\c-, \c!skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
+ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crTried to destroy a live player %i, skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
 ZCHECKER_REMOVEWARNING_LIVEPLAYER     = "destroying live player";
-ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crInternal ZChecker class \"\c-%s\cr\" in the destroy list, \c!skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
+ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crInternal ZChecker class \"\c-%s\cr\" in the destroy list, skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
 ZCHECKER_REMOVEWARNING_ZCINTERNAL     = "destroying internal ZChecker class";
 
 //  "ZCAddCommand::HandleDuplicateActorFields()"
@@ -495,8 +495,8 @@ ZCHECKER_ZCSUMMON_WRONGDIGIT          = "\c!Value \"%s\" \c-for parameter \"%s\"
 ZCHECKER_ZCSUMMON_EMPTYVALUE          = "\c!Empty value for parameter \"%s\".";
 ZCHECKER_ZCSUMMON_UNKNOWNPARAM        = "\c!Unknown parameter \"%s\"";
 ZCHECKER_ZCSUMMON_UNKNOWNFLAG         = "\c!Unknown flag \"%s\".";
-ZCHECKER_ZCSUMMON_LIMITPREVENT        = "Trying to summon more than 200 actors in once. \c~You may disable this limit using the \"Allow dangerous actions\" option.";
-ZCHECKER_ZCSUMMON_LIMITWARNING        = "summoning more than 200 actors";
+ZCHECKER_ZCSUMMON_LIMITPREVENT        = "Trying to summon more than 256 actors in once. \c~You may disable this limit using the \"Allow dangerous actions\" option.";
+ZCHECKER_ZCSUMMON_LIMITWARNING        = "summoning more than 256 actors";
 ZCHECKER_ZCSUMMON_SUCCESS             = "Summoned %i %s \c~of class \"\cd%s\c~\".";
 ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR      = "actor";
 ZCHECKER_ZCSUMMON_SUCCESS_ACTORS      = "actors";
@@ -798,7 +798,7 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 \"`Czcevg z*man`C\" teleports player next to the spawned `2Z`~ombie`2man`x actor;\
 \"`Czcevg *armor`C\" prints a list of all actors with this postfix;\
 \"`Czcevg *armor:4`C\" teleports player next to the `2BlueArmor`2;\
-\"`Czcevg $last`C\" teleports player next to the last actor class added to infopanels (if it exists on the map);\
+\"`Czcevg $last`C\" teleports player next to the last actor class added to infopanels;\
 \"`Czcevg #monsters`C\" or \"`Czcevg #m`C\" warps player to the header of the category \"Monsters\";\
 \"`Czcevg mons`C\" does the same if the actor class \"`2mons`2\" not defined, else teleports to it;\
 \"`Czcevg #ammo`C\" warps player to the header of the category \"Ammo\". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).";

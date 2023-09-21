@@ -49,8 +49,10 @@ const ZCheckerVersionNumber = "0.86";
 
 const ZCheckerVersion = ZCheckerVersionNumber .. ", branch \"" .. ZCheckerVersionBranch .. "\"";
 
-const MaxTestee = 3; // [McM] A legacy constant from 2018. Will rename someday...
-
+const MaxTestee = 3; // [McM] A legacy constant from 2018, will rename someday.
+					 //Right now the whole project is ready to accept changing
+					 //constant to variable (it remains only to replace the
+					 //identifier name and call method everywhere).
 
 
 // === Internal core of the project.
