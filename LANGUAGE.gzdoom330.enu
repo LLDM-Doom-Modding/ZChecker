@@ -534,9 +534,10 @@ ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Unknown integer property \"%s\"";
 ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Unknown float-point property \"%s\"";
 ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Unknown placeholder \"\c-%s\c!\" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)";
 ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Unknown placeholder \"\c-%s\c!\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)";
+ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE = "\c!Unknown placeholder \"\c-%s\c!\" for the render style property. \c~Must be \c-<int>\c~ or one of the \c-style names\c~ (e.g., \"normal\").";
 ZCHECKER_ZCSETP_EMPTYPROP             = "\c~Skipped empty property \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP           = "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
-ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Value of the non-numeric property \c-%s\c~ has been written directly (without altering).";
+ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Value of property \c-%s\c~ has been copied without altering.";
 ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully changed.";
 
 

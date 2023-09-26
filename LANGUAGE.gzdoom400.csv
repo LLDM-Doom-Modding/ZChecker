@@ -540,9 +540,10 @@ unused),,,,
 ,,ZCHECKER_ZCSETP_WRONGFLOATPROP,"\c!Unknown float-point property ""%s""","\c!Неизвестное дробное свойство ""%s"""
 ,,ZCHECKER_ZCSETP_WRONGKEYWORDZ,"\c!Unknown placeholder ""\c-%s\c!"" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)","\c!Неизвестная подстановка ""\c-%s\c!"" для свойства Z-координаты. \c~Должна быть \c-<дробным числом>\c~, \c-f[loor] \c~ (уровень пола), \c-c[eil]\c~ (уровень потолка минус высота актора) or \c-rawc[eil]|hc\c~ (уровень потолка)"
 ,,ZCHECKER_ZCSETP_WRONGKEYWORDHP,"\c!Unknown placeholder ""\c-%s\c!"" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)","\c!Неизвестная подстановка ""\c-%s\c!"" для свойства health. \c~Должна быть \c-<целым>\c~, \c-max\c~ (~2.1 миллиарда) or \c-s[pawn]\c~ (исходное число здоровья)"
+,,ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE,"\c!Unknown placeholder ""\c-%s\c!"" for the render style property. \c~Must be \c-<int>\c~ or one of the \c-style names\c~ (e.g., ""normal"").","\c!Неизвестная подстановка ""\c-%s\c!"" для свойства render style. \c~Должна быть \c-<целым>\c~ или одним из \c-названий стилей\c~ (к примеру, ""normal"")."
 ,,ZCHECKER_ZCSETP_EMPTYPROP,"\c~Skipped empty property ""\c-%s\c~"".","\c~Пропущено пустое свойство ""\c-%s\c~""."
 ,,ZCHECKER_ZCSETP_UNKNOWNPROP,"\c!Unknown property \c~""\c-%s\c~:\c-%s\c~"".","\c!Неизвестное свойство \c~""\c-%s\c~:\c-%s\c~""."
-,,ZCHECKER_ZCSETP_NONRELATIVEPROP,\c~Value of the non-numeric property \c-%s\c~ has been written directly (without altering).,"\c~Значение свойства \c-%s\c~, не являющегося числовым, записано напрямую (без изменений)."
+,,ZCHECKER_ZCSETP_NONRELATIVEPROP,\c~Value of property \c-%s\c~ has been copied without altering.,"\c~Значение свойства \c-%s\c~ скопировано напрямую, без изменений."
 ,,ZCHECKER_ZCSETP_SUCCESS,"Properties for actor ""%s"" succesfully changed.","Свойства для актора ""%s"" успешно изменены."
 ,,,,
 ,,,,

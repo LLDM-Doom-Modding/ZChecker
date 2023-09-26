@@ -63,8 +63,8 @@ for localizationType in range( len( const_LocalizationFileTypes ) ):
 	loczPostfix = const_OutputFilesPostfix[ localizationType ]
 
 	loczFiles = [
-		open( loczPrefix + const_OutputFilesLanguages[ 0 ] + loczPostfix, 'w', newline='' ),
-		open( loczPrefix + const_OutputFilesLanguages[ 1 ] + loczPostfix, 'w', encoding='cp1251', errors='replace', newline='' )
+		open( loczPrefix + const_OutputFilesLanguages[ 0 ] + loczPostfix, 'w' ),
+		open( loczPrefix + const_OutputFilesLanguages[ 1 ] + loczPostfix, 'w', encoding='cp1251', errors='replace' )
 	]
 
 	# Write headers:
