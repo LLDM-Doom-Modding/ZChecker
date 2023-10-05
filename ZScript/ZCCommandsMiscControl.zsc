@@ -686,16 +686,8 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 				Actor mo = handler.Testee[ zcPos ].mo;
 
 				if ( mo ) {
-					ZCGlobal.Log( LL_Debug, "ccmd.handler.Testee[ " .. zcPos .. " ]: " .. handler.Testee[ zcPos ] .. "." );
-
-					ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANELINFO_HEADER" ), zcPos + 1, mo.GetClassName(), "" .. mo ) );
-
-					class parentClass = mo.GetParentClass();
-
-					while ( parentClass != NULL ) {
-						ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANELINFO_INHERITANCE" ), parentClass.GetClassName(), "" .. parentClass ) );
-						parentClass = parentClass.GetParentClass();
-					}
+					LogLocalize2Str( LL_Main | LL_NoDot, "ZCPANELINFO_ZCCLASSINFO", mo.GetClassName() );
+					EventHandler.SendNetworkEvent( "zc_classinfo@@" .. mo.GetClassName() );
 
 				} else {
 					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANEL_NOACTORINPOS" ), zcPos + 1 ) );
@@ -726,6 +718,74 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	} // of override void DoCommand( void ) {}
 
 } // of class ZCInfoPanelControlCommand: ZCConsoleCommand {}
+
+class ZCClassInfoCommand: ZCConsoleCommand {
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_classinfo",
+			"$ZCCLASSINFO_HELP_TITLE",
+			"$ZCCLASSINFO_HELP_DESC"
+		);
+	}
+
+	class infoclass;
+
+
+	override bool HandleArguments() {
+		if ( ccmd.args.Size() != 1 )
+			return false;
+
+		infoclass = ParseSpecialActorName( ccmd.args[ 0 ] );
+
+		return true;
+	}
+
+	override void DoCommand() {
+		if ( !infoclass ) {
+			LogLocalize2Str( LL_Main, "ZCCLASSINFO_NOCLASS", ccmd.args[ 0 ] );
+			return; // Wrong class provided.
+		}
+
+
+		ZCGlobal.ClearscopeLog( LL_Main | LL_NoPrefix, String.Format( ZCGlobal.Locz( "ZCCLASSINFO_HEADER" ), infoclass.GetClassName(), "" .. infoclass ) );
+
+		class parentClass = infoclass.GetParentClass();
+
+		while ( parentClass != NULL ) {
+			ZCGlobal.ClearscopeLog( LL_Main | LL_NoPrefix | LL_NoDot, String.Format( ZCGlobal.Locz( "ZCCLASSINFO_INHERITANCE" ), parentClass.GetClassName(), "" .. parentClass ) );
+			parentClass = parentClass.GetParentClass();
+		}
+
+		// Replacement chain:
+		if ( infoclass is 'Actor' ) {
+			class<Actor> actorclass = (class<Actor>)( infoclass );
+			class<Actor> replacee = Actor.GetReplacee( actorclass );
+			class<Actor> replacement = Actor.GetReplacement( actorclass );
+
+			String outstr = "";
+
+			if ( replacee == replacement ) {
+				outstr = ZCGlobal.Locz( "ZCCLASSINFO_NOREPLACEMENTCHAIN" );
+
+			} else {
+				String nicearrow = ZCGlobal.Locz( "ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR" );
+				outstr = ZCGlobal.Locz( "ZCCLASSINFO_REPLACEMENTCHAIN" ) .. "\n";
+
+				if ( replacee != actorclass )
+					outstr = outstr .. TEXTCOLOR_DARKGRAY .. replacee.GetClassName() .. nicearrow;
+
+				outstr.AppendFormat( TEXTCOLOR_WHITE .. infoclass.GetClassName() );
+
+				if ( replacement != actorclass )
+					outstr = outstr .. TEXTCOLOR_DARKGRAY .. nicearrow .. replacee.GetClassName();
+			}
+
+			ZCGlobal.ClearscopeLog( LL_Main | LL_NoPrefix, outstr );
+		} // of if ( infoclass is 'Actor' ) {}
+
+	} // of override void DoCommand() {}
+
+} // of class ZCClassInfoCommand: ZCConsoleCommand {}
 
 
 

@@ -604,9 +604,7 @@ ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " in sector %i";
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info)";
 ZCHECKER_ZCPANELCTL_HELP_DESC         = "Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.";
 ZCHECKER_ZCPANEL_NOACTORINPOS         = "There's no actor in position %i.";
-ZCHECKER_ZCPANELINFO_HEADER           = "\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>";
-ZCHECKER_ZCPANELINFO_INHERITANCE      = "  \c~Inherited from \c-%s\c~ (class pointer: <%s>)";
-ZCHECKER_ZCPANELINFO_REPLACEMENTCHAIN = "Replacements chain: ";
+ZCHECKER_ZCPANELINFO_ZCCLASSINFO      = "\c~\"zcclassinfo %s\"";
 ZCHECKER_ZCPANELSAVE_ALIASEXISTS      = "Alias \"%s\" already exists and is linked to the actor %s.";
 ZCHECKER_ZCPANELSAVE_RELINKINGALIAS   = "Relinking the \"%s\" alias (its previous actor was destroyed).";
 ZCHECKER_ZCPANELSAVE_NOPANEL          = "No actor linked to the panel %s.";
@@ -618,6 +616,16 @@ ZCHECKER_ZCPANELINFO_NOALIASES        = "\c~No actor aliases have been created."
 ZCHECKER_ZCPANELINFO_LISTHEADER       = "\cyActors aliases \c-(total %i): ";
 ZCHECKER_ZCPANELINFO_ALIASLINKED      = "  \"c~\"\c-%s\c~\" linked to the \c-%s\c~ with world position %s.";
 ZCHECKER_ZCPANELINFO_ALIASGONE        = "  \"c~\"\c-%s\c~\" is unlinked";
+
+// "zcclassinfo":
+ZCHECKER_ZCCLASSINFO_HELP_TITLE       = "zcclassinfo <classname>";
+ZCHECKER_ZCCLASSINFO_HELP_DESC        = "Print information about inheritance and replacement chain for Actors for the specified class.";
+ZCHECKER_ZCCLASSINFO_NOCLASS          = "Class \"%s\" does not exist or not accessible via ZScript.";
+ZCHECKER_ZCCLASSINFO_HEADER           = "\c~Class \"\c-%s\c~\" (pointer <%s>):";
+ZCHECKER_ZCCLASSINFO_INHERITANCE      = "  \c~Inherited from \c-%s";
+ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAIN = "\c~Final replacements chain:";
+ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN = "\c~Actor isn't in the replacements chain.";
+ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR = " \cv->\c~ ";
 
 //  "zcvarsctl":
 ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo]";

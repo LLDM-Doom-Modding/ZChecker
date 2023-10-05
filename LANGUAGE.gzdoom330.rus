@@ -579,9 +579,7 @@ ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " в секторе %i";
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)";
 ZCHECKER_ZCPANELCTL_HELP_DESC         = "Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменен для расширения ее функциональности.";
 ZCHECKER_ZCPANEL_NOACTORINPOS         = "Актора в позиции %i нет.";
-ZCHECKER_ZCPANELINFO_HEADER           = "\c~Актор в позиции \c-%i \c~- \c-%s\c~ <%s>";
-ZCHECKER_ZCPANELINFO_INHERITANCE      = "  \c~Наследован от \c-%s\c~ (указатель на класс: <%s>)";
-ZCHECKER_ZCPANELINFO_REPLACEMENTCHAIN = "Цепь замен (replacements): ";
+ZCHECKER_ZCPANELINFO_ZCCLASSINFO      = "\c~\"zcclassinfo %s\"";
 ZCHECKER_ZCPANELSAVE_ALIASEXISTS      = "Псевдоним \"%s\" уже существует и связан с актором %s.";
 ZCHECKER_ZCPANELSAVE_RELINKINGALIAS   = "Перепривязка псевдонима \"%s\" (его предыдущий актор уничтожен).";
 ZCHECKER_ZCPANELSAVE_NOPANEL          = "Никакого актора к панели %s не привязано.";
@@ -593,6 +591,16 @@ ZCHECKER_ZCPANELINFO_NOALIASES        = "\c~Псевдонимов акторо�
 ZCHECKER_ZCPANELINFO_LISTHEADER       = "\cyПсевдонимы акторов \c-(всего %i): ";
 ZCHECKER_ZCPANELINFO_ALIASLINKED      = "  \"c~\"\c-%s\c~\" связан с \c-%s\c~, находящемуся на позиции %s.";
 ZCHECKER_ZCPANELINFO_ALIASGONE        = "  \"c~\"\c-%s\c~\" не связан";
+
+// "zcclassinfo":
+ZCHECKER_ZCCLASSINFO_HELP_TITLE       = "zcclassinfo <класс>";
+ZCHECKER_ZCCLASSINFO_HELP_DESC        = "Выводит информацию о наследовании для заданного класса, а также, если указан Actor, о цепи замен (replace).";
+ZCHECKER_ZCCLASSINFO_NOCLASS          = "Класс \"%s\" не существует или недоступен из-под ZScript.";
+ZCHECKER_ZCCLASSINFO_HEADER           = "\c~Класс \"\c-%s\c~\" (указатель <%s>):";
+ZCHECKER_ZCCLASSINFO_INHERITANCE      = "  \c~Наследован от \c-%s";
+ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAIN = "\c~Финальная цепь замен (replacements):";
+ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN = "\c~Actor не находится в цепи замен (replacements).";
+ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR = " \cv->\c~ ";
 
 //  "zcvarsctl":
 ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvarsctl set|new <$название> <строка или подстановка>;zcvarsctl del[ete]|rm|rem[ove] <$название>|all;zcvarsctl l[ist]|i[nfo]";

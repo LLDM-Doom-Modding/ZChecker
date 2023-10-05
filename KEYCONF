@@ -39,6 +39,7 @@ alias zccopysummon "zcsummon $savedclass %1 %2 %3"
 
 // ZChecker information, internal and global control:
 alias zcpanel "netevent zc_infopanelcontrol@@%1@@%2@@%3@@%4"
+alias zcclassinfo "netevent zc_classinfo@@%1@@%2"
 
 alias zcvarsctl "netevent zc_variablescontrol@@%1@@%2@@%3@@%4"
 

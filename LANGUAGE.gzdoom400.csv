@@ -610,9 +610,7 @@ unused),,,,
 ,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info),zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)
 ,,ZCHECKER_ZCPANELCTL_HELP_DESC,"Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменен для расширения её функциональности."
 ,,ZCHECKER_ZCPANEL_NOACTORINPOS,There's no actor in position %i.,Актора в позиции %i нет.
-,,ZCHECKER_ZCPANELINFO_HEADER,\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>,\c~Актор в позиции \c-%i \c~— \c-%s\c~ <%s>
-,,ZCHECKER_ZCPANELINFO_INHERITANCE,  \c~Inherited from \c-%s\c~ (class pointer: <%s>),  \c~Наследован от \c-%s\c~ (указатель на класс: <%s>)
-,,ZCHECKER_ZCPANELINFO_REPLACEMENTCHAIN,Replacements chain: ,Цепь замен (replacements): 
+,,ZCHECKER_ZCPANELINFO_ZCCLASSINFO,"\c~""zcclassinfo %s""","\c~""zcclassinfo %s"""
 ,,ZCHECKER_ZCPANELSAVE_ALIASEXISTS,"Alias ""%s"" already exists and is linked to the actor %s.","Псевдоним ""%s"" уже существует и связан с актором %s."
 ,,ZCHECKER_ZCPANELSAVE_RELINKINGALIAS,"Relinking the ""%s"" alias (its previous actor was destroyed).","Перепривязка псевдонима ""%s"" (его предыдущий актор уничтожен)."
 ,,ZCHECKER_ZCPANELSAVE_NOPANEL,No actor linked to the panel %s.,Никакого актора к панели %s не привязано.
@@ -624,6 +622,16 @@ unused),,,,
 ,,ZCHECKER_ZCPANELINFO_LISTHEADER,\cyActors aliases \c-(total %i): ,\cyПсевдонимы акторов \c-(всего %i): 
 ,,ZCHECKER_ZCPANELINFO_ALIASLINKED,"  ""c~""\c-%s\c~"" linked to the \c-%s\c~ with world position %s.","  ""c~""\c-%s\c~"" связан с \c-%s\c~, находящемуся на позиции %s."
 ,,ZCHECKER_ZCPANELINFO_ALIASGONE,"  ""c~""\c-%s\c~"" is unlinked","  ""c~""\c-%s\c~"" не связан"
+,,,,
+,"""zcclassinfo"":",,,
+,,ZCHECKER_ZCCLASSINFO_HELP_TITLE,zcclassinfo <classname>,zcclassinfo <класс>
+,,ZCHECKER_ZCCLASSINFO_HELP_DESC,Print information about inheritance and replacement chain for Actors for the specified class.,"Выводит информацию о наследовании для заданного класса, а также, если указан Actor, о цепи замен (replace)."
+,,ZCHECKER_ZCCLASSINFO_NOCLASS,"Class ""%s"" does not exist or not accessible via ZScript.","Класс ""%s"" не существует или недоступен из-под ZScript."
+,,ZCHECKER_ZCCLASSINFO_HEADER,"\c~Class ""\c-%s\c~"" (pointer <%s>):","\c~Класс ""\c-%s\c~"" (указатель <%s>):"
+,,ZCHECKER_ZCCLASSINFO_INHERITANCE,  \c~Inherited from \c-%s,  \c~Наследован от \c-%s
+,,ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAIN,\c~Final replacements chain:,\c~Финальная цепь замен (replacements):
+,,ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN,\c~Actor isn't in the replacements chain.,\c~Actor не находится в цепи замен (replacements).
+,,ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR, \cv->\c~ , \cv->\c~ 
 ,,,,
 ," ""zcvarsctl"":",,,
 ,,ZCHECKER_ZCVARSCTL_HELP_TITLE,zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo],zcvarsctl set|new <$название> <строка или подстановка>;zcvarsctl del[ete]|rm|rem[ove] <$название>|all;zcvarsctl l[ist]|i[nfo]

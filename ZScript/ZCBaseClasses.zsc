@@ -332,7 +332,6 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	virtual void DoCommand( void ) { }
 
 
-
 	// Useful for the messages like "Actor %s cannot be altered".
 	static play void LogLocalize2Str( EZCheckerLogLevels loglevel, String textid, String str2 ) {
 		ZCGlobal.Log( loglevel, String.Format( ZCGlobal.Localize( textid ), str2 ) );
