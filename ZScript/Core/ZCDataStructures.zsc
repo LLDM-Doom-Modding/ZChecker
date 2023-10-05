@@ -32,7 +32,7 @@ class ZCheckerCCMDInfo play {
 
 			ZCGlobal.Log( LL_Debug, String.Format( "CCMD parameter #%i: \"%s\".", i, parameters[ i ] ) );
 
-			if ( curparam == "nousage" ) {
+			if ( curparam == "nousage" || curparam == "quiet" ) {
 				paramNoUsage = true;
 
 			} else if ( ( curparamlen == 10 && curparam.Left( 8 ) == "loglevel" ) || ( curparamlen == 4 && curparam.Left( 2 ) == "ll" ) ) {

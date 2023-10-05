@@ -1,9 +1,10 @@
 //
-// Miscellaneous control CCMDs.
-//	 1) Internal variables;
-//	 2) Thinkers;
-//	 3) Panels;
-//	 4) External interface.
+// Miscellaneous control and informational CCMDs.
+//	 1) Thinkers;
+//	 2) Panels;
+//	 3) Information by classname;
+//	 4) Classname variables;
+//	 5) External interface.
 //
 
 class ZCThinkersControlCommand: ZCConsoleCommand {
@@ -273,7 +274,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		helpListStr = helpListStr .. helpListValuesColor .. node .. CCMDCOLOR_DESC .. "; ";
 	}
 
-	private void CommandAddActorToPanel( void ) {
+	protected void CommandAddActorToPanel( void ) {
 		ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
 		Thinker curThinker;
 
@@ -319,9 +320,9 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		} else {
 			ZCGlobal.Log( LL_Main, "$ZCTHINKERSADD_NOSELECTION" );
 		}
-	} // of private void CommandAddActorToPanel( void ) {}
+	} // of protected void CommandAddActorToPanel( void ) {}
 
-	private void CommandRemoveFromWorld( void ) {
+	protected void CommandRemoveFromWorld( void ) {
 		ThinkerIterator it = ThinkerIterator.Create( "Thinker", zcStatNumType );
 		Thinker curThinker;
 
@@ -373,7 +374,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		} else {
 			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Neither the index nor the classname nor the raw classname not specified." );
 		}
-	} // of private void CommandRemoveFromWorld( void ) {}
+	} // of protected void CommandRemoveFromWorld( void ) {}
 
 
 	override void DoCommand() {
@@ -550,14 +551,15 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 	}
 
 	private int FindAliasIndex( String aliasname ) {
+		if ( aliasname != "" )
+			return -1;
+
 		int outValue = -1;
 
-		if ( aliasname != "" ) {
-			for ( int i = 0; i < aliases.Size(); i++ ) {
-				if ( aliases[ i ].aliasname == aliasname ) {
-					outValue = i;
-					break;
-				}
+		for ( int i = 0; i < aliases.Size(); i++ ) {
+			if ( aliases[ i ].aliasname == aliasname ) {
+				outValue = i;
+				break;
 			}
 		}
 
@@ -613,7 +615,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 		}
 
 		return outValue;
-	}
+	} // of override bool HandleArguments() {}
 
 	override void DoCommand( void ) {
 		if ( zcPos != -1 ) {
