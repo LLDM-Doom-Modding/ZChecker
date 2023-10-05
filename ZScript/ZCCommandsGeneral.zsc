@@ -15,6 +15,8 @@ class ZCHelpCommand: ZCConsoleCommand {
 			"$ZCHELP_HELP_DESC",
 			'ZCTooltipHelpCommand'
 		);
+
+		zcFlags |= CCF_HelpArgOverride;
 	}
 
 	override bool HandleArguments() {
@@ -76,8 +78,9 @@ class ZCHelpCommand: ZCConsoleCommand {
 				String helpTooltipText = infoclass.ccmdInterfaceData.helpTooltip.GetHelpString();
 				console.printf( const_HelpIndent .. helpTooltipText );
 
-				if ( helpTooltipText.Length() > 1000 )
-					console.printf( "\n" .. HEADERCOLOR .. "\\-= =-------------\n" .. const_HelpIndent .. LLCOLOR_MAIN .. helpstr );
+				// Seems to be redundant:
+				//if ( helpTooltipText.Length() > 1000 )
+				//	console.printf( "\n" .. HEADERCOLOR .. "\\-= =-------------\n" .. const_HelpIndent .. LLCOLOR_MAIN .. helpstr );
 
 				console.printf( HEADERCOLOR .. "/--=--=--=--=--=--\n\n" );
 

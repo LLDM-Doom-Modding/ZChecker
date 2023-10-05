@@ -444,8 +444,8 @@ ZCHECKER_ZCADD_SUCCESSFORCED          = "Added actor %s";
 ZCHECKER_ZCADD_SUCCESSCAMERA          = "Added a player camera %s";
 ZCHECKER_ZCADD_USINGPREVLINK          = "\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.";
 
-//  "zcrem"/"zcclear":
-ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<panel>];zcclear [<panel>]";
+//  "zcrem":
+ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<panel>]";
 ZCHECKER_ZCREM_HELP_DESC              = "Remove testee from informational panel <panel>; removes the whole list if no argument provided.";
 ZCHECKER_ZCREM_SUCCESS                = "Removed actor \"%s\" <%s> from position %i.";
 ZCHECKER_ZCREM_SUCCESSTOTAL           = "All actors cleared from the infopanels.";
@@ -523,22 +523,22 @@ ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<pos>] [add|rel[ative][:<pos
 ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;\
-  VISUAL  : scale[x|y] <float>, alpha <float>;\
+  VISUAL  : scale[x|y] <float>, alpha <float>, renderstyle <style>;\
   POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;\
   SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique.";
 ZCHECKER_ZCSETP_RELPLAYER             = "\c~Base actor for relative properties \c-is set to calling player\c~.";
 ZCHECKER_ZCSETP_UNKNOWNMODE           = "\c!Unknown mode \c~\"\c-%s\c~\". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.";
 ZCHECKER_ZCSETP_NODELIMCHARS          = "\c!No delimiter character \c-(\":\" or \"=\") \c!provided \c-for property \"%s\".";
-ZCHECKER_ZCSETP_WRONGARG              = "\c!Wrong argument number in parameter \"%s\"";
-ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Unknown integer property \"%s\"";
-ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Unknown float-point property \"%s\"";
-ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Unknown placeholder \"\c-%s\c!\" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)";
-ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Unknown placeholder \"\c-%s\c!\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)";
-ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE = "\c!Unknown placeholder \"\c-%s\c!\" for the render style property. \c~Must be \c-<int>\c~ or one of the \c-style names\c~ (e.g., \"normal\").";
+ZCHECKER_ZCSETP_WRONGARG              = "\c!Wrong argument number \c-in parameter \"%s\"";
+ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Unknown \c-integer property \"%s\"";
+ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Unknown \c-float-point property \"%s\"";
+ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Unknown placeholder \c-\"%s\" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)";
+ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Unknown placeholder \c-\"%s\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)";
+ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE = "\c!Unknown placeholder \c-\"%s\" for the render style property. \c~Must be \c-<int>\c~ or one of the \c-style names\c~ (e.g., \"normal\").";
 ZCHECKER_ZCSETP_EMPTYPROP             = "\c~Skipped empty property \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP           = "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
 ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Value of property \c-%s\c~ has been copied without altering.";
-ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully changed.";
+ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully changed."; // Currently not used.
 
 
 // File "ZCCommandsMap.zsc":

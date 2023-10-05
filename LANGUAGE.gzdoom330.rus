@@ -412,7 +412,7 @@ ZCHECKER_ZCHELP_HEADERALLCCMDS        = "\cjПолный список досту
 //  "zcadd":
 ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<панель>];zcaddself [<панель>];zcaddweap [<панель>];zcaddforce [<панель>];zcaddlistget [<индекс>] [<панель>]";
 ZCHECKER_ZCADD_HELP_DESC              = "Добавление цели под курсором (без суффикса)/этого игрока (\"self\")/текущего оружия (\"weap\")/бесплотной цели (\"force\")/произвольного актора (\"listget\") в информационную панель. <панель> - номер самой панели; по умолчанию используется первый свободный слот.";
-ZCHECKER_ZCADD_ADDINSUFFPLACE         = "Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определенную панель через \"zcadd 1\"..\"zcadd %i\".";
+ZCHECKER_ZCADD_ADDINSUFFPLACE         = "Нельзя добавить цель, недостаточно места в списке. Можно использовать присвоение в определенную панель через \"zcadd 1\"..\"zcadd %i\".";
 ZCHECKER_ZCADD_NOWEAPON               = "Текущего оружия нет.";
 ZCHECKER_ZCADD_FORCENOTFOUND          = "Не удается найти подходящего актора.";
 ZCHECKER_ZCADD_CAMERAISPLAYER         = "\c~Камера игрока прикреплена к самому игроку, добавление последнего.";
@@ -423,8 +423,8 @@ ZCHECKER_ZCADD_SUCCESSFORCED          = "Добавлен актор %s";
 ZCHECKER_ZCADD_SUCCESSCAMERA          = "Добавлена камера игрока %s";
 ZCHECKER_ZCADD_USINGPREVLINK          = "\c~Используется уже существующая ссылка (панель \cj%i\c~) для актора \cu%s\c~.";
 
-//  "zcrem"/"zcclear":
-ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<панель>];zcclear [<панель>]";
+//  "zcrem":
+ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<панель>]";
 ZCHECKER_ZCREM_HELP_DESC              = "Убирает актора из информационной панели под номером <panel>; очищает весь список, если аргумента нет.";
 ZCHECKER_ZCREM_SUCCESS                = "Удален актор \"%s\" <%s> с позиции %i.";
 ZCHECKER_ZCREM_SUCCESSTOTAL           = "Все акторы удалены из инфопанелей.";
@@ -479,7 +479,7 @@ ZCHECKER_ZCSUMMON_LIMITWARNING        = "создание более чем 256 
 ZCHECKER_ZCSUMMON_SUCCESS             = "Создано: %i %s \c~класса \"\cd%s\c~\".";
 ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR      = "актор";
 ZCHECKER_ZCSUMMON_SUCCESS_ACTORS      = "актор(ов)";
-ZCHECKER_ZCSUMMON_ADDINSUFFPLACE      = "Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определенную панель через значение параметра \"panel:1\"..\"panel:%i\".";
+ZCHECKER_ZCSUMMON_ADDINSUFFPLACE      = "Нельзя добавить цель, недостаточно места в списке. Можно использовать присвоение в определенную панель через значение параметра \"panel:1\"..\"panel:%i\".";
 ZCHECKER_ZCSUMMON_ADDONLYLAST         = "\c~Только последний созданный актор будет добавлен в панель.";
 ZCHECKER_ZCSUMMON_CANNOTSUMMON        = "\caНе удается создать актор \cu\"\c-%s\cu\". Возможно, он помечен как \"abstract\" или же мгновенно уничтожается в переопределении BeginPlay().";
 ZCHECKER_ZCSUMMON_NOTACTOR            = "\"%s\" - не класс Actor.";
@@ -502,22 +502,22 @@ ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<кто>] [add|rel[ative][:<
 ZCHECKER_ZCSETP_HELP_DESC             = "Устанавливает <свойство> (property) в <значение> для актора <кто> (по умолчанию цели под курсором). С параметром \"raw\" или вовсе без параметра свойство будет просто перезаписано; с \"add\" - прибавлено к текущему значению (если это возможно); и с \"rel[ative]][:<к кому>]\" - прибавлено к значению указанного актора, или к игроку при пропущенном поле <к кому> (опять же, если возможно). Доступные свойства:\
   МИР      : x <дробн>, y <дробн>, z <дробн>|floor|ceil|rawceil, velx|vely|velz <дробн>, angle|pitch|roll <дробн>;\
   ИНТЕРАКТ.: health|hp <цел>|s[pawn]|max, [float]speed <дробн>, radius <дробн>, height <дробн>, mass <цел>, gravity <дробн>, rawhp <цел>;\
-  ОТРИСОВКА: scale[x|y] <дробн>, alpha <дробн>;\
+  ОТРИСОВКА: scale[x|y] <дробн>, alpha <дробн>, renderstyle <способ>;\
   УКАЗАТЕЛИ: target|tp <кто>|null, master|mp <кто>|null, tracer|trp|rp <кто>|null;\
   ДРУГОЕ   : arg0..arg4 <цел>, special|action <цел>, tid <значение>|unique.";
 ZCHECKER_ZCSETP_RELPLAYER             = "\c~В качестве базового актора для относительных значений \c-взят вызывающий игрок\c~.";
 ZCHECKER_ZCSETP_UNKNOWNMODE           = "\c!Неизвестный режим \c~\"\c-%s\c~\". Должен быть пустым, \c-raw\c~ (прямым присвоением), \c-add\c~ (добавлением к текущему) или \c-rel[:<ptr>]\c~ (относительным к другому актору).";
 ZCHECKER_ZCSETP_NODELIMCHARS          = "\c!Нет разделителя \c-(\":\" или \"=\") \c-для свойства \"%s\".";
-ZCHECKER_ZCSETP_WRONGARG              = "\c!Неверное числовое значение в параметре \"%s\"";
-ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Неизвестное целочисленное свойство \"%s\"";
-ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Неизвестное дробное свойство \"%s\"";
-ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Неизвестная подстановка \"\c-%s\c!\" для свойства Z-координаты. \c~Должна быть \c-<дробным числом>\c~, \c-f[loor] \c~ (уровень пола), \c-c[eil]\c~ (уровень потолка минус высота актора) or \c-rawc[eil]|hc\c~ (уровень потолка)";
-ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Неизвестная подстановка \"\c-%s\c!\" для свойства health. \c~Должна быть \c-<целым>\c~, \c-max\c~ (~2.1 миллиарда) or \c-s[pawn]\c~ (исходное число здоровья)";
-ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE = "\c!Неизвестная подстановка \"\c-%s\c!\" для свойства render style. \c~Должна быть \c-<целым>\c~ или одним из \c-названий стилей\c~ (к примеру, \"normal\").";
+ZCHECKER_ZCSETP_WRONGARG              = "\c!Неверное числовое значение \с-в параметре \"%s\"";
+ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Неизвестное\с- целочисленное свойство \"%s\"";
+ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Неизвестное\с- дробное свойство \"%s\"";
+ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Неизвестная подстановка \c-\"%s\" для свойства Z-координаты. \c~Должна быть \c-<дробным числом>\c~, \c-f[loor] \c~ (уровень пола), \c-c[eil]\c~ (уровень потолка минус высота актора) or \c-rawc[eil]|hc\c~ (уровень потолка)";
+ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Неизвестная подстановка \c-\"%s\" для свойства health. \c~Должна быть \c-<целым>\c~, \c-max\c~ (~2.1 миллиарда) or \c-s[pawn]\c~ (исходное число здоровья)";
+ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE = "\c!Неизвестная подстановка \c-\"%s\" для свойства render style. \c~Должна быть \c-<целым>\c~ или одним из \c-названий стилей\c~ (к примеру, \"normal\").";
 ZCHECKER_ZCSETP_EMPTYPROP             = "\c~Пропущено пустое свойство \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP           = "\c!Неизвестное свойство \c~\"\c-%s\c~:\c-%s\c~\".";
 ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Значение свойства \c-%s\c~ скопировано напрямую, без изменений.";
-ZCHECKER_ZCSETP_SUCCESS               = "Свойства для актора \"%s\" успешно изменены.";
+ZCHECKER_ZCSETP_SUCCESS               = "Свойства для актора \"%s\" успешно изменены."; // Currently not used.
 
 
 // File "ZCCommandsMap.zsc":
@@ -549,7 +549,7 @@ ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Переносит игрока на п
 
 //  "zcthinkers":
 ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> [l[ist]];zcthinkers <тип> rm|rem[ove]|del[ete] <порядковый номер>|<класс>;zcthinkers actors add[:<панель>] <порядковый номер>;zclistthinkers <тип>;zcaddlistget [<порядковый номер>] [<панель>]";
-ZCHECKER_ZCTHINKERS_HELP_DESC         = "Произодит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели. Учтите, в скором будущей синтаксис команды может быть изменен для расширения ее функциональности.";
+ZCHECKER_ZCTHINKERS_HELP_DESC         = "Произодит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели. Учтите, в скором будущем синтаксис команды может быть изменен для расширения ее функциональности.";
 ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "StatNum лежит вне пределов. Должен находиться в диапазоне [0; %i].";
 ZCHECKER_ZCTHINKERS_WRONGSELECT       = "Индекс указания должен быть положительным целым числом.";
 ZCHECKER_ZCTHINKERS_NOTTHCLASS        = "\c!Невозможно разобрать \c-имя класса Thinker \"%s\".";
@@ -577,7 +577,7 @@ ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " в секторе %i";
 
 //  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)";
-ZCHECKER_ZCPANELCTL_HELP_DESC         = "Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущей синтаксис команды может быть изменен для расширения ее функциональности.";
+ZCHECKER_ZCPANELCTL_HELP_DESC         = "Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменен для расширения ее функциональности.";
 ZCHECKER_ZCPANEL_NOACTORINPOS         = "Актора в позиции %i нет.";
 ZCHECKER_ZCPANELINFO_HEADER           = "\c~Актор в позиции \c-%i \c~- \c-%s\c~ <%s>";
 ZCHECKER_ZCPANELINFO_INHERITANCE      = "  \c~Наследован от \c-%s\c~ (указатель на класс: <%s>)";
