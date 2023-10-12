@@ -489,7 +489,7 @@ ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<количе
 ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "Сдвоенная команда. \"zccopyclass\" сохраняет название актора под курсором в переменную $savedclass; \"zccopysummon\" создает актор(ов) класса $savedclass.";
 
 //  "zcsetflag":
-ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]];zcbud [<кому>] [<значение>]";
+ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]]";
 ZCHECKER_ZCSETFLAG_HELP_DESC          = "Устанавливает или сбрасывает <флаг> актору <кому> (по умолчанию цели под курсором). Переключает <флаг>, если <значение> не указано. Примечание: из-за асинхронного исполнения сетевых событий ZScript и машины ACS операция над флагом будет отложена на один игровой такт.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Флаг \"%s\" для актора %s успешно установлен в %i.";
 

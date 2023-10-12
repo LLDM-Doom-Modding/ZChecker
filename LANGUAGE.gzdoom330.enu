@@ -510,7 +510,7 @@ ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<amount=1>] [
 ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "A paired command. \"zccopyclass\" saves a linetarget actor class into $savedclass classname variable; \"zccopysummon\" summons a $savedclass actor(s).";
 
 //  "zcsetflag":
-ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]";
+ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]]";
 ZCHECKER_ZCSETFLAG_HELP_DESC          = "Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Flag \"%s\" for actor %s is succesfully set to %i.";
 

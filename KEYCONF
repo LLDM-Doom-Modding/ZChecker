@@ -24,7 +24,6 @@ alias zcst "zcsetstate %1 %2 %3"
 alias zcsetflag "netevent zc_setflag@@%1@@%2@@%3@@%4"
 alias zcsetf "zcsetflag %1 %2 %3 %4"
 alias zcsf "zcsetflag %1 %2 %3 %4"
-alias zcbud "zcsetflag %1 buddha %2 %3"
 
 alias zcgive "netevent zc_give@@%1@@%2@@%3@@%4"
 alias zctake "netevent zc_take@@%1@@%2@@%3@@%4"
