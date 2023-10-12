@@ -34,6 +34,7 @@ version "3.3.0"
 #include "ZScript/ZCCommandsGeneral.zsc"
 #include "ZScript/ZCCommandsActorAlter.zsc"
 #include "ZScript/ZCCommandsMap.zsc"
+#include "ZScript/ZCCommandsThinkers.zsc"
 #include "ZScript/ZCCommandsMiscControl.zsc"
 #include "ZScript/ZCTooltipClasses.zsc"
 

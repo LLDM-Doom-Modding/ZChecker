@@ -431,7 +431,7 @@ ZCHECKER_ZCHELP_HEADERCOMMONCCMDS     = "\cjAvailable commands, commonly used\c-
 ZCHECKER_ZCHELP_HEADERALLCCMDS        = "\cjAvailable commands, complete list\c-:";
 
 //  "zcadd":
-ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [<index>] [<panel>]";
+ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>]";
 ZCHECKER_ZCADD_HELP_DESC              = "Add the linetarget/current player/current weapon/non-solid linetarget/random world actor into the panels list. <panel> is a panel number to set to; if omitted, the first empty slot will be used.";
 ZCHECKER_ZCADD_ADDINSUFFPLACE         = "Cannot add target to the panels list, insufficient space. Try adding the target to list directly via \"zcadd 1\"..\"zcadd %i\".";
 ZCHECKER_ZCADD_NOWEAPON               = "No weapon, cannot add.";
@@ -572,22 +572,26 @@ ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Warp to the \"Everything (simple)\" map
 // File "ZCCommandsMiscControl.zsc":
 
 //  "zcthinkers":
-ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panel>] <numindex>;zclistthinkers <type>;zcaddlistget [<index>] [<panel>]";
-ZCHECKER_ZCTHINKERS_HELP_DESC         = "Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel, etc. Note that the CCMD syntax may be changed in the near future to extend its functionality.";
+ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>]";
+ZCHECKER_ZCTHINKERS_HELP_DESC         = "Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.";
 ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "StatNum is out of limits. Must be in range [0; %i].";
 ZCHECKER_ZCTHINKERS_WRONGSELECT       = "Selection index must be a positive integer.";
 ZCHECKER_ZCTHINKERS_NOTTHCLASS        = "\c!Cannot determine \c-Thinker class name \"%s\".";
-ZCHECKER_ZCTHINKERS_WRONGPANEL        = "\c!Wrong panel number \c-\"%s\".";
-ZCHECKER_ZCTHINKERS_WRONGPANELRANGE   = "Panel number \c!must be in range \c-[1..%i].";
 ZCHECKER_ZCTHINKERS_UNKNOWNACTION     = "\c!Unknown action \c-\"%s\".";
 ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS   = "Requested index \c!is out-of-bounds\c-.";
 ZCHECKER_ZCTHINKERSADD_INSUFFPLACE    = "Cannot add target to list, insufficient space. Try adding the actor to list directly via \"zcaddlistget <...> [1..%i]\".";
+ZCHECKER_ZCTHINKERSADD_WRONGPANEL     = "\c!Wrong panel number \c-\"%s\".";
+ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE = "Panel number \c!must be in range \c-[1..%i].";
 ZCHECKER_ZCTHINKERSADD_SUCCESS        = "Added a random world actor %s.";
 ZCHECKER_ZCTHINKERSADD_NOTACTOR       = "Thinker \"%s\" isn't an Actor.";
 ZCHECKER_ZCTHINKERSADD_NOSELECTION    = "Actor index to add \c!not specified\c-.";
+ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG     = "\c!Unknown flag \c-\"%s\".";
+ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS = "\c!Incompatible flags\c- \"Remove by classname\" and \"Destroy everything\".";
+ZCHECKER_ZCTHINKERSRM_ALLNOCLASS      = "Class to remove not set.";
 ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS    = "Requested index \c!is out-of-bounds\c-.";
-ZCHECKER_ZCTHINKERSRM_SUCCESS         = "Removed %i thinkers of type \"%s\".";
-ZCHECKER_ZCTHINKERSRM_SUCCESSRAW      = "Removed %i thinkers of \chraw\c- type \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALL      = "Removed %i thinkers of type \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW   = "Removed %i raw-named thinkers of type \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING = "Removed %i thinkers (all possible).";
 ZCHECKER_ZCTHINKERSRM_NOSELECTION     = "Thinker to remove not specified either by index or by classname.";
 ZCHECKER_ZCTHINKERS_SECTIONACTORS     = "Actors";
 ZCHECKER_ZCTHINKERS_SECTIONSTATIC     = "Static";
@@ -597,8 +601,10 @@ ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX   = "Possible types (plural is optional): \n
 ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR  = " (+NOSECTOR)";
 ZCHECKER_ZCTHINKERS_LISTATPOS         = " at";
 ZCHECKER_ZCTHINKERS_LISTINVOWNER      = ", inv.owner is ";
-ZCHECKER_ZCTHINKERS_LISTTOTAL         = "Total %i thinkers of the StatNum type %i.";
 ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " in sector %i";
+ZCHECKER_ZCTHINKERS_LISTTOTAL         = "\c~Total \c-%i\c~ Thinkers of the StatNum type %i\c-.";
+ZCHECKER_ZCTHINKERS_LISTTOTALFILTEREXACT = "\c~Total \c-%i\c~ objects of class \"\cw%s\c~\" of the StatNum type %i\c-.";
+ZCHECKER_ZCTHINKERS_LISTTOTALFILTERINHERITANCE = "\c~Total \c-%i\c~ objects inherited from class \"\cw%s\c~\" of the StatNum type %i\c-.";
 
 //  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
 ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info)";
@@ -813,18 +819,22 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 \"`Czcevg #ammo`C\" warps player to the header of the category \"Ammo\". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).";
 
 
-ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "Use the \"`Czcthinkers <type> rm`x\" command `yonly if you know what you're doing`x; it can absolutely break levels and the whole game, up to the engine crash.\
+ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "Use the \"`Czcthinkers <type> rm`x\" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.\
 You may provide a direct StatNum value instead of its string alias.\
+First symbol in the \"`g[[`y:`g]<classfilter>:]`x\" might be \"`y:`x\" or \"`y#`x\". It stands for the inheritance check, not only the exact class (e.g. \"`g#demon:1`g\" will check Demons and Spectres).\
 All StatNums are nominal: some modification may use non-standard distribution on sets.\
-\"`Czcaddlistget`x\" is just a convenience alias which uses current the CCMD in question;\
-Internal thinkers may be controlled by name if the argument \"rm:internal\" or its analog is provided. But they may be freely specified in default \"rm\" by their index number in list.";
+\"`Czcaddlistget`x\" is just a convenience alias which uses current the CCMD in question.\
+Internal thinkers may be controlled by name if the argument \"rm:raw\" or its analog is provided. But they may be freely specified in default \"rm\" by their index number in list.\
+Possible \"rm\" command flags: \"`g:all`x\"/\"`g:class`x\" (remove all Thinkers of this class); \"`g:raw`x\"/\"`g:internal`x\" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and \"`g:everything`x\" (incompatible with others, destroys all Thinkers of the specified StatNum).";
 ZCHECKER_TOOLTIP_ZCTHINKERS_EXAMPLES  = "\"`Czcthinkers l`x\"/\"`Czclistthinkers`x\" prints out a help list with all recognizable StatNum types aliases;\
 \"`Czcthinkers a l`x\"/\"`Czclistthinkers actors`x\" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);\
 \"`Czcthinkers 100 l`x\" same as the command above: the `2actors`x alias actually converts to the value `y100`x;\
-\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level `d(same action as in \"`Cremove zombieman`d\");\
+\"`Czcthinkers a l stimpack`x\" lists all of the Stimpacks on the level;\
+\"`Czcthinkers a rm:all z*man`x\" removes all of the Zombiemen from the level `d(same action as in \"`Cremove zombieman`d\");\
 \"`Czcthinkers static rm 1`x\" removes the 1st element in the set of the static thinkers (`~STAT_STATIC`~);\
 \"`Czcthinkers a add`g:2`C 17`x\" adds the 17th actor from the list to the second information panel;\
-\"`Czcthinkers sl rm`2:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).";
+\"`Czcthinkers a add #powerupgiver:4`x\" adds a 4th actor that satisfies the inheritance filter from \"PowerupGiver\";\
+\"`Czcthinkers sl rm`2:all:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).";
 
 
 ZCHECKER_TOOLTIP_ZCPANELCTL_TEXT      = "`yNote`x: right now the alias system is inconvenient, so I will not recommend using it. On the other hand, it is fully functional.";

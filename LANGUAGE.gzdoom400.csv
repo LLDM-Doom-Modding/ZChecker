@@ -429,7 +429,7 @@ unused),,,,
 ,,ZCHECKER_ZCHELP_HEADERALLCCMDS,"\cjAvailable commands, complete list\c-:",\cjПолный список доступных команд\c-:
 ,,,,
 ," ""zcadd"":",,,
-,,ZCHECKER_ZCADD_HELP_TITLE,zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [<index>] [<panel>],zcadd [s[elf]|w[eapon]|cam[era]|force] [<панель>];zcaddself [<панель>];zcaddweap [<панель>];zcaddforce [<панель>];zcaddlistget [<индекс>] [<панель>]
+,,ZCHECKER_ZCADD_HELP_TITLE,zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcadd [s[elf]|w[eapon]|cam[era]|force] [<панель>];zcaddself [<панель>];zcaddweap [<панель>];zcaddforce [<панель>];zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
 ,,ZCHECKER_ZCADD_HELP_DESC,"Add the linetarget/current player/current weapon/non-solid linetarget/random world actor into the panels list. <panel> is a panel number to set to; if omitted, the first empty slot will be used.","Добавление цели под курсором (без суффикса)/этого игрока (""self"")/текущего оружия (""weap"")/бесплотной цели (""force"")/произвольного актора (""listget"") в информационную панель. <панель> — номер самой панели; по умолчанию используется первый свободный слот."
 ,,ZCHECKER_ZCADD_ADDINSUFFPLACE,"Cannot add target to the panels list, insufficient space. Try adding the target to list directly via ""zcadd 1""..""zcadd %i"".","Нельзя добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcadd 1""..""zcadd %i""."
 ,,ZCHECKER_ZCADD_NOWEAPON,"No weapon, cannot add.",Текущего оружия нет.
@@ -578,22 +578,26 @@ unused),,,,
 ,"File ""ZCCommandsMiscControl.zsc"":",,,
 ,,,,
 ," ""zcthinkers"":",,,
-,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panel>] <numindex>;zclistthinkers <type>;zcaddlistget [<index>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> [l[ist]];zcthinkers <тип> rm|rem[ove]|del[ete] <порядковый номер>|<класс>;zcthinkers actors add[:<панель>] <порядковый номер>;zclistthinkers <тип>;zcaddlistget [<порядковый номер>] [<панель>]
-,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel, etc. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Произодит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели. Учтите, в скором будущем синтаксис команды может быть изменен для расширения её функциональности."
+,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> l[ist] [[:]<класс>];zcthinkers <тип> rm|rem[ove]|del[ete] [[:]<класс>:]<порядковый номер>;zcthinkers <тип> rm:all[:raw] <класс>;zcthinkers <тип> rm:everything;zcthinkers actors add[:<панель>] [[:]<класс>:]<порядковый номер>;zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
+,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.","Производит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели."
 ,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне пределов. Должен находиться в диапазоне [0; %i].
-,,ZCHECKER_ZCTHINKERS_WRONGSELECT,Selection index must be a positive integer.,Индекс указания должен быть положительным целым числом.
+,,ZCHECKER_ZCTHINKERS_WRONGSELECT,Selection index must be a positive integer.,Индекс выбора должен быть положительным целым числом.
 ,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"\c!Cannot determine \c-Thinker class name ""%s"".","\c!Невозможно разобрать \c-имя класса Thinker ""%s""."
-,,ZCHECKER_ZCTHINKERS_WRONGPANEL,"\c!Wrong panel number \c-""%s"".","\c!Неверный номер панели \c-""%s""."
-,,ZCHECKER_ZCTHINKERS_WRONGPANELRANGE,Panel number \c!must be in range \c-[1..%i].,Номер панели \c!должен лежать в пределах \c-[1..%i].
 ,,ZCHECKER_ZCTHINKERS_UNKNOWNACTION,"\c!Unknown action \c-""%s"".","\c!Неизвестное действие \c-""%s""."
 ,,ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.
 ,,ZCHECKER_ZCTHINKERSADD_INSUFFPLACE,"Cannot add target to list, insufficient space. Try adding the actor to list directly via ""zcaddlistget <...> [1..%i]"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcaddlistget 1""..""zcaddlistget %i""."
+,,ZCHECKER_ZCTHINKERSADD_WRONGPANEL,"\c!Wrong panel number \c-""%s"".","\c!Неверный номер панели \c-""%s""."
+,,ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE,Panel number \c!must be in range \c-[1..%i].,Номер панели \c!должен лежать в пределах \c-[1..%i].
 ,,ZCHECKER_ZCTHINKERSADD_SUCCESS,Added a random world actor %s.,Добавлен произвольный актор %s.
 ,,ZCHECKER_ZCTHINKERSADD_NOTACTOR,"Thinker ""%s"" isn't an Actor.","Объект Thinker ""%s"" — не класс Actor."
 ,,ZCHECKER_ZCTHINKERSADD_NOSELECTION,Actor index to add \c!not specified\c-.,Индекс актора для добавления \c!не указан\c-.
+,,ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG,"\c!Unknown flag \c-""%s"".","\c!Неизвестный флаг \c-""%s""."
+,,ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS,"\c!Incompatible flags\c- ""Remove by classname"" and ""Destroy everything"".","\c!Несовместимые флаги\c-: ""Удалить по названию класса"" и ""Уничтожить всё""."
+,,ZCHECKER_ZCTHINKERSRM_ALLNOCLASS,Class to remove not set.,Класс для удаления не установлен.
 ,,ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.
-,,ZCHECKER_ZCTHINKERSRM_SUCCESS,"Removed %i thinkers of type ""%s"".","Удалено %i классов Thinker типа ""%s"""
-,,ZCHECKER_ZCTHINKERSRM_SUCCESSRAW,"Removed %i thinkers of \chraw\c- type ""%s"".","Удалено %i классов Thinker \chпроизвольного\c- типа ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSALL,"Removed %i thinkers of type ""%s"".","Удалено %i классов Thinker типа ""%s"""
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW,"Removed %i raw-named thinkers of type ""%s"".","Удалено %i произвольных классов Thinker типа ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING,Removed %i thinkers (all possible).,Удалены %i классов Thinker (все возможные).
 ,,ZCHECKER_ZCTHINKERSRM_NOSELECTION,Thinker to remove not specified either by index or by classname.,"Объекты для удаления не указаны ни по индексу, ни по названию класса."
 ,,ZCHECKER_ZCTHINKERS_SECTIONACTORS,Actors,Акторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONSTATIC,Static,Статичные
@@ -603,8 +607,10 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR, (+NOSECTOR),
 ,,ZCHECKER_ZCTHINKERS_LISTATPOS, at, на
 ,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,", inv.owner is ",", inv.owner: "
-,,ZCHECKER_ZCTHINKERS_LISTTOTAL,Total %i thinkers of the StatNum type %i.,Всего %i объектов класса Thinker типа StatNum %i.
 ,,ZCHECKER_ZCTHINKERS_LISTSECTORNUM, in sector %i, в секторе %i
+,,ZCHECKER_ZCTHINKERS_LISTTOTAL,\c~Total \c-%i\c~ Thinkers of the StatNum type %i\c-.,\c~Всего \c-%i\c~ объектов класса Thinker типа StatNum %i.
+,,ZCHECKER_ZCTHINKERS_LISTTOTALFILTEREXACT,"\c~Total \c-%i\c~ objects of class ""\cw%s\c~"" of the StatNum type %i\c-.","\c~Всего \c-%i\c~ объектов класса ""\cw%s\c~"" типа StatNum %i."
+,,ZCHECKER_ZCTHINKERS_LISTTOTALFILTERINHERITANCE,"\c~Total \c-%i\c~ objects inherited from class ""\cw%s\c~"" of the StatNum type %i\c-.","\c~Всего \c-%i\c~ объектов, наследованных от класса ""\cw%s\c~"", типа StatNum %i."
 ,,,,
 ," ""zcpanel"" (without ""zcpanel save|store|load"" because of unfinished/unclear subcommand UI):",,,
 ,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info),zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)
@@ -937,27 +943,35 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ""`Czcevg #ammo`C"" перенесёт игрока к категории ""Ammo"". Без ""решётки"" — к актору под названием ""Ammo"" (если он существует на карте)."
 ,,,,
 ,,,,
-,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"Use the ""`Czcthinkers <type> rm`x"" command `yonly if you know what you're doing`x; it can absolutely break levels and the whole game, up to the engine crash.
+,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"Use the ""`Czcthinkers <type> rm`x"" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.
 You may provide a direct StatNum value instead of its string alias.
+First symbol in the ""`g[[`y:`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon:1`g"" will check Demons and Spectres).
 All StatNums are nominal: some modification may use non-standard distribution on sets.
-""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question;
-Internal thinkers may be controlled by name if the argument ""rm:internal"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.","Используйте команду ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; она без труда полностью сломать уровни и игру, вплоть до вылета движка.
+""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question.
+Internal thinkers may be controlled by name if the argument ""rm:raw"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.
+Possible ""rm"" command flags: ""`g:all`x""/""`g:class`x"" (remove all Thinkers of this class); ""`g:raw`x""/""`g:internal`x"" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and ""`g:everything`x"" (incompatible with others, destroys all Thinkers of the specified StatNum).","Используйте команды семейства ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.
 Вместо слов-идентификаторов можно использовать явный номер StatNum.
+Первым символом в последовательности ""`g[[`y:`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon:1`g"" будет проверять всех акторов Demon и Spectre).
 Все StatNum условны: некоторые модификации могут использовать нестандартное распределение по множествам.
-""`Czcaddlistget`x"" — лишь удобный псевдоним, на деле вызывающий рассматриваемую команду;
-Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента ""rm:internal"" или его аналога. Вместе с тем указание подобного класса по списочному номеру никто не отменял."
+""`Czcaddlistget`x"" — лишь удобный псевдоним, на деле вызывающий рассматриваемую команду.
+Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента ""rm:raw"" или его аналога. Однако указание подобного класса по списочному номеру работает и без того.
+Флаги команды ""rm"": ""`g:all`x""/""`g:class`x"" (удалить всех Thinker этого класса); ""`g:raw`x""/""`g:internal`x"" (только с `g:all`x/`g:class`x, переключает парсинг на необработанные названия классов); и ""`g:everything`x"" (несовместим с другими флагами, уничтожает все объекты класса Thinker указанного StatNum)."
 ,,ZCHECKER_TOOLTIP_ZCTHINKERS_EXAMPLES,"""`Czcthinkers l`x""/""`Czclistthinkers`x"" prints out a help list with all recognizable StatNum types aliases;
 ""`Czcthinkers a l`x""/""`Czclistthinkers actors`x"" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);
 ""`Czcthinkers 100 l`x"" same as the command above: the `2actors`x alias actually converts to the value `y100`x;
-""`Czcthinkers a rm z*man`x"" removes all of the Zombiemen from the level `d(same action as in ""`Cremove zombieman`d"");
+""`Czcthinkers a l stimpack`x"" lists all of the Stimpacks on the level;
+""`Czcthinkers a rm:all z*man`x"" removes all of the Zombiemen from the level `d(same action as in ""`Cremove zombieman`d"");
 ""`Czcthinkers static rm 1`x"" removes the 1st element in the set of the static thinkers (`~STAT_STATIC`~);
 ""`Czcthinkers a add`g:2`C 17`x"" adds the 17th actor from the list to the second information panel;
-""`Czcthinkers sl rm`2:raw`C glow`x"" removes all Thinkers named ""glow"", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).","""`Czcthinkers l`x""/""`Czclistthinkers`x"" выводит справочный список по всем распознаваемым типам StatNum;
+""`Czcthinkers a add #powerupgiver:4`x"" adds a 4th actor that satisfies the inheritance filter from ""PowerupGiver"";
+""`Czcthinkers sl rm`2:all:raw`C glow`x"" removes all Thinkers named ""glow"", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).","""`Czcthinkers l`x""/""`Czclistthinkers`x"" выводит справочный список по всем распознаваемым типам StatNum;
 ""`Czcthinkers a l`x""/""`Czclistthinkers actors`x"" выводит список всех акторов класса Thinker, принадлежащих множеству акторов (`~STAT_DEFAULT`~);
 ""`Czcthinkers 100 l`x"" сделает то же, что и команда выше: алиас `2actors`x на самом деле переводится в значение `y100`x;
-""`Czcthinkers a rm z*man`x"" удаляет все классы Zombieman на уровне `d(действие аналогично команде ""`Cremove zombieman`d"");
+""`Czcthinkers a l stimpack`x"" выводит список всех акторов класса Stimpack на уровне;
+""`Czcthinkers a rm:all z*man`x"" удаляет все классы Zombieman на уровне `d(действие аналогично команде ""`Cremove zombieman`d"");
 ""`Czcthinkers static rm 1`x"" удаляет первый элемент в списке объектов класса Thinker, принадлежащих статическому множеству (`~STAT_STATIC`~);
 ""`Czcthinkers a add`g:2`C 17`x"" добавляет 17-й актор из списка во вторую инфопанель;
+""`Czcthinkers a add #powerupgiver:4`x"" добавляет 4-го актора, удовлетворяющего фильтру наследования от ""PowerupGiver"";
 ""`Czcthinkers sl rm`2:raw`C glow`x"" удаляет все объекты класса Thinker с названием ""glow"", вне зависимости от их скрытости, в множестве управления посекторным освещением (`~STAT_LIGHT`~)."
 ,,,,
 ,,,,

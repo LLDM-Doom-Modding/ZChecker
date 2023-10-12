@@ -240,6 +240,10 @@ class ZCGlobal: Thinker {
 		return text;
 	}
 
+	static clearscope bool StrStartsWith( String text, String prefix ) {
+		return !!( text.Left( prefix.Length() ) == prefix );
+	}
+
 
 
 	// Test for the special ZChecker level:

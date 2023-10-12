@@ -507,7 +507,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 
 	// Returns "-1" if argument cannot be resolved as boolean, and "0"/"1" otherwise:
-	protected int getBoolFromStr( String argx ) {
+	static clearscope int getBoolFromStr( String argx ) {
 		int boolstatus = -1;
 		argx.ToLower();
 
@@ -519,15 +519,22 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return boolstatus;
 	}
 
+	// Returns "-1" if input string has no one of the ":,=" or the first occurence index otherwise:
+	static clearscope int indexOfArgDelimiter( String str, bool checkcomma = true ) {
+		int colonIndex = str.IndexOf( ":" );
+
+		if ( colonIndex == -1 )
+			colonIndex = str.IndexOf( "=" );
+
+		if ( checkcomma && colonIndex == -1 )
+			colonIndex = str.IndexOf( "," );
+
+		return colonIndex;
+	}
+
+
 	protected int getBoolArg( uint argnum ) {
-		int argxtype = -1;
-
-		if ( argnum < ccmd.args.Size() )
-			argxtype = getBoolFromStr( ccmd.args[ argnum ] );
-		else
-			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::getBoolArg(). Argument index " .. argnum .. " is out of bounds (max " .. ccmd.args.Size() .. ")." );
-
-		return argxtype;
+		return getBoolFromStr( ccmd.args[ argnum ] );
 	} // of protected int getBoolArg( uint argnum ) {}
 
 
