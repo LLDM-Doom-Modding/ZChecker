@@ -186,14 +186,14 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		Array<String> actstrSplitted;
 		actstrSplitted.Clear();
 
-		int colonIndex = indexOfArgDelimiter( actstr, true );
+		int colonIndex = ZCGlobal.StringIndexOfAny( actstr, ",:" );
 		String strpart = actstr;
 
 		while ( colonIndex != -1 ) {
 			actstrSplitted.Push( strpart.Left( colonIndex ) );
 			strpart = strpart.Mid( colonIndex + 1, strpart.Length() - colonIndex - 1 );
 
-			colonIndex = indexOfArgDelimiter( strpart, true );
+			colonIndex = ZCGlobal.StringIndexOfAny( strpart, ",:" );
 		}
 
 		actstrSplitted.Push( strpart );
@@ -345,40 +345,61 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		if ( parseActorIndex && ( zcAction != TCA_Error ) && ccmdArgsSize == 3 ) {
 			// Parse last argument as "[[:|#]<classfilter>:]<index>".
 			arg = ccmd.args[ 2 ];
-			String indexarg;
+			String indexstr;
 
 			// Check if first is a ":" or "#" character:
 			testArgClassInheritance( arg );
 
-			int colonIndex = indexOfArgDelimiter( arg );
-			bool listIndexSet = false;
+			// Check for the colon ("doomimp:1") and class mask ("*sphere"):
+			int colonIndex = ZCGlobal.StringIndexOfAny( arg, ":=," );
+			int regexCharIndex = ZCGlobal.StringIndexOfAny( arg, "*-" );
 
-			// If there's a separator or not a number, try to unparse as a classname.
-			if ( colonIndex != -1 || !( listIndexSet = str2int_Ptr( arg, +specifiedListIndex ) ) ) {
-				if ( colonIndex != -1 ) {
-					indexarg = arg.Mid( colonIndex + 1, arg.Length() - colonIndex - 1 );
-					arg = arg.Left( colonIndex );
-				}
+			if ( regexCharIndex != -1 && regexCharIndex < colonIndex )
+				colonIndex = ZCGlobal.StringIndexOfAny( arg, ":=,", colonIndex + 1 );
+
+
+			bool isListIndexSet = false;
+
+
+			// Must be:
+			// "2"			: action		(TCA_SomeAction)
+			// "something"	: list objects	(TCA_List)
+			// "something:2": action		(TCA_SomeAction)
+			// "z-man"		: list objects	(TCA_List)
+			// "z-man:1"	: list objects	(TCA_List)
+			// "z-man:1:1"	: action		(TCA_SomeAction)
+			// "wrongclass"	: 				(TCA_Skip)
+			// "*sphere"	: list classes	(TCA_Skip)
+			// "*sphere:1"	: list objects	(TCA_List)
+			// "*sphere:1:2": action		(TCA_SomeAction)
+
+
+			// If there's a separator or arg start isn't a number, try to unparse as a classname.
+			if ( colonIndex != -1 || !( isListIndexSet = str2int_Ptr( arg, +specifiedListIndex ) ) ) {
+				indexstr = arg.Mid( colonIndex + 1, arg.Length() - colonIndex - 1 );
+				arg = arg.Left( colonIndex );
 
 				specifiedClass = ParseSpecialActorName( arg );
 
-				if ( specifiedClass == NULL ) {
+				if ( specifiedClass == NULL || ( classnameParseStatus == CPS_RegexFailed || classnameParseStatus == CPS_EmptyVariable ) ) {
 					LogLocalize2Str( LL_Main, "ZCTHINKERS_NOTTHCLASS", arg );
 					zcAction = TCA_Skip;
 				}
 
 			} else {
-				indexarg = arg;
+				indexstr = arg;
 			}
 
 			if ( zcAction != TCA_Skip ) {
-				if ( !listIndexSet )
-					listIndexSet = str2int_Ptr( indexarg, +specifiedListIndex );
+				isListIndexSet = str2int_Ptr( indexstr, +specifiedListIndex );
 
-				if ( !listIndexSet || ( specifiedListIndex <= 0 ) ) {
-					ZCGlobal.Log( LL_Main, "$ZCTHINKERS_WRONGSELECT" );
+				if ( !isListIndexSet || ( specifiedListIndex <= 0 ) ) {
+					if ( colonIndex != -1 )
+						LogLocalize2Str( LL_Main, "ZCTHINKERS_WRONGSELECT", indexstr );
+
 					zcAction = TCA_List;
 				}
+
 			}
 		} // of if ( parseActorIndex && ( zcAction != TCA_Error ) && ccmdArgsSize == 3 ) {}
 
@@ -575,7 +596,7 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 
 			thinkersAmount++;
 
-			// Check if Thinker class is accessible via ZScript (== is it internal):
+			// Check if Thinker class is accessible via ZScript (== is it not internal):
 			String curThinkerName = curThinker.GetClassName() .. "";
 			class<Object> accessTestClass = curThinkerName;
 

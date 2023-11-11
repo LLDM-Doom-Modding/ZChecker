@@ -25,7 +25,7 @@ class ZCConsoleClass abstract {
 
 	// Override to set up flags (without CCF_Important, which has special 
 	//handling) and other init stuff in all console class inheritances:
-	virtual virtualscope void OnLoad( void ) {
+	virtualscope virtual void OnLoad( void ) {
 		zcFlags = CCF_None;
 		helpCacheString = "";
 	}
@@ -519,9 +519,11 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		return boolstatus;
 	}
 
-	// Returns "-1" if input string has no one of the ":,=" or the first occurence index otherwise:
-	static clearscope int indexOfArgDelimiter( String str, bool checkcomma = true ) {
-		int colonIndex = str.IndexOf( ":" );
+	/*// Returns "-1" if input string has no one of the ":,=" or the first occurence index otherwise:
+	static clearscope int indexOfArgDelimiter( String str, bool checkcomma = true, int startindex = 0 ) {
+		return ZCGlobal.StringIndexOfAny( str, ( checkcomma? ":,=" : ":=" ), startindex );
+
+		/*int colonIndex = str.IndexOf( ":" );
 
 		if ( colonIndex == -1 )
 			colonIndex = str.IndexOf( "=" );
@@ -530,7 +532,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			colonIndex = str.IndexOf( "," );
 
 		return colonIndex;
-	}
+	}*/
 
 
 	protected int getBoolArg( uint argnum ) {
@@ -619,20 +621,26 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	// Extremely long auxiliary method which tries to parse an arg string as:
 	//  1) Classname variable ("$last", ...);
-	//	2) Placeholder ("%target", ...);
+	//	2) Placeholder ("$target", ...);
 	//	3) Actor mask ("z*man", ...; <parentfilter> may be applied).
 	//
 	// Right now it saves result status into the "classnameParseStatus" field. 
 	//Potentially will be moved somewhere else and rewritten for wider 
 	//functionality.
+	//
+	// Returns a String because $classname_variables actually not limited only 
+	//to classnames. Strange idea. More likely also will be rewritten.
 	protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {
 		classnameParseStatus = CPS_Default;
 
 		String firstOrigValueChar = classname.CharAt( 0 );
 
 		// Different engine versions has different '%' char representation in FString.
-		if ( firstOrigValueChar == "%" || firstOrigValueChar == "%%" )
+		// N. B.: parsing of the percent character will be removed in future.
+		if ( firstOrigValueChar == "%" || firstOrigValueChar == "%%" ) {
 			classname = "$" .. classname.Mid( 1, classname.Length() - 1 );
+			firstOrigValueChar = "$"; // No longer the original value, but extremely close to it...
+		}
 
 		if ( classname.Length() > 63 ) {
 			classname.Truncate( 63 );
@@ -710,10 +718,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		// Classname or mask:
 
 		int preventiveChoice = -1;
-		int preventiveChoiceStrStart;
-
-		if ( ( preventiveChoiceStrStart = classname.IndexOf( ":" ) ) == -1 )
-			preventiveChoiceStrStart = classname.IndexOf( "," );
+		int preventiveChoiceStrStart = ZCGlobal.StringIndexOfAny( classname, ":," );
 
 		if ( preventiveChoiceStrStart != -1 ) {
 			String preventiveChoiceStr = classname.Mid( preventiveChoiceStrStart + 1, classname.Length() - preventiveChoiceStrStart - 1 );
@@ -731,7 +736,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		} // of if ( preventiveChoiceStrStart != -1 ) {}
 
 
-		if ( ccmd && ccmd.handler && ( classname.IndexOf( "*" ) != -1 || classname.IndexOf( "-" ) != -1 ) ) {
+		if ( ccmd && ccmd.handler && ZCGlobal.StringIndexOfAny( classname, "*-" ) != -1 ) {
 			// Regexp mask parsing:
 			String curpart = "";
 			int lastpart = 0;
@@ -792,7 +797,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::ParseSpecialActorName(). Corrupter sizes: " .. TEXTCOLOR_WHITE .. "parts == " .. parts.Size() .. LLCOLOR_EMERGENCY .. ", " .. TEXTCOLOR_WHITE .. "part indices == " .. partindices.Size() .. LLCOLOR_EMERGENCY );
 
 				for ( int i = 0; i < max( parts.Size(), partindices.Size() ); i++ )
-					ZCGlobal.Log( LL_Main, TEXTCOLOR_DARKGRAY .. "Part #" .. i .. ": \c-\"" .. ( i < parts.Size()? parts[ i ] : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. "\"" .. TEXTCOLOR_DARKGRAY .. ", starts from \c-" .. ( i < partindices.Size()? partindices[ i ] .. "" : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. TEXTCOLOR_DARKGRAY );
+					ZCGlobal.ClearscopeLog( LL_Main, TEXTCOLOR_DARKGRAY .. "Part #" .. i .. ": \c-\"" .. ( i < parts.Size()? parts[ i ] : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. "\"" .. TEXTCOLOR_DARKGRAY .. ", starts from \c-" .. ( i < partindices.Size()? partindices[ i ] .. "" : TEXTCOLOR_RED .. "NONE" .. TEXTCOLOR_DARKGRAY ) .. TEXTCOLOR_DARKGRAY );
 
 			} else if ( parts.Size() > 1 ) {
 				int firstSearchNameCellIndex = ( parts[ 0 ] != ""? ZCInternalActorNameCell.GetClassnameCellIndex( classname ) : -1 );
@@ -836,6 +841,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 								curpartindex = partFoundIndex + 1; //partindices[ k + 1 ];
 						} // of for ( int k = 0; k < parts.Size(); k++ ) {}
 
+
 						// Special last characters/symbols sequence handling:
 						int partsPreSize = parts.Size() - 1;
 
@@ -860,7 +866,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 							class<Actor> curnameclass = Name( curname );
 
 							if ( curnameclass is parentfilter )
-								nameCandidates.Push( curname );
+								nameCandidates.Push( cell.orignames[ j ] );
 						}
 					} // of for ( int j = 0; j < cell.names.Size(); j++ ) {}
 
@@ -908,7 +914,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "PARSENAME_IGNORESELECT" ), preventiveChoice ) );
 		}
 
+
+		// Not "::SetGlobalClassnameVariable()" because it calls this method again.
 		ZCGlobal.Get().SetClassnameVariable( "$parsed", classname );
+
 		return classname;
 	} // of protected String ParseSpecialActorName( String classname, class<Actor> parentfilter = "Actor" ) {}
 
@@ -942,6 +951,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 	}
 
 	protected bool SetGlobalClassnameVariable( String zcname, String value ) {
+		// N. B.: parsing of the percent character will be removed in future.
 		if ( zcname.CharAt( 0 ) == "%" || zcname.CharAt( 0 ) == "%%" )
 			zcname = "$" .. zcname.Mid( 1, zcname.Length() - 1 );
 

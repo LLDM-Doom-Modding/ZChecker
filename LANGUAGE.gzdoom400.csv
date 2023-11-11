@@ -38,7 +38,7 @@ unused),,,,
 ,,ZCHECKER_MAINMENU_TITLE,ZChecker settings,Настройки ZChecker
 ,,ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR,\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in the options menu above.,"\cxОшибка\ci: ZChecker не может быть запущен.\n\ciБольше информации есть в меню, расположенном выше."
 ,,,,
-,,ZCHECKER_MAINMENU_ZCHANDLER_ERROR,"\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker cannot be launched properly\ci.\n\n\ciPossible reason: usage of the \cu""\crEventHandlers = ...\cu""\n\cu(\cinot \cu""\cqAddEventHandlers = ...\cu"") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.",
+,,ZCHECKER_MAINMENU_ZCHANDLER_ERROR,"\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker cannot be launched properly\ci.\n\n\ciPossible reason: usage of the \cu""\crEventHandlers = ...\cu""\n\cu(\cinot \cu""\cqAddEventHandlers = ...\cu"") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.","\cf---- ===== \cxОШИБКА \cf===== ----\n\cxНе удаётся обнаружить ZChecker static event handler;\n\cxневозможно верно запустить ZChecker\ci.\n\n\ciВероятная причина: использование \cu""\crEventHandlers = ...\cu""\n\cu(\ciне \cu""\cqAddEventHandlers = ...\cu"") \ciв каком-то из \ccMAPINFO\n\ciдля версий движка ниже GZDoom 4.8.0."
 ,,ZCHECKER_MAINMENU_DIV_GENERAL,General categories,Основные категории
 ,,ZCHECKER_MAINMENU_INFOPANELS,Information panel settings,Настройки инфопанелей
 ,,ZCHECKER_MAINMENU_CCMDS,Call console command [WIP],Вызов консольных команд [WIP]
@@ -390,11 +390,11 @@ unused),,,,
 ,,ZCHECKER_GETACTOR_SKIPPEDSPECIAL,"Skipped special ZChecker class ""%s"".","Пропущен внутренний класс ZChecker ""%s""."
 ,,ZCHECKER_GETACTOR_LTNOACTORS,No available linetarget actors found.,Доступных целей под курсором не найдено.
 ,,ZCHECKER_GETACTOR_EMPTYPOS,No actor in position %i.,Актора в позиции %i не существует.
-,,ZCHECKER_GETACTOR_WRONGPOS,\c!Wrong position %i\c- (must be in range [1..%i]).,\c!Неверная позиция %i\c- (должен лежать в пределах [1..%i]).
+,,ZCHECKER_GETACTOR_WRONGPOS,\c!Wrong position %i\c- (must be in range [1..%i]).,\c!Неверная позиция %i\c- (должна лежать в пределах [1..%i]).
 ,,ZCHECKER_GETACTOR_UNKNOWNKEYWORD,"\c!Unknown placeholder ""%s"" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.","\c!Неизвестная подстановка ""%s"" в позиции %i\c~. Возможные значения: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~."
 ,,,,
 ," ""ZCConsoleCommand::ParseSpecialActorName()""",,,
-,,ZCHECKER_PARSENAME_WRONGSELECT,"\c!Selection ""%s"" isn't a positive integer.","\c!Указание ""%s"" — не положительное целое число."
+,,ZCHECKER_PARSENAME_WRONGSELECT,"\c!Selection ""%s"" isn't a positive integer.","\c!Выбор ""%s"" — не положительное целое число."
 ,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". You may use ""%%null"" or ""%%none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. Для обхода этого можно использовать ""%%null"" или ""%%none""."
 ,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset classname variable ""%s"".","\c!Пропущена\c- ещё не установленная переменная имени класса ""%s""."
 ,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided.,"\c!Нет ни одного символа, определяющего класс."
@@ -581,7 +581,7 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> l[ist] [[:]<класс>];zcthinkers <тип> rm|rem[ove]|del[ete] [[:]<класс>:]<порядковый номер>;zcthinkers <тип> rm:all[:raw] <класс>;zcthinkers <тип> rm:everything;zcthinkers actors add[:<панель>] [[:]<класс>:]<порядковый номер>;zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
 ,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.","Производит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели."
 ,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне пределов. Должен находиться в диапазоне [0; %i].
-,,ZCHECKER_ZCTHINKERS_WRONGSELECT,Selection index must be a positive integer.,Индекс выбора должен быть положительным целым числом.
+,,ZCHECKER_ZCTHINKERS_WRONGSELECT,"Object selection index ""%s"" isn't a positive integer.","Индекс выбора объекта ""%s"" должен быть положительным целым числом."
 ,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"\c!Cannot determine \c-Thinker class name ""%s"".","\c!Невозможно разобрать \c-имя класса Thinker ""%s""."
 ,,ZCHECKER_ZCTHINKERS_UNKNOWNACTION,"\c!Unknown action \c-""%s"".","\c!Неизвестное действие \c-""%s""."
 ,,ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.

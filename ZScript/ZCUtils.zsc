@@ -517,6 +517,15 @@ class ZCGlobal: Thinker {
 		return str;
 	}
 
+	static clearscope int StringIndexOfAny( String str, String tokens, int startindex = 0 ) {
+		int foundpos = -1;
+
+		for ( int i = 0; i < tokens.Length() && foundpos == -1; i++ )
+			foundpos = str.IndexOf( tokens.CharAt( i ), startindex );
+
+		return foundpos;
+	}
+
 	// Parses newline type in the text file (DOS, Linux, MacOS).
 	static clearscope ENewlineTypes GetTextNewlinesType( String text ) {
 		ENewlineTypes nltype = ZCNL_Unknown;
