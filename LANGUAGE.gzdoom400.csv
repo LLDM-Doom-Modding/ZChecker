@@ -595,9 +595,10 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS,"\c!Incompatible flags\c- ""Remove by classname"" and ""Destroy everything"".","\c!Несовместимые флаги\c-: ""Удалить по названию класса"" и ""Уничтожить всё""."
 ,,ZCHECKER_ZCTHINKERSRM_ALLNOCLASS,Class to remove not set.,Класс для удаления не установлен.
 ,,ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS,Requested index to remove \c!is out-of-bounds\c- (1..%i).,Запрошенный индекс удаления находится \c!вне доступного диапазона\c- (1..%i).
-,,ZCHECKER_ZCTHINKERSRM_SUCCESSALL,"Removed %i thinkers of type ""%s"".","Удалено %i классов Thinker типа ""%s"""
-,,ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW,"Removed %i raw-named thinkers of type ""%s"".","Удалено %i произвольных классов Thinker типа ""%s""."
-,,ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING,Removed %i thinkers (all possible).,Удалены %i классов Thinker (все возможные).
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSONE,"Removed object ""%s"".","Удалён объект ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSALL,"Removed %i objects of class ""%s"".","Удалено %i объектов класса ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW,"Removed %i raw-named objects of class ""%s"".","Удалено %i объектов необработанного названия класса ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING,Removed %i objects (all possible).,Удалено %i объектов (все возможные).
 ,,ZCHECKER_ZCTHINKERSRM_NOSELECTION,Thinker to remove not specified either by index or by classname.,"Объекты для удаления не указаны ни по индексу, ни по названию класса."
 ,,ZCHECKER_ZCTHINKERS_SECTIONACTORS,Actors,Акторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONSTATIC,Static,Статичные
@@ -945,13 +946,13 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ,,,,
 ,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"Use the ""`Czcthinkers <type> rm`x"" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.
 You may provide a direct StatNum value instead of its string alias.
-First symbol in the ""`g[[`y:`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon:1`g"" will check Demons and Spectres).
+First symbol in the ""`g[[`y:`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon`g"" will check Demons and Spectres).
 All StatNums are nominal: some modification may use non-standard distribution on sets.
 ""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question.
 Internal thinkers may be controlled by name if the argument ""rm:raw"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.
 Possible ""rm"" command flags: ""`g:all`x""/""`g:class`x"" (remove all Thinkers of this class); ""`g:raw`x""/""`g:internal`x"" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and ""`g:everything`x"" (incompatible with others, destroys all Thinkers of the specified StatNum).","Используйте команды семейства ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.
 Вместо слов-идентификаторов можно использовать явный номер StatNum.
-Первым символом в последовательности ""`g[[`y:`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon:1`g"" будет проверять всех акторов Demon и Spectre).
+Первым символом в последовательности ""`g[[`y:`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon`g"" будет проверять всех акторов Demon и Spectre).
 Все StatNum условны: некоторые модификации могут использовать нестандартное распределение по множествам.
 ""`Czcaddlistget`x"" — лишь удобный псевдоним, на деле вызывающий рассматриваемую команду.
 Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента ""rm:raw"" или его аналога. Однако указание подобного класса по списочному номеру работает и без того.

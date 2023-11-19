@@ -589,9 +589,10 @@ ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG     = "\c!Unknown flag \c-\"%s\".";
 ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS = "\c!Incompatible flags\c- \"Remove by classname\" and \"Destroy everything\".";
 ZCHECKER_ZCTHINKERSRM_ALLNOCLASS      = "Class to remove not set.";
 ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS    = "Requested index to remove \c!is out-of-bounds\c- (1..%i).";
-ZCHECKER_ZCTHINKERSRM_SUCCESSALL      = "Removed %i thinkers of type \"%s\".";
-ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW   = "Removed %i raw-named thinkers of type \"%s\".";
-ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING = "Removed %i thinkers (all possible).";
+ZCHECKER_ZCTHINKERSRM_SUCCESSONE      = "Removed object \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALL      = "Removed %i objects of class \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW   = "Removed %i raw-named objects of class \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING = "Removed %i objects (all possible).";
 ZCHECKER_ZCTHINKERSRM_NOSELECTION     = "Thinker to remove not specified either by index or by classname.";
 ZCHECKER_ZCTHINKERS_SECTIONACTORS     = "Actors";
 ZCHECKER_ZCTHINKERS_SECTIONSTATIC     = "Static";
@@ -821,7 +822,7 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "Use the \"`Czcthinkers <type> rm`x\" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.\
 You may provide a direct StatNum value instead of its string alias.\
-First symbol in the \"`g[[`y:`g]<classfilter>:]`x\" might be \"`y:`x\" or \"`y#`x\". It stands for the inheritance check, not only the exact class (e.g. \"`g#demon:1`g\" will check Demons and Spectres).\
+First symbol in the \"`g[[`y:`g]<classfilter>:]`x\" might be \"`y:`x\" or \"`y#`x\". It stands for the inheritance check, not only the exact class (e.g. \"`g#demon`g\" will check Demons and Spectres).\
 All StatNums are nominal: some modification may use non-standard distribution on sets.\
 \"`Czcaddlistget`x\" is just a convenience alias which uses current the CCMD in question.\
 Internal thinkers may be controlled by name if the argument \"rm:raw\" or its analog is provided. But they may be freely specified in default \"rm\" by their index number in list.\

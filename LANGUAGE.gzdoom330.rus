@@ -566,9 +566,10 @@ ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG     = "\c!Неизвестный флаг \c-\
 ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS = "\c!Несовместимые флаги\c-: \"Удалить по названию класса\" и \"Уничтожить все\".";
 ZCHECKER_ZCTHINKERSRM_ALLNOCLASS      = "Класс для удаления не установлен.";
 ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS    = "Запрошенный индекс удаления находится \c!вне доступного диапазона\c- (1..%i).";
-ZCHECKER_ZCTHINKERSRM_SUCCESSALL      = "Удалено %i классов Thinker типа \"%s\"";
-ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW   = "Удалено %i произвольных классов Thinker типа \"%s\".";
-ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING = "Удалены %i классов Thinker (все возможные).";
+ZCHECKER_ZCTHINKERSRM_SUCCESSONE      = "Удален объект \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALL      = "Удалено %i объектов класса \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW   = "Удалено %i объектов необработанного названия класса \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING = "Удалено %i объектов (все возможные).";
 ZCHECKER_ZCTHINKERSRM_NOSELECTION     = "Объекты для удаления не указаны ни по индексу, ни по названию класса.";
 ZCHECKER_ZCTHINKERS_SECTIONACTORS     = "Акторы";
 ZCHECKER_ZCTHINKERS_SECTIONSTATIC     = "Статичные";
@@ -797,7 +798,7 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "Используйте команды семейства \"`Czcthinkers <тип> rm`x\" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.\
 Вместо слов-идентификаторов можно использовать явный номер StatNum.\
-Первым символом в последовательности \"`g[[`y:`g]<класс>:]`x\" может быть \"`y:`x\" или \"`y#`x\". Он включает проверку по наследованию, а не по точному названию класса (например, \"`g#demon:1`g\" будет проверять всех акторов Demon и Spectre).\
+Первым символом в последовательности \"`g[[`y:`g]<класс>:]`x\" может быть \"`y:`x\" или \"`y#`x\". Он включает проверку по наследованию, а не по точному названию класса (например, \"`g#demon`g\" будет проверять всех акторов Demon и Spectre).\
 Все StatNum условны: некоторые модификации могут использовать нестандартное распределение по множествам.\
 \"`Czcaddlistget`x\" - лишь удобный псевдоним, на деле вызывающий рассматриваемую команду.\
 Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента \"rm:raw\" или его аналога. Однако указание подобного класса по списочному номеру работает и без того.\

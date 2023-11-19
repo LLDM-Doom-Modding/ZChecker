@@ -280,6 +280,10 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 					}
 				}
 
+			} else if ( ccmdArgsSize != 3 ) {
+				// Wrong command syntax "zcthinkers <type> rm".
+				zcAction = TCA_Error;
+
 			} else {
 				// Branch "zcthinkers <type> rm [[#]<classfilter>:]<index>".
 				parseActorIndex = true;
@@ -441,24 +445,51 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		return ( specifiedClassUseInheritance? th is iteratorClass : th.GetClass() == specifiedClass );
 	}
 
+	// Returns:
+	//	1) Thinker under specified index in list; and
+	//	2) Total iterated suitable thinkers amount (optional).
+	protected Thinker, int findSpecifiedThinker( ThinkerIterator it ) {
+		Thinker curThinker = NULL;
+		int totalThinkersAmount = 0;
+
+		// Optimization, check for the flag only once:
+		if ( specifiedClassUseInheritance ) {
+			// Inheritance from class:
+			do {
+				if ( !( curThinker = it.Next( false ) ) )
+					break;
+
+				if ( curThinker is iteratorClass ) {
+					specifiedListIndex--;
+					totalThinkersAmount++;
+				}
+			} while ( specifiedListIndex > 0 );
+
+		} else {
+			// Exact class name:
+			do {
+				if ( !( curThinker = it.Next( false ) ) )
+					break;
+
+				if ( curThinker.GetClass() == specifiedClass ) {
+					specifiedListIndex--;
+					totalThinkersAmount++;
+				}
+			} while ( specifiedListIndex > 0 );
+
+		} // of else of if ( specifiedClassUseInheritance ) {}
+
+		return curThinker, totalThinkersAmount;
+	} // of protected Thinker, int findSpecifiedThinker( ThinkerIterator it ) {}
+
 
 	protected void CommandAddActorToPanel( void ) {
 		ThinkerIterator it = getThinkersIterator();
 		Thinker curThinker;
 
 		if ( specifiedListIndex != -1 ) {
-			int totalThinkersAmount = 0;
-
-			do {
-				if ( !( curThinker = it.Next( false ) ) )
-					break;
-
-				if ( isIteratorThinkerSuitable( curThinker ) ) {
-					specifiedListIndex--;
-					totalThinkersAmount++;
-				}
-
-			} while ( specifiedListIndex > 0 );
+			int totalThinkersAmount;
+			[ curThinker, totalThinkersAmount ] = findSpecifiedThinker( it );
 
 			if ( !curThinker ) {
 				ZCGlobal.Log( LL_Main | LL_NoLocalize, String.Format( ZCGlobal.Locz( "ZCTHINKERSADD_SELECTBOUNDS" ), totalThinkersAmount ) );
@@ -507,23 +538,15 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		if ( specifiedListIndex != -1 ) {
 			// Removing by index:
 
-			int totalThinkersAmount = 0;
+			int totalThinkersAmount;
+			[ curThinker, totalThinkersAmount ] = findSpecifiedThinker( it );
 
-			do {
-				if ( !( curThinker = it.Next( false ) ) )
-					break;
-
-				if ( isIteratorThinkerSuitable( curThinker ) ) {
-					specifiedListIndex--;
-					totalThinkersAmount++;
-				}
-			} while ( specifiedListIndex > 0 );
-
-
-			if ( !curThinker )
+			if ( !curThinker ) {
 				ZCGlobal.Log( LL_Main | LL_NoLocalize, String.Format( ZCGlobal.Locz( "ZCTHINKERSRM_SELECTBOUNDS" ), totalThinkersAmount ) );
-			else
-				RemoveWorldThinker( curThinker );
+			} else {
+				if ( RemoveWorldThinker( curThinker ) )
+					LogLocalize2Str( LL_Detailed, "ZCTHINKERSRM_SUCCESSONE", specifiedClass.GetClassName() );
+			}
 
 		} else if ( zcActionArg & TCRF_AllByName ) {
 			if ( !( zcActionArg & TCRF_RawName ) ) {
