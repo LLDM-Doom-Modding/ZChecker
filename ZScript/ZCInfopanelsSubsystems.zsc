@@ -28,11 +28,10 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
+		if ( thing is "Inventory" && Inventory( thing ).owner )
+			return DARKGRAY .. "Inventory: (owned).";
+
 		String outstr = DARKGRAY .. "Inventory\c-: " .. GRAY;
-
-		if ( thing is "Inventory" )
-			return outstr .. "(Inventory itself).\n";
-
 		Inventory item = thing.Inv;
 
 		if ( !item )
