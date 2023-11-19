@@ -387,22 +387,22 @@ unused),,,,
 ,,ZCHECKER_CCMD_WIP,"\c~[Work-in-progress command, may behave strangely or not work at all].","\c~[Команда находится в разработке, может работать неочевидным образом или же не работать вовсе]."
 ,,,,
 ," ""ZCConsoleCommand::GetPlaceTestee()"" and ""ZCConsoleCommand::LinetraceActor()""",,,
-,,ZCHECKER_GETACTOR_SKIPPEDSPECIAL,"Skipped special ZChecker class ""%s"".","Пропущен внутренний класс ZChecker ""%s""."
+,,ZCHECKER_GETACTOR_SKIPPEDSPECIAL,"Skipped ZChecker class ""%s"".","Пропущен внутренний класс ZChecker ""%s""."
 ,,ZCHECKER_GETACTOR_LTNOACTORS,No available linetarget actors found.,Доступных целей под курсором не найдено.
 ,,ZCHECKER_GETACTOR_EMPTYPOS,No actor in position %i.,Актора в позиции %i не существует.
 ,,ZCHECKER_GETACTOR_WRONGPOS,\c!Wrong position %i\c- (must be in range [1..%i]).,\c!Неверная позиция %i\c- (должна лежать в пределах [1..%i]).
 ,,ZCHECKER_GETACTOR_UNKNOWNKEYWORD,"\c!Unknown placeholder ""%s"" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.","\c!Неизвестная подстановка ""%s"" в позиции %i\c~. Возможные значения: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~."
 ,,,,
 ," ""ZCConsoleCommand::ParseSpecialActorName()""",,,
-,,ZCHECKER_PARSENAME_WRONGSELECT,"\c!Selection ""%s"" isn't a positive integer.","\c!Выбор ""%s"" — не положительное целое число."
-,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". You may use ""%%null"" or ""%%none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. Для обхода этого можно использовать ""%%null"" или ""%%none""."
-,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset classname variable ""%s"".","\c!Пропущена\c- ещё не установленная переменная имени класса ""%s""."
-,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided.,"\c!Нет ни одного символа, определяющего класс."
+,,ZCHECKER_PARSENAME_WRONGSELECT,"Class selection index ""%s"" \c!isn't a positive integer\c-.","Выбор класса ""%s"" — \c!не положительное целое число\c-."
+,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". \c~You may use ""$null"" or ""$none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. \c~Для обхода этого можно использовать ""$null"" или ""$none""."
+,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset classname variable ""%s"".","\c!Пропущена\c- ещё не существующая переменная имени класса ""%s""."
+,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided\c-.,"\c!Нет ни одного символа, определяющего класс\c-."
 ,,ZCHECKER_PARSENAME_WITHFILTER,\c~ with filter \cj%s\c~,\c~ с фильтром \cj%s\c~
-,,ZCHECKER_PARSENAME_NOTFOUND,Cannot find any suitable actor name candidates,Подходящих под регулярное выражение кандидатов не найдено
-,,ZCHECKER_PARSENAME_FOUNDSOME,Found more than one suitable actor name candidate,"Найдено более одного кандидата, подходящих под регулярное выражение"
-,,ZCHECKER_PARSENAME_SELECTBOUNDS,\c!Selected index \cn%i \c!is out of range\c- of the found candidates.,\c!Выбранный индекс \cn%i \c!находится вне дипапзона\c- найденных кандидатов.
-,,ZCHECKER_PARSENAME_IGNORESELECT,\c!Ignoring numerical selection %i\c-,\c!Пропуск числового указания %i\c-
+,,ZCHECKER_PARSENAME_NOTFOUND,Cannot find any suitable actor name candidates,"Не найдено кандидатов, подходящих под регулярное выражение"
+,,ZCHECKER_PARSENAME_FOUNDSOME,Found more than one suitable actor name candidate,"Найдено более одного кандидата, подходящего под регулярное выражение"
+,,ZCHECKER_PARSENAME_SELECTBOUNDS,\c!Selected index \cn%i \c!is out of range\c- of the found candidates (1..%i).,\c!Выбранный индекс \cn%i \c!находится вне дипапзона\c- найденных кандидатов (1..%i).
+,,ZCHECKER_PARSENAME_IGNORESELECT,"Ignoring selection \cn%i\c-, the class is already unambiguously defined","Пропуск указания \cn%i\c-, класс и так определён однозначно"
 ,,,,
 ," ""ZCConsoleCommand::RemoveWorldThinker()""",,,
 ,,ZCHECKER_REMOVEPREVENT_LIVEPLAYER,"\crTried to destroy a live player %i, skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crПопытка уничтожения живого игрока %i, отмена\c-. Переопределить можно с помощью опции ""Разрешить опасные действия""."
@@ -584,7 +584,7 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERS_WRONGSELECT,"Object selection index ""%s"" isn't a positive integer.","Индекс выбора объекта ""%s"" должен быть положительным целым числом."
 ,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"\c!Cannot determine \c-Thinker class name ""%s"".","\c!Невозможно разобрать \c-имя класса Thinker ""%s""."
 ,,ZCHECKER_ZCTHINKERS_UNKNOWNACTION,"\c!Unknown action \c-""%s"".","\c!Неизвестное действие \c-""%s""."
-,,ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.
+,,ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS,Requested index to add \c!is out-of-bounds\c- (1..%i).,Запрошенный индекс добавления находится \c!вне доступного диапазона\c- (1..%i).
 ,,ZCHECKER_ZCTHINKERSADD_INSUFFPLACE,"Cannot add target to list, insufficient space. Try adding the actor to list directly via ""zcaddlistget <...> [1..%i]"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcaddlistget 1""..""zcaddlistget %i""."
 ,,ZCHECKER_ZCTHINKERSADD_WRONGPANEL,"\c!Wrong panel number \c-""%s"".","\c!Неверный номер панели \c-""%s""."
 ,,ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE,Panel number \c!must be in range \c-[1..%i].,Номер панели \c!должен лежать в пределах \c-[1..%i].
@@ -594,7 +594,7 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG,"\c!Unknown flag \c-""%s"".","\c!Неизвестный флаг \c-""%s""."
 ,,ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS,"\c!Incompatible flags\c- ""Remove by classname"" and ""Destroy everything"".","\c!Несовместимые флаги\c-: ""Удалить по названию класса"" и ""Уничтожить всё""."
 ,,ZCHECKER_ZCTHINKERSRM_ALLNOCLASS,Class to remove not set.,Класс для удаления не установлен.
-,,ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.
+,,ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS,Requested index to remove \c!is out-of-bounds\c- (1..%i).,Запрошенный индекс удаления находится \c!вне доступного диапазона\c- (1..%i).
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSALL,"Removed %i thinkers of type ""%s"".","Удалено %i классов Thinker типа ""%s"""
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW,"Removed %i raw-named thinkers of type ""%s"".","Удалено %i произвольных классов Thinker типа ""%s""."
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING,Removed %i thinkers (all possible).,Удалены %i классов Thinker (все возможные).

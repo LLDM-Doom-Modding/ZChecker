@@ -447,16 +447,21 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		Thinker curThinker;
 
 		if ( specifiedListIndex != -1 ) {
+			int totalThinkersAmount = 0;
+
 			do {
 				if ( !( curThinker = it.Next( false ) ) )
 					break;
 
-				if ( isIteratorThinkerSuitable( curThinker ) )
+				if ( isIteratorThinkerSuitable( curThinker ) ) {
 					specifiedListIndex--;
+					totalThinkersAmount++;
+				}
+
 			} while ( specifiedListIndex > 0 );
 
 			if ( !curThinker ) {
-				ZCGlobal.Log( LL_Main, "$ZCTHINKERSADD_SELECTBOUNDS" );
+				ZCGlobal.Log( LL_Main | LL_NoLocalize, String.Format( ZCGlobal.Locz( "ZCTHINKERSADD_SELECTBOUNDS" ), totalThinkersAmount ) );
 
 			} else if ( curThinker is "Actor" ) {
 				// Find next free testee place ("-1" if not found):
@@ -502,17 +507,21 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		if ( specifiedListIndex != -1 ) {
 			// Removing by index:
 
+			int totalThinkersAmount = 0;
+
 			do {
 				if ( !( curThinker = it.Next( false ) ) )
 					break;
 
-				if ( isIteratorThinkerSuitable( curThinker ) )
+				if ( isIteratorThinkerSuitable( curThinker ) ) {
 					specifiedListIndex--;
+					totalThinkersAmount++;
+				}
 			} while ( specifiedListIndex > 0 );
 
 
 			if ( !curThinker )
-				ZCGlobal.Log( LL_Main, "$ZCTHINKERSRM_SELECTBOUNDS" );
+				ZCGlobal.Log( LL_Main | LL_NoLocalize, String.Format( ZCGlobal.Locz( "ZCTHINKERSRM_SELECTBOUNDS" ), totalThinkersAmount ) );
 			else
 				RemoveWorldThinker( curThinker );
 
