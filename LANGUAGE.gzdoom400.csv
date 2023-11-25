@@ -394,7 +394,7 @@ unused),,,,
 ,,ZCHECKER_GETACTOR_UNKNOWNKEYWORD,"\c!Unknown placeholder ""%s"" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.","\c!Неизвестная подстановка ""%s"" в позиции %i\c~. Возможные значения: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~."
 ,,,,
 ," ""ZCConsoleCommand::ParseSpecialActorName()""",,,
-,,ZCHECKER_PARSENAME_WRONGSELECT,"Class selection index ""%s"" \c!isn't a positive integer\c-.","Выбор класса ""%s"" — \c!не положительное целое число\c-."
+,,ZCHECKER_PARSENAME_WRONGSELECT,"Class selection index ""\c!%s\c-"" isn't a positive integer.","Выбор класса ""\c!%s\c-"" должен быть положительным целым числом."
 ,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". \c~You may use ""$null"" or ""$none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. \c~Для обхода этого можно использовать ""$null"" или ""$none""."
 ,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset classname variable ""%s"".","\c!Пропущена\c- ещё не существующая переменная имени класса ""%s""."
 ,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided\c-.,"\c!Нет ни одного символа, определяющего класс\c-."
@@ -580,31 +580,33 @@ unused),,,,
 ," ""zcthinkers"":",,,
 ,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> l[ist] [[:]<класс>];zcthinkers <тип> rm|rem[ove]|del[ete] [[:]<класс>:]<порядковый номер>;zcthinkers <тип> rm:all[:raw] <класс>;zcthinkers <тип> rm:everything;zcthinkers actors add[:<панель>] [[:]<класс>:]<порядковый номер>;zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
 ,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.","Производит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели."
-,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне пределов. Должен находиться в диапазоне [0; %i].
-,,ZCHECKER_ZCTHINKERS_WRONGSELECT,"Object selection index ""%s"" isn't a positive integer.","Индекс выбора объекта ""%s"" должен быть положительным целым числом."
-,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"\c!Cannot determine \c-Thinker class name ""%s"".","\c!Невозможно разобрать \c-имя класса Thinker ""%s""."
+,,ZCHECKER_ZCTHINKERS_BOUNDSSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне доступных пределов. Должен находиться в диапазоне [0; %i].
+,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,"\c!Cannot recognize StatNum \c-""%s"".","\c!Неверный StatNum \c-""%s""."
+,,ZCHECKER_ZCTHINKERS_WRONGSELECT,"Object selection index ""\c!%s\c-"" isn't a positive integer.","Индекс выбора объекта ""\c!%s\c-"" должен быть положительным целым числом."
+,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"Cannot determine Thinker class name ""%s"".","Невозможно разобрать имя класса Thinker ""%s""."
 ,,ZCHECKER_ZCTHINKERS_UNKNOWNACTION,"\c!Unknown action \c-""%s"".","\c!Неизвестное действие \c-""%s""."
-,,ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS,Requested index to add \c!is out-of-bounds\c- (1..%i).,Запрошенный индекс добавления находится \c!вне доступного диапазона\c- (1..%i).
+,,ZCHECKER_ZCTHINKERS_EMPTYLIST,"\c~Thinkers list is empty, selection index is ignored.","\c~Таких объектов нет, индекс выбора проигнорирован."
+,,ZCHECKER_ZCTHINKERS_SELECTBOUNDS,Requested index is out-of-bounds (1..%i).,Запрошенный индекс находится вне доступного диапазона (1..%i).
 ,,ZCHECKER_ZCTHINKERSADD_INSUFFPLACE,"Cannot add target to list, insufficient space. Try adding the actor to list directly via ""zcaddlistget <...> [1..%i]"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcaddlistget 1""..""zcaddlistget %i""."
 ,,ZCHECKER_ZCTHINKERSADD_WRONGPANEL,"\c!Wrong panel number \c-""%s"".","\c!Неверный номер панели \c-""%s""."
-,,ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE,Panel number \c!must be in range \c-[1..%i].,Номер панели \c!должен лежать в пределах \c-[1..%i].
+,,ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE,Panel number must be in range [1..%i].,Номер панели должен лежать в пределах [1..%i].
 ,,ZCHECKER_ZCTHINKERSADD_SUCCESS,Added a random world actor %s.,Добавлен произвольный актор %s.
 ,,ZCHECKER_ZCTHINKERSADD_NOTACTOR,"Thinker ""%s"" isn't an Actor.","Объект Thinker ""%s"" — не класс Actor."
-,,ZCHECKER_ZCTHINKERSADD_NOSELECTION,Actor index to add \c!not specified\c-.,Индекс актора для добавления \c!не указан\c-.
+,,ZCHECKER_ZCTHINKERSADD_NOSELECTION,Actor index to add not specified.,Индекс актора для добавления не указан.
 ,,ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG,"\c!Unknown flag \c-""%s"".","\c!Неизвестный флаг \c-""%s""."
 ,,ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS,"\c!Incompatible flags\c- ""Remove by classname"" and ""Destroy everything"".","\c!Несовместимые флаги\c-: ""Удалить по названию класса"" и ""Уничтожить всё""."
-,,ZCHECKER_ZCTHINKERSRM_ALLNOCLASS,Class to remove not set.,Класс для удаления не установлен.
-,,ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS,Requested index to remove \c!is out-of-bounds\c- (1..%i).,Запрошенный индекс удаления находится \c!вне доступного диапазона\c- (1..%i).
+,,ZCHECKER_ZCTHINKERSRM_ALLNOCLASS,Class to remove not specified.,Класс для удаления не указан.
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSONE,"Removed object ""%s"".","Удалён объект ""%s""."
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSALL,"Removed %i objects of class ""%s"".","Удалено %i объектов класса ""%s""."
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW,"Removed %i raw-named objects of class ""%s"".","Удалено %i объектов необработанного названия класса ""%s""."
 ,,ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING,Removed %i objects (all possible).,Удалено %i объектов (все возможные).
-,,ZCHECKER_ZCTHINKERSRM_NOSELECTION,Thinker to remove not specified either by index or by classname.,"Объекты для удаления не указаны ни по индексу, ни по названию класса."
+,,ZCHECKER_ZCTHINKERSRM_NOSELECTION,Thinker to remove not specified.,Индекс объекта для удаления не указан.
 ,,ZCHECKER_ZCTHINKERS_SECTIONACTORS,Actors,Акторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONSTATIC,Static,Статичные
 ,,ZCHECKER_ZCTHINKERS_SECTIONSECTORS,Sectors,Секторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONOTHER,Other thinkers,Другие
 ,,ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX,Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).,Доступные типы (множественное число необязательно): \n%s\nили число для нестандартных StatNum (пользовательские: \cy%i\c-..\cy%i\c-).
+,,ZCHECKER_ZCTHINKERS_SECSTATNUMQUESTION,"""Sector"" what? ""\cwSectorEffects\c-"" (same as ""\cwSectorMovers\c-""), ""\cwSectorLights\c-"" or ""\cwSectorLightTransfers\c-""?","Что из ""Sector""? ""\cwSectorEffects\c-"" (оно же ""\cwSectorMovers\c-""), ""\cwSectorLights\c-"" или ""\cwSectorLightTransfers\c-""?"
 ,,ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR, (+NOSECTOR),
 ,,ZCHECKER_ZCTHINKERS_LISTATPOS, at, на
 ,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,", inv.owner is ",", inv.owner: "
