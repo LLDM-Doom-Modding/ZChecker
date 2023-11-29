@@ -454,7 +454,7 @@ unused),,,,
 ,,,,
 ," ""zcact"":",,,
 ,,ZCHECKER_ZCACT_HELP_TITLE,zcact [<pos>] <action>,zcact [<с кем>] <действие>
-,,ZCHECKER_ZCACT_HELP_DESC,"Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: ""rev[ive]""|""res[urrect]"", ""k[ill]"", ""xk[ill]""|""mdk"", ""destroy""|""rem[ove]""|""rm""|""del[ete]""","Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: ""rev[ive]""|""res[urrect]"", ""k[ill]"", ""xk[ill]""|""mdk"", ""destroy""|""rem[ove]""|""rm""|""del[ete]""."
+,,ZCHECKER_ZCACT_HELP_DESC,"Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: ""rev[ive]""/""res[urrect]"", ""k[ill]"", ""xk[ill]""/""mdk"", ""rem[ove]""/""rm""/""del[ete]"", ""stop"", ""[state]freeze""/""[state]frz"", ""[state]skip"", ""[tics]revert"".","Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: ""rev[ive]""/""res[urrect]"", ""k[ill]"", ""xk[ill]""/""mdk"", ""rem[ove]""/""rm""/""del[ete]"", ""stop"", ""[state]freeze""/""[state]frz"", ""[state]skip"", ""[tics]revert""."
 ,,ZCHECKER_ZCACT_CANNOTREVIVE,Cannot revive actor %s,Невозможно воскресить актора %s.
 ,,ZCHECKER_ZCACT_REVIVED,Revived actor %s,Актор %s воскрешён.
 ,,ZCHECKER_ZCACT_REVIVEVANISH,"Actor %s revived, but vanished.","Актор %s был воскрешён, но сразу же исчез."
@@ -464,6 +464,10 @@ unused),,,,
 ,,ZCHECKER_ZCACT_XKILLED,Extremely killed actor %s.,Актор %s жестоко убит.
 ,,ZCHECKER_ZCACT_CANNOTXKILL,Cannot extremely kill actor %s,Не удаётся жестоко убить актора %s.
 ,,ZCHECKER_ZCACT_DESTROYED,Destroyed actor %s.,Актор %s уничтожен.
+,,ZCHECKER_ZCACT_STOPPED,Stopped actor %s.,Актор %s остановлен.
+,,ZCHECKER_ZCACT_STATEFREEZED,"Delay for actor %s set to ""-1"" (actor temporally freezed).","Задержка для актора %s установлена в ""-1"" (актор временно заморожен)."
+,,ZCHECKER_ZCACT_STATESKIPPED,Skipped state for actor %s.,Пропущен текущий стейт актора %s.
+,,ZCHECKER_ZCACT_STATETICSRESET,Reset state delay for actor %s.,Задержка текущего стейта у актора %s сброшена до исходного.
 ,,,,
 ," ""zcgive"":",,,
 ,,ZCHECKER_ZCGIVE_HELP_TITLE,zcgive [<pos>] <item> [<amount=1>],zcgive [<кому>] <предмет> [<количество=1>]
@@ -793,7 +797,9 @@ This commands are also available in the \""Everything\"" map settings menu.","""
 ,,,,
 ,,,,
 ,,ZCHECKER_TOOLTIP_ZCACT_TIPS,"Not all actors may be killed or resurrected. If this happens, a message will be printed.
+In CCMDs with the ""`2state`2"" and ""`2tics`2"" prefixes they can be used in place of each other with the same result (like ""`Czcact ticsskip`C"").
 Resurrection of the dead player is not supported, use the built-in ""`Cresurrect`C"" command instead.","Не все акторы могут быть убиты или воскрешены; при подобной попытке будет выведено сообщение о неудаче.
+В командах с префиксами ""`2state`2"" и ""`2tics`2"" оные могут быть использованы на месте друг друга с тем же результатом (к примеру, ""`Czcact ticsskip`C"").
 Воскрешение мёртвого игрока не поддерживается. Используйте вместо этого встроенную команду ""`Cresurrect`C""."
 ,,ZCHECKER_TOOLTIP_ZCACT_EXAMPLES,"""`Czcact rm`C"" deletes the linetarget actor from memory (like the built-in ""`Cremove`C"" CCMD, but with only one actor);
 ""`Czcact kill`C"" kills the linetarget;

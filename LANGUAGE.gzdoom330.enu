@@ -456,7 +456,7 @@ ZCHECKER_ZCREM_EMPTYPOS               = "Cannot remove, there's no actor in posi
 
 //  "zcact":
 ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<pos>] <action>";
-ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
+ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: \"rev[ive]\"/\"res[urrect]\", \"k[ill]\", \"xk[ill]\"/\"mdk\", \"rem[ove]\"/\"rm\"/\"del[ete]\", \"stop\", \"[state]freeze\"/\"[state]frz\", \"[state]skip\", \"[tics]revert\".";
 ZCHECKER_ZCACT_CANNOTREVIVE           = "Cannot revive actor %s";
 ZCHECKER_ZCACT_REVIVED                = "Revived actor %s";
 ZCHECKER_ZCACT_REVIVEVANISH           = "Actor %s revived, but vanished.";
@@ -466,6 +466,10 @@ ZCHECKER_ZCACT_CANNOTKILL             = "Cannot kill actor %s";
 ZCHECKER_ZCACT_XKILLED                = "Extremely killed actor %s.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Cannot extremely kill actor %s";
 ZCHECKER_ZCACT_DESTROYED              = "Destroyed actor %s.";
+ZCHECKER_ZCACT_STOPPED                = "Stopped actor %s.";
+ZCHECKER_ZCACT_STATEFREEZED           = "Delay for actor %s set to \"-1\" (actor temporally freezed).";
+ZCHECKER_ZCACT_STATESKIPPED           = "Skipped state for actor %s.";
+ZCHECKER_ZCACT_STATETICSRESET         = "Reset state delay for actor %s.";
 
 //  "zcgive":
 ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<pos>] <item> [<amount=1>]";
@@ -735,6 +739,7 @@ ZCHECKER_TOOLTIP_ZCTAKE_EXAMPLES      = "\"`Czctake shell 3`x\" takes 3 shells f
 
 
 ZCHECKER_TOOLTIP_ZCACT_TIPS           = "Not all actors may be killed or resurrected. If this happens, a message will be printed.\
+In CCMDs with the \"`2state`2\" and \"`2tics`2\" prefixes they can be used in place of each other with the same result (like \"`Czcact ticsskip`C\").\
 Resurrection of the dead player is not supported, use the built-in \"`Cresurrect`C\" command instead.";
 ZCHECKER_TOOLTIP_ZCACT_EXAMPLES       = "\"`Czcact rm`C\" deletes the linetarget actor from memory (like the built-in \"`Cremove`C\" CCMD, but with only one actor);\
 \"`Czcact kill`C\" kills the linetarget;\

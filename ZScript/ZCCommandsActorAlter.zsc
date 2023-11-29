@@ -133,6 +133,10 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		AC_Kill,
 		AC_Destroy,
 		AC_XKill,
+		AC_Stop,		// "vel = (0, 0, 0);"
+		AC_TicsFreeze,	// "tics = -1;"
+		AC_TicsSkip,	// "tics = 0;"
+		AC_TicsRevert,	// "tics = CurState.tics;"
 	};
 
 	Actor thing;
@@ -152,22 +156,32 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	override bool HandleArguments() {
 		testeeStatus = PPS_Error;
 		bool outValue = false;
+
 		int ccmdArgsSize = ccmd.args.Size();
 
 		if ( ccmdArgsSize == 1 || ccmdArgsSize == 2 ) {
 			outValue = true;
 			String what = ccmd.args[ ccmdArgsSize - 1 ];
+
 			what.ToLower();
 			String whatLeft3 = what.Left( 3 );
 
-			if ( whatLeft3 == "res" || whatLeft3 == "rev" )
-				actoraction = AC_Revive;
+			if ( whatLeft3 == "rem" || what == "rm" || whatLeft3 == "del" || ZCGlobal.StrStartsWith( what, "destr" ) )
+				actoraction = AC_Destroy;
 			else if ( what == "kill" || what == "k" || what == "die" )
 				actoraction = AC_Kill;
 			else if ( what == "xk" || what == "xkill" || what == "mdk" )
 				actoraction = AC_XKill;
-			else if ( what == "destroy" || whatLeft3 == "rem" || what == "rm" || whatLeft3 == "del" )
-				actoraction = AC_Destroy;
+			else if ( ZCGlobal.StrEndsWith( what, "revert" ) || ZCGlobal.StrStartsWith( what, "revert" ) )
+				actoraction = AC_TicsRevert;
+			else if ( whatLeft3 == "res" || whatLeft3 == "rev" )
+				actoraction = AC_Revive;
+			else if ( what == "stop" )
+				actoraction = AC_Stop;
+			else if ( ZCGlobal.StrEndsWith( what, "freeze" ) || ZCGlobal.StrStartsWith( what, "freeze" ) || ZCGlobal.StrEndsWith( what, "frz" ) || ZCGlobal.StrStartsWith( what, "frz" ) )
+				actoraction = AC_TicsFreeze;
+			else if ( ZCGlobal.StrEndsWith( what, "skip" ) || ZCGlobal.StrStartsWith( what, "skip" ) )
+				actoraction = AC_TicsSkip;
 			else
 				outValue = false;
 
@@ -182,7 +196,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		} // of if ( ccmdArgsSize == 1 || ccmdArgsSize == 2 ) {}
 
 		return outValue;
-	}
+	} // of override bool HandleArguments() {}
+
 
 	protected void TryRevive( Actor thing ) {
 		bool reviveBlocked = false;
@@ -233,7 +248,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			case AC_Kill:
 				thing.A_Die();
 
-				// Some actors are instantly destroyed in the "Death:" state sequence.
+				// Some actors are immediately destroyed after reaching the "Death:" state sequence.
 				if ( thing && thing.health > 0 )
 					LogLocalize2Str( LL_Main, "ZCACT_CANNOTKILL", thingname );
 				else
@@ -251,11 +266,29 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				if ( RemoveWorldThinker( thing ) )
 					LogLocalize2Str( LL_Detailed, "ZCACT_DESTROYED", thingname );
 				break;
+			case AC_Stop:
+				thing.vel = (0, 0, 0);
+				LogLocalize2Str( LL_Detailed, "ZCACT_STOPPED", thingname );
+				break;
+			case AC_TicsFreeze:
+				thing.tics = -1;
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATEFREEZED", thingname );
+				break;
+			case AC_TicsSkip:
+				thing.tics = 0;
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATESKIPPED", thingname );
+				break;
+			case AC_TicsRevert:
+				thing.tics = thing.CurState.tics;
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATETICSRESET", thingname );
+				break;
 			default:
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown action id \"" .. actoraction .. "\" for thing " .. thingname );
 				break;
 		}
-	}
+
+	} // of override void DoCommand( void ) {}
+
 } // of class ZCActorActionCommand: ZCConsoleCommand {}
 
 

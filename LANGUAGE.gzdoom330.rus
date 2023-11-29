@@ -436,7 +436,7 @@ ZCHECKER_ZCREM_EMPTYPOS               = "Удалить невозможно, т
 
 //  "zcact":
 ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<с кем>] <действие>";
-ZCHECKER_ZCACT_HELP_DESC              = "Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\".";
+ZCHECKER_ZCACT_HELP_DESC              = "Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: \"rev[ive]\"/\"res[urrect]\", \"k[ill]\", \"xk[ill]\"/\"mdk\", \"rem[ove]\"/\"rm\"/\"del[ete]\", \"stop\", \"[state]freeze\"/\"[state]frz\", \"[state]skip\", \"[tics]revert\".";
 ZCHECKER_ZCACT_CANNOTREVIVE           = "Невозможно воскресить актора %s.";
 ZCHECKER_ZCACT_REVIVED                = "Актор %s воскрешен.";
 ZCHECKER_ZCACT_REVIVEVANISH           = "Актор %s был воскрешен, но сразу же исчез.";
@@ -446,6 +446,10 @@ ZCHECKER_ZCACT_CANNOTKILL             = "Не удается убить акто
 ZCHECKER_ZCACT_XKILLED                = "Актор %s жестоко убит.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Не удается жестоко убить актора %s.";
 ZCHECKER_ZCACT_DESTROYED              = "Актор %s уничтожен.";
+ZCHECKER_ZCACT_STOPPED                = "Актор %s остановлен.";
+ZCHECKER_ZCACT_STATEFREEZED           = "Задержка для актора %s установлена в \"-1\" (актор временно заморожен).";
+ZCHECKER_ZCACT_STATESKIPPED           = "Пропущен текущий стейт актора %s.";
+ZCHECKER_ZCACT_STATETICSRESET         = "Задержка текущего стейта у актора %s сброшена до исходного.";
 
 //  "zcgive":
 ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<кому>] <предмет> [<количество=1>]";
@@ -711,6 +715,7 @@ ZCHECKER_TOOLTIP_ZCTAKE_EXAMPLES      = "\"`Czctake shell 3`x\" забирает
 
 
 ZCHECKER_TOOLTIP_ZCACT_TIPS           = "Не все акторы могут быть убиты или воскрешены; при подобной попытке будет выведено сообщение о неудаче.\
+В командах с префиксами \"`2state`2\" и \"`2tics`2\" оные могут быть использованы на месте друг друга с тем же результатом (к примеру, \"`Czcact ticsskip`C\").\
 Воскрешение мертвого игрока не поддерживается. Используйте вместо этого встроенную команду \"`Cresurrect`C\".";
 ZCHECKER_TOOLTIP_ZCACT_EXAMPLES       = "\"`Czcact rm`C\" удаляет цель под курсором из памяти (как встроенная команда \"`Cremove`C\", но с одним актором);\
 \"`Czcact kill`C\" убивает цель под курсором;\

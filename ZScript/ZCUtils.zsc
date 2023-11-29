@@ -244,9 +244,18 @@ class ZCGlobal: Thinker {
 		return !!( text.Left( prefix.Length() ) == prefix );
 	}
 
+	static clearscope bool StrEndsWith( String text, String postfix ) {
+		int textlen = text.Length();
+		int postlen = postfix.Length();
+
+		if ( postlen > textlen )
+			return false;
+
+		return !!( text.Mid( textlen - postlen, postlen ) == postfix );
+	}
 
 
-	// Test for the special ZChecker level:
+	// Check for the special ZChecker level:
 	static clearscope bool IsEverythingLevel( void ) {
 		// Got from "mapchecksum everything" CCMD:
 		//return level.GetChecksum() ~== "8FBB774BE1D239B5C7CB514DF9B41A2E" || ( CVar.FindCVar( "mcm_zchecker_forceevmap" ).GetBool() );
