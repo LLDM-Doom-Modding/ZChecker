@@ -293,6 +293,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 
 
 struct ZCSummonExtraParameters play {
+	// Will be reworked to the struct like ZCSetPropertyExtraParameters.
+
 	const SPECARGS_MAX = 5;
 	const INFOPANEL_IGNORE = -2;
 	const INFOPANEL_NOFREE = -1;
@@ -312,22 +314,32 @@ struct ZCSummonExtraParameters play {
 	int special;
 	int specargs[ SPECARGS_MAX ];
 
-	bool isFriend;
-	bool isFoe;
-	bool notProjectileRules;
 	int spawnhp;
 	int aggresiveness;
-	bool forceInfight;
+
+	bool isSpeedSet, isFloatSpeedSet;
+	double speed, floatspeed; // [McM] By ika707's request.
+
+	// Flags:
+	bool notProjectileRules;
+	bool dormant;
+
+	bool isFriend;		// Mutual exclusive with the next flag.
+	bool isFoe;
+
+	bool forceInfight;	// Mutual exclusive with the next flag.
 	bool cannotInfight;
+
 
 	void Clear( void ) {
 		infopanelPos = INFOPANEL_IGNORE;
 
-		isAngled = false;
+		isAngled = isSpeedSet = isFloatSpeedSet = false;
 		isFaceangleRelative = isFacepitchRelative = false;
 		faceangle = 0.0;
 		facepitch = 0.0;
 		zofs = forwardofs = 0.0;
+		speed = floatspeed = 0.0;
 
 		tid = special = 0;
 		aggresiveness = -1;
@@ -336,7 +348,7 @@ struct ZCSummonExtraParameters play {
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			specargs[ i ] = 0;
 
-		isFriend = isFoe = notProjectileRules = forceInfight = cannotInfight = false;
+		isFriend = isFoe = notProjectileRules = dormant = forceInfight = cannotInfight = false;
 	}
 
 	void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
@@ -363,6 +375,12 @@ struct ZCSummonExtraParameters play {
 
 		clampfloat( zofs, "Z offset", -32767.0, 32768.0 );
 		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
+
+		if ( isSpeedSet )
+			clampfloat( speed, "Speed", 0.0, 32768.0 );
+
+		if ( isFloatSpeedSet )
+			clampfloat( floatspeed, "Float speed", 0.0, 32768.0 );
 
 		clampint( special, "Actor special", 0, 255 );
 		clampint( spawnhp, "Spawn health", 0, 0x7FFFFFFF );
@@ -430,6 +448,8 @@ class ZCSummonCommand: ZCConsoleCommand {
 						params.isFoe = true;
 					} else if ( curparam == "notprj" || curparam.Left( 7 ) == "notproj" ) {
 						params.notProjectileRules = true;
+					} else if ( curparam == "dormant" ) {
+						params.dormant = true;
 					} else if ( curparam.Left( 4 ) == "infi" ) {
 						params.forceInfight = true;
 						params.cannotInfight = false;
@@ -470,7 +490,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = false;
 									params.isAngled = true;
-								} else if ( paramdiv[ 0 ] == "relang" || paramdiv[ 0 ] == "relangle" || paramdiv[ 0 ] == "ra" || paramdiv[ 0 ] == "relativeang" || paramdiv[ 0 ] == "relativeangle" || paramdiv[ 0 ] == "rang" || paramdiv[ 0 ] == "rangle" ) {
+								} else if ( ZCGlobal.StrStartsWith( paramdiv[ 0 ], "rela" ) || paramdiv[ 0 ] == "ra" || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "relativea" ) || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "rang" ) ) {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = true;
 									params.isAngled = true;
@@ -478,9 +498,16 @@ class ZCSummonCommand: ZCConsoleCommand {
 								} else if ( paramdiv[ 0 ] == "pitch" ) {
 									params.facepitch = paramvalue;
 									params.isFacepitchRelative = false;
-								} else if ( paramdiv[ 0 ] == "relpitch" || paramdiv[ 0 ] == "relativepitch" ) {
+								} else if ( paramdiv[ 0 ] == "rp" || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "relp" ) || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "relativep" ) ) {
 									params.facepitch = paramvalue;
 									params.isFacepitchRelative = true;
+
+								} else if ( paramdiv[ 0 ] == "speed" || paramdiv[ 0 ] == "spd" ) {
+									params.speed = paramvalue;
+									params.isSpeedSet = true;
+								} else if ( paramdiv[ 0 ] == "fspeed" || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "floatsp" ) ) {
+									params.floatspeed = paramvalue;
+									params.isFloatSpeedSet = true;
 
 								} else if ( paramdiv[ 0 ] == "tid" ) {
 									params.tid = paramvalue;
@@ -488,6 +515,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.spawnhp = paramvalue;
 								} else if ( paramdiv[ 0 ] == "spec" || paramdiv[ 0 ] == "special" ) {
 									params.special = paramvalue;
+
 								} else if ( paramdiv[ 0 ] == "z" || paramdiv[ 0 ] == "zofs" || paramdiv[ 0 ] == "zoffset" ) {
 									params.zofs = paramvalue;
 								} else if ( paramdiv[ 0 ] == "fwd" || paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
@@ -554,6 +582,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 			summoned.bFRIENDLY = true;
 		else if ( params.isFoe )
 			summoned.bFRIENDLY = false;
+
+		if ( params.isSpeedSet )
+			summoned.speed = params.speed;
+		if ( params.isFloatSpeedSet )
+			summoned.floatspeed = params.floatspeed;
+
+		if ( params.dormant )
+			summoned.bDORMANT = true;
 
 		if ( params.forceInfight ) {
 			summoned.bFORCEINFIGHTING = true;
@@ -648,6 +684,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 		}
 	}
 } // of class ZCSummonCommand: ZCConsoleCommand {}
+
 
 class ZCCopyPasteClass_dummy: ZCConsoleCommand {
 	override void InitCCMD() {
