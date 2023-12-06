@@ -268,11 +268,19 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				break;
 			case AC_Stop:
 				thing.vel = (0, 0, 0);
-				LogLocalize2Str( LL_Detailed, "ZCACT_STOPPED", thingname );
+
+				PlayerPawn pl = PlayerPawn( thing );
+
+				if ( pl != NULL ) {
+					pl.player.cheats &= ~CF_INTERPVIEW;
+					pl.player.vel = (0.0, 0.0);
+				}
+
+				LogLocalize2Str( LL_Detailed, "ZCACT_VELSTOPPED", thingname );
 				break;
 			case AC_TicsFreeze:
 				thing.tics = -1;
-				LogLocalize2Str( LL_Detailed, "ZCACT_STATEFREEZED", thingname );
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATEFROZEN", thingname );
 				break;
 			case AC_TicsSkip:
 				thing.tics = 0;

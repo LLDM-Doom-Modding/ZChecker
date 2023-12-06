@@ -466,8 +466,8 @@ ZCHECKER_ZCACT_CANNOTKILL             = "Cannot kill actor %s";
 ZCHECKER_ZCACT_XKILLED                = "Extremely killed actor %s.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Cannot extremely kill actor %s";
 ZCHECKER_ZCACT_DESTROYED              = "Destroyed actor %s.";
-ZCHECKER_ZCACT_STOPPED                = "Stopped actor %s.";
-ZCHECKER_ZCACT_STATEFREEZED           = "Delay for actor %s set to \"-1\" (actor temporally freezed).";
+ZCHECKER_ZCACT_VELSTOPPED             = "Stopped actor %s.";
+ZCHECKER_ZCACT_STATEFROZEN            = "Delay for actor %s set to \"-1\" (actor temporally frozen).";
 ZCHECKER_ZCACT_STATESKIPPED           = "Skipped state for actor %s.";
 ZCHECKER_ZCACT_STATETICSRESET         = "Reset state delay for actor %s.";
 

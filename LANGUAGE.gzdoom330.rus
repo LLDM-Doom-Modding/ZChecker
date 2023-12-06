@@ -446,8 +446,8 @@ ZCHECKER_ZCACT_CANNOTKILL             = "Не удается убить акто
 ZCHECKER_ZCACT_XKILLED                = "Актор %s жестоко убит.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Не удается жестоко убить актора %s.";
 ZCHECKER_ZCACT_DESTROYED              = "Актор %s уничтожен.";
-ZCHECKER_ZCACT_STOPPED                = "Актор %s остановлен.";
-ZCHECKER_ZCACT_STATEFREEZED           = "Задержка для актора %s установлена в \"-1\" (актор временно заморожен).";
+ZCHECKER_ZCACT_VELSTOPPED             = "Актор %s остановлен.";
+ZCHECKER_ZCACT_STATEFROZEN            = "Задержка для актора %s установлена в \"-1\" (актор временно заморожен).";
 ZCHECKER_ZCACT_STATESKIPPED           = "Пропущен текущий стейт актора %s.";
 ZCHECKER_ZCACT_STATETICSRESET         = "Задержка текущего стейта у актора %s сброшена до исходного.";
 
@@ -731,7 +731,7 @@ ZCHECKER_TOOLTIP_ZCSUMMON_EXAMPLES    = "\"`Czcsummon clip`C\" создает а
 \"`Czcsummon armo`2-`Cr`x\" создаст актора Armorer `~(продавец из игры Strife)`x;\
 \"`Czcsummon armo`2*`Cr`2:2`x\" также создаст актора Armorer `d(явным выбором второго варианта из списка \"`xArmor`d\" и \"`xArmo`dre`xr`d\")`x;\
 \"`Czcsummon z`2*`Cman 3 f`x\" или \"`Czcsummon z`2*`Cman 3 friendly`x\" создаст трех дружественных (`1friendly`x) Zombieman;\
-\"`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x\" породит дружественного Zombieman и добавит есть в `g3`x-ю `gинфопанель`x;\
+\"`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x\" породит дружественного Zombieman и добавит его в `g3`x-ю `gинфопанель`x;\
 \"`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x\" породит одного ShotgunGuy, отвернутого от игрока, не желающего сражаться с другими монстрами (infight), имеющего TID = 4, а также крайне высокое значение здоровья.";
 
 
