@@ -562,7 +562,7 @@ unused),,,,
 ,,ZCHECKER_ZCEVGOTO_HELP_DESC,"While on the Everything map, go to the certain actor / specified category (abbreviations are also recognized) / to starting position",На карте Everything: переход к определённому актору / к заданной категории (также распознаются сокращения) / к стартовой позиции.
 ,,ZCHECKER_ZCEVGOTO_TREATASPREFIX,"\c~Treat ""%s"" as a full form of input category prefix ""\c-%s\c~""\c-","\c~Предполагается, что слово ""%s"" — полная форма введённого префикса ""\c-%s\c~""\c-"
 ,,ZCHECKER_ZCEVGOTO_NOTCATEGORY,"Unknown category or keyword ""%s"".","Неизвестная категория или ключевое слово ""%s""."
-,,ZCHECKER_ZCEVGOTO_EMPTYCATEGORY,Category or keyword not provided.,Категория или ключевое слово не введены.
+,,ZCHECKER_ZCEVGOTO_WRONGCATEGORY,Category or keyword not provided.,Категория или ключевое слово не введены.
 ,,ZCHECKER_ZCEVGOTO_NOTACTOR,"""%s"" is not an Actor class.","""%s"" — не класс Actor."
 ,,ZCHECKER_ZCEVGOTO_SUCCESS,Found actor %s at %s.,Найден актор %s на позиции %s.
 ,,ZCHECKER_ZCEVGOTO_CATEGSUCCESS,"Found category \c~""\c-%s\c~""\c- header at %s.","Найден заголовок категории \c~""\c-%s\c~""\c- на позиции %s."

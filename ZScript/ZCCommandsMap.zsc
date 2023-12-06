@@ -135,27 +135,34 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 
 		curPushedCategory = 0;
 
+		// Monsters:
 		addCategoryNode( "lm,ml,mlarge", "largem,lmon,monl,monsl,monstersl", S_MonstersLarge );
 		addCategoryNode( "hm,mh,mhuge", "hugem,hmon,monh,monsh,monstersh", S_MonstersHuge );
-		addCategoryNode( "m,mstr", "mon", S_Monsters );
+		addCategoryNode( "m", "mon", S_Monsters );
 
+		// Inventory:
 		addCategoryNode( "iw,wp,arms,guns,items", "iweap,weap", S_Weapons );
 		addCategoryNode( "ia,ammo", "iammo" );
 		addCategoryNode( ashort: "ih,arm,health,hp,iarm" );
 		addCategoryNode( "ip,pwup,pwups", "ipow,powerup,pwrup" );
 		addCategoryNode( "ik", "ikey,key" );
-		addCategoryNode( "io", "ioth,othi,otheri" );
+		addCategoryNode( "io,ci", "ioth,othi,otheri,custominv, custinv" );
 
-		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel", S_DecorShootableLarge );
-		addCategoryNode( "dsh,npc,sht,shd", "dsh,shoot,vict,+sh", S_DecorShootable );
-		addCategoryNode( "dsl,dil,dli,sl,ls,sld,lsd,lid,ild,idl", "largeim,largeso,decl,decorl,ldec,larged,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
-		addCategoryNode( "ds,di,sd,id", "dsol,dimp,sol,imp,+sol,decor", S_DecorSolid );
-		addCategoryNode( "dpl,dlp,pdl,pld,lpd,ldp,del,dle,edl,eld,led,lde", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl,notsoll,nosoll", S_DecorEtherealLarge );
-		addCategoryNode( "dp,de,ed,pd", "deth,dpas,eth,pass,-sol,notsol,nosol", S_DecorEthereal );
-		addCategoryNode( "dd,db,dnbm,dnobl,dnobmap,+nb", "dnobl,nobl,+nobl", S_DecorNoBlockmap );
-		addCategoryNode( "dni,+ni", "nint,noint,dnint,dnoi,+noint" );
+		// Decorations:
+		addCategoryNode( "dshl,npcl,shtl,shld,lshd,lsh,shl,dlsh", "largesho,lsho,shootl,shootablel,+shl,+shootl,+shootablel,decorlsh,decorlargesh,decorshl,declsh,decshl,declargesh", S_DecorShootableLarge );
+		addCategoryNode( "dsh,npc,sht,shd", "decsh,dsh,shoot,+sh", S_DecorShootable );
+
+		addCategoryNode( "dpl,dlp,pdl,pld,lpd,ldp,del,dle,edl,eld,led,lde,decel,decle,decorel,decorle,decorethl,decethl,declargee,decorlargee", "largeet,largepa,ethl,etherl,ethereall,passl,passablel,leth,lpass,-soll,-solidl,notsoll,nosoll", S_DecorEtherealLarge );
+		addCategoryNode( "dp,de,ed,pd", "dece,decore,deth,dpas,eth,pass,-sol,notsol,nosol", S_DecorEthereal );
+
+		addCategoryNode( "dsl,dil,dli,sl,ls,sld,lsd,lid,ild,idl,dlarge,dl", "largeim,largeso,decl,decorl,ldec,larged,soll,+soll,solidl,+solidl,impl,impassl,impassablel,lsol,limp", S_DecorSolidLarge );
+		addCategoryNode( "ds,di,sd,id,decor", "dsol,dimp,sol,imp,+sol,decs", S_DecorSolid );
+
+		addCategoryNode( "db,dnbm,nbm,+nb,nb", "dnobl,dnobm,nobm,nobl,+nobl", S_DecorNoBlockmap );
+		addCategoryNode( "dd,dni,+ni,ni", "nint,noint,dnint,dnoi,+noint" );
 		addCategoryNode( "dh,hd,dhuge", "hdec,dech,huged" );
 
+		// Other:
 		addCategoryNode( "mis,miss,msl,misl,prj,pj", "missil,proj" );
 		addCategoryNode( "players,pl", "playerclass,plclass" );
 		addCategoryNode( "oth,other,spec,special", "speca,speciala,othera,actorss,actorso" );
@@ -233,12 +240,15 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 				bool categoryFound = false;
 
 				if ( foundJumpCategoryIndex != -1 ) {
+					// Iterate through all category header actors (we're not in
+					//the "ZCheckerEverythingMapHandler", and older engine
+					//versions work poor with the "EventHandler.Find()"):
 					while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {
-						//if ( lastDestWord == destWord ) { }
-
 						ZCheckerEverythingMapCategoryData curCategory = curHeader.evSectorDef;
 
 						if ( curCategory && curCategory.evType == jumpCategories[ foundJumpCategoryIndex ].categoryType ) {
+
+							// When category is found, fall to its first available header:
 							for ( int i = 0; i < curCategory.headerActors.Size(); i++ ) {
 								if ( curCategory.headerActors[ i ] ) {
 									curHeader = curCategory.headerActors[ i ];
@@ -253,7 +263,8 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 						} // of if ( curCategory && jumpCategories[ curCategory.evType ].CompareWithAliases( destWord ) ) {}
 
 					} // of while ( curHeader = ZCheckerCategoryInfoHeader( it.Next( true ) ) ) {}
-				}
+
+				} // of if ( foundJumpCategoryIndex != -1 ) {}
 
 				if ( categoryFound && curHeader ) {
 					lastDestWord = destWord;
@@ -275,7 +286,7 @@ class ZCEvmapCommand_goto: ZCEvmapCommand {
 				}
 
 			} else {
-				ZCGlobal.Log( LL_Main, "$ZCEVGOTO_EMPTYCATEGORY" );
+				ZCGlobal.Log( LL_Main, "$ZCEVGOTO_WRONGCATEGORY" );
 			}
 
 		// Class was provided:
