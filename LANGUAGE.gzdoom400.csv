@@ -279,8 +279,8 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_TITLE,"ZChecker: ""Everything"" map settings","ZChecker: опции карт ""Everything"""
 ,,ZCHECKER_EVMAPMENU_SPAWNOPTIONS,Spawning options,Настройки создания акторов
 ,,ZCHECKER_EVMAPMENUDIV_GENERAL,- General -,- Общее -
+,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Built-in engine actors,Встроенные в движок акторы
 ,,ZCHECKER_EVMAPMENU_SPAWNREPLACED,Replaced actors,Заменённые акторы
-,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Actors built-in to the engine,"Акторы, встроенные в движок"
 ,,ZCHECKER_EVMAPMENU_RESTRICT,Unsafe built-in actors replacement,Замены встроенных запрещённых акторов
 ,,ZCHECKER_EVMAPMENUDIV_SPRITES,- By empty sprites -,- По пустым спрайтам -
 ,,ZCHECKER_EVMAPMENU_MISSING,Actors with missing sprites,Акторы с пропущенными спрайтами
