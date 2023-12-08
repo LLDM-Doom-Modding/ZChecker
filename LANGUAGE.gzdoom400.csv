@@ -620,7 +620,7 @@ unused),,,,
 ,,ZCHECKER_ZCTHINKERS_LISTTOTALFILTERINHERITANCE,"\c~Total \c-%i\c~ objects inherited from class ""\cw%s\c~"" of the StatNum type %i\c-.","\c~Всего \c-%i\c~ объектов, наследованных от класса ""\cw%s\c~"", типа StatNum %i."
 ,,,,
 ," ""zcpanel"" (without ""zcpanel save|store|load"" because of unfinished/unclear subcommand UI):",,,
-,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info),zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)
+,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel [<panel>] info,zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel [<панель>] info
 ,,ZCHECKER_ZCPANELCTL_HELP_DESC,"Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменен для расширения её функциональности."
 ,,ZCHECKER_ZCPANEL_NOACTORINPOS,There's no actor in position %i.,Актора в позиции %i нет.
 ,,ZCHECKER_ZCPANELINFO_ZCCLASSINFO,"\c~""zcclassinfo %s""","\c~""zcclassinfo %s"""
@@ -633,8 +633,8 @@ unused),,,,
 ,,ZCHECKER_ZCPANELLOAD_SUCCESS,"\c~Loaded actor \c-%s\c~ as alias ""\c-%s\c~"".","\c~Актор \c-%s\c~ загружен через псевдоним ""\c-%s\c~""."
 ,,ZCHECKER_ZCPANELINFO_NOALIASES,\c~No actor aliases have been created.,\c~Псевдонимов акторов пока не было создано.
 ,,ZCHECKER_ZCPANELINFO_LISTHEADER,\cyActors aliases \c-(total %i): ,\cyПсевдонимы акторов \c-(всего %i): 
-,,ZCHECKER_ZCPANELINFO_ALIASLINKED,"  ""c~""\c-%s\c~"" linked to the \c-%s\c~ with world position %s.","  ""c~""\c-%s\c~"" связан с \c-%s\c~, находящемуся на позиции %s."
-,,ZCHECKER_ZCPANELINFO_ALIASGONE,"  ""c~""\c-%s\c~"" is unlinked","  ""c~""\c-%s\c~"" не связан"
+,,ZCHECKER_ZCPANELINFO_ALIASLINKED,"  \c~""\c-%s\c~"" linked to the \c-%s\c~ with world position %s.","  \c~""\c-%s\c~"" связан с \c-%s\c~, находящемуся на позиции %s."
+,,ZCHECKER_ZCPANELINFO_ALIASGONE,"  \c~""\c-%s\c~"" is unlinked","  \c~""\c-%s\c~"" не связан"
 ,,,,
 ,"""zcclassinfo"":",,,
 ,,ZCHECKER_ZCCLASSINFO_HELP_TITLE,zcclassinfo <classname>,zcclassinfo <класс>
@@ -952,13 +952,15 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ""`Czcevg #ammo`C"" перенесёт игрока к категории ""Ammo"". Без ""решётки"" — к актору под названием ""Ammo"" (если он существует на карте)."
 ,,,,
 ,,,,
-,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"Use the ""`Czcthinkers <type> rm`x"" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.
+,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"The command allows you to partially control objects of the Thinker class - the base class for all objects directly interacting with the world; the Actor class also inherits from it. Each Thinker at every moment is a member of a single StatNum set (a logically separate group of objects interacting with the world). For example, there is a group of actors, a group of floor/ceiling movers, a group of inventory, a group of sector lighting effects, and many others.
+Use the ""`Czcthinkers <type> rm`x"" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.
 You may provide a direct StatNum value instead of its string alias.
 First symbol in the ""`g[[`y:`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon`g"" will check Demons and Spectres).
 All StatNums are nominal: some modification may use non-standard distribution on sets.
 ""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question.
 Internal thinkers may be controlled by name if the argument ""rm:raw"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.
-Possible ""rm"" command flags: ""`g:all`x""/""`g:class`x"" (remove all Thinkers of this class); ""`g:raw`x""/""`g:internal`x"" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and ""`g:everything`x"" (incompatible with others, destroys all Thinkers of the specified StatNum).","Используйте команды семейства ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.
+Possible ""rm"" command flags: ""`g:all`x""/""`g:class`x"" (remove all Thinkers of this class); ""`g:raw`x""/""`g:internal`x"" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and ""`g:everything`x"" (incompatible with others, destroys all Thinkers of the specified StatNum).","Команда позволяет частично контролировать объекты класса Thinker — базовый класс для всех объектов, напрямую работающих с миром; от него наследуется и класс Actor. Каждый Thinker в каждый момент времени входит в единственное StatNum-множество — в логически обособленную группу объектов взаимодействия с миром. Например, есть группа акторов, группа движителей полов/потолков, группа инвентаря, группа световых эффектов секторов и многие другие.
+Используйте команды семейства ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.
 Вместо слов-идентификаторов можно использовать явный номер StatNum.
 Первым символом в последовательности ""`g[[`y:`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon`g"" будет проверять всех акторов Demon и Spectre).
 Все StatNum условны: некоторые модификации могут использовать нестандартное распределение по множествам.

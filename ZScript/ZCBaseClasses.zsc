@@ -158,7 +158,7 @@ class ZCTooltipClass: ZCConsoleClass {
 			prevCharIndexStart = curCharIndex + 2;
 		} // of while ( ( curCharIndex = origstr.IndexOf( "`", prevCharIndexStart ) ) != -1 ) {}
 
-		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() - 1 );
+		outstr = outstr .. origstr.Mid( prevCharIndexStart, origstr.Length() - prevCharIndexStart );
 
 		return outstr;
 	} // of static String HighlightText( String origstr ) {}
