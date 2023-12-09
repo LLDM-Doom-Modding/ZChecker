@@ -4,7 +4,7 @@ A universal debugger and actors card-index tool for G-/Q-/LZDoom written in ZScr
 
 ### ZChecker postulates (guarantees):
 1. No external object can be changed without direct instructions from the user.
-2. No engine crash can be caused by the tool directly.
+2. The stability of the project must be sufficient for it to be included in the permanent autoload list.
 3. The speed of the game with the tools should be close to the speed of the game without it.
 
 Video: (a video will be here).
@@ -60,6 +60,16 @@ The most commonly used ones are:
 
 There are many other CCMDs that include a wide range of options of controlling the Actors, providing useful information about some rarely- or non-changing datasets, partially controlling instances of the Thinker superclass.
 
+#### General notes for CCMDs
+
+Wildcards in actor class names are `*` (asterisk) and `-` (hyphen).
+
+`*` may be replaced with any amount (including 0). `-` works the same way but will have at least one character.
+
+Wildcards may be used anywhere and more than once in the mask, so a string like "a-a-a-a" will be parsed as "ArachnotronPlasma", and string "*card" will list all actors whose names end with with "card". To select a specific classname from the list, you can use the `:<index>` or `,<index>` postfixes. For example, "`shot*:2`" will resolve to "Shotgun" (because first element in the list is a "ShotgunGuy" and second is a "Shotgun").
+
+Due to the internal netevent resolution restrictions, you won't be able to provide arbitrary number of space-delimited (" ") arguments for CCMDs. So, if you want to summon a ShotgunGuy that faces away from the player, will not infight others, has a TID of 4, and a great health value, you must specify all of the extra parameters in the comma-separated list: `zcsummon shotgunguy noinfight,relang:180,tid:4,hp:99999`.
+
 
 
 ### 3. The "Everything" maps
@@ -82,19 +92,7 @@ These maps add CCMDs with the "zcev" prefix:
 
 - `zcev map2` or `zcev level2`. Warp to the `Everything_alternative` map.
 
-Note: the alternative Everything map may be outdated in the beta versions of the project, so, if you're using one of them, it's recommended to warp to the `Everything_simple` instead.
-
-
-## General notes
-
-Wildcards in actor names are `*` (asterisk) and `-` (hyphen).
-
-`*` may be replaced with any amount (including 0). `-` works the same way but will have at least one character.
-
-Wildcards may be used anywhere and more than once in the mask, so a string like "a-a-a-a" will be parsed as "ArachnotronPlasma", and string "*card" will list all actors whose names end with with "card". To select a specific classname from the list, you can use the `:<index>` or `,<index>` postfixes. For example, "`shot*:2`" will resolve to "Shotgun" (because first element in the list is a "ShotgunGuy" and second is a "Shotgun").
-
-Due to the internal netevent resolution restrictions, you won't be able to provide arbitrary number of space-delimited (" ") arguments for CCMDs. So, if you want to summon a ShotgunGuy that faces away from the player, will not infight others, has a TID of 4, and a great health value, you must specify all of the extra parameters in the comma-separated list: `zcsummon shotgunguy noinfight,relang:180,tid:4,hp:99999`.
-
+Note: the alternative Everything map may be outdated in the beta versions of the project, so, if you're using one of the default, it's recommended to warp to the `Everything_simple` instead.
 
 
 <p><br></p>
