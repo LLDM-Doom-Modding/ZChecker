@@ -133,6 +133,10 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		AC_Kill,
 		AC_Destroy,
 		AC_XKill,
+		AC_Stop,		// "vel = (0, 0, 0);"
+		AC_TicsFreeze,	// "tics = -1;"
+		AC_TicsSkip,	// "tics = 0;"
+		AC_TicsRevert,	// "tics = CurState.tics;"
 	};
 
 	Actor thing;
@@ -152,22 +156,32 @@ class ZCActorActionCommand: ZCConsoleCommand {
 	override bool HandleArguments() {
 		testeeStatus = PPS_Error;
 		bool outValue = false;
+
 		int ccmdArgsSize = ccmd.args.Size();
 
 		if ( ccmdArgsSize == 1 || ccmdArgsSize == 2 ) {
 			outValue = true;
 			String what = ccmd.args[ ccmdArgsSize - 1 ];
+
 			what.ToLower();
 			String whatLeft3 = what.Left( 3 );
 
-			if ( whatLeft3 == "res" || whatLeft3 == "rev" )
-				actoraction = AC_Revive;
+			if ( whatLeft3 == "rem" || what == "rm" || whatLeft3 == "del" || ZCGlobal.StrStartsWith( what, "destr" ) )
+				actoraction = AC_Destroy;
 			else if ( what == "kill" || what == "k" || what == "die" )
 				actoraction = AC_Kill;
 			else if ( what == "xk" || what == "xkill" || what == "mdk" )
 				actoraction = AC_XKill;
-			else if ( what == "destroy" || whatLeft3 == "rem" || what == "rm" || whatLeft3 == "del" )
-				actoraction = AC_Destroy;
+			else if ( ZCGlobal.StrEndsWith( what, "revert" ) || ZCGlobal.StrStartsWith( what, "revert" ) )
+				actoraction = AC_TicsRevert;
+			else if ( whatLeft3 == "res" || whatLeft3 == "rev" )
+				actoraction = AC_Revive;
+			else if ( what == "stop" )
+				actoraction = AC_Stop;
+			else if ( ZCGlobal.StrEndsWith( what, "freeze" ) || ZCGlobal.StrStartsWith( what, "freeze" ) || ZCGlobal.StrEndsWith( what, "frz" ) || ZCGlobal.StrStartsWith( what, "frz" ) )
+				actoraction = AC_TicsFreeze;
+			else if ( ZCGlobal.StrEndsWith( what, "skip" ) || ZCGlobal.StrStartsWith( what, "skip" ) )
+				actoraction = AC_TicsSkip;
 			else
 				outValue = false;
 
@@ -182,7 +196,8 @@ class ZCActorActionCommand: ZCConsoleCommand {
 		} // of if ( ccmdArgsSize == 1 || ccmdArgsSize == 2 ) {}
 
 		return outValue;
-	}
+	} // of override bool HandleArguments() {}
+
 
 	protected void TryRevive( Actor thing ) {
 		bool reviveBlocked = false;
@@ -233,7 +248,7 @@ class ZCActorActionCommand: ZCConsoleCommand {
 			case AC_Kill:
 				thing.A_Die();
 
-				// Some actors are instantly destroyed in the "Death:" state sequence.
+				// Some actors are immediately destroyed after reaching the "Death:" state sequence.
 				if ( thing && thing.health > 0 )
 					LogLocalize2Str( LL_Main, "ZCACT_CANNOTKILL", thingname );
 				else
@@ -251,15 +266,43 @@ class ZCActorActionCommand: ZCConsoleCommand {
 				if ( RemoveWorldThinker( thing ) )
 					LogLocalize2Str( LL_Detailed, "ZCACT_DESTROYED", thingname );
 				break;
+			case AC_Stop:
+				thing.vel = (0, 0, 0);
+
+				PlayerPawn pl = PlayerPawn( thing );
+
+				if ( pl != NULL ) {
+					pl.player.cheats &= ~CF_INTERPVIEW;
+					pl.player.vel = (0.0, 0.0);
+				}
+
+				LogLocalize2Str( LL_Detailed, "ZCACT_VELSTOPPED", thingname );
+				break;
+			case AC_TicsFreeze:
+				thing.tics = -1;
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATEFROZEN", thingname );
+				break;
+			case AC_TicsSkip:
+				thing.tics = 0;
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATESKIPPED", thingname );
+				break;
+			case AC_TicsRevert:
+				thing.tics = thing.CurState.tics;
+				LogLocalize2Str( LL_Detailed, "ZCACT_STATETICSRESET", thingname );
+				break;
 			default:
 				ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown action id \"" .. actoraction .. "\" for thing " .. thingname );
 				break;
 		}
-	}
+
+	} // of override void DoCommand( void ) {}
+
 } // of class ZCActorActionCommand: ZCConsoleCommand {}
 
 
 struct ZCSummonExtraParameters play {
+	// Will be reworked to the struct like ZCSetPropertyExtraParameters.
+
 	const SPECARGS_MAX = 5;
 	const INFOPANEL_IGNORE = -2;
 	const INFOPANEL_NOFREE = -1;
@@ -279,22 +322,32 @@ struct ZCSummonExtraParameters play {
 	int special;
 	int specargs[ SPECARGS_MAX ];
 
-	bool isFriend;
-	bool isFoe;
-	bool notProjectileRules;
 	int spawnhp;
 	int aggresiveness;
-	bool forceInfight;
+
+	bool isSpeedSet, isFloatSpeedSet;
+	double speed, floatspeed; // [McM] By ika707's request.
+
+	// Flags:
+	bool notProjectileRules;
+	bool dormant;
+
+	bool isFriend;		// Mutual exclusive with the next flag.
+	bool isFoe;
+
+	bool forceInfight;	// Mutual exclusive with the next flag.
 	bool cannotInfight;
+
 
 	void Clear( void ) {
 		infopanelPos = INFOPANEL_IGNORE;
 
-		isAngled = false;
+		isAngled = isSpeedSet = isFloatSpeedSet = false;
 		isFaceangleRelative = isFacepitchRelative = false;
 		faceangle = 0.0;
 		facepitch = 0.0;
 		zofs = forwardofs = 0.0;
+		speed = floatspeed = 0.0;
 
 		tid = special = 0;
 		aggresiveness = -1;
@@ -303,7 +356,7 @@ struct ZCSummonExtraParameters play {
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			specargs[ i ] = 0;
 
-		isFriend = isFoe = notProjectileRules = forceInfight = cannotInfight = false;
+		isFriend = isFoe = notProjectileRules = dormant = forceInfight = cannotInfight = false;
 	}
 
 	void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
@@ -330,6 +383,12 @@ struct ZCSummonExtraParameters play {
 
 		clampfloat( zofs, "Z offset", -32767.0, 32768.0 );
 		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
+
+		if ( isSpeedSet )
+			clampfloat( speed, "Speed", 0.0, 32768.0 );
+
+		if ( isFloatSpeedSet )
+			clampfloat( floatspeed, "Float speed", 0.0, 32768.0 );
 
 		clampint( special, "Actor special", 0, 255 );
 		clampint( spawnhp, "Spawn health", 0, 0x7FFFFFFF );
@@ -397,6 +456,8 @@ class ZCSummonCommand: ZCConsoleCommand {
 						params.isFoe = true;
 					} else if ( curparam == "notprj" || curparam.Left( 7 ) == "notproj" ) {
 						params.notProjectileRules = true;
+					} else if ( curparam == "dormant" ) {
+						params.dormant = true;
 					} else if ( curparam.Left( 4 ) == "infi" ) {
 						params.forceInfight = true;
 						params.cannotInfight = false;
@@ -437,7 +498,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = false;
 									params.isAngled = true;
-								} else if ( paramdiv[ 0 ] == "relang" || paramdiv[ 0 ] == "relangle" || paramdiv[ 0 ] == "ra" || paramdiv[ 0 ] == "relativeang" || paramdiv[ 0 ] == "relativeangle" || paramdiv[ 0 ] == "rang" || paramdiv[ 0 ] == "rangle" ) {
+								} else if ( ZCGlobal.StrStartsWith( paramdiv[ 0 ], "rela" ) || paramdiv[ 0 ] == "ra" || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "relativea" ) || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "rang" ) ) {
 									params.faceangle = paramvalue;
 									params.isFaceangleRelative = true;
 									params.isAngled = true;
@@ -445,9 +506,16 @@ class ZCSummonCommand: ZCConsoleCommand {
 								} else if ( paramdiv[ 0 ] == "pitch" ) {
 									params.facepitch = paramvalue;
 									params.isFacepitchRelative = false;
-								} else if ( paramdiv[ 0 ] == "relpitch" || paramdiv[ 0 ] == "relativepitch" ) {
+								} else if ( paramdiv[ 0 ] == "rp" || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "relp" ) || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "relativep" ) ) {
 									params.facepitch = paramvalue;
 									params.isFacepitchRelative = true;
+
+								} else if ( paramdiv[ 0 ] == "speed" || paramdiv[ 0 ] == "spd" ) {
+									params.speed = paramvalue;
+									params.isSpeedSet = true;
+								} else if ( paramdiv[ 0 ] == "fspeed" || ZCGlobal.StrStartsWith( paramdiv[ 0 ], "floatsp" ) ) {
+									params.floatspeed = paramvalue;
+									params.isFloatSpeedSet = true;
 
 								} else if ( paramdiv[ 0 ] == "tid" ) {
 									params.tid = paramvalue;
@@ -455,6 +523,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 									params.spawnhp = paramvalue;
 								} else if ( paramdiv[ 0 ] == "spec" || paramdiv[ 0 ] == "special" ) {
 									params.special = paramvalue;
+
 								} else if ( paramdiv[ 0 ] == "z" || paramdiv[ 0 ] == "zofs" || paramdiv[ 0 ] == "zoffset" ) {
 									params.zofs = paramvalue;
 								} else if ( paramdiv[ 0 ] == "fwd" || paramdiv[ 0 ] == "fofs" || paramdiv[ 0 ] == "foffset" || paramdiv[ 0 ] == "fwdofs" || paramdiv[ 0 ] == "fwdoffset" || paramdiv[ 0 ] == "forwardofs" || paramdiv[ 0 ] == "forwardoffset" ) {
@@ -522,6 +591,14 @@ class ZCSummonCommand: ZCConsoleCommand {
 		else if ( params.isFoe )
 			summoned.bFRIENDLY = false;
 
+		if ( params.isSpeedSet )
+			summoned.speed = params.speed;
+		if ( params.isFloatSpeedSet )
+			summoned.floatspeed = params.floatspeed;
+
+		if ( params.dormant )
+			summoned.bDORMANT = true;
+
 		if ( params.forceInfight ) {
 			summoned.bFORCEINFIGHTING = true;
 			summoned.bNOINFIGHTING = false;
@@ -550,7 +627,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 		if ( classnameParseStatus == CPS_RegexFailed )
 			return;
 
-		if ( summoneeAmount > 200 && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "ZCSUMMON_LIMITWARNING" ) ) ) {
+		if ( summoneeAmount > 256 && !ZCGlobal.DangerousCCMDsAllowed( ZCGlobal.Locz( "ZCSUMMON_LIMITWARNING" ) ) ) {
 			ZCGlobal.Log( LL_Main, ZCGlobal.Locz( "ZCSUMMON_LIMITPREVENT" ) );
 			return;
 		}
@@ -615,6 +692,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 		}
 	}
 } // of class ZCSummonCommand: ZCConsoleCommand {}
+
 
 class ZCCopyPasteClass_dummy: ZCConsoleCommand {
 	override void InitCCMD() {
@@ -865,7 +943,7 @@ struct ZCSetPropertyParameterInteger {
 	int value;
 	bool changed;
 
-	double valclamp( String valuedesc, int minlimit, int maxlimit ) {
+	int valclamp( String valuedesc, int minlimit, int maxlimit ) {
 		if ( !changed )
 			return value;
 
@@ -888,6 +966,13 @@ struct ZCSetPropertyParameterInteger {
 		if ( changed )
 			what = value;
 	}
+
+	void directcopy( String valuedesc, in int newval ) {
+		if ( changed ) {
+			ZCGlobal.DataLog( LL_Detailed, String.Format( ZCGlobal.Localize( "ZCSETP_NONRELATIVEPROP" ), valuedesc ) );
+			value = newval;
+		}
+	}
 } // of struct ZCSetPropertyParameterInteger {}
 
 struct ZCSetPropertyParameterPointer {
@@ -903,7 +988,14 @@ struct ZCSetPropertyParameterPointer {
 		if ( changed )
 			what = value;
 	}
-}
+
+	void directcopy( String valuedesc, in Actor newval ) {
+		if ( changed ) {
+			ZCGlobal.DataLog( LL_Detailed, String.Format( ZCGlobal.Localize( "ZCSETP_NONRELATIVEPROP" ), valuedesc ) );
+			value = newval;
+		}
+	}
+} // of struct ZCSetPropertyParameterPointer {}
 
 
 struct ZCSetPropertyExtraParameters play {
@@ -939,6 +1031,7 @@ struct ZCSetPropertyExtraParameters play {
 		PFI_Arg4,
 		PFI_Special,
 		PFI_TID,
+		PFI_RenderStyle,
 
 		PFI_Quantity,
 
@@ -1009,19 +1102,20 @@ struct ZCSetPropertyExtraParameters play {
 
 		integers[ PFI_Health ].valclamp( "Health", -0x7FFFFFFF, 0x7FFFFFFF );
 		integers[ PFI_Special ].valclamp( "Special/action", 0, 65535 );
+		integers[ PFI_TID ].valclamp( "TID", 0, 0x7FFFFFFF );
 
 		for ( int i = PFI_Args_Start; i < PFI_Args_End; i++ )
 			integers[ i ].valclamp( "Args[ " .. ( i - PFI_Args_Start ) .. " ]", 0, 255 );
 
-		integers[ PFI_TID ].valclamp( "TID", 0, 0x7FFFFFFF );
+		if ( integers[ PFI_RenderStyle ].value != STYLE_None )
+			integers[ PFI_RenderStyle ].valclamp( "Render style", STYLE_Normal, ZCSpritesInfoPanel.STYLE_Quantity - 1 );
 	} // of void AdjustValues( void ) {}
 
 }; // of struct ZCSetPropertyExtraParameters play {}
 
 class ZCSetPropertyCommand: ZCConsoleCommand {
 	enum EPropertySetMode {
-		PSM_Error = -2,
-		PSM_WrongRelative = -1,
+		PSM_Error = -1,
 		PSM_Raw = 0,
 		PSM_Add,
 		PSM_Relative,
@@ -1044,10 +1138,13 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 	}
 
 	protected void handlePointer( int pointer_id, String propvalue ) {
-		if ( propvalue != "" ) {
+		if ( setmode == PSM_Relative ) {
+			params.pointers[ pointer_id ].changed = true;
+
+		} else if ( propvalue != "" ) {
 			Actor newptr;
 
-			if ( propvalue == "null" || propvalue == "none" || propvalue == "-" || propvalue == "del" || propvalue == "rm" || propvalue == "rem" ) {
+			if ( propvalue == "null" || propvalue == "none" || propvalue == "-" || propvalue == "rm" ) {
 				params.pointers[ pointer_id ].set( NULL );
 			} else {
 				getPlaceTestee( newptr, 0, propvalue );
@@ -1055,10 +1152,32 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				if ( newptr ) 
 					params.pointers[ pointer_id ].set( newptr );
 			}
+
 		} else {
 			params.pointers[ pointer_id ].set( players[ ccmd.e.Player ].mo );
 		}
-	} // of private void handlePointer( int pointer_id, String propvalue ) {}
+	} // of protected void handlePointer( int pointer_id, String propvalue ) {}
+
+	protected bool parseSetArgProperty( String prop, int pvalueint, bool setpvalue = true ) {
+		int propnamelen = prop.Length();
+		bool outval = false;
+
+		if ( ( propnamelen == 2 && prop.Left( 1 ) == "a" ) || ( propnamelen == 4 && prop.Left( 3 ) == "arg" ) ) {
+			int argnum = prop.Mid( propnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
+
+			if ( argnum >= 0 && argnum < ZCSummonExtraParameters.SPECARGS_MAX ) {
+				if ( setpvalue )
+					params.integers[ argnum + params.PFI_Arg0 ].set( pvalueint );
+
+				outval = true;
+			} else {
+				LogLocalize2Str( LL_Main, "ZCSETP_WRONGARG", prop );
+			}
+		}
+
+		return outval;
+	} // of protected bool parseSetArgProperty( String prop, int pvalueint ) {}
+
 
 	override bool HandleArguments() {
 		bool outValue = false;
@@ -1075,17 +1194,19 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			String modeargstr = ccmd.args[ ccmdArgsSize - 2 ];
 			modeargstr.ToLower();
 
+			String modeargstrLeft2 = modeargstr.Left( 2 );
+
 			// Set mode parsing:
 			if ( modeargstr == "add" || modeargstr == "a" || modeargstr == "+" ) {
 				setmode = PSM_Add;
 
-			} else if ( modeargstr.Left( 3 ) == "rel" || modeargstr == "r" /* Dangerous but convenient. */ ) {
-				setmode = PSM_WrongRelative;
+			} else if ( modeargstr.Left( 3 ) == "rel" || modeargstr == "r" /* Dangerous but convenient. */ || modeargstrLeft2 == "r:" || modeargstrLeft2 == "r=" ) {
+				setmode = PSM_Error;
 
-				int delimIndex = modeargstr.IndexOf( "=" );
+				int delimIndex = modeargstr.IndexOf( ":" );
 
 				if ( delimIndex == -1 )
-					delimIndex = modeargstr.IndexOf( ":" );
+					delimIndex = modeargstr.IndexOf( "=" );
 
 				if ( delimIndex != -1 ) {
 					String relactorstr = modeargstr.Mid( delimIndex + 1, modeargstr.Length() - delimIndex - 1 );
@@ -1099,7 +1220,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 					ZCGlobal.Log( LL_Detailed, "$ZCSETP_RELPLAYER" );
 				}
 
-			} else if ( modeargstr == "raw" && modeargstr.IndexOf( "=" ) == -1 && modeargstr.IndexOf( ":" ) == -1 ) {
+			} else if ( modeargstr == "raw" ) {
 				setmode = PSM_Raw;
 
 			} else {
@@ -1129,7 +1250,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 
 
 		// Parse properties/parameters string:
-		if ( outValue ) {
+		if ( outValue && alteree ) {
 			params.Clear();
 
 			Array<String> paramlist;
@@ -1140,18 +1261,21 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				String curparam = paramlist[ i ];
 				curparam.ToLower();
 
-				int delimIndex = curparam.IndexOf( "=" );
+				int delimIndex = curparam.IndexOf( ":" );
 
 				if ( delimIndex == -1 )
-					delimIndex = curparam.IndexOf( ":" );
+					delimIndex = curparam.IndexOf( "=" );
 
-				if ( delimIndex == -1 ) {
+				if ( delimIndex == -1 && setmode != PSM_Relative ) {
 					LogLocalize2Str( LL_Main, "ZCSETP_NODELIMCHARS", curparam );
 					continue;
 				}
 
 				String prop = curparam.Left( delimIndex );
-				String pvalue = curparam.Mid( delimIndex + 1, curparam.Length() - delimIndex - 1 );
+				String pvalue = "";
+
+				if ( delimIndex != -1 )
+					pvalue = curparam.Mid( delimIndex + 1, curparam.Length() - delimIndex - 1 );
 
 
 				if ( prop == "target" || prop == "targ" || prop == "tp" ) {
@@ -1166,7 +1290,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				} else {
 					double paramdouble;
 
-					// Some parameters (like "posz") has extra values (like "floor").
+					// Some parameters has special keywords and must be parsed differently (see below).
 					if ( str2double_Ptr( pvalue, +paramdouble ) ) {
 						int paramint;
 
@@ -1210,7 +1334,6 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 
 						// Integer properties:
 						} else if ( str2int_Ptr( pvalue, +paramint, true ) ) {
-							int propnamelen = prop.Length();
 
 							if ( prop == "health" || prop == "hp" || prop == "h" ) {
 								params.rawhealth = false;
@@ -1224,16 +1347,9 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 								params.integers[ params.PFI_TID ].set( paramint );
 							} else if ( prop == "action" || prop == "special" || prop == "spec" ) {
 								params.integers[ params.PFI_Special ].set( paramint );
-
-							} else if ( ( propnamelen == 2 && prop.Left( 1 ) == "a" ) || ( propnamelen == 4 && prop.Left( 3 ) == "arg" ) ) {
-								int argnum = prop.Mid( propnamelen - 1, 1 ).CharCodeAt( 0 ) - 0x30;
-
-								if ( argnum >= 0 && argnum < ZCSummonExtraParameters.SPECARGS_MAX )
-									params.integers[ argnum + params.PFI_Arg0 ].set( paramint );
-								else
-									LogLocalize2Str( LL_Main, "ZCSETP_WRONGARG", prop );
-
-							} else {
+							} else if ( prop.Left( 6 ) == "render" || prop == "rstyle" || prop == "rst" ) {
+								params.integers[ params.PFI_RenderStyle ].set( paramint );
+							} else if ( !parseSetArgProperty( prop, paramint ) ) {
 								LogLocalize2Str( LL_Main, "ZCSETP_WRONGINTPROP", prop );
 							}
 
@@ -1242,10 +1358,62 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 						}
 
 					} else {
+						// Special and empty keywords (like "zcsp z:ceil" or "zcsp rel:1 target"):
 						Actor baseactor = ( relativeTo? relativeTo : alteree );
 
-						if ( pvalue == "" ) {
-							LogLocalize2Str( LL_Main, "ZCSETP_EMPTYPROP", prop );
+						if ( prop.Left( 6 ) == "render" || prop == "rstyle" || prop == "rst" ) {
+							if ( setmode == PSM_Relative || pvalue == "none" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_None );
+							else if ( pvalue.Left( 4 ) == "norm" || pvalue == "x" || pvalue == "n" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Normal );
+							else if ( pvalue == "optfuzzy" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_OptFuzzy );
+							else if ( pvalue == "stencil" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Stencil );
+							else if ( pvalue == "translucentstencil" || pvalue == "transstencil" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_TranslucentStencil );
+							else if ( pvalue.Left( 5 ) == "trans" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Translucent );
+							else if ( pvalue == "add" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Add );
+							else if ( pvalue == "shaded" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Shaded );
+							else if ( pvalue == "shadow" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Shadow );
+							else if ( pvalue == "subtract" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Subtract );
+							else if ( pvalue == "addstencil" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_AddStencil );
+							else if ( pvalue == "addshaded" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_AddShaded );
+							else if ( pvalue == "multiply" )
+								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_Multiply );
+							else if ( pvalue == "inversemultiply" )
+								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_InverseMultiply );
+							else if ( pvalue == "colorblend" )
+								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_ColorBlend );
+							else if ( pvalue == "source" ) // Engine internal value, actually.
+								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_Source );
+							else if ( pvalue == "coloradd" )
+								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_ColorAdd );
+							else
+								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDRENDERSTYLE", pvalue ); 
+
+						} else if ( prop == "tid" ) {
+							if ( setmode == PSM_Relative )
+								params.integers[ params.PFI_TID ].changed = true;
+							else if ( pvalue.Left( 1 ) == "u" || pvalue == "new" )
+								params.integers[ params.PFI_TID ].set( Actor.FindUniqueTid() );
+
+						} else if ( pvalue == "" ) {
+							// Skip empty pvalue warning for some non-relative properties.
+							if ( !( setmode == PSM_Relative && (
+									( prop == "action" || prop == "special" || prop == "spec" )
+								||	!parseSetArgProperty( prop, 0, false )
+								) ) )
+							{
+								LogLocalize2Str( LL_Main, "ZCSETP_EMPTYPROP", prop );
+							}
 
 						} else if ( prop == "z" || prop == "posz" ) {
 							String pvalueLeft1 = pvalue.Left( 1 );
@@ -1267,11 +1435,9 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 							else
 								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDHP", pvalue ); 
 
-						} else if ( prop == "tid" && ( pvalue.Left( 1 ) == "u" || pvalue == "new" ) ) {
-							params.integers[ params.PFI_TID ].set( Actor.FindUniqueTid() );
 
 						} else {
-							// In fast, this line is a last frontier when no input matches found at all.
+							// In fact, this line is a last frontier when no input matches found at all.
 							ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCSETP_UNKNOWNPROP" ), prop, pvalue ) );
 						}
 					} // of else of if ( str2double_Ptr( paramdiv[ 1 ], +paramdouble ) ) {}
@@ -1280,7 +1446,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 
 			} // of for ( int i = 0; i < paramlist.Size(); i++ ) {}
 
-		} // of if ( outValue ) {}
+		} // of if ( outValue && alteree ) {}
 
 
 		if ( setmode == PSM_Add )
@@ -1296,7 +1462,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		// Pointer is valid in "PSM_Add" and "PSM_Relative" set modes.
 		if ( relativeTo ) {
 			params.integers[ params.PFI_Health ].value += relativeTo.health;
-			params.integers[ params.PFI_Mass ].value += relativeTo.health;
+			params.integers[ params.PFI_Mass ].value += relativeTo.mass;
 
 			params.doubles[ params.PFD_X ].value += relativeTo.pos.x;
 			params.doubles[ params.PFD_Y ].value += relativeTo.pos.y;
@@ -1318,7 +1484,18 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			params.doubles[ params.PFD_Alpha ].value += relativeTo.alpha;
 
 			// Note about properties that do not make sense to alter relative to something:
-			if ( params.integers[ params.PFI_Special ].changed )
+			params.integers[ params.PFI_Special ].directcopy( "Special", relativeTo.special );
+			params.integers[ params.PFI_TID ].directcopy( "TID", relativeTo.TID );
+			params.integers[ params.PFI_RenderStyle ].directcopy( "RenderStyle", relativeTo.GetRenderStyle() );
+
+			for ( int i = 0; i < ZCSummonExtraParameters.SPECARGS_MAX; i++ )
+				params.integers[ params.PFI_Args_Start + i ].directcopy( "arg" .. i, relativeTo.args[ i ] );
+
+			params.pointers[ params.PFP_Target ].directcopy( "target", relativeTo.target );
+			params.pointers[ params.PFP_Master ].directcopy( "master", relativeTo.master );
+			params.pointers[ params.PFP_Tracer ].directcopy( "tracer", relativeTo.tracer );
+
+			/*if ( params.integers[ params.PFI_Special ].changed )
 				LogLocalize2Str( LL_Main, "ZCSETP_NONRELATIVEPROP", "Special" );
 
 			if ( params.integers[ params.PFI_TID ].changed )
@@ -1334,6 +1511,9 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				LogLocalize2Str( LL_Detailed, "ZCSETP_NONRELATIVEPROP", "master" );
 			if ( params.pointers[ params.PFP_Tracer ].changed )
 				LogLocalize2Str( LL_Detailed, "ZCSETP_NONRELATIVEPROP", "tracer" );
+
+			if ( params.integers[ params.PFI_RenderStyle ].changed )
+				LogLocalize2Str( LL_Detailed, "ZCSETP_NONRELATIVEPROP", "RenderStyle" );*/
 		}
 
 
@@ -1346,6 +1526,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.pointers[ params.PFP_Master ].setfor( alteree.master );
 		params.pointers[ params.PFP_Tracer ].setfor( alteree.tracer );
 
+		// Health must be handled in special way to properly kill an actor.
 		if ( params.integers[ params.PFI_Health ].changed ) {
 			int newhp = params.integers[ params.PFI_Health ].value;
 
@@ -1421,6 +1602,9 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 		params.doubles[ params.PFD_Gravity ].setfor( alteree.gravity );
 
 		params.doubles[ params.PFD_Alpha ].setfor( alteree.alpha );
+
+		if ( params.integers[ params.PFI_RenderStyle ].changed )
+			alteree.A_SetRenderStyle( alteree.alpha, params.integers[ params.PFI_RenderStyle ].value );
 
 		// Compatibility. GZDoom 4.9.0 cannot set "scale.x" and "scale.y" directly:
 		vector2 newscale = (params.doubles[ params.PFD_ScaleX ].changed? params.doubles[ params.PFD_ScaleX ].value : alteree.scale.x,

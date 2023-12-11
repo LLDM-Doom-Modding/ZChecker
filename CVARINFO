@@ -14,7 +14,7 @@ user noarchive int mcm_zchecker_var_interface; // External interface, for the us
 user noarchive string mcm_zchecker_internal_metastring; // Internal string for the API between ZScript and ACS.
 
 
-// Common variables which is not used right now.
+// Common variables which are not used right now.
 //user int mcm_zchecker_min_sectorslines_tag	= 1;
 //user int mcm_zchecker_max_sectorslines_tag	= 700;
 
@@ -122,9 +122,9 @@ user int  mcm_zchecker_info_cheatsdefs      = 0x00;
 server bool mcm_zchecker_ev_forcemap		= false; // Skip the Everything map check (use the code attached to it on any map).
 
 
+server bool mcm_zchecker_ev_spawnbuiltin			= true;
 server bool mcm_zchecker_ev_spawnreplaced			= true;
 server bool mcm_zchecker_ev_restrictreplacements	= true;
-server bool mcm_zchecker_ev_spawnbuiltin			= true;
 
 server bool mcm_zchecker_ev_spawnmissingsprites		= false;
 server bool mcm_zchecker_ev_spawntnt1a0				= false;

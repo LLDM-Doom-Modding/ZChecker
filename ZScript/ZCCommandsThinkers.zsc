@@ -1,0 +1,801 @@
+//
+// General thinkers control CCMDs.
+//
+
+class ZCThinkersControlCommand: ZCConsoleCommand {
+	// zcthinkers <type> <command>[:<arg(s)>] ([[#:]<classfilter>:]<index>)|<class>
+
+	// zcthinkers <type> list [[#:]<classfilter>]
+	// zcthinkers <type> rm [[#:]<classfilter>:]<index>
+	// zcthinkers <type> rm:all[:raw] [#:]<class>
+	// zcthinkers <type> rm:everything
+	// zcthinkers actors add[:<panelpos>] [[#:]<classfilter>:]<index>
+
+	enum EThinkersControlStatNums {
+		TCSN_Error = -2,
+		TCSN_ListTypes = -1,
+		TCSN_First = 0
+	};
+
+	enum EThinkersControlActions {
+		TCA_Error = 0,		// Abort and output usage.
+		TCA_Skip,			// Do nothing.
+		TCA_List,			// List all matched Thinkers.
+		TCA_PanelAdd,		// Add Actor to infopanel.
+		TCA_RemoveThinker,	// Remove matched Thinker(s) from world.
+		TCA_Track,			// Not implemented;
+		TCA_StopTracking	// Not implemented.
+	};
+
+	enum EThinkersControlRemoveFlags {
+		TCRF_None		= 0x0000,
+
+		TCRF_RawName	= 0x0001,
+		TCRF_AllByName	= 0x0002,
+		TCRF_Everything	= 0x0004
+	}
+
+	int zcStatNumType;
+	EThinkersControlActions zcAction;
+	int zcActionArg; // "add:<pos>" or "rm:<flag(s)>".
+
+	bool zcForceActionListThinkers;
+
+	int specifiedListIndex;
+	class<Thinker> specifiedClass;
+	String specifiedClassRawString;
+	bool specifiedClassUseInheritance; // Also act with (or list all of the) inheritanced classes.
+
+	private String helpListStr;
+	private String helpListValuesColor;
+
+	override void InitCCMD() {
+		SetupCCMDInterface(
+			"zc_thinkerscontrol",
+			"$ZCTHINKERS_HELP_TITLE",
+			"$ZCTHINKERS_HELP_DESC",
+			'ZCTooltipThinkersControlCommand'
+		);
+	}
+
+
+	// Check if first is a ":" or "#" character and remove it:
+	protected void testArgClassInheritance( in out String arg ) {
+		String firstchar = arg.CharAt( 0 );
+
+		if ( firstchar == "#" || firstchar == ":" ) {
+			arg = arg.Mid( 1, arg.Length() - 1 );
+			specifiedClassUseInheritance = true;
+		}
+	}
+
+	override bool HandleArguments() {
+		zcStatNumType = TCSN_Error;
+		zcAction = TCA_Error; // "TCA_Error" will cause an usage output.
+
+		int ccmdArgsSize = ccmd.args.Size();
+
+		if ( ccmdArgsSize > 3 )
+			return false;
+
+
+		// List all of the possible types (help):
+		if ( ccmdArgsSize == 0 ) {
+			zcStatNumType = TCSN_ListTypes;
+			return true;
+		}
+
+		String origarg0 = ccmd.args[ 0 ];
+		origarg0.ToLower();
+
+		if ( ccmdArgsSize == 1 && ( origarg0 == "list" || origarg0 == "l" || origarg0 == "types" || origarg0 == "t" || origarg0 == "h" ) ) {
+			zcStatNumType = TCSN_ListTypes;
+			return true;
+		}
+
+
+		// Determining StatNum by string parameter:
+		String arg = origarg0;
+
+		if ( origarg0.Mid( origarg0.Length() - 1, 1 ) == "s" )
+			arg = origarg0.Left( origarg0.Length() - 1 ); // Truncating the "s" plural postfix.
+
+		String argLeft3 = arg.Left( 3 );
+
+		// Note: StatNums are ordered by potential frequency of use AND mutual 
+		//prefix collisions (like "seclights"/"seclighttransfers").
+		if ( argLeft3 == "def" || arg == "actor" || arg == "a" )
+			zcStatNumType = Thinker.STAT_DEFAULT;
+		else if ( arg == "slt" || arg == "sectorlt" || arg == "seclt" || ZCGlobal.StrStartsWith( arg, "sectorlighttr" ) || ZCGlobal.StrStartsWith( arg, "seclighttr" ) )
+			zcStatNumType = Thinker.STAT_LIGHTTRANSFER;
+		else if ( arg == "sl" || ZCGlobal.StrStartsWith( arg, "sectorl" ) || ZCGlobal.StrStartsWith( arg, "secl" ) )
+			zcStatNumType = Thinker.STAT_LIGHT;
+		else if ( arg == "dynlight" || arg == "dl" )
+			zcStatNumType = Thinker.STAT_DLIGHT;
+		else if ( argLeft3 == "pla" || arg == "pl" )
+			zcStatNumType = Thinker.STAT_PLAYER;
+		else if ( argLeft3 == "inv" || arg == "i" )
+			zcStatNumType = Thinker.STAT_INVENTORY;
+		else if ( arg == "se" || arg == "sm" || ZCGlobal.StrStartsWith( arg, "sectore" ) || ZCGlobal.StrStartsWith( arg, "sectorm" ) || ZCGlobal.StrStartsWith( arg, "sece" ) || ZCGlobal.StrStartsWith( arg, "secm" ) )
+			zcStatNumType = Thinker.STAT_SECTOREFFECT;
+		else if ( arg == "da" || arg == "ad" || ZCGlobal.StrStartsWith( arg, "autodec" ) || ZCGlobal.StrStartsWith( arg, "decalsa" ) || ZCGlobal.StrStartsWith( arg, "decala" ) )
+			zcStatNumType = Thinker.STAT_AUTODECAL;
+		else if ( arg == "static" || origarg0 == "st" || origarg0 == "s" )
+			zcStatNumType = Thinker.STAT_STATIC;
+		else if ( origarg0 == "acs" || arg == "acsscript" )
+			zcStatNumType = Thinker.STAT_SCRIPTS;
+		else if ( arg == "decal" || arg == "dec" )
+			zcStatNumType = Thinker.STAT_DECAL;
+		else if ( arg == "mapmarker" || arg == "marker" || ZCGlobal.StrStartsWith( arg, "automap" ) )
+			zcStatNumType = Thinker.STAT_MAPMARKER;
+		else if ( arg == "lightning" )
+			zcStatNumType = Thinker.STAT_LIGHTNING;
+		else if ( arg == "scroller" )
+			zcStatNumType = Thinker.STAT_SCROLLER;
+		else if ( arg == "actormover" || arg == "mover" )
+			zcStatNumType = Thinker.STAT_ACTORMOVER;
+		else if ( argLeft3 == "inf" )
+			zcStatNumType = Thinker.STAT_INFO;
+		else if ( arg == "bot" )
+			zcStatNumType = Thinker.STAT_BOT;
+		else if ( arg == "bosstarget" )
+			zcStatNumType = Thinker.STAT_BOSSTARGET;
+		else if ( arg == "hexencorpse" || ZCGlobal.StrStartsWith( arg, "corpsep"/*ointer*/ ) )
+			zcStatNumType = Thinker.STAT_CORPSEPOINTER;
+		else if ( arg == "earthquake" || arg == "quake" )
+			zcStatNumType = Thinker.STAT_EARTHQUAKE;
+		else if ( arg == "trinv" || ZCGlobal.StrStartsWith( arg, "travel" ) )
+			zcStatNumType = Thinker.STAT_TRAVELLING;
+		else if ( ZCGlobal.StrStartsWith( arg, "decalt" ) || ZCGlobal.StrStartsWith( arg, "dect" ) )
+			zcStatNumType = Thinker.STAT_DECALTHINKER;
+
+		// StatNum alias "s" is used for the static Thinkers.
+		else if ( arg == "sec" || arg == "sector" ) {
+			ZCGlobal.Log( LL_Main, "$ZCTHINKERS_SECSTATNUMQUESTION" );
+
+		} else if ( str2int_Ptr( ccmd.args[ 0 ], +zcStatNumType ) ) {
+			// "Direct" StatNum number:
+			bool inlimits = ( zcStatNumType >= 0 && zcStatNumType <= Thinker.MAX_STATNUM );
+
+			if ( !inlimits ) {
+				ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERS_BOUNDSSTATNUM" ), Thinker.MAX_STATNUM ) );
+				zcStatNumType = TCSN_Error;
+			}
+
+		}
+
+		if ( zcStatNumType == TCSN_Error ) {
+			LogLocalize2Str( LL_Main, "ZCTHINKERS_WRONGSTATNUM", arg );
+			zcAction = TCA_Skip;
+			return true;
+		}
+
+		if ( ccmdArgsSize == 1 ) {
+			zcAction = TCA_List;
+			return true;
+		}
+
+
+		// Action determining:
+		String actstr = ccmd.args[ 1 ];
+		actstr.ToLower();
+
+		specifiedClass = NULL;
+		specifiedClassRawString = "";
+		specifiedListIndex = -1;
+		specifiedClassUseInheritance = false;
+		zcActionArg = -1;
+		zcForceActionListThinkers = false;
+
+
+		// Splitting action string to "command" and "flags".
+		// Yep, currently code not optimal at all.
+		Array<String> actstrSplitted;
+		actstrSplitted.Clear();
+
+		int colonIndex = ZCGlobal.StringIndexOfAny( actstr, ",:" );
+		String strpart = actstr;
+
+		while ( colonIndex != -1 ) {
+			actstrSplitted.Push( strpart.Left( colonIndex ) );
+			strpart = strpart.Mid( colonIndex + 1, strpart.Length() - colonIndex - 1 );
+
+			colonIndex = ZCGlobal.StringIndexOfAny( strpart, ",:" );
+		}
+
+		actstrSplitted.Push( strpart );
+
+		actstr = actstrSplitted[ 0 ];
+		String actstrLeft3 = actstr.Left( 3 );
+
+		/*
+		"rm:all[:raw] <classname>"		-> handling 1;
+		"rm:everything" 				-> handling 2;
+		"<any other>" 					-> handling 3 ("Wrong action.");
+		"rm [[#]classfilter:]<index>" 	-> handling 4;
+		"add [[#]classfilter:]<index>" 	-> handling 4;
+		"add:[<index>] [[#]classfilter:]<index>"	-> handling 4 with extra code.
+		*/
+
+		bool parseActorIndex = false;
+
+		if ( actstr == "rm" || actstrLeft3 == "rem" || actstrLeft3 == "del" ) {
+			zcAction = TCA_RemoveThinker;
+			zcActionArg = 0;
+
+			// Flags parsing:
+			for ( int i = 1; i < actstrSplitted.Size(); i++ ) {
+				if ( actstrSplitted[ i ] == "all" || actstrSplitted[ i ] == "class" ) {
+					zcActionArg |= TCRF_AllByName;
+
+				} else if ( actstrSplitted[ i ] == "raw" || actstrSplitted[ i ] == "r" || actstrSplitted[ i ].Left( 3 ) == "int"/*ernal*/ ) {
+					zcActionArg |= TCRF_RawName;
+
+ 				} else if ( actstrSplitted[ i ] == "everything" ) {
+					zcActionArg |= TCRF_Everything;
+
+				} else {
+					zcAction = TCA_Error;
+					LogLocalize2Str( LL_Main, "ZCTHINKERSRM_UNKNOWNFLAG", actstrSplitted[ i ] );
+					break;
+				}
+			}
+
+			if ( !!( zcActionArg & TCRF_Everything ) && !!( zcActionArg & ( TCRF_RawName | TCRF_AllByName ) ) ) {
+				// "Remove everything" flag isn't compatible with any other.
+				zcAction = TCA_Error;
+				zcActionArg = TCRF_None;
+				ZCGlobal.Log( LL_Main, "$ZCTHINKERSRM_INCOMPATIBLEFLAGS" );
+			}
+
+			if ( zcAction == TCA_Error )
+				return false; // Any flags parsing error.
+
+
+			// Flags handling and last argument parsing:
+
+			if ( zcActionArg == TCRF_Everything ) {
+				// Branch "zcthinkers <type> rm:everything".
+				if ( ccmdArgsSize != 2 )
+					zcAction = TCA_Error;
+
+			} else if ( zcActionArg & TCRF_AllByName ) {
+				// Branch "zcthinkers <type> rm:all[:raw] <classname>".
+				if ( ccmdArgsSize != 3 ) {
+					ZCGlobal.Log( LL_Main, "$ZCTHINKERSRM_ALLNOCLASS" );
+					zcAction = TCA_Skip;
+
+				} else {
+					arg = ccmd.args[ 2 ];
+
+					// Remove first ":" or "#" character:
+					testArgClassInheritance( arg );
+
+					if ( !( zcActionArg & TCRF_RawName ) ) {
+						specifiedClass = arg;
+
+						if ( specifiedClass == NULL )
+							specifiedClass = ParseSpecialActorName( arg );
+
+						if ( specifiedClass == NULL ) {
+							LogLocalize2Str( LL_Main, "ZCTHINKERS_NOTTHCLASS", arg );
+							zcAction = TCA_Skip;
+						}
+
+					} else {
+						specifiedClassRawString = arg;
+					}
+				}
+
+			} else if ( ccmdArgsSize != 3 ) {
+				// Branch "zcthinkers <type> rm".
+				zcAction = TCA_RemoveThinker;
+				zcForceActionListThinkers = true;
+
+			} else {
+				// Branch "zcthinkers <type> rm [[#]<classfilter>:]<index>".
+				parseActorIndex = true;
+			}
+
+		} else if ( actstr == "add" ) {
+			if ( ccmdArgsSize == 2 ) {
+				// "zcthinkers <type> add[:<panelpos>]" (without mandatory <index>).
+				zcAction = TCA_PanelAdd;
+				zcForceActionListThinkers = true;
+
+			} else {
+				arg = ( actstrSplitted.Size() > 1? actstrSplitted[ 1 ] : "" );
+
+				if ( arg == "" ) {
+					// "zcthinkers <type> add[:] [[#]<classfilter>:]<index>".
+					zcAction = TCA_PanelAdd;
+					zcActionArg = -1;
+
+				} else {
+					// "zcthinkers <type> add:<panelpos> [[#]<classfilter>:]<index>".
+					zcAction = TCA_Skip;
+
+					if ( !str2int_Ptr( arg, +zcActionArg ) ) {
+						LogLocalize2Str( LL_Main, "ZCTHINKERSADD_WRONGPANEL", arg );
+					} else if ( !checkTesteePlace( --zcActionArg ) ) {
+						ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERSADD_WRONGPANELRANGE" ), MaxTestee ) );
+					} else {
+						zcAction = TCA_PanelAdd;
+					}
+				}
+
+				if ( zcAction != TCA_Error )
+					parseActorIndex = true;
+
+			} // of else of if ( ccmdArgsSize == 2 ) {}
+
+		} else if ( actstr == "l" || actstr == "list" ) {
+			zcAction = TCA_List;
+
+			if ( ccmdArgsSize == 3 ) {
+				arg = ccmd.args[ 2 ];
+
+				// Check if first is a ":" or "#" character:
+				testArgClassInheritance( arg );
+				specifiedClass = arg;
+
+				if ( specifiedClass == NULL )
+					specifiedClass = ParseSpecialActorName( arg );
+
+				if ( specifiedClass == NULL ) {
+					LogLocalize2Str( LL_Main, "ZCTHINKERS_NOTTHCLASS", arg );
+					zcAction = TCA_Skip;
+				}
+			}
+
+
+		} else if ( zcAction == TCA_Error ) {
+			LogLocalize2Str( LL_Main, "ZCTHINKERS_UNKNOWNACTION", actstr );
+		}
+
+
+		if ( parseActorIndex && ( zcAction != TCA_Error ) && ccmdArgsSize == 3 ) {
+			// Parse last argument as "[[:|#]<classfilter>:]<index>".
+			arg = ccmd.args[ 2 ];
+			String indexstr;
+
+			// Check if first is a ":" or "#" character:
+			testArgClassInheritance( arg );
+
+			// Check for the colon ("doomimp:1") and class mask ("*sphere"):
+			int colonIndex = ZCGlobal.StringIndexOfAny( arg, ":=," );
+			int regexCharIndex = ZCGlobal.StringIndexOfAny( arg, "*-" );
+
+			if ( regexCharIndex != -1 && regexCharIndex < colonIndex )
+				colonIndex = ZCGlobal.StringIndexOfAny( arg, ":=,", colonIndex + 1 );
+
+
+			bool isListIndexSet = false;
+
+
+			// Must be:
+			// "2"			: action		(TCA_SomeAction)
+			// "something"	: list objects	(TCA_List)
+			// "something:2": action		(TCA_SomeAction)
+			// "z-man"		: list objects	(TCA_List)
+			// "z-man:1"	: list objects	(TCA_List)
+			// "z-man:1:1"	: action		(TCA_SomeAction)
+			// "wrongclass"	: 				(TCA_Skip)
+			// "*sphere"	: list classes	(TCA_Skip)
+			// "*sphere:1"	: list objects	(TCA_List)
+			// "*sphere:1:2": action		(TCA_SomeAction)
+
+
+			// If there's a separator or arg start isn't a number, try to unparse as a classname.
+			if ( colonIndex != -1 || !( isListIndexSet = str2int_Ptr( arg, +specifiedListIndex ) ) ) {
+				indexstr = arg.Mid( colonIndex + 1, arg.Length() - colonIndex - 1 );
+				arg = arg.Left( colonIndex );
+
+				specifiedClass = ParseSpecialActorName( arg );
+
+				if ( specifiedClass == NULL || ( classnameParseStatus == CPS_RegexFailed || classnameParseStatus == CPS_EmptyVariable ) ) {
+					LogLocalize2Str( LL_Main, "ZCTHINKERS_NOTTHCLASS", arg );
+					zcAction = TCA_Skip;
+				}
+
+			} else {
+				indexstr = arg;
+			}
+
+			if ( zcAction != TCA_Skip ) {
+				isListIndexSet = str2int_Ptr( indexstr, +specifiedListIndex );
+
+				if ( !isListIndexSet && ( colonIndex == -1 || indexstr == "" ) ) {
+					// No selection index at all. A list must be printed.
+					zcAction = TCA_List;
+
+				} else if ( !isListIndexSet || specifiedListIndex <= 0 ) {
+					// Wrong selection index.
+					LogLocalize2Str( LL_Main, "ZCTHINKERS_WRONGSELECT", indexstr );
+					zcAction = TCA_Skip;
+				}
+
+
+			}
+		} // of if ( parseActorIndex && ( zcAction != TCA_Error ) && ccmdArgsSize == 3 ) {}
+
+
+		return ( zcAction != TCA_Error );
+	} // of override bool HandleArguments() {}
+
+
+
+	// "zcthinkers" subcommands:
+
+	class<Thinker> realIteratorClass;
+
+
+	// Returns new Thinker.
+	// Note that "ThinkerIterator::Next()" before GZDoom 3.4.0 (approximately)
+	//ignores the "bool exact" argument, so for the most compatibility it is
+	//set to "false" in this class everywhere.
+	protected ThinkerIterator getThinkersIterator( bool forcedefaults = false ) {
+		realIteratorClass = specifiedClass;
+
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getThinkersIterator(). Original useInheritance: " .. specifiedClassUseInheritance );
+
+		if ( specifiedClass == NULL || forcedefaults ) {
+			realIteratorClass = 'Thinker';
+			specifiedClassUseInheritance = true;
+		}
+
+		if ( ZCGlobal.GetLogLevel() >= LL_Debug ) {
+			ZCGlobal.ClearscopeLog( LL_Debug, String.Format(
+					"%s::getThinkersIterator(). specifiedClass \"%s\", forcedefaults %i => realIteratorClass \"%s\", new useInheritance %i.",
+					GetClassName(), ZCGlobal.ClassName( specifiedClass ), forcedefaults, ZCGlobal.ClassName( realIteratorClass ), specifiedClassUseInheritance
+				) );
+		}
+
+		return ThinkerIterator.Create( realIteratorClass, zcStatNumType );
+	}
+
+
+	// Returns:
+	//	1) Thinker under specified index in list; and
+	//	2) Total iterated suitable thinkers amount (optional).
+	protected Thinker, int findSpecifiedThinker( ThinkerIterator it ) {
+		Thinker curThinker = NULL;
+		int totalThinkersAmount = 0;
+
+		// Optimization, check for the flag only once:
+		if ( specifiedClassUseInheritance ) {
+			// Inheritance from class:
+			do {
+				if ( !( curThinker = it.Next( false ) ) )
+					break;
+
+				if ( curThinker is realIteratorClass ) {
+					specifiedListIndex--;
+					totalThinkersAmount++;
+				}
+			} while ( specifiedListIndex > 0 );
+
+		} else {
+			// Exact class name:
+			do {
+				if ( !( curThinker = it.Next( false ) ) )
+					break;
+
+				if ( curThinker.GetClass() == specifiedClass ) {
+					specifiedListIndex--;
+					totalThinkersAmount++;
+				}
+			} while ( specifiedListIndex > 0 );
+
+		} // of else of if ( specifiedClassUseInheritance ) {}
+
+		return curThinker, totalThinkersAmount;
+	} // of protected Thinker, int findSpecifiedThinker( ThinkerIterator it ) {}
+
+
+	protected void CommandAddActorToPanel( void ) {
+		ThinkerIterator it = getThinkersIterator();
+		Thinker curThinker;
+
+		if ( specifiedListIndex != -1 ) {
+			int totalThinkersAmount;
+			[ curThinker, totalThinkersAmount ] = findSpecifiedThinker( it );
+
+			if ( !curThinker ) {
+				if ( totalThinkersAmount > 0 )
+					ZCGlobal.Log( LL_Main | LL_NoLocalize, String.Format( ZCGlobal.Locz( "ZCTHINKERS_SELECTBOUNDS" ), totalThinkersAmount ) );
+				else
+					ZCGlobal.Log( LL_Main, "$ZCTHINKERS_EMPTYLIST" );
+
+			} else if ( curThinker is "Actor" ) {
+				// Find next free testee place ("-1" if not found):
+				if ( -1 == zcActionArg && -1 == ZCAddCommand.FindFreeTesteePlace( ccmd ) ) {
+					ZCGlobal.Log( LL_Normal, String.Format( ZCGlobal.Locz( "ZCTHINKERSADD_INSUFFPLACE" ), MaxTestee ) );
+
+				} else {
+					class<Actor> locatedActorClass = Actor( curThinker ).GetClass();
+
+					if ( ZCGlobal.SpecialZCActorsHandling() && ( locatedActorClass == "ZCheckerActorInfo" ) ) {
+						LogLocalize2Str( LL_Normal, "GETACTOR_SKIPPEDSPECIAL", curThinker.GetClassName() .. "" );
+					} else {
+						int newPanelPos = ZCAddCommand.HandleDuplicateActorFields( ccmd, Actor( curThinker ), zcActionArg );
+
+						if ( newPanelPos == -1 )
+							newPanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
+
+						ZCheckerField field = ccmd.handler.Testee[ newPanelPos ];
+
+						field.mo = Actor( curThinker );
+						field.UpdateActorMetainformation( ccmd );
+
+						LogLocalize2Str( LL_Detailed, "ZCTHINKERSADD_SUCCESS", field.mo.GetClassName() .. " <" .. field.mo .. ">" );
+					}
+
+				} // of else of if ( -1 == zcActionArg && -1 == ZCAddCommand.FindFreeTesteePlace( ccmd ) ) {}
+
+			} else {
+				LogLocalize2Str( LL_Main, "ZCTHINKERSADD_NOTACTOR", curThinker.GetClassName() );
+			}
+
+		} else {
+			ZCGlobal.Log( LL_Main, "$ZCTHINKERSADD_NOSELECTION" );
+		}
+	} // of protected void CommandAddActorToPanel( void ) {}
+
+
+	protected void CommandRemoveFromWorld( void ) {
+		// Internal thinkers (like "ACSThinker") cannot be iterated exactly as accessible objects.
+		ThinkerIterator it = getThinkersIterator( specifiedClassRawString != "" );
+		Thinker curThinker;
+
+		if ( specifiedListIndex != -1 ) {
+			// Removing by index:
+
+			int totalThinkersAmount;
+			[ curThinker, totalThinkersAmount ] = findSpecifiedThinker( it );
+
+			if ( !curThinker ) {
+				if ( totalThinkersAmount > 0 )
+					ZCGlobal.Log( LL_Main | LL_NoLocalize, String.Format( ZCGlobal.Locz( "ZCTHINKERS_SELECTBOUNDS" ), totalThinkersAmount ) );
+				else
+					ZCGlobal.Log( LL_Main, "$ZCTHINKERS_EMPTYLIST" );
+
+			} else {
+				class<Thinker> deletedClass = curThinker.GetClass(); // "specifiedClass" may be NULL.
+
+				if ( RemoveWorldThinker( curThinker ) )
+					LogLocalize2Str( LL_Detailed, "ZCTHINKERSRM_SUCCESSONE", deletedClass.GetClassName() );
+			}
+
+		} else if ( zcActionArg & TCRF_AllByName ) {
+			if ( !( zcActionArg & TCRF_RawName ) ) {
+				// Removing by class<Thinker>:
+				if ( specifiedClass != NULL ) {
+					int destroyedAmount = 0;
+					curThinker = it.Next( false );
+
+					while ( curThinker ) {
+						if ( curThinker.GetClass() == specifiedClass ) {
+							if ( RemoveWorldThinker( curThinker ) )
+								destroyedAmount++;
+						}
+
+						curThinker = it.Next( false );
+					}
+
+					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERSRM_SUCCESSALL" ), destroyedAmount, specifiedClass.GetClassName() ) );
+
+				} else {
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::CommandRemoveFromWorld(). \"specifiedClass\" is NULL in the removing by class execution branch." );
+				}
+
+			} else {
+				// Removing by raw classname:
+				if ( specifiedClassRawString != "" ) {
+					int destroyedAmount = 0;
+					curThinker = it.Next( false );
+
+					while ( curThinker ) {
+						if ( ( curThinker.GetClassName() .. "" ) ~== specifiedClassRawString ) {
+							if ( RemoveWorldThinker( curThinker ) )
+								destroyedAmount++;
+						}
+
+						curThinker = it.Next( false );
+					}
+
+					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERSRM_SUCCESSALLRAW" ), destroyedAmount, specifiedClassRawString ) );
+
+				} else {
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::CommandRemoveFromWorld(). \"specifiedClassRawString\" is empty in the removing by raw class name execution branch." );
+				}
+			}
+
+		} else if ( zcActionArg & TCRF_Everything ) {
+			// Removing all thinkers of the specified StatNum:
+			int destroyedAmount = 0;
+			curThinker = it.Next( false );
+
+			while ( curThinker ) {
+				if ( RemoveWorldThinker( curThinker ) )
+					destroyedAmount++;
+
+				curThinker = it.Next( false );
+			}
+
+			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERSRM_SUCCESSEVERYTHING" ), destroyedAmount, specifiedClassRawString ) );
+
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::CommandRemoveFromWorld(). Neither the index nor the classname nor the raw classname not specified." );
+		}
+	} // of protected void CommandRemoveFromWorld( void ) {}
+
+
+	protected void CommandListThinkers( void ) {
+		ThinkerIterator it = getThinkersIterator();
+		Thinker curThinker = NULL;
+
+		String str_NOSECTOR = ZCGlobal.Locz( "ZCTHINKERS_LISTFLAGNOSECTOR" );
+		String str_ATPOS = ZCGlobal.Locz( "ZCTHINKERS_LISTATPOS" ) .. " ";
+		String str_INVOWNERIS = ZCGlobal.Locz( "ZCTHINKERS_LISTINVOWNER" ) .. " ";
+
+		uint thinkersAmount = 0;
+
+		while ( curThinker = it.Next( false ) ) {
+			// Won't copy-paste the whole "while" cycle even for optimization...
+			if ( !( specifiedClassUseInheritance? (curThinker is realIteratorClass) : (curThinker.GetClass() == specifiedClass) ) )
+				continue;
+
+
+			thinkersAmount++;
+
+			// Check if Thinker class is accessible via ZScript (== is it not internal):
+			String curThinkerName = curThinker.GetClassName() .. "";
+			class<Object> accessTestClass = curThinkerName;
+
+			bool isInternalThinker = ( accessTestClass == NULL );
+
+
+			String extrainfo = "";
+
+			if ( curThinker is "Actor" ) {
+				Actor curActor = Actor( curThinker );
+
+				if ( curActor is "Inventory" && Inventory( curActor ).owner ) {
+					Actor invowner = Inventory( curActor ).owner;
+
+					extrainfo = String.Format( "%s" .. LLCOLOR_MAIN .. "%s%s",
+												str_INVOWNERIS,
+												"" .. invowner.GetClassName(),
+												invowner.bNOSECTOR? str_NOSECTOR : TEXTCOLOR_DARKGRAY .. " " .. str_ATPOS .. ZCGlobal.squeezeVector3( invowner.pos ) );
+
+				} else {
+					extrainfo = str_ATPOS .. ZCGlobal.squeezeVector3( curActor.pos );
+				}
+
+				if ( curActor.bNOSECTOR )
+					extrainfo = extrainfo .. str_NOSECTOR;
+
+			} else if ( curThinker is "SectorEffect" ) {
+				extrainfo = String.Format( ZCGlobal.Locz( "ZCTHINKERS_LISTSECTORNUM" ), SectorEffect( curThinker ).GetSector().Index() );
+
+			} // of else of if ( curThinker is "" ) {}
+
+			class<Object> parentClass = curThinker.GetParentClass();
+			String parentClassName = parentClass.GetClassName();
+			accessTestClass = parentClassName;
+
+			if ( isInternalThinker )
+				curThinkerName = TEXTCOLOR_BLACK .. "[" .. TEXTCOLOR_TEAL .. curThinkerName .. TEXTCOLOR_BLACK .. "]";
+
+			if ( accessTestClass == NULL )
+				parentClassName = TEXTCOLOR_BLACK .. "[" .. TEXTCOLOR_TEAL .. parentClassName .. TEXTCOLOR_BLACK .. "]";
+
+			console.printf( TEXTCOLOR_DARKGRAY .. "%2i. " .. ( isInternalThinker? TEXTCOLOR_BRICK .. "%-21s" : TEXTCOLOR_WHITE .. "%-15s" )
+								.. TEXTCOLOR_GRAY .. ": %s" .. ( extrainfo != ""? TEXTCOLOR_DARKGRAY .. extrainfo : "" ),
+							thinkersAmount, curThinkerName, parentClassName );
+
+		} // of while ( curThinker = it.Next( false ) ) {}
+
+		if ( zcAction == TCA_List ) {
+			if ( specifiedClass == NULL )
+				ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERS_LISTTOTAL" ), thinkersAmount, zcStatNumType ) );
+			else if ( !specifiedClassUseInheritance )
+				ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERS_LISTTOTALFILTEREXACT" ), thinkersAmount, specifiedClass.GetClassName(), zcStatNumType ) );
+			else
+				ZCGlobal.ClearscopeLog( LL_Main, String.Format( ZCGlobal.Locz( "ZCTHINKERS_LISTTOTALFILTERINHERITANCE" ), thinkersAmount, specifiedClass.GetClassName(), zcStatNumType ) );
+		}
+
+	} // of protected void CommandListThinkers( void ) {}
+
+
+
+	// Command "zcthinkers" execution:
+
+	protected void AddListSection( String sectionname, String nodescolor ) {
+		helpListValuesColor = nodescolor;
+		helpListStr = helpListStr .. "\n" .. nodescolor .. "<" .. ZCGlobal.Locz( "ZCTHINKERS_" .. sectionname ) .. ">" .. CCMDCOLOR_DESC .. ": ";
+	}
+
+	protected void AddListValue( String node ) {
+		node.Replace( "/", TEXTCOLOR_DARKGRAY .. "/" .. helpListValuesColor );
+		node.Replace( "[", TEXTCOLOR_DARKGRAY .. "[" .. helpListValuesColor );
+		node.Replace( "]", TEXTCOLOR_DARKGRAY .. "]" .. helpListValuesColor );
+		helpListStr = helpListStr .. helpListValuesColor .. node .. CCMDCOLOR_DESC .. "; ";
+	}
+
+	override void DoCommand() {
+		if ( zcAction == TCA_Skip )
+			return;
+
+		if ( zcStatNumType == TCSN_ListTypes ) {
+			helpListStr = helpListValuesColor = "";
+
+			AddListSection( "SECTIONACTORS", TEXTCOLOR_SAPPHIRE );
+			AddListValue( "a[ctors]/def[ault]" );
+			AddListValue( "dynlights/dl" );
+			AddListValue( "i[nv[entory]]" );
+			AddListValue( "mapmarkers/markers/automap[markers]" );
+			AddListValue( "bosstargets" );
+			AddListSection( "SECTIONSTATIC", TEXTCOLOR_TEAL );
+			AddListValue( "static/s" );
+			AddListValue( "info[rmation]" );
+			AddListValue( "decals/dec" );
+			AddListValue( "autodecals/decalsauto/da/ad" );
+			AddListValue( "corpsepointers/hexencorpses" );
+			AddListValue( "travelling/trinv" );
+			AddListSection( "SECTIONSECTORS", TEXTCOLOR_BRICK );
+			AddListValue( "sec[tor]mov[ers]/sec[tor]effects/sm/se" );
+			AddListValue( "sec[tor]lights/sl" );
+			AddListValue( "sectorlighttransfers/slt" );
+			AddListSection( "SECTIONOTHER", TEXTCOLOR_DARKGREEN );
+			AddListValue( "acs/acsscripts" );
+			AddListValue( "lightnings" );
+			AddListValue( "pl[ayers]" );
+			AddListValue( "bots" );
+			AddListValue( "[actor]movers" );
+			AddListValue( "[earth]quakes" );
+			AddListValue( "scrollers" );
+			AddListValue( "decalthinkers/dect" );
+
+			console.printf( ZCGlobal.Locz( "ZCTHINKERS_HELPLISTPOSTFIX" ), helpListStr, Thinker.STAT_USER, Thinker.STAT_USER_MAX );
+
+		} else if ( zcStatNumType >= TCSN_First && zcStatNumType <= Thinker.MAX_STATNUM ) {
+
+			switch ( zcAction ) {
+				case TCA_PanelAdd:
+					CommandAddActorToPanel();
+					break;
+
+				case TCA_RemoveThinker:
+					if ( zcForceActionListThinkers ) {
+						ZCGlobal.Log( LL_Main, "$ZCTHINKERSRM_NOSELECTION" );
+					} else {
+						CommandRemoveFromWorld();
+					}
+					break;
+
+				case TCA_List:
+					zcForceActionListThinkers = true;
+					break;
+
+				case TCA_Track:
+				case TCA_StopTracking:
+					ZCGlobal.Log( LL_Main, "[Tracking system not released yet]." );
+					break;
+
+				default:
+					ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Unknown action type " .. zcAction );
+					break;
+			}
+
+
+			if ( zcForceActionListThinkers )
+				CommandListThinkers();
+
+
+		} else {
+			ZCGlobal.Log( LL_Emergency, GetClassName() .. "::DoCommand(). Impossible StatNum " .. zcStatNumType );
+		}
+	}
+} // of class ZCThinkersControlCommand: ZCConsoleCommand {}

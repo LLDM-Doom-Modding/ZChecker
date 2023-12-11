@@ -38,7 +38,7 @@ unused),,,,
 ,,ZCHECKER_MAINMENU_TITLE,ZChecker settings,Настройки ZChecker
 ,,ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR,\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in the options menu above.,"\cxОшибка\ci: ZChecker не может быть запущен.\n\ciБольше информации есть в меню, расположенном выше."
 ,,,,
-,,ZCHECKER_MAINMENU_ZCHANDLER_ERROR,"\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker cannot be launched properly\ci.\n\n\ciPossible reason: usage of the \cu""\crEventHandlers = ...\cu""\n\cu(\cinot \cu""\cqAddEventHandlers = ...\cu"") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.",
+,,ZCHECKER_MAINMENU_ZCHANDLER_ERROR,"\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker cannot be launched properly\ci.\n\n\ciPossible reason: usage of the \cu""\crEventHandlers = ...\cu""\n\cu(\cinot \cu""\cqAddEventHandlers = ...\cu"") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.","\cf---- ===== \cxОШИБКА \cf===== ----\n\cxНе удаётся обнаружить ZChecker static event handler;\n\cxневозможно верно запустить ZChecker\ci.\n\n\ciВероятная причина: использование \cu""\crEventHandlers = ...\cu""\n\cu(\ciне \cu""\cqAddEventHandlers = ...\cu"") \ciв каком-то из \ccMAPINFO\n\ciдля версий движка ниже GZDoom 4.8.0."
 ,,ZCHECKER_MAINMENU_DIV_GENERAL,General categories,Основные категории
 ,,ZCHECKER_MAINMENU_INFOPANELS,Information panel settings,Настройки инфопанелей
 ,,ZCHECKER_MAINMENU_CCMDS,Call console command [WIP],Вызов консольных команд [WIP]
@@ -55,7 +55,7 @@ unused),,,,
 ,,ZCHECKER_MAINMENU_NETEVENTS,Netevent info intercepting,Перехват Netevents
 ,,ZCHECKER_MAINMENU_NETEVENTS_TIP,Try to obtain information from network events.,Перехватывает информацию с сетевых событий.
 ,,ZCHECKER_MAINMENU_ALLOWDANGEROUS,Allow dangerous actions,Разрешить опасные действия
-,,ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP,Allow operations that are known to crash the game.,"Действия, при обычных условиях ломающие игровой движок."
+,,ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP,Allow operations that are known to crash the game.,"Действия, при обычных условиях всегда ломающие игровой движок."
 ,,ZCHECKER_MAINMENU_ZCADDTWICE,Repeated actor addition handling,Поведение при дублировании указателя
 ,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP1,"Behaviour when using ""zcadd"" on an actor which","Поведение при использовании команд вроде ""zcadd"" на акторе,"
 ,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP2,is already present in the information panels list.,который уже присутствует в инфопанелях.
@@ -161,7 +161,7 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_PANELSUBLABEL_WPOS_PREFIX,,
 ,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLON,All rotations ,Все углы поворота
-,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF,Angle and pitch ,"Курс и тангаж (angle, pitch)"
+,,ZCHECKER_PANELSUBLABEL_WPOS_ROLLOFF,Angle and pitch ,"Рыскание, тангаж (angle, pitch)"
 ,,ZCHECKER_PANELSUBLABEL_WPOS_FRACLEN,with frac of length,", длина дроби"
 ,,ZCHECKER_PANELSUBLABEL_WPOS_BUTTONS,", show inputs",; клавиши
 ,,ZCHECKER_PANELSUBMENU_WPOS_TITLE,ZChecker panel: World positioning,Панель ZChecker: Позиционирование
@@ -217,7 +217,7 @@ unused),,,,
 ,,ZCHECKER_PANELSUBLABEL_GSEC_TEXTURES,txtrs,ткстр
 ,,ZCHECKER_PANELSUBLABEL_GSEC_FLAGS,flags,флаги
 ,,ZCHECKER_PANELSUBLABEL_GSEC_DAMAGE,damage,урон
-,,ZCHECKER_PANELSUBLABEL_GSEC_PHYSICS,phys,физ.
+,,ZCHECKER_PANELSUBLABEL_GSEC_PHYSICS,phys,физ
 ,,ZCHECKER_PANELSUBLABEL_GSEC_PORTALS,portal,порталы
 ,,ZCHECKER_PANELSUBLABEL_GSEC_TERRAIN,terrain,terrain
 ,,ZCHECKER_PANELSUBLABEL_GSEC_OTHER,other,другое
@@ -234,7 +234,7 @@ unused),,,,
 ,,ZCHECKER_PANELSUBMENU_GSECNOTE_WIP,(Not released yet):,(Пока не реализровано):
 ,,ZCHECKER_PANELSUBMENU_GSEC_OTHER,"Other: water level, special, ...","Другое: уровень воды, действие, ..."
 ,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF,Disabled,Не выводить
-,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY,Z coordinates,Z-координата
+,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY,Z coordinate,Z-координата
 ,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA,Z coord + actor delta,Z-коорд. + дельта до актора
 ,,,,
 ,Not used in the current version. >>>,ZCHECKER_PANELGEOMLNOPT_TYPE_LOS,On line of sight,
@@ -252,7 +252,7 @@ unused),,,,
 , === Visual Settings control menu ===,,,
 ,,,,
 ,,ZCHECKER_VISUAL_TITLE,ZChecker: HUD and visual settings,ZChecker: настройки отображения
-,,ZCHECKER_VISUAL_POSITIONING,Panels positioning,Положение панелей
+,,ZCHECKER_VISUALDIV_POSITIONING,Panels positioning,Положение панелей
 ,,ZCHECKER_VISUAL_START_X,"Panels start X, %","Начало по X, %"
 ,,ZCHECKER_VISUAL_START_X_10,"Panels start X, x10%","Начало по X, x10%"
 ,,ZCHECKER_VISUAL_START_Y,"Panels start Y, %","Начало по Y, %"
@@ -260,18 +260,18 @@ unused),,,,
 ,,ZCHECKER_VISUAL_OFFSET_X,"Next panels X offset, %","Смещение по X, %"
 ,,ZCHECKER_VISUAL_PANELS_SCALE,Panels scale,Масштабирование
 ,,ZCHECKER_VISUAL_PANELS_Y_GAP,"Panels interval Y, multiplier","Интервал по Y, множитель"
-,,ZCHECKER_VISUAL_BACKGROUND,Panels background,Настройки фона панелей
+,,ZCHECKER_VISUALDIV_BACKGROUND,Panels background,Настройки фона панелей
 ,,ZCHECKER_VISUAL_ENABLED,Enabled,Включён
 ,,ZCHECKER_VISUAL_DIMCOLOR,Background color,Цвет фона
 ,,ZCHECKER_VISUAL_DIMALPHA,Background alpha,Прозрачность фона
 ,,ZCHECKER_VISUAL_DIMBORDERWIDTH,Border width,Ширина границ
-,,ZCHECKER_VISUAL_EVERYTHINGMAP_INFO,"""Everything"" map actor info","Информационный актор на картах ""Everything"""
+,,ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO,"""Everything"" map actor info","Информационный актор на картах ""Everything"""
 ,,ZCHECKER_VISUAL_INFOSTR_X,"Actor info string X, %","Начало строки по X, %"
 ,,ZCHECKER_VISUAL_INFOSTR_X10,"Actor info string X, x10%","Начало строки по X, x10%"
 ,,ZCHECKER_VISUAL_INFOSTR_Y,"Actor info string Y, %","Начало строки по Y, %"
 ,,ZCHECKER_VISUAL_INFOSTR_Y10,"Actor info string Y, x10%","Начало строки по Y, x10%"
 ,,ZCHECKER_VISUAL_INFOSTR_SCALE,Actor info string scale,Масштабирование строки
-,,ZCHECKER_VISUAL_OTHER,Other,Остальное
+,,ZCHECKER_VISUALDIV_OTHER,Other,Остальное
 ,,ZCHECKER_VISUAL_FONTTYPES,General font,Глобальный шрифт
 ,,,,
 ," === Control menu for the ""Everything"" map ==",,,
@@ -279,9 +279,9 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_TITLE,"ZChecker: ""Everything"" map settings","ZChecker: опции карт ""Everything"""
 ,,ZCHECKER_EVMAPMENU_SPAWNOPTIONS,Spawning options,Настройки создания акторов
 ,,ZCHECKER_EVMAPMENUDIV_GENERAL,- General -,- Общее -
+,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Built-in engine actors,Встроенные в движок акторы
 ,,ZCHECKER_EVMAPMENU_SPAWNREPLACED,Replaced actors,Заменённые акторы
-,,ZCHECKER_EVMAPMENU_SPAWNBUILTIN,Actors embedded in the engine,"Акторы, встроенные в движок"
-,,ZCHECKER_EVMAPMENU_RESTRICT,Replacements of restricted actors,Замены запрещённых акторов
+,,ZCHECKER_EVMAPMENU_RESTRICT,Unsafe built-in actors replacement,Замены встроенных запрещённых акторов
 ,,ZCHECKER_EVMAPMENUDIV_SPRITES,- By empty sprites -,- По пустым спрайтам -
 ,,ZCHECKER_EVMAPMENU_MISSING,Actors with missing sprites,Акторы с пропущенными спрайтами
 ,,ZCHECKER_EVMAPMENU_TNT1A0,Actors with the \'TNT1A0\' sprite,Акторы со спрайтами \'TNT1A0\'
@@ -314,30 +314,30 @@ unused),,,,
 ,,ZCHECKER_EVMAPMENU_CHANGEMAP2ASK,This command will warp you to the\nEverything map (alternative version by StormCatcher.77)\nwithout saving current progress. \n\nAre you sure? [Y/N],Вы будете перенесены на альтернативную версию \nкарты Everything от StormCatcher.77\nбез сохранения текущего прогресса. \n\nВы уверены? [Y/N]
 ,,ZCHECKER_EVMAPMENU_WARPSTART,"Teleport to start\cc: ""\cmzcevg #\cqstart\cc""","Перейти на старт\cc: ""\cmzcevg #\cqstart\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPMONS,- Teleport to monsters -,- Переход к категориям монстров -
-,,ZCHECKER_EVMAPMENU_WARPMONSTERS,"Monsters, regular\cc: ""\cmzcevg #\cdmons\cc""",
-,,ZCHECKER_EVMAPMENU_WARPLMONS,"Monsters, large\cc: ""\cmzcevg #\cdlmons\cc""",
-,,ZCHECKER_EVMAPMENU_WARPHMONS,"Monsters, huge\cc: ""\cmzcevg #\cdhmons\cc""",
+,,ZCHECKER_EVMAPMENU_WARPMONSTERS,"Monsters, regular\cc: ""\cmzcevg #\cdmons\cc""","Монстры, обычные\cc: ""\cmzcevg #\cdmons\cc"""
+,,ZCHECKER_EVMAPMENU_WARPLMONS,"Monsters, large\cc: ""\cmzcevg #\cdlmons\cc""","Монстры, крупные\cc: ""\cmzcevg #\cdlmons\cc"""
+,,ZCHECKER_EVMAPMENU_WARPHMONS,"Monsters, huge\cc: ""\cmzcevg #\cdhmons\cc""","Монстры, огромные\cc: ""\cmzcevg #\cdhmons\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPITEMS,- Teleport to items -,- Переход к категориям предметов -
-,,ZCHECKER_EVMAPMENU_WARPWEAPS,"Weapons\cc: ""\cmzcevg #\cdweaps\cc""",
-,,ZCHECKER_EVMAPMENU_WARPAMMO,"Ammo\cc: ""\cmzcevg #\cdammo\cc""",
-,,ZCHECKER_EVMAPMENU_WARPHPARMOR,"Health/armor items\cc: ""\cmzcevg #\cdhealth\cc""",
-,,ZCHECKER_EVMAPMENU_WARPPOWERUPS,"Powerups\cc: ""\cmzcevg #\cdpowerups\cc""",
-,,ZCHECKER_EVMAPMENU_WARPKEYS,"Keys\cc: ""\cmzcevg #\cdkeys\cc""",
-,,ZCHECKER_EVMAPMENU_WARPOTHITEMS,"Other items\cc: ""\cmzcevg #\cdothitems\cc""",
+,,ZCHECKER_EVMAPMENU_WARPWEAPS,"Weapons\cc: ""\cmzcevg #\cdweaps\cc""","Оружие\cc: ""\cmzcevg #\cdweaps\cc"""
+,,ZCHECKER_EVMAPMENU_WARPAMMO,"Ammo\cc: ""\cmzcevg #\cdammo\cc""","Патроны\cc: ""\cmzcevg #\cdammo\cc"""
+,,ZCHECKER_EVMAPMENU_WARPHPARMOR,"Health/armor items\cc: ""\cmzcevg #\cdhealth\cc""","Здоровье/броня\cc: ""\cmzcevg #\cdhealth\cc"""
+,,ZCHECKER_EVMAPMENU_WARPPOWERUPS,"Powerups\cc: ""\cmzcevg #\cdpowerups\cc""","Усиления (powerups)\cc: ""\cmzcevg #\cdpowerups\cc"""
+,,ZCHECKER_EVMAPMENU_WARPKEYS,"Keys\cc: ""\cmzcevg #\cdkeys\cc""","Ключи\cc: ""\cmzcevg #\cdkeys\cc"""
+,,ZCHECKER_EVMAPMENU_WARPOTHITEMS,"Other items\cc: ""\cmzcevg #\cdothitems\cc""","Другие предметы\cc: ""\cmzcevg #\cdothitems\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPDECOR,- Teleport to decorations and objects -,- Переход к категориям декораций и объектов -
-,,ZCHECKER_EVMAPMENU_WARPDSOLID,"Impassable, regular\cc: ""\cmzcevg #\cdsolid\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDLSOLID,"Impassable, large\cc: ""\cmzcevg #\cdsolidl\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDETHER,"Passable, regular\cc: ""\cmzcevg #\cdpass\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDLETHER,"Passable, large\cc: ""\cmzcevg #\cdpassl\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDSHOOT,"Shootable, regular\cc: ""\cmzcevg #\cdshoot\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDLSHOOT,"Shootable, large\cc: ""\cmzcevg #\cdshootl\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDNOBLKMAP,"NOBLOCKMAP-flagged\cc: ""\cmzcevg #\cdnoblockmap\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDNOINTRCT,"NOINTERACTION-flagged\cc: ""\cmzcevg #\cdnoint\cc""",
-,,ZCHECKER_EVMAPMENU_WARPDHUGE,"Huge decorations\cc: ""\cmzcevg #\cddhuge\cc""",
+,,ZCHECKER_EVMAPMENU_WARPDSOLID,"Impassable, regular\cc: ""\cmzcevg #\cdsolid\cc""","Непроходимые, обычные\cc: ""\cmzcevg #\cdsolid\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDLSOLID,"Impassable, large\cc: ""\cmzcevg #\cdsolidl\cc""","Непроходимые, крупные\cc: ""\cmzcevg #\cdsolidl\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDETHER,"Passable, regular\cc: ""\cmzcevg #\cdpass\cc""","Бесплотные, обычные\cc: ""\cmzcevg #\cdpass\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDLETHER,"Passable, large\cc: ""\cmzcevg #\cdpassl\cc""","Бесплотные, крупные\cc: ""\cmzcevg #\cdpassl\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDSHOOT,"Shootable, regular\cc: ""\cmzcevg #\cdshoot\cc""","Атакуемые, обычные\cc: ""\cmzcevg #\cdshoot\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDLSHOOT,"Shootable, large\cc: ""\cmzcevg #\cdshootl\cc""","Атакуемые, крупные\cc: ""\cmzcevg #\cdshootl\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDNOBLKMAP,"NOBLOCKMAP-flagged\cc: ""\cmzcevg #\cdnoblockmap\cc""","Флаг NOBLOCKMAP\cc: ""\cmzcevg #\cdnoblockmap\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDNOINTRCT,"NOINTERACTION-flagged\cc: ""\cmzcevg #\cdnoint\cc""","Флаг NOINTERACTION\cc: ""\cmzcevg #\cdnoint\cc"""
+,,ZCHECKER_EVMAPMENU_WARPDHUGE,"Huge decorations\cc: ""\cmzcevg #\cddhuge\cc""","Огромные декорации\cc: ""\cmzcevg #\cddhuge\cc"""
 ,,ZCHECKER_EVMAPMENUDIV_WARPOTHER,- Teleport to other actors -,- Переход к остальным категориям -
-,,ZCHECKER_EVMAPMENU_WARPMISSILES,"Projectiles\cc: ""\cmzcevg #\cdproj\cc""",
-,,ZCHECKER_EVMAPMENU_WARPPLAYERS,"Player classes\cc: ""\cmzcevg #\cdplayers\cc""",
-,,ZCHECKER_EVMAPMENU_WARPOTHER,"Special actors\cc: ""\cmzcevg #\cdspecial\cc""",
+,,ZCHECKER_EVMAPMENU_WARPMISSILES,"Projectiles\cc: ""\cmzcevg #\cdproj\cc""","Снаряды (projectiles)\cc: ""\cmzcevg #\cdproj\cc"""
+,,ZCHECKER_EVMAPMENU_WARPPLAYERS,"Player classes\cc: ""\cmzcevg #\cdplayers\cc""","Классы игроков\cc: ""\cmzcevg #\cdplayers\cc"""
+,,ZCHECKER_EVMAPMENU_WARPOTHER,"Special actors\cc: ""\cmzcevg #\cdspecial\cc""","Особые акторы\cc: ""\cmzcevg #\cdspecial\cc"""
 ,,,,
 , === Console commands control menu ===,,,
 ,,,,
@@ -358,10 +358,10 @@ unused),,,,
 ,,ZCHECKER_EVMAP_INITERROR,"Cannot run due to the map errors, terminating.",Невозможно продолжить из-за ошибок на карте; останов.
 ,,ZCHECKER_EVMAP_RECREATEACTORS,Recreating/reloading map actors...,Пересоздание акторов на карте...
 ,,ZCHECKER_EVMAP_RELOADSECTORS,Reloading general properties for all sectors...,Перезагрузка свойств всех секторов...
-,,ZCHECKER_EVMAP_AUTOIDDQD,Auto-godmode enabled.,Неуязвимость включена автоматически.
-,,ZCHECKER_EVMAP_AUTONOTARGET,Auto-notarget enabled.,Команда notarget включена автоматически.
+,,ZCHECKER_EVMAP_AUTOIDDQD,Auto-godmode enabled.,Неуязвимость автоматически включена.
+,,ZCHECKER_EVMAP_AUTONOTARGET,Auto-notarget enabled.,Команда notarget автоматически включена.
 ,,ZCHECKER_EVMAPSPAWN_SUCCESS,"\cqsummoned class ""\cd%s\cq""\c~ (sprite ""%s"").","\cqсоздан класс ""\cd%s\cq""\c~ (спрайт ""%s"")."
-,,ZCHECKER_EVMAPSPAWN_SKIPBUILTIN,\chAll embedded (built-in) classes has been skipped.,\chВсе встроенные классы были пропущены.
+,,ZCHECKER_EVMAPSPAWN_SKIPBUILTIN,\chAll built-in classes has been skipped.,\chВсе встроенные классы были пропущены.
 ,,ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of empty sprite ""%s"".","\c~класс ""\cz%s\c~"" пропущен из-за пустого спрайта ""%s""."
 ,,ZCHECKER_EVMAPSPAWN_MISSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \cpmissing sprite\c~ ""\cs%s\c~"".","\c~класс ""\cz%s\c~"" пропущен из-за \cpнесуществующего спрайта\c~ ""\cs%s\c~""."
 ,,ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP,"\c~class ""\cz%s\c~"" omitted because of \crcorrupted sprite\c~ ""\cs%s\c~"" (tends to be ""%s"").","\c~класс ""\cz%s\c~"" пропущен из-за \crискажения спрайта\c~ ""\cs%s\c~"" (попытка стать ""%s"")."
@@ -370,13 +370,13 @@ unused),,,,
 ,,ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""PlayerChunk"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""PlayerChunk""."
 ,,ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP,"\c~class ""\cz%s\c~"" omitted due to inheritance from the ""BossBrain"".","\c~класс ""\cz%s\c~"" пропущен из-за наследования от ""BossBrain""."
 ,,ZCHECKER_EVMAPSPAWN_REPLACEDSKIP,"\c~class ""\cz%s\c~"" replaced and thus omitted.","\c~класс ""\cz%s\c~"" заменён (replaced) и поэтому пропущен."
-,,ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP,"\c~replaced by ""\c-%s\c~"" class ""\c-%s\c~"" is restricted\c~.","\c~заменённый (replaced) классом ""\c-%s\c~"" класс ""\c-%s\c~"" запрещён\c~."
+,,ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP,"\c~replaced by ""\c-%s\c~"" class ""\c-%s\c~"" is unsafe\c~.","\c~заменённый (replaced) классом ""\c-%s\c~"" класс ""\c-%s\c~"" запрещён\c~."
 ,,ZCHECKER_EVMAPCATEGORY_PREFIX,\cuCategory \cj%s\cu. ,\cuКатегория \cj%s\cu. 
 ,,ZCHECKER_EVMAPCATEGORY_NORMALSPAWN,Spawned %i actor(s) in total,Всего акторов создано: %i
 ,,ZCHECKER_EVMAPCATEGORY_EMPTYSPAWN,No actors spawned,Акторов нет
 ,,ZCHECKER_EVMAPCATEGORY_PARTIALSPAWN,Spawned \ca%i/%i\cu actor(s) in total,Всего акторов создано: \ca%i/%i\cu
 ,,ZCHECKER_EVMAP_RESUMMON,\c~Spawned \c-%s\c~.,\c~Создан актор \c-%s\c~.
-,,ZCHECKER_EVMAP_INFOSTR_REPLACES,%s \cnreplaces\c- %s,%s \cnзаменяет\c- %s
+,,ZCHECKER_EVMAP_INFOSTR_REPLACES,%s \cnreplaces\c- %s,%s \cnreplaces\c- %s
 ,,,,
 ,,,,
 ,,,,
@@ -387,27 +387,27 @@ unused),,,,
 ,,ZCHECKER_CCMD_WIP,"\c~[Work-in-progress command, may behave strangely or not work at all].","\c~[Команда находится в разработке, может работать неочевидным образом или же не работать вовсе]."
 ,,,,
 ," ""ZCConsoleCommand::GetPlaceTestee()"" and ""ZCConsoleCommand::LinetraceActor()""",,,
-,,ZCHECKER_GETACTOR_SKIPPEDSPECIAL,"Skipped special ZChecker class ""%s"".","Пропущен внутренний класс ZChecker ""%s""."
+,,ZCHECKER_GETACTOR_SKIPPEDSPECIAL,"Skipped ZChecker class ""%s"".","Пропущен внутренний класс ZChecker ""%s""."
 ,,ZCHECKER_GETACTOR_LTNOACTORS,No available linetarget actors found.,Доступных целей под курсором не найдено.
 ,,ZCHECKER_GETACTOR_EMPTYPOS,No actor in position %i.,Актора в позиции %i не существует.
-,,ZCHECKER_GETACTOR_WRONGPOS,\c!Wrong position %i\c- (must be in range [1..%i]).,\c!Неверная позиция %i\c- (должен лежать в пределах [1..%i]).
+,,ZCHECKER_GETACTOR_WRONGPOS,\c!Wrong position %i\c- (must be in range [1..%i]).,\c!Неверная позиция %i\c- (должна лежать в пределах [1..%i]).
 ,,ZCHECKER_GETACTOR_UNKNOWNKEYWORD,"\c!Unknown placeholder ""%s"" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.","\c!Неизвестная подстановка ""%s"" в позиции %i\c~. Возможные значения: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~."
 ,,,,
 ," ""ZCConsoleCommand::ParseSpecialActorName()""",,,
-,,ZCHECKER_PARSENAME_WRONGSELECT,"\c!Selection ""%s"" isn't a positive integer.","\c!Указание ""%s"" — не положительное целое число."
-,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". You may use ""%%null"" or ""%%none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. Для обхода этого можно использовать ""%%null"" или ""%%none""."
-,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset internal variable ""%s"".","\c!Пропущена\c- ещё не установленная внутренняя переменная ""%s""."
-,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided.,"\c!Нет ни одного символа, определяющего класс."
+,,ZCHECKER_PARSENAME_WRONGSELECT,"Class selection index ""\c!%s\c-"" isn't a positive integer.","Выбор класса ""\c!%s\c-"" должен быть положительным целым числом."
+,,ZCHECKER_PARSENAME_EMPTYKEYWORD,"\c!Skipped\c- empty placeholder ""%s"". \c~You may use ""$null"" or ""$none"" to override this.","\c!Пропущена\c- подстановка ""%s"", вырождающаяся в пустую. \c~Для обхода этого можно использовать ""$null"" или ""$none""."
+,,ZCHECKER_PARSENAME_UNSETVAR,"\c!Skipped\c- unset classname variable ""%s"".","\c!Пропущена\c- ещё не существующая переменная имени класса ""%s""."
+,,ZCHECKER_PARSENAME_NOCLASSCHARS,\c!No class identifier characters provided\c-.,"\c!Нет ни одного символа, определяющего класс\c-."
 ,,ZCHECKER_PARSENAME_WITHFILTER,\c~ with filter \cj%s\c~,\c~ с фильтром \cj%s\c~
-,,ZCHECKER_PARSENAME_NOTFOUND,Cannot find any suitable actor name candidates,Подходящих под регулярное выражение кандидатов не найдено
-,,ZCHECKER_PARSENAME_FOUNDSOME,Found more than one suitable actor name candidate,"Найдено более одного кандидата, подходящих под регулярное выражение"
-,,ZCHECKER_PARSENAME_SELECTBOUNDS,\c!Selected index \cn%i \c!is out of range\c- of the found candidates.,\c!Выбранный индекс \cn%i \c!находится вне дипапзона\c- найденных кандидатов.
-,,ZCHECKER_PARSENAME_IGNORESELECT,\c!Ignoring numerical selection %i\c-,\c!Пропуск числового указания %i\c-
+,,ZCHECKER_PARSENAME_NOTFOUND,Cannot find any suitable actor name candidates,"Не найдено кандидатов, подходящих под регулярное выражение"
+,,ZCHECKER_PARSENAME_FOUNDSOME,Found more than one suitable actor name candidate,"Найдено более одного кандидата, подходящего под регулярное выражение"
+,,ZCHECKER_PARSENAME_SELECTBOUNDS,\c!Selected index \cn%i \c!is out of range\c- of the found candidates (1..%i).,\c!Выбранный индекс \cn%i \c!находится вне дипапзона\c- найденных кандидатов (1..%i).
+,,ZCHECKER_PARSENAME_IGNORESELECT,"Ignoring selection \cn%i\c-, the class is already unambiguously defined","Пропуск указания \cn%i\c-, класс и так определён однозначно"
 ,,,,
 ," ""ZCConsoleCommand::RemoveWorldThinker()""",,,
-,,ZCHECKER_REMOVEPREVENT_LIVEPLAYER,"\crTried to destroy a live player %i\c-, \c!skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crПопытка уничтожения живого игрока %i\c-, \c!пропущено\c-. Вы можете переопределить это с помощью опции ""Разрешить опасные действия""."
+,,ZCHECKER_REMOVEPREVENT_LIVEPLAYER,"\crTried to destroy a live player %i, skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crПопытка уничтожения живого игрока %i, отмена\c-. Переопределить можно с помощью опции ""Разрешить опасные действия""."
 ,,ZCHECKER_REMOVEWARNING_LIVEPLAYER,destroying live player,уничтожение живого игрока
-,,ZCHECKER_REMOVEPREVENT_ZCINTERNAL,"\crInternal ZChecker class ""\c-%s\cr"" in the destroy list, \c!skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crВнутренний класс ZChecker ""\c-%s\cr"" в списке на уничтожение, \c!пропущен\c-. Вы можете переопределить это с помощью опции ""Разрешить опасные действия""."
+,,ZCHECKER_REMOVEPREVENT_ZCINTERNAL,"\crInternal ZChecker class ""\c-%s\cr"" in the destroy list, skipped\c-. You may enable this using the ""Allow dangerous actions"" option.","\crВнутренний класс ZChecker ""\c-%s\cr"" в списке на уничтожение, отмена\c-. Переопределить можно с помощью опции ""Разрешить опасные действия""."
 ,,ZCHECKER_REMOVEWARNING_ZCINTERNAL,destroying internal ZChecker class,уничтожение внутреннего класса ZChecker
 ,,,,
 ," ""ZCAddCommand::HandleDuplicateActorFields()""",,,
@@ -429,9 +429,9 @@ unused),,,,
 ,,ZCHECKER_ZCHELP_HEADERALLCCMDS,"\cjAvailable commands, complete list\c-:",\cjПолный список доступных команд\c-:
 ,,,,
 ," ""zcadd"":",,,
-,,ZCHECKER_ZCADD_HELP_TITLE,zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [<index>] [<panel>],zcadd [s[elf]|w[eapon]|cam[era]|force] [<панель>];zcaddself [<панель>];zcaddweap [<панель>];zcaddforce [<панель>];zcaddlistget [<индекс>] [<панель>]
+,,ZCHECKER_ZCADD_HELP_TITLE,zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcadd [s[elf]|w[eapon]|cam[era]|force] [<панель>];zcaddself [<панель>];zcaddweap [<панель>];zcaddforce [<панель>];zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
 ,,ZCHECKER_ZCADD_HELP_DESC,"Add the linetarget/current player/current weapon/non-solid linetarget/random world actor into the panels list. <panel> is a panel number to set to; if omitted, the first empty slot will be used.","Добавление цели под курсором (без суффикса)/этого игрока (""self"")/текущего оружия (""weap"")/бесплотной цели (""force"")/произвольного актора (""listget"") в информационную панель. <панель> — номер самой панели; по умолчанию используется первый свободный слот."
-,,ZCHECKER_ZCADD_ADDINSUFFPLACE,"Cannot add target to the panels list, insufficient space. Try adding the target to list directly via ""zcadd 1""..""zcadd %i"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcadd 1""..""zcadd %i""."
+,,ZCHECKER_ZCADD_ADDINSUFFPLACE,"Cannot add target to the panels list, insufficient space. Try adding the target to list directly via ""zcadd 1""..""zcadd %i"".","Нельзя добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcadd 1""..""zcadd %i""."
 ,,ZCHECKER_ZCADD_NOWEAPON,"No weapon, cannot add.",Текущего оружия нет.
 ,,ZCHECKER_ZCADD_FORCENOTFOUND,Cannot find any suitable actors.,Не удаётся найти подходящего актора.
 ,,ZCHECKER_ZCADD_CAMERAISPLAYER,"\c~Player camera is linked to the player, adding player actor itself.","\c~Камера игрока прикреплена к самому игроку, добавление последнего."
@@ -442,8 +442,8 @@ unused),,,,
 ,,ZCHECKER_ZCADD_SUCCESSCAMERA,Added a player camera %s,Добавлена камера игрока %s
 ,,ZCHECKER_ZCADD_USINGPREVLINK,\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.,\c~Используется уже существующая ссылка (панель \cj%i\c~) для актора \cu%s\c~.
 ,,,,
-," ""zcrem""/""zcclear"":",,,
-,,ZCHECKER_ZCREM_HELP_TITLE,zcrem [<panel>];zcclear [<panel>],zcrem [<панель>];zcclear [<панель>]
+," ""zcrem"":",,,
+,,ZCHECKER_ZCREM_HELP_TITLE,zcrem [<panel>],zcrem [<панель>]
 ,,ZCHECKER_ZCREM_HELP_DESC,Remove testee from informational panel <panel>; removes the whole list if no argument provided.,"Убирает актора из информационной панели под номером <panel>; очищает весь список, если аргумента нет."
 ,,ZCHECKER_ZCREM_SUCCESS,"Removed actor ""%s"" <%s> from position %i.","Удалён актор ""%s"" <%s> с позиции %i."
 ,,ZCHECKER_ZCREM_SUCCESSTOTAL,All actors cleared from the infopanels.,Все акторы удалены из инфопанелей.
@@ -454,7 +454,7 @@ unused),,,,
 ,,,,
 ," ""zcact"":",,,
 ,,ZCHECKER_ZCACT_HELP_TITLE,zcact [<pos>] <action>,zcact [<с кем>] <действие>
-,,ZCHECKER_ZCACT_HELP_DESC,"Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: ""rev[ive]""|""res[urrect]"", ""k[ill]"", ""xk[ill]""|""mdk"", ""destroy""|""rem[ove]""|""rm""|""del[ete]""","Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: ""rev[ive]""|""res[urrect]"", ""k[ill]"", ""xk[ill]""|""mdk"", ""destroy""|""rem[ove]""|""rm""|""del[ete]""."
+,,ZCHECKER_ZCACT_HELP_DESC,"Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: ""rev[ive]""/""res[urrect]"", ""k[ill]"", ""xk[ill]""/""mdk"", ""rem[ove]""/""rm""/""del[ete]"", ""stop"", ""[state]freeze""/""[state]frz"", ""[state]skip"", ""[tics]revert"".","Делает некоторое комплексное действие с актором <с кем> (по умолчанию с целью под курсором). Список <действий>: ""rev[ive]""/""res[urrect]"", ""k[ill]"", ""xk[ill]""/""mdk"", ""rem[ove]""/""rm""/""del[ete]"", ""stop"", ""[state]freeze""/""[state]frz"", ""[state]skip"", ""[tics]revert""."
 ,,ZCHECKER_ZCACT_CANNOTREVIVE,Cannot revive actor %s,Невозможно воскресить актора %s.
 ,,ZCHECKER_ZCACT_REVIVED,Revived actor %s,Актор %s воскрешён.
 ,,ZCHECKER_ZCACT_REVIVEVANISH,"Actor %s revived, but vanished.","Актор %s был воскрешён, но сразу же исчез."
@@ -464,6 +464,10 @@ unused),,,,
 ,,ZCHECKER_ZCACT_XKILLED,Extremely killed actor %s.,Актор %s жестоко убит.
 ,,ZCHECKER_ZCACT_CANNOTXKILL,Cannot extremely kill actor %s,Не удаётся жестоко убить актора %s.
 ,,ZCHECKER_ZCACT_DESTROYED,Destroyed actor %s.,Актор %s уничтожен.
+,,ZCHECKER_ZCACT_VELSTOPPED,Stopped actor %s.,Актор %s остановлен.
+,,ZCHECKER_ZCACT_STATEFROZEN,"Delay for actor %s set to ""-1"" (actor temporally frozen).","Задержка для актора %s установлена в ""-1"" (актор временно заморожен)."
+,,ZCHECKER_ZCACT_STATESKIPPED,Skipped state for actor %s.,Пропущен текущий стейт актора %s.
+,,ZCHECKER_ZCACT_STATETICSRESET,Reset state delay for actor %s.,Задержка текущего стейта у актора %s сброшена до исходного.
 ,,,,
 ," ""zcgive"":",,,
 ,,ZCHECKER_ZCGIVE_HELP_TITLE,zcgive [<pos>] <item> [<amount=1>],zcgive [<кому>] <предмет> [<количество=1>]
@@ -482,11 +486,11 @@ unused),,,,
 ," ""zcsummon"":",,,
 ,,ZCHECKER_ZCSUMMON_HELP_TITLE,zcsummon <class> [<amount=1>] [<comma-separated list of extra properties>],zcsummon <класс> [<количество=1>] [<разделённый запятыми список дополнительных свойств>]
 ,,ZCHECKER_ZCSUMMON_HELP_DESC,"Summon <amount> of <class>es by rules of build-in eponymous command. Extended info (<extras>) may be provided as a comma-separated list without spaces. Possible parameters are:
-  BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];
-  WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>;
+  BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile], dormant;
+  WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>, [float]speed:<speed>;
   SPECIAL : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.","Создаёт <количество> <класс>ов аналогично встроенной одноимённой команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (""rel"" — относительно игрока):
-  ПОВЕДЕНИЕ: f[riend]|foe, aggr[essiveness]:<0-255>, [no]infi[ght], notproj[ectile];
-  МИР      : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>;
+  ПОВЕДЕНИЕ: f[riend]|foe, aggr[essiveness]:<0-255>, [no]infi[ght], notproj[ectile], dormant;
+  МИР      : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>, [float]speed:<скорость>;
   ДРУГОЕ   : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>, hp|health:<hp>."
 ,,ZCHECKER_ZCSUMMON_CLAMPINT,\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.,\c!%s (%i) вне диапазона [%i; %i]. \c-Ограничено до %i.
 ,,ZCHECKER_ZCSUMMON_CLAMPFLOAT,\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.,\c!%s (%f) вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.
@@ -496,22 +500,22 @@ unused),,,,
 ,,ZCHECKER_ZCSUMMON_EMPTYVALUE,"\c!Empty value for parameter ""%s"".","\c!Пустое значение в параметре ""%s""."
 ,,ZCHECKER_ZCSUMMON_UNKNOWNPARAM,"\c!Unknown parameter ""%s""","\c!Неизвевстный параметр ""%s"""
 ,,ZCHECKER_ZCSUMMON_UNKNOWNFLAG,"\c!Unknown flag ""%s"".","\c!Неизвестный флаг ""%s""."
-,,ZCHECKER_ZCSUMMON_LIMITPREVENT,"Trying to summon more than 200 actors in once. \c~You may disable this limit using the ""Allow dangerous actions"" option.","Попытка создать более 200 акторов за раз. \c~Отключить это можно через опцию ""Разрешить опасные действия""."
-,,ZCHECKER_ZCSUMMON_LIMITWARNING,summoning more than 200 actors,создание более чем 200 акторов
-,,ZCHECKER_ZCSUMMON_SUCCESS,"Summoned %i %s \c~of class ""\cd%s\c~"".","Создан(о) %i %s \c~класса ""\cd%s\c~""."
+,,ZCHECKER_ZCSUMMON_LIMITPREVENT,"Trying to summon more than 256 actors in once. \c~You may disable this limit using the ""Allow dangerous actions"" option.","Попытка создать более 256 акторов за раз. \c~Отключить это можно через опцию ""Разрешить опасные действия""."
+,,ZCHECKER_ZCSUMMON_LIMITWARNING,summoning more than 256 actors,создание более чем 256 акторов
+,,ZCHECKER_ZCSUMMON_SUCCESS,"Summoned %i %s \c~of class ""\cd%s\c~"".","Создано: %i %s \c~класса ""\cd%s\c~""."
 ,,ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR,actor,актор
 ,,ZCHECKER_ZCSUMMON_SUCCESS_ACTORS,actors,актор(ов)
-,,ZCHECKER_ZCSUMMON_ADDINSUFFPLACE,"Cannot add actor to list, insufficient space. Try adding the target to the list directly via parameter ""panel:1""..""panel:%i"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через значение параметра ""panel:1""..""panel:%i""."
+,,ZCHECKER_ZCSUMMON_ADDINSUFFPLACE,"Cannot add actor to list, insufficient space. Try adding the target to the list directly via parameter ""panel:1""..""panel:%i"".","Нельзя добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через значение параметра ""panel:1""..""panel:%i""."
 ,,ZCHECKER_ZCSUMMON_ADDONLYLAST,\c~Only last summoned actor added to the list.,\c~Только последний созданный актор будет добавлен в панель.
 ,,ZCHECKER_ZCSUMMON_CANNOTSUMMON,"\caCannot summon actor class \cu""\c-%s\cu"". It may be abstract or immediately destroyed in the BeginPlay() override.","\caНе удаётся создать актор \cu""\c-%s\cu"". Возможно, он помечен как ""abstract"" или же мгновенно уничтожается в переопределении BeginPlay()."
 ,,ZCHECKER_ZCSUMMON_NOTACTOR,"""%s"" isn't an Actor class.","""%s"" — не класс Actor."
 ,,,,
 ," ""zccopyclass""/""zccopysummon"":",,,
 ,,ZCHECKER_ZCCOPYPASTE_HELP_TITLE,"zccopyclass;zccopysummon [<amount=1>] [<comma-separated list as in ""zcsummon"">]","zccopyclass;zccopysummon [<количество=1>] [<разделённый запятыми список как в ""zcsummon"">]"
-,,ZCHECKER_ZCCOPYPASTE_HELP_DESC,"A paired command. ""zccopyclass"" saves a linetarget actor class into $savedclass internal variable; ""zccopysummon"" summons a $savedclass actor(s).","Сдвоенная команда. ""zccopyclass"" сохраняет название актора под курсором во внутреннюю переменную $savedclass; ""zccopysummon"" создаёт актор(ов) класса $savedclass."
+,,ZCHECKER_ZCCOPYPASTE_HELP_DESC,"A paired command. ""zccopyclass"" saves a linetarget actor class into $savedclass classname variable; ""zccopysummon"" summons a $savedclass actor(s).","Сдвоенная команда. ""zccopyclass"" сохраняет название актора под курсором в переменную $savedclass; ""zccopysummon"" создаёт актор(ов) класса $savedclass."
 ,,,,
 ," ""zcsetflag"":",,,
-,,ZCHECKER_ZCSETFLAG_HELP_TITLE,"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]","zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]];zcbud [<кому>] [<значение>]"
+,,ZCHECKER_ZCSETFLAG_HELP_TITLE,"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]]","zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]]"
 ,,ZCHECKER_ZCSETFLAG_HELP_DESC,"Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.","Устанавливает или сбрасывает <флаг> актору <кому> (по умолчанию цели под курсором). Переключает <флаг>, если <значение> не указано. Примечание: из-за асинхронного исполнения сетевых событий ZScript и машины ACS операция над флагом будет отложена на один игровой такт."
 ,,ZCHECKER_ZCSETFLAG_SUCCESS,"Flag ""%s"" for actor %s is succesfully set to %i.","Флаг ""%s"" для актора %s успешно установлен в %i."
 ,,,,
@@ -524,26 +528,27 @@ unused),,,,
 ,,ZCHECKER_ZCSETP_HELP_DESC,"Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a ""raw"" parameter all properties will be simply overwritten; with ""add"" they will be added to the current values (if possible); and with ""rel[ative]][:<pos>]"" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;
-  VISUAL  : scale[x|y] <float>, alpha <float>;
+  VISUAL  : scale[x|y] <float>, alpha <float>, renderstyle <style>;
   POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;
   SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique.","Устанавливает <свойство> (property) в <значение> для актора <кто> (по умолчанию цели под курсором). С параметром ""raw"" или вовсе без параметра свойство будет просто перезаписано; с ""add"" — прибавлено к текущему значению (если это возможно); и с ""rel[ative]][:<к кому>]"" — прибавлено к значению указанного актора, или к игроку при пропущенном поле <к кому> (опять же, если возможно). Доступные свойства:
   МИР      : x <дробн>, y <дробн>, z <дробн>|floor|ceil|rawceil, velx|vely|velz <дробн>, angle|pitch|roll <дробн>;
   ИНТЕРАКТ.: health|hp <цел>|s[pawn]|max, [float]speed <дробн>, radius <дробн>, height <дробн>, mass <цел>, gravity <дробн>, rawhp <цел>;
-  ОТРИСОВКА: scale[x|y] <дробн>, alpha <дробн>;
+  ОТРИСОВКА: scale[x|y] <дробн>, alpha <дробн>, renderstyle <способ>;
   УКАЗАТЕЛИ: target|tp <кто>|null, master|mp <кто>|null, tracer|trp|rp <кто>|null;
   ДРУГОЕ   : arg0..arg4 <цел>, special|action <цел>, tid <значение>|unique."
 ,,ZCHECKER_ZCSETP_RELPLAYER,\c~Base actor for relative properties \c-is set to calling player\c~.,\c~В качестве базового актора для относительных значений \c-взят вызывающий игрок\c~.
 ,,ZCHECKER_ZCSETP_UNKNOWNMODE,"\c!Unknown mode \c~""\c-%s\c~"". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.","\c!Неизвестный режим \c~""\c-%s\c~"". Должен быть пустым, \c-raw\c~ (прямым присвоением), \c-add\c~ (добавлением к текущему) или \c-rel[:<ptr>]\c~ (относительным к другому актору)."
 ,,ZCHECKER_ZCSETP_NODELIMCHARS,"\c!No delimiter character \c-("":"" or ""="") \c!provided \c-for property ""%s"".","\c!Нет разделителя \c-("":"" или ""="") \c-для свойства ""%s""."
-,,ZCHECKER_ZCSETP_WRONGARG,"\c!Wrong argument number in parameter ""%s""","\c!Неверное числовое значение в параметре ""%s"""
-,,ZCHECKER_ZCSETP_WRONGINTPROP,"\c!Unknown integer property ""%s""","\c!Неизвестное целочисленное свойство ""%s"""
-,,ZCHECKER_ZCSETP_WRONGFLOATPROP,"\c!Unknown float-point property ""%s""","\c!Неизвестное дробное свойство ""%s"""
-,,ZCHECKER_ZCSETP_WRONGKEYWORDZ,"\c!Unknown placeholder ""\c-%s\c!"" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)","\c!Неизвестная подстановка ""\c-%s\c!"" для свойства Z-координаты. \c~Должна быть \c-<дробным числом>\c~, \c-f[loor] \c~ (уровень пола), \c-c[eil]\c~ (уровень потолка минус высота актора) or \c-rawc[eil]|hc\c~ (уровень потолка)"
-,,ZCHECKER_ZCSETP_WRONGKEYWORDHP,"\c!Unknown placeholder ""\c-%s\c!"" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)","\c!Неизвестная подстановка ""\c-%s\c!"" для свойства health. \c~Должна быть \c-<целым>\c~, \c-max\c~ (~2.1 миллиарда) or \c-s[pawn]\c~ (исходное число здоровья)"
+,,ZCHECKER_ZCSETP_WRONGARG,"\c!Wrong argument number \c-in parameter ""%s""","\c!Неверное числовое значение \с-в параметре ""%s"""
+,,ZCHECKER_ZCSETP_WRONGINTPROP,"\c!Unknown \c-integer property ""%s""","\c!Неизвестное\с- целочисленное свойство ""%s"""
+,,ZCHECKER_ZCSETP_WRONGFLOATPROP,"\c!Unknown \c-float-point property ""%s""","\c!Неизвестное\с- дробное свойство ""%s"""
+,,ZCHECKER_ZCSETP_WRONGKEYWORDZ,"\c!Unknown placeholder \c-""%s"" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)","\c!Неизвестная подстановка \c-""%s"" для свойства Z-координаты. \c~Должна быть \c-<дробным числом>\c~, \c-f[loor] \c~ (уровень пола), \c-c[eil]\c~ (уровень потолка минус высота актора) or \c-rawc[eil]|hc\c~ (уровень потолка)"
+,,ZCHECKER_ZCSETP_WRONGKEYWORDHP,"\c!Unknown placeholder \c-""%s"" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)","\c!Неизвестная подстановка \c-""%s"" для свойства health. \c~Должна быть \c-<целым>\c~, \c-max\c~ (~2.1 миллиарда) or \c-s[pawn]\c~ (исходное число здоровья)"
+,,ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE,"\c!Unknown placeholder \c-""%s"" for the render style property. \c~Must be \c-<int>\c~ or one of the \c-style names\c~ (e.g., ""normal"").","\c!Неизвестная подстановка \c-""%s"" для свойства render style. \c~Должна быть \c-<целым>\c~ или одним из \c-названий стилей\c~ (к примеру, ""normal"")."
 ,,ZCHECKER_ZCSETP_EMPTYPROP,"\c~Skipped empty property ""\c-%s\c~"".","\c~Пропущено пустое свойство ""\c-%s\c~""."
 ,,ZCHECKER_ZCSETP_UNKNOWNPROP,"\c!Unknown property \c~""\c-%s\c~:\c-%s\c~"".","\c!Неизвестное свойство \c~""\c-%s\c~:\c-%s\c~""."
-,,ZCHECKER_ZCSETP_NONRELATIVEPROP,\c~Value of the non-numeric property \c-%s\c~ has been written directly (without altering).,"\c~Значение свойства \c-%s\c~, не являющегося числовым, записано напрямую (без изменений)."
-,,ZCHECKER_ZCSETP_SUCCESS,"Properties for actor ""%s"" succesfully changed.","Свойства для актора ""%s"" успешно изменены."
+,,ZCHECKER_ZCSETP_NONRELATIVEPROP,\c~Value of property \c-%s\c~ has been copied without altering.,"\c~Значение свойства \c-%s\c~ скопировано напрямую, без изменений."
+,Currently not used.,ZCHECKER_ZCSETP_SUCCESS,"Properties for actor ""%s"" succesfully changed.","Свойства для актора ""%s"" успешно изменены."
 ,,,,
 ,,,,
 ,"File ""ZCCommandsMap.zsc"":",,,
@@ -557,7 +562,7 @@ unused),,,,
 ,,ZCHECKER_ZCEVGOTO_HELP_DESC,"While on the Everything map, go to the certain actor / specified category (abbreviations are also recognized) / to starting position",На карте Everything: переход к определённому актору / к заданной категории (также распознаются сокращения) / к стартовой позиции.
 ,,ZCHECKER_ZCEVGOTO_TREATASPREFIX,"\c~Treat ""%s"" as a full form of input category prefix ""\c-%s\c~""\c-","\c~Предполагается, что слово ""%s"" — полная форма введённого префикса ""\c-%s\c~""\c-"
 ,,ZCHECKER_ZCEVGOTO_NOTCATEGORY,"Unknown category or keyword ""%s"".","Неизвестная категория или ключевое слово ""%s""."
-,,ZCHECKER_ZCEVGOTO_EMPTYCATEGORY,Category or keyword not provided.,Категория или ключевое слово не введены.
+,,ZCHECKER_ZCEVGOTO_WRONGCATEGORY,Category or keyword not provided.,Категория или ключевое слово не введены.
 ,,ZCHECKER_ZCEVGOTO_NOTACTOR,"""%s"" is not an Actor class.","""%s"" — не класс Actor."
 ,,ZCHECKER_ZCEVGOTO_SUCCESS,Found actor %s at %s.,Найден актор %s на позиции %s.
 ,,ZCHECKER_ZCEVGOTO_CATEGSUCCESS,"Found category \c~""\c-%s\c~""\c- header at %s.","Найден заголовок категории \c~""\c-%s\c~""\c- на позиции %s."
@@ -577,41 +582,48 @@ unused),,,,
 ,"File ""ZCCommandsMiscControl.zsc"":",,,
 ,,,,
 ," ""zcthinkers"":",,,
-,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panel>] <numindex>;zclistthinkers <type>;zcaddlistget [<index>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> [l[ist]];zcthinkers <тип> rm|rem[ove]|del[ete] <порядковый номер>|<класс>;zcthinkers actors add[:<панель>] <порядковый номер>;zclistthinkers <тип>;zcaddlistget [<порядковый номер>] [<панель>]
-,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel, etc. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Произодит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели. Учтите, в скором будущей синтаксис команды может быть изменен для расширения её функциональности."
-,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне пределов. Должен находиться в диапазоне [0; %i].
-,,ZCHECKER_ZCTHINKERS_WRONGSELECT,Selection index must be a positive integer.,Индекс указания должен быть положительным целым числом.
-,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"\c!Cannot determine \c-Thinker class name ""%s"".","\c!Невозможно разобрать \c-имя класса Thinker ""%s""."
-,,ZCHECKER_ZCTHINKERS_WRONGPANEL,"\c!Wrong panel number \c-""%s"".","\c!Неверный номер панели \c-""%s""."
-,,ZCHECKER_ZCTHINKERS_WRONGPANELRANGE,Panel number \c!must be in range \c-[1..%i].,Номер панели \c!должен лежать в пределах \c-[1..%i].
+,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> l[ist] [[:]<класс>];zcthinkers <тип> rm|rem[ove]|del[ete] [[:]<класс>:]<порядковый номер>;zcthinkers <тип> rm:all[:raw] <класс>;zcthinkers <тип> rm:everything;zcthinkers actors add[:<панель>] [[:]<класс>:]<порядковый номер>;zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
+,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.","Производит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели."
+,,ZCHECKER_ZCTHINKERS_BOUNDSSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне доступных пределов. Должен находиться в диапазоне [0; %i].
+,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,"\c!Cannot recognize StatNum \c-""%s"".","\c!Неверный StatNum \c-""%s""."
+,,ZCHECKER_ZCTHINKERS_WRONGSELECT,"Object selection index ""\c!%s\c-"" isn't a positive integer.","Индекс выбора объекта ""\c!%s\c-"" должен быть положительным целым числом."
+,,ZCHECKER_ZCTHINKERS_NOTTHCLASS,"Cannot determine Thinker class name ""%s"".","Невозможно разобрать имя класса Thinker ""%s""."
 ,,ZCHECKER_ZCTHINKERS_UNKNOWNACTION,"\c!Unknown action \c-""%s"".","\c!Неизвестное действие \c-""%s""."
-,,ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.
+,,ZCHECKER_ZCTHINKERS_EMPTYLIST,"\c~Thinkers list is empty, selection index is ignored.","\c~Таких объектов нет, индекс выбора проигнорирован."
+,,ZCHECKER_ZCTHINKERS_SELECTBOUNDS,Requested index is out-of-bounds (1..%i).,Запрошенный индекс находится вне доступного диапазона (1..%i).
 ,,ZCHECKER_ZCTHINKERSADD_INSUFFPLACE,"Cannot add target to list, insufficient space. Try adding the actor to list directly via ""zcaddlistget <...> [1..%i]"".","Невозможно добавить цель, недостаточно места в списке. Можно использовать присвоение в определённую панель через ""zcaddlistget 1""..""zcaddlistget %i""."
+,,ZCHECKER_ZCTHINKERSADD_WRONGPANEL,"\c!Wrong panel number \c-""%s"".","\c!Неверный номер панели \c-""%s""."
+,,ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE,Panel number must be in range [1..%i].,Номер панели должен лежать в пределах [1..%i].
 ,,ZCHECKER_ZCTHINKERSADD_SUCCESS,Added a random world actor %s.,Добавлен произвольный актор %s.
 ,,ZCHECKER_ZCTHINKERSADD_NOTACTOR,"Thinker ""%s"" isn't an Actor.","Объект Thinker ""%s"" — не класс Actor."
-,,ZCHECKER_ZCTHINKERSADD_NOSELECTION,Actor index to add \c!not specified\c-.,Индекс актора для добавления \c!не указан\c-.
-,,ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS,Requested index \c!is out-of-bounds\c-.,Запрошенный индекс \c!находится вне доступного списка\c-.
-,,ZCHECKER_ZCTHINKERSRM_SUCCESS,"Removed %i thinkers of type ""%s"".","Удалено %i классов Thinker типа ""%s"""
-,,ZCHECKER_ZCTHINKERSRM_SUCCESSRAW,"Removed %i thinkers of \chraw\c- type ""%s"".","Удалено %i классов Thinker \chпроизвольного\c- типа ""%s""."
-,,ZCHECKER_ZCTHINKERSRM_NOSELECTION,Thinker to remove not specified either by index or by classname.,"Объекты для удаления не указаны ни по индексу, ни по названию класса."
+,,ZCHECKER_ZCTHINKERSADD_NOSELECTION,Actor index to add not specified.,Индекс актора для добавления не указан.
+,,ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG,"\c!Unknown flag \c-""%s"".","\c!Неизвестный флаг \c-""%s""."
+,,ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS,"\c!Incompatible flags\c- ""Remove by classname"" and ""Destroy everything"".","\c!Несовместимые флаги\c-: ""Удалить по названию класса"" и ""Уничтожить всё""."
+,,ZCHECKER_ZCTHINKERSRM_ALLNOCLASS,Class to remove not specified.,Класс для удаления не указан.
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSONE,"Removed object ""%s"".","Удалён объект ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSALL,"Removed %i objects of class ""%s"".","Удалено %i объектов класса ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW,"Removed %i raw-named objects of class ""%s"".","Удалено %i объектов необработанного названия класса ""%s""."
+,,ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING,Removed %i objects (all possible).,Удалено %i объектов (все возможные).
+,,ZCHECKER_ZCTHINKERSRM_NOSELECTION,Thinker to remove not specified.,Индекс объекта для удаления не указан.
 ,,ZCHECKER_ZCTHINKERS_SECTIONACTORS,Actors,Акторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONSTATIC,Static,Статичные
 ,,ZCHECKER_ZCTHINKERS_SECTIONSECTORS,Sectors,Секторы
 ,,ZCHECKER_ZCTHINKERS_SECTIONOTHER,Other thinkers,Другие
 ,,ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX,Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).,Доступные типы (множественное число необязательно): \n%s\nили число для нестандартных StatNum (пользовательские: \cy%i\c-..\cy%i\c-).
+,,ZCHECKER_ZCTHINKERS_SECSTATNUMQUESTION,"""Sector"" what? ""\cwSectorEffects\c-"" (same as ""\cwSectorMovers\c-""), ""\cwSectorLights\c-"" or ""\cwSectorLightTransfers\c-""?","Что из ""Sector""? ""\cwSectorEffects\c-"" (оно же ""\cwSectorMovers\c-""), ""\cwSectorLights\c-"" или ""\cwSectorLightTransfers\c-""?"
 ,,ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR, (+NOSECTOR),
 ,,ZCHECKER_ZCTHINKERS_LISTATPOS, at, на
 ,,ZCHECKER_ZCTHINKERS_LISTINVOWNER,", inv.owner is ",", inv.owner: "
-,,ZCHECKER_ZCTHINKERS_LISTTOTAL,Total %i thinkers of the StatNum type %i.,Всего %i объектов класса Thinker типа StatNum %i.
 ,,ZCHECKER_ZCTHINKERS_LISTSECTORNUM, in sector %i, в секторе %i
+,,ZCHECKER_ZCTHINKERS_LISTTOTAL,\c~Total \c-%i\c~ Thinkers of the StatNum type %i\c-.,\c~Всего \c-%i\c~ объектов класса Thinker типа StatNum %i.
+,,ZCHECKER_ZCTHINKERS_LISTTOTALFILTEREXACT,"\c~Total \c-%i\c~ objects of class ""\cw%s\c~"" of the StatNum type %i\c-.","\c~Всего \c-%i\c~ объектов класса ""\cw%s\c~"" типа StatNum %i."
+,,ZCHECKER_ZCTHINKERS_LISTTOTALFILTERINHERITANCE,"\c~Total \c-%i\c~ objects inherited from class ""\cw%s\c~"" of the StatNum type %i\c-.","\c~Всего \c-%i\c~ объектов, наследованных от класса ""\cw%s\c~"", типа StatNum %i."
 ,,,,
 ," ""zcpanel"" (without ""zcpanel save|store|load"" because of unfinished/unclear subcommand UI):",,,
-,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info),zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel (info [<панель>]|<панель> info)
-,,ZCHECKER_ZCPANELCTL_HELP_DESC,"Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущей синтаксис команды может быть изменен для расширения её функциональности."
+,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel [<panel>] info,zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel [<панель>] info
+,,ZCHECKER_ZCPANELCTL_HELP_DESC,"Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменен для расширения её функциональности."
 ,,ZCHECKER_ZCPANEL_NOACTORINPOS,There's no actor in position %i.,Актора в позиции %i нет.
-,,ZCHECKER_ZCPANELINFO_HEADER,\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>,\c~Актор в позиции \c-%i \c~— \c-%s\c~ <%s>
-,,ZCHECKER_ZCPANELINFO_INHERITANCE,  \c~Inherited from \c-%s\c~ (class pointer: <%s>),  \c~Наследован от \c-%s\c~ (указатель на класс: <%s>)
-,,ZCHECKER_ZCPANELINFO_REPLACEMENTCHAIN,Replacements chain: ,Цепь замен (replacements): 
+,,ZCHECKER_ZCPANELINFO_ZCCLASSINFO,"\c~""zcclassinfo %s""","\c~""zcclassinfo %s"""
 ,,ZCHECKER_ZCPANELSAVE_ALIASEXISTS,"Alias ""%s"" already exists and is linked to the actor %s.","Псевдоним ""%s"" уже существует и связан с актором %s."
 ,,ZCHECKER_ZCPANELSAVE_RELINKINGALIAS,"Relinking the ""%s"" alias (its previous actor was destroyed).","Перепривязка псевдонима ""%s"" (его предыдущий актор уничтожен)."
 ,,ZCHECKER_ZCPANELSAVE_NOPANEL,No actor linked to the panel %s.,Никакого актора к панели %s не привязано.
@@ -621,14 +633,24 @@ unused),,,,
 ,,ZCHECKER_ZCPANELLOAD_SUCCESS,"\c~Loaded actor \c-%s\c~ as alias ""\c-%s\c~"".","\c~Актор \c-%s\c~ загружен через псевдоним ""\c-%s\c~""."
 ,,ZCHECKER_ZCPANELINFO_NOALIASES,\c~No actor aliases have been created.,\c~Псевдонимов акторов пока не было создано.
 ,,ZCHECKER_ZCPANELINFO_LISTHEADER,\cyActors aliases \c-(total %i): ,\cyПсевдонимы акторов \c-(всего %i): 
-,,ZCHECKER_ZCPANELINFO_ALIASLINKED,"  ""c~""\c-%s\c~"" linked to the \c-%s\c~ with world position %s.","  ""c~""\c-%s\c~"" связан с \c-%s\c~, находящемуся на позиции %s."
-,,ZCHECKER_ZCPANELINFO_ALIASGONE,"  ""c~""\c-%s\c~"" is unlinked","  ""c~""\c-%s\c~"" не связан"
+,,ZCHECKER_ZCPANELINFO_ALIASLINKED,"  \c~""\c-%s\c~"" linked to the \c-%s\c~ with world position %s.","  \c~""\c-%s\c~"" связан с \c-%s\c~, находящемуся на позиции %s."
+,,ZCHECKER_ZCPANELINFO_ALIASGONE,"  \c~""\c-%s\c~"" is unlinked","  \c~""\c-%s\c~"" не связан"
+,,,,
+,"""zcclassinfo"":",,,
+,,ZCHECKER_ZCCLASSINFO_HELP_TITLE,zcclassinfo <classname>,zcclassinfo <класс>
+,,ZCHECKER_ZCCLASSINFO_HELP_DESC,Print information about inheritance and replacement chain for Actors for the specified class.,"Выводит информацию о наследовании для заданного класса, а также, если указан Actor, о цепи замен (replace)."
+,,ZCHECKER_ZCCLASSINFO_NOCLASS,"Class ""%s"" does not exist or not accessible via ZScript.","Класс ""%s"" не существует или недоступен из-под ZScript."
+,,ZCHECKER_ZCCLASSINFO_HEADER,"\c~Class ""\c-%s\c~"" (pointer <%s>):","\c~Класс ""\c-%s\c~"" (указатель <%s>):"
+,,ZCHECKER_ZCCLASSINFO_INHERITANCE,  \c~Inherited from \c-%s,  \c~Наследован от \c-%s
+,,ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAIN,\c~Final replacements chain:,\c~Финальная цепь замен (replacements):
+,,ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN,\c~Actor isn't in the replacements chain.,\c~Actor не находится в цепи замен (replacements).
+,,ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR, \cv->\c~ , \cv->\c~ 
 ,,,,
 ," ""zcvarsctl"":",,,
 ,,ZCHECKER_ZCVARSCTL_HELP_TITLE,zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo],zcvarsctl set|new <$название> <строка или подстановка>;zcvarsctl del[ete]|rm|rem[ove] <$название>|all;zcvarsctl l[ist]|i[nfo]
-,,ZCHECKER_ZCVARSCTL_HELP_DESC,"Perform control on internal ZChecker class variables; identifiers must be started with ""$"".\n  Possible placeholders for the <string value> (first symbol must be ""%"" or ""$""): ""$self"" (caller itself), ""$lt""|""$linetarget"" (caller's linetarget), ""$target"" (caller's target field), ""$master"" (its master), ""$tracer"" (its tracer).","Управление внутренними переменными классов ZChecker; идентификаторы должны начинаться с ""$"".\n  Доступные подстановки (должны начинаться с ""%"" или ""$""):  ""$self"" (сам игрок), ""$lt""|""$linetarget"" (его цель), ""$target"" (его поле target), ""$master"" (его поле master), ""$tracer"" (его поле tracer)."
-,,ZCHECKER_ZCVARSCTL_SETSUCCESS,"Internal variable ""\cn%s\c-"" is \cdset\c- to ""%s"".","Внутренняя переменная ""\cn%s\c-"" \cdустановлена\c- в ""%s""."
-,,ZCHECKER_ZCVARSCTL_LISTHEADER,\cyInternal variables \c~(total \c-%i\c~): ,\cyВнутренние переменные \c~(всего \c-%i\c~): 
+,,ZCHECKER_ZCVARSCTL_HELP_DESC,"Perform control on classname ZChecker variables; identifiers must be started with ""$"".\n  Possible placeholders for the <string value> (first symbol must be ""$""): ""$self"" (caller itself), ""$lt""|""$linetarget"" (caller's linetarget), ""$target"" (caller's target field), ""$master"" (its master), ""$tracer"" (its tracer).","Управление переменными ZChecker для названий классов; идентификаторы должны начинаться с ""$"".\n  Доступные подстановки (должны начинаться с ""$""):  ""$self"" (сам игрок), ""$lt""|""$linetarget"" (его цель), ""$target"" (его поле target), ""$master"" (его поле master), ""$tracer"" (его поле tracer)."
+,,ZCHECKER_ZCVARSCTL_SETSUCCESS,"Variable ""\cn%s\c-"" is \cdset\c- to ""%s"".","Переменная ""\cn%s\c-"" \cdустановлена\c- в ""%s""."
+,,ZCHECKER_ZCVARSCTL_LISTHEADER,\cyClassname variables \c~(total \c-%i\c~): ,\cyПеременные названий классов \c~(всего \c-%i\c~): 
 ,,,,
 ," ""zcinterface""/""zcif"":",,,
 ,,ZCHECKER_ZCIF_HELP_TITLE,zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree,zcif strequal <имя1>|<$переменная1> <имя2>|<$переменная2>;zcif dangerccmds|ev[map|erything];zcif panel <панель>;zcif panelinherit <панель> <класс>|<$переменная>;zcif panelequal <панель1> <панель2>;zcif validplacepos <строка>;zcif validpos <строка>;zcinterface panelfind <имя класса>;zcinterface panelfindfree
@@ -646,7 +668,7 @@ unused),,,,
 \t'`2-`2' for any number of characters greater than 0.
 If more than one actor class candidate is found, only `2numbered list`x will be printed. A value may be selected from it by using `2:N`x or `2,N`x.
 Note that a class inheritance filter is applied for some commands.
-Also, you may substitute values from `1ZChecker variables`1 `d(must begin with ""`2$`d"" or ""`2%`d"")`x like:
+Also, you may substitute values from `1ZChecker classname variables`1 `d(must begin with ""`2$`d"")`x like:
 \t'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;
 \t'`1$last`1' for the last class added to any panel;
 \tAny other `1$zchecker_variable`1 defined internally or via ""`Czcvarsctl`x"".","Практически для всех команд, которые принимают первым аргументом название класса (""`Czcsummon`x"", ""`Czcgive`x"", ""`Czctake`x"", ""`Czcev goto`x"", ...) можно использовать два подстановочных символа регулярных выражений:
@@ -707,12 +729,12 @@ You can find more specific examples in the help pages of almost all of the comma
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER,"About ""Everything"" maps","О картах ""Everything"""
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT,"A map named ""`2Everything`2"" is an universal actors card-index.
 Right now there are two maps:
-""`2Everything_simple`2"", a lightweight but fully functional variant.
-""`2Everything_SC77`2"" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x
+""`2Everything_simple`2"", a lightweight but fully functional variant; `~and`x
+""`2Everything_SC77`2"" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker.
 \t`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or the LLDM Team, but in most cases we will redirect you to them as well.","Уровни с названием ""`2Everything`2"" являются универсальными картотеками акторов.
 На данный момент в ZChecker присутствуют две карты:
-""`2Everything_simple`2"", легковесный, но полностью функциональный вариант.
-""`2Everything_SC77`2"" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей; `~и`x
+""`2Everything_simple`2"", легковесный, но полностью функциональный вариант; `~и`x
+""`2Everything_SC77`2"" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей.
 \t`yВнимание: в некоторых модификациях обычное создание акторов — без специальных условий — может блокироваться `d(впрочем, вполне возможно, что не намеренно)`y. `xПоследствия могут быть совершенно разными, от спама в консоль предупреждающими сообщениями до вылета игрового движка. Если Вы обнаружите подобное поведение, имеет смысл связаться с авторами той модификации. Или с разработчиками ZChecker (командой LLDM), но в большинстве случаев мы в итоге переадресуем Вас на них же."
 ,,ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES,"""`Cmap everything_simple`C"" changes the level to the Everything map (simple version);
 ""`Czcev map`x"" does pretty much the same.
@@ -775,7 +797,9 @@ This commands are also available in the \""Everything\"" map settings menu.","""
 ,,,,
 ,,,,
 ,,ZCHECKER_TOOLTIP_ZCACT_TIPS,"Not all actors may be killed or resurrected. If this happens, a message will be printed.
+In CCMDs with the ""`2state`2"" and ""`2tics`2"" prefixes they can be used in place of each other with the same result (like ""`Czcact ticsskip`C"").
 Resurrection of the dead player is not supported, use the built-in ""`Cresurrect`C"" command instead.","Не все акторы могут быть убиты или воскрешены; при подобной попытке будет выведено сообщение о неудаче.
+В командах с префиксами ""`2state`2"" и ""`2tics`2"" оные могут быть использованы на месте друг друга с тем же результатом (к примеру, ""`Czcact ticsskip`C"").
 Воскрешение мёртвого игрока не поддерживается. Используйте вместо этого встроенную команду ""`Cresurrect`C""."
 ,,ZCHECKER_TOOLTIP_ZCACT_EXAMPLES,"""`Czcact rm`C"" deletes the linetarget actor from memory (like the built-in ""`Cremove`C"" CCMD, but with only one actor);
 ""`Czcact kill`C"" kills the linetarget;
@@ -803,7 +827,7 @@ Resurrection of the dead player is not supported, use the built-in ""`Cresurrect
 ""`Czcsummon armo`2-`Cr`x"" создаст актора Armorer `~(продавец из игры Strife)`x;
 ""`Czcsummon armo`2*`Cr`2:2`x"" также создаст актора Armorer `d(явным выбором второго варианта из списка ""`xArmor`d"" и ""`xArmo`dre`xr`d"")`x;
 ""`Czcsummon z`2*`Cman 3 f`x"" или ""`Czcsummon z`2*`Cman 3 friendly`x"" создаст трёх дружественных (`1friendly`x) Zombieman;
-""`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x"" породит дружественного Zombieman и добавит есть в `g3`x-ю `gинфопанель`x;
+""`Czcsummon z`2*`Cman friendly`d,`Cadd:3`x"" породит дружественного Zombieman и добавит его в `g3`x-ю `gинфопанель`x;
 ""`Czcsummon shot`2*:1`C noinfight`d,`Crelang:180`d,`Ctid:4`d,`Chp:99999`x"" породит одного ShotgunGuy, отвёрнутого от игрока, не желающего сражаться с другими монстрами (infight), имеющего TID = 4, а также крайне высокое значение здоровья."
 ,,,,
 ,,,,
@@ -914,7 +938,7 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ""`Czcevg z*man`C"" teleports player next to the spawned `2Z`~ombie`2man`x actor;
 ""`Czcevg *armor`C"" prints a list of all actors with this postfix;
 ""`Czcevg *armor:4`C"" teleports player next to the `2BlueArmor`2;
-""`Czcevg $last`C"" teleports player next to the last actor class added to infopanels (if it exists on the map);
+""`Czcevg $last`C"" teleports player next to the last actor class added to infopanels;
 ""`Czcevg #monsters`C"" or ""`Czcevg #m`C"" warps player to the header of the category ""Monsters"";
 ""`Czcevg mons`C"" does the same if the actor class ""`2mons`2"" not defined, else teleports to it;
 ""`Czcevg #ammo`C"" warps player to the header of the category ""Ammo"". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).","""`Czcev goto doomimp`C"", ""`Czcev g doomimp`C"" и ""`Czcevg doomimp`C"" переместит игрока к указанному актору (здесь, очевидно, к `2DoomImp`2).
@@ -922,33 +946,43 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ""`Czcevg z*man`C"" телепортирует игрока к актору `2Z`~ombie`2man`x;
 ""`Czcevg *armor`C"" выведет список всех предметов с окончанием ""armor"";
 ""`Czcevg *armor:4`C"" перенесёт игрока к `2BlueArmor`2;
-""`Czcevg $last`C"" телепортирует игрока к последнему актору, добавленному в инфопанели (если он существует на карте);
+""`Czcevg $last`C"" телепортирует игрока к последнему актору, добавленному в инфопанель;
 ""`Czcevg #monsters`C"" или ""`Czcevg #m`C"" перенесёт игрока к категории ""Monsters"";
 ""`Czcevg mons`C"" сделает то же, что и команда выше, если актора ""`2mons`2"" не существует. Иначе — телепортирует к нему;
 ""`Czcevg #ammo`C"" перенесёт игрока к категории ""Ammo"". Без ""решётки"" — к актору под названием ""Ammo"" (если он существует на карте)."
 ,,,,
 ,,,,
-,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"Use the ""`Czcthinkers <type> rm`x"" command `yonly if you know what you're doing`x; it can absolutely break levels and the whole game, up to the engine crash.
+,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"The command allows you to partially control objects of the Thinker class - the base class for all objects directly interacting with the world; the Actor class also inherits from it. Each Thinker at every moment is a member of a single StatNum set (a logically separate group of objects interacting with the world). For example, there is a group of actors, a group of floor/ceiling movers, a group of inventory, a group of sector lighting effects, and many others.
+Use the ""`Czcthinkers <type> rm`x"" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.
 You may provide a direct StatNum value instead of its string alias.
+First symbol in the ""`g[[`y:`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon`g"" will check Demons and Spectres).
 All StatNums are nominal: some modification may use non-standard distribution on sets.
-""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question;
-Internal thinkers may be controlled by name if the argument ""rm:internal"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.","Используйте команду ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; она без труда полностью сломать уровни и игру, вплоть до вылета движка.
+""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question.
+Internal thinkers may be controlled by name if the argument ""rm:raw"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.
+Possible ""rm"" command flags: ""`g:all`x""/""`g:class`x"" (remove all Thinkers of this class); ""`g:raw`x""/""`g:internal`x"" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and ""`g:everything`x"" (incompatible with others, destroys all Thinkers of the specified StatNum).","Команда позволяет частично контролировать объекты класса Thinker — базовый класс для всех объектов, напрямую работающих с миром; от него наследуется и класс Actor. Каждый Thinker в каждый момент времени входит в единственное StatNum-множество — в логически обособленную группу объектов взаимодействия с миром. Например, есть группа акторов, группа движителей полов/потолков, группа инвентаря, группа световых эффектов секторов и многие другие.
+Используйте команды семейства ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.
 Вместо слов-идентификаторов можно использовать явный номер StatNum.
+Первым символом в последовательности ""`g[[`y:`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon`g"" будет проверять всех акторов Demon и Spectre).
 Все StatNum условны: некоторые модификации могут использовать нестандартное распределение по множествам.
-""`Czcaddlistget`x"" — лишь удобный псевдоним, на деле вызывающий рассматриваемую команду;
-Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента ""rm:internal"" или его аналога. Вместе с тем указание подобного класса по списочному номеру никто не отменял."
+""`Czcaddlistget`x"" — лишь удобный псевдоним, на деле вызывающий рассматриваемую команду.
+Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента ""rm:raw"" или его аналога. Однако указание подобного класса по списочному номеру работает и без того.
+Флаги команды ""rm"": ""`g:all`x""/""`g:class`x"" (удалить всех Thinker этого класса); ""`g:raw`x""/""`g:internal`x"" (только с `g:all`x/`g:class`x, переключает парсинг на необработанные названия классов); и ""`g:everything`x"" (несовместим с другими флагами, уничтожает все объекты класса Thinker указанного StatNum)."
 ,,ZCHECKER_TOOLTIP_ZCTHINKERS_EXAMPLES,"""`Czcthinkers l`x""/""`Czclistthinkers`x"" prints out a help list with all recognizable StatNum types aliases;
 ""`Czcthinkers a l`x""/""`Czclistthinkers actors`x"" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);
 ""`Czcthinkers 100 l`x"" same as the command above: the `2actors`x alias actually converts to the value `y100`x;
-""`Czcthinkers a rm z*man`x"" removes all of the Zombiemen from the level `d(same action as in ""`Cremove zombieman`d"");
+""`Czcthinkers a l stimpack`x"" lists all of the Stimpacks on the level;
+""`Czcthinkers a rm:all z*man`x"" removes all of the Zombiemen from the level `d(same action as in ""`Cremove zombieman`d"");
 ""`Czcthinkers static rm 1`x"" removes the 1st element in the set of the static thinkers (`~STAT_STATIC`~);
 ""`Czcthinkers a add`g:2`C 17`x"" adds the 17th actor from the list to the second information panel;
-""`Czcthinkers sl rm`2:raw`C glow`x"" removes all Thinkers named ""glow"", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).","""`Czcthinkers l`x""/""`Czclistthinkers`x"" выводит справочный список по всем распознаваемым типам StatNum;
+""`Czcthinkers a add #powerupgiver:4`x"" adds a 4th actor that satisfies the inheritance filter from ""PowerupGiver"";
+""`Czcthinkers sl rm`2:all:raw`C glow`x"" removes all Thinkers named ""glow"", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).","""`Czcthinkers l`x""/""`Czclistthinkers`x"" выводит справочный список по всем распознаваемым типам StatNum;
 ""`Czcthinkers a l`x""/""`Czclistthinkers actors`x"" выводит список всех акторов класса Thinker, принадлежащих множеству акторов (`~STAT_DEFAULT`~);
 ""`Czcthinkers 100 l`x"" сделает то же, что и команда выше: алиас `2actors`x на самом деле переводится в значение `y100`x;
-""`Czcthinkers a rm z*man`x"" удаляет все классы Zombieman на уровне `d(действие аналогично команде ""`Cremove zombieman`d"");
+""`Czcthinkers a l stimpack`x"" выводит список всех акторов класса Stimpack на уровне;
+""`Czcthinkers a rm:all z*man`x"" удаляет все классы Zombieman на уровне `d(действие аналогично команде ""`Cremove zombieman`d"");
 ""`Czcthinkers static rm 1`x"" удаляет первый элемент в списке объектов класса Thinker, принадлежащих статическому множеству (`~STAT_STATIC`~);
 ""`Czcthinkers a add`g:2`C 17`x"" добавляет 17-й актор из списка во вторую инфопанель;
+""`Czcthinkers a add #powerupgiver:4`x"" добавляет 4-го актора, удовлетворяющего фильтру наследования от ""PowerupGiver"";
 ""`Czcthinkers sl rm`2:raw`C glow`x"" удаляет все объекты класса Thinker с названием ""glow"", вне зависимости от их скрытости, в множестве управления посекторным освещением (`~STAT_LIGHT`~)."
 ,,,,
 ,,,,

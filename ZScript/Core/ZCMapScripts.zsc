@@ -362,14 +362,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 			bool skipactor = false;
 
-			// Optimization. Skipping only internal dangerous classes:
+			// Optimization. Skipping only built-in dangerous classes:
 			if ( embeddedClassesRecreating ) {
 				if ( cls == const_LastEmbeddedActorClass ) {
 					embeddedClassesRecreating = false;
 
 					if ( logSpawnInfo ) {
 						if ( spawnBuiltinActors )
-							ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Embedded classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
+							ZCGlobal.Log( LL_Debug, GetClassName() .. "::RecreateEverything(). " .. TEXTCOLOR_BLUE .. "Built-in classes definition ended at \"" .. cls.GetClassName() .. "\". Spawning user-defined classes on the next iteration." );
 						else
 							logCreatingActor( ZCGlobal.Locz( "EVMAPSPAWN_SKIPBUILTIN" ) );
 					}
@@ -699,6 +699,32 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		Super.NetworkProcess( e );
 	} // of override void NetworkProcess( ConsoleEvent e ) {}
 
+
+	ZCheckerActorInfo highlightedInfoactors[ MAXPLAYERS ];
+
+	protected void DehighlightInfoactor( int playernum ) {
+		if ( !highlightedInfoactors[ playernum ] )
+			return;
+
+		highlightedInfoactors[ playernum ].highlightedPlayersMask &= ~( 1 << playernum );
+
+		if ( highlightedInfoactors[ playernum ].highlightedPlayersMask == 0 ) {
+			//console.printf( TEXTCOLOR_DARKRED .. "Dehighlighted " .. highlightedInfoactors[ playernum ].masterClass.GetClassName() );
+			highlightedInfoactors[ playernum ].Dehighlight();
+			highlightedInfoactors[ playernum ] = NULL;
+		}
+	}
+
+	protected void RehighlightInfoactor( int playernum, ZCheckerActorInfo newinfoactor ) {
+		DehighlightInfoactor( playernum );
+
+		newinfoactor.highlightedPlayersMask |= ( 1 << playernum );
+		newinfoactor.Highlight();
+
+		highlightedInfoactors[ playernum ] = newinfoactor;
+		//console.printf( TEXTCOLOR_DARKGREEN .. "Highlighted " .. highlightedInfoactors[ playernum ].masterClass.GetClassName() );
+	} // of protected void HighlightInfoactor( ZCheckerActorInfo infoactor ) {}
+
 	override void WorldTick() {
 		for ( int i = 0; i < MAXPLAYERS; i++ ) {
 			if ( playeringame[ i ] && players[ i ].mo && !players[ i ].bot ) {
@@ -709,12 +735,24 @@ class ZCheckerEverythingMapHandler: EventHandler {
 				if ( lt.HitType == TRACE_HitActor ) {
 					class<Actor> hitActorClass = lt.HitActor.GetClass();
 
-					if ( hitActorClass == "ZCheckerActorInfo" )
-						configuration.currentConsoleplayerInfostr = ZCheckerActorInfo( lt.HitActor ).GetInfoString();
-					else if ( hitActorClass == "ZCheckerCategoryInfoHeader" )
-						configuration.currentConsoleplayerInfostr = ZCheckerCategoryInfoHeader( lt.HitActor ).GetInfoString();
+					if ( hitActorClass == "ZCheckerActorInfo" ) {
+						ZCheckerActorInfo infoactor = ZCheckerActorInfo( lt.HitActor );
+
+						if ( highlightedInfoactors[ i ] != infoactor ) {
+							RehighlightInfoactor( i, infoactor );
+
+							configuration.currentConsoleplayerInfostr = infoactor.GetInfoString();
+						}
+
+					} else {
+						DehighlightInfoactor( i );
+
+						if ( hitActorClass == "ZCheckerCategoryInfoHeader" )
+							configuration.currentConsoleplayerInfostr = ZCheckerCategoryInfoHeader( lt.HitActor ).GetInfoString();
+					}
 
 				} else {
+					DehighlightInfoactor( i );
 					configuration.currentConsoleplayerInfostr = "";
 				}
 			}
@@ -899,7 +937,9 @@ class ZCheckerActorInfo: Actor {
 	class<Actor> masterClass;
 	String masterInfo;
 	vector2 masterOffset;
+
 	ZCheckerEverythingMapCategoryData evSectorDef;
+	int highlightedPlayersMask;
 
 	enum EInfoactorStatus {
 		IAS_Wrong = 0,		// + 23 == frame 'X'.
@@ -944,6 +984,9 @@ class ZCheckerActorInfo: Actor {
 				masterInfo = String.Format( ZCGlobal.Locz( "EVMAP_INFOSTR_REPLACES" ), masterInfo, replacee.GetClassName() );
 
 			SetZ( floorZ );
+			highlightedPlayersMask = 0;
+			Dehighlight();
+
 		} else {
 			ZCGlobal.Log( LL_Detailed, TEXTCOLOR_DARKGRAY .. "Removing " .. GetClassName() .. " at " .. ZCGlobal.squeezeVector3( pos ) .. ", class \"" .. LLCOLOR_MAIN .. masterClass.GetClassName() .. TEXTCOLOR_DARKGRAY .. "\" in \"" .. ZCheckerEverythingMapHandler.GetESectorName( evSectorDef.evType ) .. "\" vanishes." );
 			Destroy();
@@ -1005,8 +1048,19 @@ class ZCheckerActorInfo: Actor {
 		prevStatus = curStatus;
 	} // of override void Tick() {}
 
-	String GetInfoString( void ) {
+
+	virtual String GetInfoString( void ) {
 		return masterInfo;
+	}
+
+	virtual void Highlight( void ) {
+		//scale = (0.5, 0.7);
+		A_SetRenderStyle( 0.2, STYLE_Translucent );
+	}
+
+	virtual void Dehighlight( void ) {
+		//scale = (0.33, 0.33);
+		A_SetRenderStyle( 1.0, STYLE_Normal );
 	}
 
 	States {

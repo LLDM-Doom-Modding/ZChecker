@@ -238,7 +238,7 @@ ZCHECKER_PANELSUBMENU_GSEC_TERRAIN    = "Floor terrain data";
 ZCHECKER_PANELSUBMENU_GSECNOTE_WIP    = "(Not released yet):";
 ZCHECKER_PANELSUBMENU_GSEC_OTHER      = "Other: water level, special, ...";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF   = "Disabled";
-ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z coordinates";
+ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z coordinate";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA = "Z coord + actor delta";
 
 ZCHECKER_PANELGEOMLNOPT_TYPE_LOS      = "On line of sight"; // Not used in the current version. >>>
@@ -256,7 +256,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Output rare sounds";
 //  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: HUD and visual settings";
-ZCHECKER_VISUAL_POSITIONING           = "Panels positioning";
+ZCHECKER_VISUALDIV_POSITIONING        = "Panels positioning";
 ZCHECKER_VISUAL_START_X               = "Panels start X, %";
 ZCHECKER_VISUAL_START_X_10            = "Panels start X, x10%";
 ZCHECKER_VISUAL_START_Y               = "Panels start Y, %";
@@ -264,18 +264,18 @@ ZCHECKER_VISUAL_START_Y_10            = "Panels start Y, x10%";
 ZCHECKER_VISUAL_OFFSET_X              = "Next panels X offset, %";
 ZCHECKER_VISUAL_PANELS_SCALE          = "Panels scale";
 ZCHECKER_VISUAL_PANELS_Y_GAP          = "Panels interval Y, multiplier";
-ZCHECKER_VISUAL_BACKGROUND            = "Panels background";
+ZCHECKER_VISUALDIV_BACKGROUND         = "Panels background";
 ZCHECKER_VISUAL_ENABLED               = "Enabled";
 ZCHECKER_VISUAL_DIMCOLOR              = "Background color";
 ZCHECKER_VISUAL_DIMALPHA              = "Background alpha";
 ZCHECKER_VISUAL_DIMBORDERWIDTH        = "Border width";
-ZCHECKER_VISUAL_EVERYTHINGMAP_INFO    = "\"Everything\" map actor info";
+ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO = "\"Everything\" map actor info";
 ZCHECKER_VISUAL_INFOSTR_X             = "Actor info string X, %";
 ZCHECKER_VISUAL_INFOSTR_X10           = "Actor info string X, x10%";
 ZCHECKER_VISUAL_INFOSTR_Y             = "Actor info string Y, %";
 ZCHECKER_VISUAL_INFOSTR_Y10           = "Actor info string Y, x10%";
 ZCHECKER_VISUAL_INFOSTR_SCALE         = "Actor info string scale";
-ZCHECKER_VISUAL_OTHER                 = "Other";
+ZCHECKER_VISUALDIV_OTHER              = "Other";
 ZCHECKER_VISUAL_FONTTYPES             = "General font";
 
 //  === Control menu for the "Everything" map ==
@@ -283,9 +283,9 @@ ZCHECKER_VISUAL_FONTTYPES             = "General font";
 ZCHECKER_EVMAPMENU_TITLE              = "ZChecker: \"Everything\" map settings";
 ZCHECKER_EVMAPMENU_SPAWNOPTIONS       = "Spawning options";
 ZCHECKER_EVMAPMENUDIV_GENERAL         = "- General -";
+ZCHECKER_EVMAPMENU_SPAWNBUILTIN       = "Built-in engine actors";
 ZCHECKER_EVMAPMENU_SPAWNREPLACED      = "Replaced actors";
-ZCHECKER_EVMAPMENU_SPAWNBUILTIN       = "Actors embedded in the engine";
-ZCHECKER_EVMAPMENU_RESTRICT           = "Replacements of restricted actors";
+ZCHECKER_EVMAPMENU_RESTRICT           = "Unsafe built-in actors replacement";
 ZCHECKER_EVMAPMENUDIV_SPRITES         = "- By empty sprites -";
 ZCHECKER_EVMAPMENU_MISSING            = "Actors with missing sprites";
 ZCHECKER_EVMAPMENU_TNT1A0             = "Actors with the \'TNT1A0\' sprite";
@@ -365,7 +365,7 @@ ZCHECKER_EVMAP_RELOADSECTORS          = "Reloading general properties for all se
 ZCHECKER_EVMAP_AUTOIDDQD              = "Auto-godmode enabled.";
 ZCHECKER_EVMAP_AUTONOTARGET           = "Auto-notarget enabled.";
 ZCHECKER_EVMAPSPAWN_SUCCESS           = "\cqsummoned class \"\cd%s\cq\"\c~ (sprite \"%s\").";
-ZCHECKER_EVMAPSPAWN_SKIPBUILTIN       = "\chAll embedded (built-in) classes has been skipped.";
+ZCHECKER_EVMAPSPAWN_SKIPBUILTIN       = "\chAll built-in classes has been skipped.";
 ZCHECKER_EVMAPSPAWN_EMPTYSPRITESKIP   = "\c~class \"\cz%s\c~\" omitted because of empty sprite \"%s\".";
 ZCHECKER_EVMAPSPAWN_MISSPRITESKIP     = "\c~class \"\cz%s\c~\" omitted because of \cpmissing sprite\c~ \"\cs%s\c~\".";
 ZCHECKER_EVMAPSPAWN_CORRUPSPRITESKIP  = "\c~class \"\cz%s\c~\" omitted because of \crcorrupted sprite\c~ \"\cs%s\c~\" (tends to be \"%s\").";
@@ -374,7 +374,7 @@ ZCHECKER_EVMAPSPAWN_INVISSKIP         = "\c~class \"\cz%s\c~\" omitted because o
 ZCHECKER_EVMAPSPAWN_PLCHUNKSKIP       = "\c~class \"\cz%s\c~\" omitted due to inheritance from the \"PlayerChunk\".";
 ZCHECKER_EVMAPSPAWN_BOSSBRAINSKIP     = "\c~class \"\cz%s\c~\" omitted due to inheritance from the \"BossBrain\".";
 ZCHECKER_EVMAPSPAWN_REPLACEDSKIP      = "\c~class \"\cz%s\c~\" replaced and thus omitted.";
-ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "\c~replaced by \"\c-%s\c~\" class \"\c-%s\c~\" is restricted\c~.";
+ZCHECKER_EVMAPSPAWN_REPLRESTRICTEDSKIP = "\c~replaced by \"\c-%s\c~\" class \"\c-%s\c~\" is unsafe\c~.";
 ZCHECKER_EVMAPCATEGORY_PREFIX         = "\cuCategory \cj%s\cu. ";
 ZCHECKER_EVMAPCATEGORY_NORMALSPAWN    = "Spawned %i actor(s) in total";
 ZCHECKER_EVMAPCATEGORY_EMPTYSPAWN     = "No actors spawned";
@@ -391,27 +391,27 @@ ZCHECKER_EVMAP_INFOSTR_REPLACES       = "%s \cnreplaces\c- %s";
 ZCHECKER_CCMD_WIP                     = "\c~[Work-in-progress command, may behave strangely or not work at all].";
 
 //  "ZCConsoleCommand::GetPlaceTestee()" and "ZCConsoleCommand::LinetraceActor()"
-ZCHECKER_GETACTOR_SKIPPEDSPECIAL      = "Skipped special ZChecker class \"%s\".";
+ZCHECKER_GETACTOR_SKIPPEDSPECIAL      = "Skipped ZChecker class \"%s\".";
 ZCHECKER_GETACTOR_LTNOACTORS          = "No available linetarget actors found.";
 ZCHECKER_GETACTOR_EMPTYPOS            = "No actor in position %i.";
 ZCHECKER_GETACTOR_WRONGPOS            = "\c!Wrong position %i\c- (must be in range [1..%i]).";
 ZCHECKER_GETACTOR_UNKNOWNKEYWORD      = "\c!Unknown placeholder \"%s\" in position %i\c~. Possible values: \c-1..%i, s[elf], cam[era], lt\c~|\c-linetarget\c~.";
 
 //  "ZCConsoleCommand::ParseSpecialActorName()"
-ZCHECKER_PARSENAME_WRONGSELECT        = "\c!Selection \"%s\" isn't a positive integer.";
-ZCHECKER_PARSENAME_EMPTYKEYWORD       = "\c!Skipped\c- empty placeholder \"%s\". You may use \"%%null\" or \"%%none\" to override this.";
-ZCHECKER_PARSENAME_UNSETVAR           = "\c!Skipped\c- unset internal variable \"%s\".";
-ZCHECKER_PARSENAME_NOCLASSCHARS       = "\c!No class identifier characters provided.";
+ZCHECKER_PARSENAME_WRONGSELECT        = "Class selection index \"\c!%s\c-\" isn't a positive integer.";
+ZCHECKER_PARSENAME_EMPTYKEYWORD       = "\c!Skipped\c- empty placeholder \"%s\". \c~You may use \"$null\" or \"$none\" to override this.";
+ZCHECKER_PARSENAME_UNSETVAR           = "\c!Skipped\c- unset classname variable \"%s\".";
+ZCHECKER_PARSENAME_NOCLASSCHARS       = "\c!No class identifier characters provided\c-.";
 ZCHECKER_PARSENAME_WITHFILTER         = "\c~ with filter \cj%s\c~";
 ZCHECKER_PARSENAME_NOTFOUND           = "Cannot find any suitable actor name candidates";
 ZCHECKER_PARSENAME_FOUNDSOME          = "Found more than one suitable actor name candidate";
-ZCHECKER_PARSENAME_SELECTBOUNDS       = "\c!Selected index \cn%i \c!is out of range\c- of the found candidates.";
-ZCHECKER_PARSENAME_IGNORESELECT       = "\c!Ignoring numerical selection %i\c-";
+ZCHECKER_PARSENAME_SELECTBOUNDS       = "\c!Selected index \cn%i \c!is out of range\c- of the found candidates (1..%i).";
+ZCHECKER_PARSENAME_IGNORESELECT       = "Ignoring selection \cn%i\c-, the class is already unambiguously defined";
 
 //  "ZCConsoleCommand::RemoveWorldThinker()"
-ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crTried to destroy a live player %i\c-, \c!skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
+ZCHECKER_REMOVEPREVENT_LIVEPLAYER     = "\crTried to destroy a live player %i, skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
 ZCHECKER_REMOVEWARNING_LIVEPLAYER     = "destroying live player";
-ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crInternal ZChecker class \"\c-%s\cr\" in the destroy list, \c!skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
+ZCHECKER_REMOVEPREVENT_ZCINTERNAL     = "\crInternal ZChecker class \"\c-%s\cr\" in the destroy list, skipped\c-. You may enable this using the \"Allow dangerous actions\" option.";
 ZCHECKER_REMOVEWARNING_ZCINTERNAL     = "destroying internal ZChecker class";
 
 //  "ZCAddCommand::HandleDuplicateActorFields()"
@@ -431,7 +431,7 @@ ZCHECKER_ZCHELP_HEADERCOMMONCCMDS     = "\cjAvailable commands, commonly used\c-
 ZCHECKER_ZCHELP_HEADERALLCCMDS        = "\cjAvailable commands, complete list\c-:";
 
 //  "zcadd":
-ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [<index>] [<panel>]";
+ZCHECKER_ZCADD_HELP_TITLE             = "zcadd [s[elf]|w[eapon]|cam[era]|force] [<panel>];zcaddself [<panel>];zcaddweap [<panel>];zcaddforce [<panel>];zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>]";
 ZCHECKER_ZCADD_HELP_DESC              = "Add the linetarget/current player/current weapon/non-solid linetarget/random world actor into the panels list. <panel> is a panel number to set to; if omitted, the first empty slot will be used.";
 ZCHECKER_ZCADD_ADDINSUFFPLACE         = "Cannot add target to the panels list, insufficient space. Try adding the target to list directly via \"zcadd 1\"..\"zcadd %i\".";
 ZCHECKER_ZCADD_NOWEAPON               = "No weapon, cannot add.";
@@ -444,8 +444,8 @@ ZCHECKER_ZCADD_SUCCESSFORCED          = "Added actor %s";
 ZCHECKER_ZCADD_SUCCESSCAMERA          = "Added a player camera %s";
 ZCHECKER_ZCADD_USINGPREVLINK          = "\c~Using previous link in panel \cj%i\c~ for actor \cu%s\c~.";
 
-//  "zcrem"/"zcclear":
-ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<panel>];zcclear [<panel>]";
+//  "zcrem":
+ZCHECKER_ZCREM_HELP_TITLE             = "zcrem [<panel>]";
 ZCHECKER_ZCREM_HELP_DESC              = "Remove testee from informational panel <panel>; removes the whole list if no argument provided.";
 ZCHECKER_ZCREM_SUCCESS                = "Removed actor \"%s\" <%s> from position %i.";
 ZCHECKER_ZCREM_SUCCESSTOTAL           = "All actors cleared from the infopanels.";
@@ -456,7 +456,7 @@ ZCHECKER_ZCREM_EMPTYPOS               = "Cannot remove, there's no actor in posi
 
 //  "zcact":
 ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<pos>] <action>";
-ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: \"rev[ive]\"|\"res[urrect]\", \"k[ill]\", \"xk[ill]\"|\"mdk\", \"destroy\"|\"rem[ove]\"|\"rm\"|\"del[ete]\"";
+ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: \"rev[ive]\"/\"res[urrect]\", \"k[ill]\", \"xk[ill]\"/\"mdk\", \"rem[ove]\"/\"rm\"/\"del[ete]\", \"stop\", \"[state]freeze\"/\"[state]frz\", \"[state]skip\", \"[tics]revert\".";
 ZCHECKER_ZCACT_CANNOTREVIVE           = "Cannot revive actor %s";
 ZCHECKER_ZCACT_REVIVED                = "Revived actor %s";
 ZCHECKER_ZCACT_REVIVEVANISH           = "Actor %s revived, but vanished.";
@@ -466,6 +466,10 @@ ZCHECKER_ZCACT_CANNOTKILL             = "Cannot kill actor %s";
 ZCHECKER_ZCACT_XKILLED                = "Extremely killed actor %s.";
 ZCHECKER_ZCACT_CANNOTXKILL            = "Cannot extremely kill actor %s";
 ZCHECKER_ZCACT_DESTROYED              = "Destroyed actor %s.";
+ZCHECKER_ZCACT_VELSTOPPED             = "Stopped actor %s.";
+ZCHECKER_ZCACT_STATEFROZEN            = "Delay for actor %s set to \"-1\" (actor temporally frozen).";
+ZCHECKER_ZCACT_STATESKIPPED           = "Skipped state for actor %s.";
+ZCHECKER_ZCACT_STATETICSRESET         = "Reset state delay for actor %s.";
 
 //  "zcgive":
 ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<pos>] <item> [<amount=1>]";
@@ -484,8 +488,8 @@ ZCHECKER_ZCTAKE_NOTINVCLASS           = "\"%s\" isn't an Inventory actor.";
 //  "zcsummon":
 ZCHECKER_ZCSUMMON_HELP_TITLE          = "zcsummon <class> [<amount=1>] [<comma-separated list of extra properties>]";
 ZCHECKER_ZCSUMMON_HELP_DESC           = "Summon <amount> of <class>es by rules of build-in eponymous command. Extended info (<extras>) may be provided as a comma-separated list without spaces. Possible parameters are:\
-  BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile];\
-  WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>;\
+  BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile], dormant;\
+  WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>, [float]speed:<speed>;\
   SPECIAL : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.";
 ZCHECKER_ZCSUMMON_CLAMPINT            = "\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.";
 ZCHECKER_ZCSUMMON_CLAMPFLOAT          = "\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.";
@@ -495,8 +499,8 @@ ZCHECKER_ZCSUMMON_WRONGDIGIT          = "\c!Value \"%s\" \c-for parameter \"%s\"
 ZCHECKER_ZCSUMMON_EMPTYVALUE          = "\c!Empty value for parameter \"%s\".";
 ZCHECKER_ZCSUMMON_UNKNOWNPARAM        = "\c!Unknown parameter \"%s\"";
 ZCHECKER_ZCSUMMON_UNKNOWNFLAG         = "\c!Unknown flag \"%s\".";
-ZCHECKER_ZCSUMMON_LIMITPREVENT        = "Trying to summon more than 200 actors in once. \c~You may disable this limit using the \"Allow dangerous actions\" option.";
-ZCHECKER_ZCSUMMON_LIMITWARNING        = "summoning more than 200 actors";
+ZCHECKER_ZCSUMMON_LIMITPREVENT        = "Trying to summon more than 256 actors in once. \c~You may disable this limit using the \"Allow dangerous actions\" option.";
+ZCHECKER_ZCSUMMON_LIMITWARNING        = "summoning more than 256 actors";
 ZCHECKER_ZCSUMMON_SUCCESS             = "Summoned %i %s \c~of class \"\cd%s\c~\".";
 ZCHECKER_ZCSUMMON_SUCCESS_1ACTOR      = "actor";
 ZCHECKER_ZCSUMMON_SUCCESS_ACTORS      = "actors";
@@ -507,10 +511,10 @@ ZCHECKER_ZCSUMMON_NOTACTOR            = "\"%s\" isn't an Actor class.";
 
 //  "zccopyclass"/"zccopysummon":
 ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<amount=1>] [<comma-separated list as in \"zcsummon\">]";
-ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "A paired command. \"zccopyclass\" saves a linetarget actor class into $savedclass internal variable; \"zccopysummon\" summons a $savedclass actor(s).";
+ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "A paired command. \"zccopyclass\" saves a linetarget actor class into $savedclass classname variable; \"zccopysummon\" summons a $savedclass actor(s).";
 
 //  "zcsetflag":
-ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]];zcbud [<pos>] [<value>]";
+ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]]";
 ZCHECKER_ZCSETFLAG_HELP_DESC          = "Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Flag \"%s\" for actor %s is succesfully set to %i.";
 
@@ -523,21 +527,22 @@ ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<pos>] [add|rel[ative][:<pos
 ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;\
-  VISUAL  : scale[x|y] <float>, alpha <float>;\
+  VISUAL  : scale[x|y] <float>, alpha <float>, renderstyle <style>;\
   POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;\
   SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique.";
 ZCHECKER_ZCSETP_RELPLAYER             = "\c~Base actor for relative properties \c-is set to calling player\c~.";
 ZCHECKER_ZCSETP_UNKNOWNMODE           = "\c!Unknown mode \c~\"\c-%s\c~\". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.";
 ZCHECKER_ZCSETP_NODELIMCHARS          = "\c!No delimiter character \c-(\":\" or \"=\") \c!provided \c-for property \"%s\".";
-ZCHECKER_ZCSETP_WRONGARG              = "\c!Wrong argument number in parameter \"%s\"";
-ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Unknown integer property \"%s\"";
-ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Unknown float-point property \"%s\"";
-ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Unknown placeholder \"\c-%s\c!\" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)";
-ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Unknown placeholder \"\c-%s\c!\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)";
+ZCHECKER_ZCSETP_WRONGARG              = "\c!Wrong argument number \c-in parameter \"%s\"";
+ZCHECKER_ZCSETP_WRONGINTPROP          = "\c!Unknown \c-integer property \"%s\"";
+ZCHECKER_ZCSETP_WRONGFLOATPROP        = "\c!Unknown \c-float-point property \"%s\"";
+ZCHECKER_ZCSETP_WRONGKEYWORDZ         = "\c!Unknown placeholder \c-\"%s\" for the Z coordinate property. \c~Must be \c-<float>\c~, \c-f[loor] \c~, \c-c[eil]\c~ (ceiling height without actor's height) or \c-rawc[eil]|hc\c~ (ceiling height itself)";
+ZCHECKER_ZCSETP_WRONGKEYWORDHP        = "\c!Unknown placeholder \c-\"%s\" for the health property. \c~Must be \c-<int>\c~, \c-max\c~ (~2.1 billion) or \c-s[pawn]\c~ (original spawn health)";
+ZCHECKER_ZCSETP_WRONGKEYWORDRENDERSTYLE = "\c!Unknown placeholder \c-\"%s\" for the render style property. \c~Must be \c-<int>\c~ or one of the \c-style names\c~ (e.g., \"normal\").";
 ZCHECKER_ZCSETP_EMPTYPROP             = "\c~Skipped empty property \"\c-%s\c~\".";
 ZCHECKER_ZCSETP_UNKNOWNPROP           = "\c!Unknown property \c~\"\c-%s\c~:\c-%s\c~\".";
-ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Value of the non-numeric property \c-%s\c~ has been written directly (without altering).";
-ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully changed.";
+ZCHECKER_ZCSETP_NONRELATIVEPROP       = "\c~Value of property \c-%s\c~ has been copied without altering.";
+ZCHECKER_ZCSETP_SUCCESS               = "Properties for actor \"%s\" succesfully changed."; // Currently not used.
 
 
 // File "ZCCommandsMap.zsc":
@@ -551,7 +556,7 @@ ZCHECKER_ZCEVGOTO_HELP_TITLE          = "zcev goto <class>|<category>|start;zcev
 ZCHECKER_ZCEVGOTO_HELP_DESC           = "While on the Everything map, go to the certain actor / specified category (abbreviations are also recognized) / to starting position";
 ZCHECKER_ZCEVGOTO_TREATASPREFIX       = "\c~Treat \"%s\" as a full form of input category prefix \"\c-%s\c~\"\c-";
 ZCHECKER_ZCEVGOTO_NOTCATEGORY         = "Unknown category or keyword \"%s\".";
-ZCHECKER_ZCEVGOTO_EMPTYCATEGORY       = "Category or keyword not provided.";
+ZCHECKER_ZCEVGOTO_WRONGCATEGORY       = "Category or keyword not provided.";
 ZCHECKER_ZCEVGOTO_NOTACTOR            = "\"%s\" is not an Actor class.";
 ZCHECKER_ZCEVGOTO_SUCCESS             = "Found actor %s at %s.";
 ZCHECKER_ZCEVGOTO_CATEGSUCCESS        = "Found category \c~\"\c-%s\c~\"\c- header at %s.";
@@ -571,41 +576,48 @@ ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Warp to the \"Everything (simple)\" map
 // File "ZCCommandsMiscControl.zsc":
 
 //  "zcthinkers":
-ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> [l[ist]];zcthinkers <type> rm|rem[ove]|del[ete] <numindex>|<class>;zcthinkers actors add[:<panel>] <numindex>;zclistthinkers <type>;zcaddlistget [<index>] [<panel>]";
-ZCHECKER_ZCTHINKERS_HELP_DESC         = "Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to the panel, etc. Note that the CCMD syntax may be changed in the near future to extend its functionality.";
-ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "StatNum is out of limits. Must be in range [0; %i].";
-ZCHECKER_ZCTHINKERS_WRONGSELECT       = "Selection index must be a positive integer.";
-ZCHECKER_ZCTHINKERS_NOTTHCLASS        = "\c!Cannot determine \c-Thinker class name \"%s\".";
-ZCHECKER_ZCTHINKERS_WRONGPANEL        = "\c!Wrong panel number \c-\"%s\".";
-ZCHECKER_ZCTHINKERS_WRONGPANELRANGE   = "Panel number \c!must be in range \c-[1..%i].";
+ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>]";
+ZCHECKER_ZCTHINKERS_HELP_DESC         = "Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.";
+ZCHECKER_ZCTHINKERS_BOUNDSSTATNUM     = "StatNum is out of limits. Must be in range [0; %i].";
+ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "\c!Cannot recognize StatNum \c-\"%s\".";
+ZCHECKER_ZCTHINKERS_WRONGSELECT       = "Object selection index \"\c!%s\c-\" isn't a positive integer.";
+ZCHECKER_ZCTHINKERS_NOTTHCLASS        = "Cannot determine Thinker class name \"%s\".";
 ZCHECKER_ZCTHINKERS_UNKNOWNACTION     = "\c!Unknown action \c-\"%s\".";
-ZCHECKER_ZCTHINKERSADD_SELECTBOUNDS   = "Requested index \c!is out-of-bounds\c-.";
+ZCHECKER_ZCTHINKERS_EMPTYLIST         = "\c~Thinkers list is empty, selection index is ignored.";
+ZCHECKER_ZCTHINKERS_SELECTBOUNDS      = "Requested index is out-of-bounds (1..%i).";
 ZCHECKER_ZCTHINKERSADD_INSUFFPLACE    = "Cannot add target to list, insufficient space. Try adding the actor to list directly via \"zcaddlistget <...> [1..%i]\".";
+ZCHECKER_ZCTHINKERSADD_WRONGPANEL     = "\c!Wrong panel number \c-\"%s\".";
+ZCHECKER_ZCTHINKERSADD_WRONGPANELRANGE = "Panel number must be in range [1..%i].";
 ZCHECKER_ZCTHINKERSADD_SUCCESS        = "Added a random world actor %s.";
 ZCHECKER_ZCTHINKERSADD_NOTACTOR       = "Thinker \"%s\" isn't an Actor.";
-ZCHECKER_ZCTHINKERSADD_NOSELECTION    = "Actor index to add \c!not specified\c-.";
-ZCHECKER_ZCTHINKERSRM_SELECTBOUNDS    = "Requested index \c!is out-of-bounds\c-.";
-ZCHECKER_ZCTHINKERSRM_SUCCESS         = "Removed %i thinkers of type \"%s\".";
-ZCHECKER_ZCTHINKERSRM_SUCCESSRAW      = "Removed %i thinkers of \chraw\c- type \"%s\".";
-ZCHECKER_ZCTHINKERSRM_NOSELECTION     = "Thinker to remove not specified either by index or by classname.";
+ZCHECKER_ZCTHINKERSADD_NOSELECTION    = "Actor index to add not specified.";
+ZCHECKER_ZCTHINKERSRM_UNKNOWNFLAG     = "\c!Unknown flag \c-\"%s\".";
+ZCHECKER_ZCTHINKERSRM_INCOMPATIBLEFLAGS = "\c!Incompatible flags\c- \"Remove by classname\" and \"Destroy everything\".";
+ZCHECKER_ZCTHINKERSRM_ALLNOCLASS      = "Class to remove not specified.";
+ZCHECKER_ZCTHINKERSRM_SUCCESSONE      = "Removed object \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALL      = "Removed %i objects of class \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSALLRAW   = "Removed %i raw-named objects of class \"%s\".";
+ZCHECKER_ZCTHINKERSRM_SUCCESSEVERYTHING = "Removed %i objects (all possible).";
+ZCHECKER_ZCTHINKERSRM_NOSELECTION     = "Thinker to remove not specified.";
 ZCHECKER_ZCTHINKERS_SECTIONACTORS     = "Actors";
 ZCHECKER_ZCTHINKERS_SECTIONSTATIC     = "Static";
 ZCHECKER_ZCTHINKERS_SECTIONSECTORS    = "Sectors";
 ZCHECKER_ZCTHINKERS_SECTIONOTHER      = "Other thinkers";
 ZCHECKER_ZCTHINKERS_HELPLISTPOSTFIX   = "Possible types (plural is optional): \n%s\nOr a digit for the non-standard StatNums (for user-defined: \cy%i\c-..\cy%i\c-).";
+ZCHECKER_ZCTHINKERS_SECSTATNUMQUESTION = "\"Sector\" what? \"\cwSectorEffects\c-\" (same as \"\cwSectorMovers\c-\"), \"\cwSectorLights\c-\" or \"\cwSectorLightTransfers\c-\"?";
 ZCHECKER_ZCTHINKERS_LISTFLAGNOSECTOR  = " (+NOSECTOR)";
 ZCHECKER_ZCTHINKERS_LISTATPOS         = " at";
 ZCHECKER_ZCTHINKERS_LISTINVOWNER      = ", inv.owner is ";
-ZCHECKER_ZCTHINKERS_LISTTOTAL         = "Total %i thinkers of the StatNum type %i.";
 ZCHECKER_ZCTHINKERS_LISTSECTORNUM     = " in sector %i";
+ZCHECKER_ZCTHINKERS_LISTTOTAL         = "\c~Total \c-%i\c~ Thinkers of the StatNum type %i\c-.";
+ZCHECKER_ZCTHINKERS_LISTTOTALFILTEREXACT = "\c~Total \c-%i\c~ objects of class \"\cw%s\c~\" of the StatNum type %i\c-.";
+ZCHECKER_ZCTHINKERS_LISTTOTALFILTERINHERITANCE = "\c~Total \c-%i\c~ objects inherited from class \"\cw%s\c~\" of the StatNum type %i\c-.";
 
 //  "zcpanel" (without "zcpanel save|store|load" because of unfinished/unclear subcommand UI):
-ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel (info [<panel>]|<panel> info)";
+ZCHECKER_ZCPANELCTL_HELP_TITLE        = "zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel [<panel>] info";
 ZCHECKER_ZCPANELCTL_HELP_DESC         = "Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.";
 ZCHECKER_ZCPANEL_NOACTORINPOS         = "There's no actor in position %i.";
-ZCHECKER_ZCPANELINFO_HEADER           = "\c~Actor in position \c-%i \c~is \c-%s\c~ <%s>";
-ZCHECKER_ZCPANELINFO_INHERITANCE      = "  \c~Inherited from \c-%s\c~ (class pointer: <%s>)";
-ZCHECKER_ZCPANELINFO_REPLACEMENTCHAIN = "Replacements chain: ";
+ZCHECKER_ZCPANELINFO_ZCCLASSINFO      = "\c~\"zcclassinfo %s\"";
 ZCHECKER_ZCPANELSAVE_ALIASEXISTS      = "Alias \"%s\" already exists and is linked to the actor %s.";
 ZCHECKER_ZCPANELSAVE_RELINKINGALIAS   = "Relinking the \"%s\" alias (its previous actor was destroyed).";
 ZCHECKER_ZCPANELSAVE_NOPANEL          = "No actor linked to the panel %s.";
@@ -615,14 +627,24 @@ ZCHECKER_ZCPANELLOAD_WRONGALIAS       = "Alias \"%s\" does not exist.";
 ZCHECKER_ZCPANELLOAD_SUCCESS          = "\c~Loaded actor \c-%s\c~ as alias \"\c-%s\c~\".";
 ZCHECKER_ZCPANELINFO_NOALIASES        = "\c~No actor aliases have been created.";
 ZCHECKER_ZCPANELINFO_LISTHEADER       = "\cyActors aliases \c-(total %i): ";
-ZCHECKER_ZCPANELINFO_ALIASLINKED      = "  \"c~\"\c-%s\c~\" linked to the \c-%s\c~ with world position %s.";
-ZCHECKER_ZCPANELINFO_ALIASGONE        = "  \"c~\"\c-%s\c~\" is unlinked";
+ZCHECKER_ZCPANELINFO_ALIASLINKED      = "  \c~\"\c-%s\c~\" linked to the \c-%s\c~ with world position %s.";
+ZCHECKER_ZCPANELINFO_ALIASGONE        = "  \c~\"\c-%s\c~\" is unlinked";
+
+// "zcclassinfo":
+ZCHECKER_ZCCLASSINFO_HELP_TITLE       = "zcclassinfo <classname>";
+ZCHECKER_ZCCLASSINFO_HELP_DESC        = "Print information about inheritance and replacement chain for Actors for the specified class.";
+ZCHECKER_ZCCLASSINFO_NOCLASS          = "Class \"%s\" does not exist or not accessible via ZScript.";
+ZCHECKER_ZCCLASSINFO_HEADER           = "\c~Class \"\c-%s\c~\" (pointer <%s>):";
+ZCHECKER_ZCCLASSINFO_INHERITANCE      = "  \c~Inherited from \c-%s";
+ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAIN = "\c~Final replacements chain:";
+ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN = "\c~Actor isn't in the replacements chain.";
+ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR = " \cv->\c~ ";
 
 //  "zcvarsctl":
 ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo]";
-ZCHECKER_ZCVARSCTL_HELP_DESC          = "Perform control on internal ZChecker class variables; identifiers must be started with \"$\".\n  Possible placeholders for the <string value> (first symbol must be \"%\" or \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
-ZCHECKER_ZCVARSCTL_SETSUCCESS         = "Internal variable \"\cn%s\c-\" is \cdset\c- to \"%s\".";
-ZCHECKER_ZCVARSCTL_LISTHEADER         = "\cyInternal variables \c~(total \c-%i\c~): ";
+ZCHECKER_ZCVARSCTL_HELP_DESC          = "Perform control on classname ZChecker variables; identifiers must be started with \"$\".\n  Possible placeholders for the <string value> (first symbol must be \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
+ZCHECKER_ZCVARSCTL_SETSUCCESS         = "Variable \"\cn%s\c-\" is \cdset\c- to \"%s\".";
+ZCHECKER_ZCVARSCTL_LISTHEADER         = "\cyClassname variables \c~(total \c-%i\c~): ";
 
 //  "zcinterface"/"zcif":
 ZCHECKER_ZCIF_HELP_TITLE              = "zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree";
@@ -640,7 +662,7 @@ ZCHECKER_TOOLTIP_ACTORMASKS_TIPS      = "For almost all commands that take actor
 \t'`2-`2' for any number of characters greater than 0.\
 If more than one actor class candidate is found, only `2numbered list`x will be printed. A value may be selected from it by using `2:N`x or `2,N`x.\
 Note that a class inheritance filter is applied for some commands.\
-Also, you may substitute values from `1ZChecker variables`1 `d(must begin with \"`2$`d\" or \"`2%`d\")`x like:\
+Also, you may substitute values from `1ZChecker classname variables`1 `d(must begin with \"`2$`d\")`x like:\
 \t'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;\
 \t'`1$last`1' for the last class added to any panel;\
 \tAny other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".";
@@ -674,8 +696,8 @@ You can find more specific examples in the help pages of almost all of the comma
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER = "About \"Everything\" maps";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT   = "A map named \"`2Everything`2\" is an universal actors card-index.\
 Right now there are two maps:\
-\"`2Everything_simple`2\", a lightweight but fully functional variant.\
-\"`2Everything_SC77`2\" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker; `~and`x\
+\"`2Everything_simple`2\", a lightweight but fully functional variant; `~and`x\
+\"`2Everything_SC77`2\" by StormCatcher.77. Note that it may be out of date in the beta and nightly versions of ZChecker.\
 \t`yWarning: some modifications block regular specific actor spawning without special mod- or level-specified adjustments `d(might, in fact, be on purpose)`y. `xThe consequences can vary, from spamming console messages to crashing the engine. If you found this, it's best that you contact the conflicting mod's author. Or the LLDM Team, but in most cases we will redirect you to them as well.";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES = "\"`Cmap everything_simple`C\" changes the level to the Everything map (simple version);\
 \"`Czcev map`x\" does pretty much the same.\
@@ -717,6 +739,7 @@ ZCHECKER_TOOLTIP_ZCTAKE_EXAMPLES      = "\"`Czctake shell 3`x\" takes 3 shells f
 
 
 ZCHECKER_TOOLTIP_ZCACT_TIPS           = "Not all actors may be killed or resurrected. If this happens, a message will be printed.\
+In CCMDs with the \"`2state`2\" and \"`2tics`2\" prefixes they can be used in place of each other with the same result (like \"`Czcact ticsskip`C\").\
 Resurrection of the dead player is not supported, use the built-in \"`Cresurrect`C\" command instead.";
 ZCHECKER_TOOLTIP_ZCACT_EXAMPLES       = "\"`Czcact rm`C\" deletes the linetarget actor from memory (like the built-in \"`Cremove`C\" CCMD, but with only one actor);\
 \"`Czcact kill`C\" kills the linetarget;\
@@ -798,24 +821,29 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 \"`Czcevg z*man`C\" teleports player next to the spawned `2Z`~ombie`2man`x actor;\
 \"`Czcevg *armor`C\" prints a list of all actors with this postfix;\
 \"`Czcevg *armor:4`C\" teleports player next to the `2BlueArmor`2;\
-\"`Czcevg $last`C\" teleports player next to the last actor class added to infopanels (if it exists on the map);\
+\"`Czcevg $last`C\" teleports player next to the last actor class added to infopanels;\
 \"`Czcevg #monsters`C\" or \"`Czcevg #m`C\" warps player to the header of the category \"Monsters\";\
 \"`Czcevg mons`C\" does the same if the actor class \"`2mons`2\" not defined, else teleports to it;\
 \"`Czcevg #ammo`C\" warps player to the header of the category \"Ammo\". Without the sharp character, teleports player next to the Ammo actor itself (if it exists on the map).";
 
 
-ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "Use the \"`Czcthinkers <type> rm`x\" command `yonly if you know what you're doing`x; it can absolutely break levels and the whole game, up to the engine crash.\
+ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "The command allows you to partially control objects of the Thinker class - the base class for all objects directly interacting with the world; the Actor class also inherits from it. Each Thinker at every moment is a member of a single StatNum set (a logically separate group of objects interacting with the world). For example, there is a group of actors, a group of floor/ceiling movers, a group of inventory, a group of sector lighting effects, and many others.\
+Use the \"`Czcthinkers <type> rm`x\" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.\
 You may provide a direct StatNum value instead of its string alias.\
+First symbol in the \"`g[[`y:`g]<classfilter>:]`x\" might be \"`y:`x\" or \"`y#`x\". It stands for the inheritance check, not only the exact class (e.g. \"`g#demon`g\" will check Demons and Spectres).\
 All StatNums are nominal: some modification may use non-standard distribution on sets.\
-\"`Czcaddlistget`x\" is just a convenience alias which uses current the CCMD in question;\
-Internal thinkers may be controlled by name if the argument \"rm:internal\" or its analog is provided. But they may be freely specified in default \"rm\" by their index number in list.";
+\"`Czcaddlistget`x\" is just a convenience alias which uses current the CCMD in question.\
+Internal thinkers may be controlled by name if the argument \"rm:raw\" or its analog is provided. But they may be freely specified in default \"rm\" by their index number in list.\
+Possible \"rm\" command flags: \"`g:all`x\"/\"`g:class`x\" (remove all Thinkers of this class); \"`g:raw`x\"/\"`g:internal`x\" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and \"`g:everything`x\" (incompatible with others, destroys all Thinkers of the specified StatNum).";
 ZCHECKER_TOOLTIP_ZCTHINKERS_EXAMPLES  = "\"`Czcthinkers l`x\"/\"`Czclistthinkers`x\" prints out a help list with all recognizable StatNum types aliases;\
 \"`Czcthinkers a l`x\"/\"`Czclistthinkers actors`x\" lists all of the Thinkers designated to the actors set (`~STAT_DEFAULT`~);\
 \"`Czcthinkers 100 l`x\" same as the command above: the `2actors`x alias actually converts to the value `y100`x;\
-\"`Czcthinkers a rm z*man`x\" removes all of the Zombiemen from the level `d(same action as in \"`Cremove zombieman`d\");\
+\"`Czcthinkers a l stimpack`x\" lists all of the Stimpacks on the level;\
+\"`Czcthinkers a rm:all z*man`x\" removes all of the Zombiemen from the level `d(same action as in \"`Cremove zombieman`d\");\
 \"`Czcthinkers static rm 1`x\" removes the 1st element in the set of the static thinkers (`~STAT_STATIC`~);\
 \"`Czcthinkers a add`g:2`C 17`x\" adds the 17th actor from the list to the second information panel;\
-\"`Czcthinkers sl rm`2:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).";
+\"`Czcthinkers a add #powerupgiver:4`x\" adds a 4th actor that satisfies the inheritance filter from \"PowerupGiver\";\
+\"`Czcthinkers sl rm`2:all:raw`C glow`x\" removes all Thinkers named \"glow\", regardless of their internal or not origin, in the set of the sector lights (`~STAT_LIGHT`~).";
 
 
 ZCHECKER_TOOLTIP_ZCPANELCTL_TEXT      = "`yNote`x: right now the alias system is inconvenient, so I will not recommend using it. On the other hand, it is fully functional.";
