@@ -172,7 +172,8 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     StaticText "$ZCHECKER_CCMDMENU_EXAMPLES", 1
     StaticText " "
 
-	Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
+	//Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
+	Submenu "Новое подменю zcadd", "mcm_ZChecker_ControlMenu_CallCCMD_add"
 	Command "$ZCHECKER_CCMDMENU_ZCADD_SELF", "zcadd self"
 	Command "$ZCHECKER_CCMDMENU_ZCREM", "zcrem"
     StaticText " "
@@ -181,6 +182,42 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     // See "ZScript/ZCMenus.zsc" for the full menu code.
 	//class "ZCOptionMenuCallCCMD" // [WIP]: not written yet.
 }
+
+OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD_add" {
+	Title "ZChecker: привязать актора к панели" // export to LANGUAGE
+	
+	Option "Целевой актор", "mcm_zchecker_callccmd_add_target", "mcm_ZCheckerOption_add_target"
+	Option "Номер панели", "mcm_zchecker_callccmd_add_panel", "mcm_ZCheckerOption_add_panel"
+	Command "Выполнить", "zcadd $mcm_zchecker_callccmd_add_target $mcm_zchecker_callccmd_add_panel"
+	
+	StaticText ""
+	StaticText "Здесь будет описание команды", DARKGRAY
+}
+
+OptionString "mcm_ZCheckerOption_add_target" {
+	"self", "Игрок"
+	"weap", "Оружие игрока"
+	"cam", "Камера игрока"
+	"", "Актор под прицелом" // https://forum.zdoom.org/viewtopic.php?f=2&t=69214
+}
+
+OptionString "mcm_ZCheckerOption_common_target" {
+	"1", "Актор панели 1"
+	"2", "Актор панели 2"
+	"3", "Актор панели 3"
+	"self", "Игрок"
+	"weap", "Оружие игрока"
+	"cam", "Камера игрока"
+	"", "Актор под прицелом"
+}
+
+OptionString "mcm_ZCheckerOption_add_panel" {
+	"1", "1"
+	"2", "2"
+	"3", "3"
+	"", "Первая свободная"
+}
+
 
 
 OptionValue "mcm_ZCheckerOption_LogLevels" {
