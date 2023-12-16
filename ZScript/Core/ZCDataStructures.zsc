@@ -155,14 +155,20 @@ struct ZCheckerCCMDInterfaceData {
 
 // A panel field storing object in question; right now only for Actors.
 class ZCheckerField {
+	enum EZCheckerActorType {
+		IAT_Normal = 0,
+		IAT_StateProvider
+	};
+
+	const const_MixStringsAppendLen = 4;
+
+
 	private uint fieldPos;
 	Actor mo;				// Testee actor itself.
-	EZCheckerInfoActorType actorType;
+	EZCheckerActorType actorType;
 
 	uint asyncwith;			// Warn in multiplayer (0 == synced, 1..8 == player).
 	String hashsync[ MAXPLAYERS ];
-
-	const const_MixStringsAppendLen = 4;
 
 	play void UpdateActorMetainformation( ZCheckerCCMDInfo fccmd ) {
 		if ( !mo )

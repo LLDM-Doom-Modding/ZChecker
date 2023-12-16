@@ -218,7 +218,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		State curState = thing.CurState;
 		State st = curState;
 
-		if ( thingfield.actorType == IAT_StateProvider ) {
+		if ( thingfield.actorType == ZCheckerField.IAT_StateProvider ) {
 			Actor weapOwner = getItemPlayerOwner( Inventory( thing ) );
 
 			if ( weapOwner.player.psprites )
@@ -335,7 +335,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		State curState = thing.CurState;
 		State st = curState;
 
-		bool isWeaponInHands = ( thingfield.actorType == IAT_StateProvider );
+		bool isWeaponInHands = ( thingfield.actorType == ZCheckerField.IAT_StateProvider );
 		PlayerPawn weapOwner = NULL;
 
 		Array<State> prevstates;

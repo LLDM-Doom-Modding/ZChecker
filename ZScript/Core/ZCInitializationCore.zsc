@@ -187,16 +187,16 @@ extend class ZCheckerHandler {
         Array<String> zcConfigLines;
 
         zcConfigFile.ToLower(); // Make file case-insensitive.
-		ENewlineTypes newlinesType = ZCGlobal.GetTextNewlinesType( zcConfigFile );
+		int newlinesType = ZCGlobal.GetTextNewlinesType( zcConfigFile );
 
 		switch ( newlinesType ) {
-			case ZCNL_Unix: handleConfigFileNewlines( "*nix (LF)", "\n" ); break;
-			case ZCNL_DOS: handleConfigFileNewlines( "DOS/Windows (CR/LF)", "\r\n" ); break;
-			case ZCNL_Mac: handleConfigFileNewlines( "MacOS (CR)", "\r" ); break;
-			case ZCNL_DOSReversed: handleConfigFileNewlines( "DOS reversed (LF/CR)", "\n\r" ); break;
+			case ZCGlobal.ZCNL_Unix: handleConfigFileNewlines( "*nix (LF)", "\n" ); break;
+			case ZCGlobal.ZCNL_DOS: handleConfigFileNewlines( "DOS/Windows (CR/LF)", "\r\n" ); break;
+			case ZCGlobal.ZCNL_Mac: handleConfigFileNewlines( "MacOS (CR)", "\r" ); break;
+			case ZCGlobal.ZCNL_DOSReversed: handleConfigFileNewlines( "DOS reversed (LF/CR)", "\n\r" ); break;
 			default:
 				ZCGlobal.Log( LL_Debug, TEXTCOLOR_YELLOW .. "Cannot recognize new lines type, using *nix" .. LLCOLOR_DEBUG .. "." );
-				newlinesType = ZCNL_Unix;
+				newlinesType = ZCGlobal.ZCNL_Unix;
 				break;
 		}
 

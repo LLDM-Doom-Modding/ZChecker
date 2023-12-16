@@ -19,9 +19,9 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 		}
 
 		// Classname printing:
-		if ( thingfield.actorType == IAT_Normal )
+		if ( thingfield.actorType == ZCheckerField.IAT_Normal )
 			info.AppendFormat( GREEN .. thing.GetClassName() );
-		else if ( thingfield.actorType == IAT_StateProvider )
+		else if ( thingfield.actorType == ZCheckerField.IAT_StateProvider )
 			info.AppendFormat( DARKGREEN .. "Weap\c-: " .. GREEN .. "%s", thing.GetClassName() );
 
 		// Tag printing:
@@ -236,7 +236,7 @@ class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String info = "";
 
-		if ( thingfield.actorType == IAT_Normal ) {
+		if ( thingfield.actorType == ZCheckerField.IAT_Normal ) {
 			int thingSpawnHealth = thing.GetSpawnHealth();
 			info.AppendFormat( DARKRED .. "Health " .. RED .. "%i" .. DARKGRAY .. "/" .. RED .. "%i\n" .. DARKRED .. "(" .. RED .. "%.2f%%",
 					thing.health, thingSpawnHealth, ( thingSpawnHealth? 100.0 * thing.health / double( thingSpawnHealth ) : 0.0 ) );

@@ -48,22 +48,8 @@ const LLCOLOR_WARNING = TEXTCOLOR_YELLOW;
 const LLCOLOR_DEBUG = TEXTCOLOR_DARKGRAY;
 const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
 
-// Constants used in specific areas of the API:
-enum EZCheckerInfoActorType {
-	IAT_Normal = 0,
-	IAT_StateProvider
-};
 
-
-// Internal constants of limited use in API:
-enum ENewlineTypes {
-	ZCNL_Unknown = 0,
-	ZCNL_DOS,			// 0x0D, 0x0A
-	ZCNL_Unix,			// 0x0A
-	ZCNL_Mac,			// 0x0D
-	ZCNL_DOSReversed	// 0x0A, 0x0D
-};
-
+// Constants of limited use in API:
 const LETTER_A_UPPER = 65;
 const LETTER_Z_UPPER = 90;
 const LETTER_A_LOWER = 97;
@@ -81,6 +67,16 @@ class ZCGlobal: Thinker {
 	private transient CVar zcLoglevelCVar;
 
 	Array<ZCInternalStringDictionaryCell> savedClassnameVariables;
+
+
+	enum ENewlineTypes {
+		ZCNL_Unknown = 0,
+		ZCNL_DOS,			// 0x0D, 0x0A
+		ZCNL_Unix,			// 0x0A
+		ZCNL_Mac,			// 0x0D
+		ZCNL_DOSReversed	// 0x0A, 0x0D
+	};
+
 
 	/* === ZChecker utils === */
 
@@ -113,14 +109,14 @@ class ZCGlobal: Thinker {
 		return it;
 	} // of static play ZCGlobal Get( void ) {}
 
-	clearscope EZCheckerLogLevels _GetLoglevel( void ) {
-		return zcCurLogLevel;
-	}
 	static clearscope EZCheckerLogLevels GetLoglevelClearscope( void ) {
 		return ClearscopeGet().zcCurLogLevel;
 	}
 	static play EZCheckerLogLevels GetLoglevel( void ) {
 		return Get().zcCurLogLevel;
+	}
+	clearscope EZCheckerLogLevels LoglevelClearscope( void ) {
+		return zcCurLogLevel;
 	}
 
 	void SaveHandler( ZCheckerHandler inithandler ) {
@@ -128,9 +124,6 @@ class ZCGlobal: Thinker {
 			zcHandler = inithandler;
 	}
 
-	clearscope ZCheckerHandler _GetHandler( void ) {
-		return zcHandler;
-	}
 	static play ZCheckerHandler GetHandler( void ) {
 		return Get().zcHandler;
 	}
@@ -174,7 +167,7 @@ class ZCGlobal: Thinker {
 
 		// Dot at the end of the line:
 		if ( !( loglevel & LL_NoDot ) ) {
-			String lastch = text.Mid( text.Length() - 1 );
+			String lastch = text.Mid( text.Length() - 1, 1 );
 
 			if ( !( lastch == "." || lastch == "!" || lastch == "?" || lastch == ":" || lastch == ";" ) )
 				text = text .. ".";
@@ -201,7 +194,7 @@ class ZCGlobal: Thinker {
 	static ui void UILog( EZCheckerLogLevels loglevel, String text ) {
 		ZCGlobal it = ZCGlobal( ThinkerIterator.Create( "ZCGlobal", STAT_STATIC ).Next() );
 
-		if ( it && ( it._GetLoglevel() >= ( loglevel & ~LL_FlagsMask ) ) )
+		if ( it && ( it.LoglevelClearscope() >= ( loglevel & ~LL_FlagsMask ) ) )
 			ClearscopeLog( loglevel, text );
 	}
 

@@ -15,9 +15,9 @@ extend class ZCheckerHandler {
 		//ui, data and play scopes in one method...
 		if ( curTestee is "StateProvider" && !( curTestee is "CustomInventory" ) && PlayerPawn( Inventory( curTestee ).owner ) ) {
 			Testee[ fieldindex ].mo = curTestee = PlayerPawn( Inventory( curTestee ).owner ).player.ReadyWeapon;
-			Testee[ fieldindex ].actorType = IAT_StateProvider;
+			Testee[ fieldindex ].actorType = ZCheckerField.IAT_StateProvider;
 		} else {
-			Testee[ fieldindex ].actorType = IAT_Normal;
+			Testee[ fieldindex ].actorType = ZCheckerField.IAT_Normal;
 		}
 
 		return curTestee;

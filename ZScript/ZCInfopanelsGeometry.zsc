@@ -259,7 +259,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {
-		if ( thingfield.actorType != IAT_Normal )
+		if ( thingfield.actorType != ZCheckerField.IAT_Normal )
 			return "";
 
 		outinfo = "";

@@ -102,7 +102,7 @@ class ZCheckerEverythingMapHandler: EventHandler {
 
 	// Actually no one cannot be sure that a *ZDoom namespace files parsing
 	//will not change in the future. At least from GZDoom 3.3.0 and to
-	//GZDoom 4.8.0 the sorting order has not beed changed.
+	//GZDoom 4.10.0 the sorting order has not beed changed.
 	const const_LastEmbeddedActorClass = "LAZDevice";
 
 
