@@ -515,7 +515,7 @@ unused),,,,
 ,,ZCHECKER_ZCCOPYPASTE_HELP_DESC,"A paired command. ""zccopyclass"" saves a linetarget actor class into $savedclass classname variable; ""zccopysummon"" summons a $savedclass actor(s).","Сдвоенная команда. ""zccopyclass"" сохраняет название актора под курсором в переменную $savedclass; ""zccopysummon"" создаёт актор(ов) класса $savedclass."
 ,,,,
 ," ""zcsetflag"":",,,
-,,ZCHECKER_ZCSETFLAG_HELP_TITLE,"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]]","zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcsf [<кому>] <название флага> [<значение>[,nospec]]"
+,,ZCHECKER_ZCSETFLAG_HELP_TITLE,"zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcfl [<pos>] <flag name> [<value>[,nospec]]","zcsetflag [<кому>] <название флага> [<значение: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<кому>] <название флага> [<значение>[,nospec]];zcfl [<кому>] <название флага> [<значение>[,nospec]]"
 ,,ZCHECKER_ZCSETFLAG_HELP_DESC,"Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.","Устанавливает или сбрасывает <флаг> актору <кому> (по умолчанию цели под курсором). Переключает <флаг>, если <значение> не указано. Примечание: из-за асинхронного исполнения сетевых событий ZScript и машины ACS операция над флагом будет отложена на один игровой такт."
 ,,ZCHECKER_ZCSETFLAG_SUCCESS,"Flag ""%s"" for actor %s is succesfully set to %i.","Флаг ""%s"" для актора %s успешно установлен в %i."
 ,,,,
@@ -524,7 +524,7 @@ unused),,,,
 ,,ZCHECKER_ZCSETSTATE_HELP_DESC,"Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution, in singleplayer the result for most of the flags will be delayed by 1 tic.",Устанавливает указанную <метку стейта> актору <кому> (по умолчанию цели под курсором). Примечание: из-за асинхронного исполнения сетевых событий ZScript и машины ACS операция над флагом будет отложена на один игровой такт.
 ,,,,
 ," ""zcsetprop"":",,,
-,,ZCHECKER_ZCSETP_HELP_TITLE,"zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]","zcsetprop [<кто>] [add|rel[ative][:<к кому>]|raw] <свойство>:<значение>[,<св-во>:<значение>,[...]];zcsetp [<кто>] [add|rel[:<к кому>]] <свойство>:<значение>[,...];zcsp [<кто>] [add|rel[:<к кому>]] <свойство>:<значение>[,...];zchate [<кто>] [<кого>|null]"
+,,ZCHECKER_ZCSETP_HELP_TITLE,"zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcpr [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]","zcsetprop [<кто>] [add|rel[ative][:<к кому>]|raw] <свойство>:<значение>[,<св-во>:<значение>,[...]];zcsetp [<кто>] [add|rel[:<к кому>]] <свойство>:<значение>[,...];zcpr [<кто>] [add|rel[:<к кому>]] <свойство>:<значение>[,...];zchate [<кто>] [<кого>|null]"
 ,,ZCHECKER_ZCSETP_HELP_DESC,"Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a ""raw"" parameter all properties will be simply overwritten; with ""add"" they will be added to the current values (if possible); and with ""rel[ative]][:<pos>]"" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;
@@ -646,8 +646,8 @@ unused),,,,
 ,,ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN,\c~Actor isn't in the replacements chain.,\c~Actor не находится в цепи замен (replacements).
 ,,ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR, \cv->\c~ , \cv->\c~ 
 ,,,,
-," ""zcvarsctl"":",,,
-,,ZCHECKER_ZCVARSCTL_HELP_TITLE,zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo],zcvarsctl set|new <$название> <строка или подстановка>;zcvarsctl del[ete]|rm|rem[ove] <$название>|all;zcvarsctl l[ist]|i[nfo]
+," ""zcvars"":",,,
+,,ZCHECKER_ZCVARSCTL_HELP_TITLE,zcvars set|new <$varname> <string value or placeholder>;zcvars del[ete]|rm|rem[ove] <$varname>|all;zcvars l[ist]|i[nfo],zcvars set|new <$название> <строка или подстановка>;zcvars del[ete]|rm|rem[ove] <$название>|all;zcvars l[ist]|i[nfo]
 ,,ZCHECKER_ZCVARSCTL_HELP_DESC,"Perform control on classname ZChecker variables; identifiers must be started with ""$"".\n  Possible placeholders for the <string value> (first symbol must be ""$""): ""$self"" (caller itself), ""$lt""|""$linetarget"" (caller's linetarget), ""$target"" (caller's target field), ""$master"" (its master), ""$tracer"" (its tracer).","Управление переменными ZChecker для названий классов; идентификаторы должны начинаться с ""$"".\n  Доступные подстановки (должны начинаться с ""$""):  ""$self"" (сам игрок), ""$lt""|""$linetarget"" (его цель), ""$target"" (его поле target), ""$master"" (его поле master), ""$tracer"" (его поле tracer)."
 ,,ZCHECKER_ZCVARSCTL_SETSUCCESS,"Variable ""\cn%s\c-"" is \cdset\c- to ""%s"".","Переменная ""\cn%s\c-"" \cdустановлена\c- в ""%s""."
 ,,ZCHECKER_ZCVARSCTL_LISTHEADER,\cyClassname variables \c~(total \c-%i\c~): ,\cyПеременные названий классов \c~(всего \c-%i\c~): 
@@ -671,7 +671,7 @@ Note that a class inheritance filter is applied for some commands.
 Also, you may substitute values from `1ZChecker classname variables`1 `d(must begin with ""`2$`d"")`x like:
 \t'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;
 \t'`1$last`1' for the last class added to any panel;
-\tAny other `1$zchecker_variable`1 defined internally or via ""`Czcvarsctl`x"".","Практически для всех команд, которые принимают первым аргументом название класса (""`Czcsummon`x"", ""`Czcgive`x"", ""`Czctake`x"", ""`Czcev goto`x"", ...) можно использовать два подстановочных символа регулярных выражений:
+\tAny other `1$zchecker_variable`1 defined internally or via ""`Czcvars`x"".","Практически для всех команд, которые принимают первым аргументом название класса (""`Czcsummon`x"", ""`Czcgive`x"", ""`Czctake`x"", ""`Czcev goto`x"", ...) можно использовать два подстановочных символа регулярных выражений:
 \t'`2*`2' для любых символов любого количества, в том числе и нуля; `dи`x
 \t'`2-`2' для любых символов количеством больших нуля.
 Если после подстановки окажется более одного кандидата, будет выведен `2нумерованный список`2. Указать номер строки можно с помощью `2:N`x или `2,N`x.
@@ -679,7 +679,7 @@ Also, you may substitute values from `1ZChecker classname variables`1 `d(must be
 Также Вы можете использовать подстановку из `1переменных ZChecker`x `d(должны начинаться с ""`2$`d"" или ""`2%`d"")`x:
 \t'`1$1`1', '`1$2`1', '`1$3`1' для названия класса из указанной панели. Эти названия будет сохраняться, пока следующий добавленный в инфопанель класс не перезапишет их;
 \t'`1$last`1' для последнего добавленного в инфопанели класса;
-\tЛюбую другую `1$переменную_zchecker`1, объявленную заранее или созданную через ""`Czcvarsctl`x""."
+\tЛюбую другую `1$переменную_zchecker`1, объявленную заранее или созданную через ""`Czcvars`x""."
 ,,ZCHECKER_TOOLTIP_ACTORMASKS_EXAMPLES,"""`Czcsummon z`2-`Cman 4`x"" creates four Zombiemen;
 ""`Czcsummon sta`2*`Cff`x"" will print a list with elements ""Staff"" and ""Staff`dPu`xff"";
 ""`Czcsummon sta`2-`Cff`x"" summons a ""StaffPuff"";
@@ -890,11 +890,11 @@ You may disable their special handling by providing the ""nospec"", ""raw"" or "
 \t`2Защиты`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x
 \t`2Другое`x: BRIGHT.
 Можно отключить особую обработку для них с помощью ключевых слов ""nospec"", ""raw"" или ""acs"" в качестве последнего аргумента (если не нужно переключать флаг, то стоит отделить этот параметр запятой или двоеточием)."
-,,ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES,"""`Czcsetflag friendly`x"", ""`Czcsetf friendly`x"" or ""`Czcsf friendly`x"" toggles the `2+FRIENDLY`x flag for the linetarget;
+,,ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES,"""`Czcsetflag friendly`x"", ""`Czcsetf friendly`x"" or ""`Czcfl friendly`x"" toggles the `2+FRIENDLY`x flag for the linetarget;
 ""`Czcsetf 1 solid t`x"" or ""`Czcsetf 1 solid 1`x"" sets the `2+SOLID`x flag to ""true"" for the actor in the first infopanel;
 ""`Czcsetf s touchy`x"" sets the `2+TOUCHY`x flag to `1s`2elf`x, making player able to die at the slightest touch. Note that this flag isn't in the quick access;
 ""`Czcsetf solid raw`x"" toggles the flag with a one-delay tic, forcibly using an ACS machine;
-""`Czcsetf solid 1,nospec`x"", ""`Czcsetf solid acs:1`x"" sets the specified flag to ""true"", also forcibly using an ACS machine.","""`Czcsetflag friendly`x"", ""`Czcsetf friendly`x"" или ""`Czcsf friendly`x"" переключают флаг `2+FRIENDLY`x для цели под курсором;
+""`Czcsetf solid 1,nospec`x"", ""`Czcsetf solid acs:1`x"" sets the specified flag to ""true"", also forcibly using an ACS machine.","""`Czcsetflag friendly`x"", ""`Czcsetf friendly`x"" или ""`Czcfl friendly`x"" переключают флаг `2+FRIENDLY`x для цели под курсором;
 ""`Czcsetf 1 solid t`x"" или ""`Czcsetf 1 solid 1`x"" взводит флаг `2+SOLID`x для актора в первой инфопанели;
 ""`Czcsetf s touchy`x"" устанавливает флаг `2+TOUCHY`x себе (`1s`2elf`x), что заставляет игрока умирать от любого прикосновения. Имейте в виду, что этот флаг не находится в быстром доступе;
 ""`Czcsetf solid raw`x"" переключает флаг с задержкой в один такт, принудительно используя ACS-машину;
@@ -999,14 +999,14 @@ Note, the assigning of that command's result will be delayed by 1 world tic to p
 Эта команда возвращает целочисленное значение результата в консольную переменную ""`g%s`x"". Её можно проверять через встроенную команду ""`Ctest`x"" — см. раздел ""\HПримеры\x"" ниже.
 Учтите, присвоение результата команды будет отложено на 1 такт мира ради упреждения рассинхронизации в мультиплеере. Поэтому может быть полезна встроенная команда ""`Cwait`x"". `yВнимание: разные версии игрового движка обрабатывают эту команду по-разному!`y Вы можете заметить, что ""`Cwait`x"" продолжит работать и в консоли, и в меню, и даже тогда, когда игра стоит на паузе."
 ,,ZCHECKER_TOOLTIP_ZCINTERFACE_EXAMPLES,"This alias will `yonly`x summon one specified actor (`g%%1`g) and add it to the first infopanel `yif this panel is not yet linked`x:
-`Calias zcsa1 `x""`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \\""zcsummon $tmp 1 add:1\\""; zcvarsctl rm $tmp`x"";
+`Calias zcsa1 `x""`2zcif panel 1; wait 1; zcvars set $tmp %1; test == $mcm_zchecker_var_interface 0 \\""zcsummon $tmp 1 add:1\\""; zcvars rm $tmp`x"";
 
 The next alias will check if the last actor added to the panel is a DoomImp `~(via classname saved in the variable `1$last`~)`x:
 `Calias testforimp3 `x""`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\""echo Imp.\\"" \\""echo Not an Imp.\\""`x"".
 
 This alias will indefinitely check if the `1self`x pointer equals the `1self.player.camera`x pointer:
 `Calias isselfcamera `x""`2zcif panelsequal self camera`~; `2wait 1`~; `2test == $mcm_zchecker_var_interface 0 \\""echo Player camera view was changed from default.\\""`~; `2wait 1`~; `2isselfcamera`x"".","Этот алиас будет создавать указанного актора (`g%%1`g) и добавлять его в первую инфопанель, `yтолько если актора в этой панели ещё нет`x:
-`Calias zcsa1 `x""`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \\""zcsummon $tmp 1 add:1\\""; zcvarsctl rm $tmp`x"";
+`Calias zcsa1 `x""`2zcif panel 1; wait 1; zcvars set $tmp %1; test == $mcm_zchecker_var_interface 0 \\""zcsummon $tmp 1 add:1\\""; zcvars rm $tmp`x"";
 
 Следующий алиас проверяет равенство строке ""DoomImp"" названия последнего добавленного в инфопанели актора `~(через название класса, сохранённого в переменной `1$last`~)`x
 `Calias testforimp3 `x""`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\""echo Imp.\\"" \\""echo Нет, не Imp.\\""`x"".

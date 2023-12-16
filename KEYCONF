@@ -13,7 +13,7 @@ alias zcrem "netevent zc_rem@@%1@@%2"
 
 alias zcsetprop "netevent zc_setproperty@@%1@@%2@@%3@@%4"
 alias zcsetp "zcsetprop %1 %2 %3 %4"
-alias zcsp "zcsetprop %1 %2 %3 %4"
+alias zcpr "zcsetprop %1 %2 %3 %4"
 alias zchate "zcsetprop %1 raw target:%2 %3"
 
 alias zcsetstate "netevent zc_setstate@@%1@@%2@@%3"
@@ -23,7 +23,7 @@ alias zcst "zcsetstate %1 %2 %3"
 
 alias zcsetflag "netevent zc_setflag@@%1@@%2@@%3@@%4"
 alias zcsetf "zcsetflag %1 %2 %3 %4"
-alias zcsf "zcsetflag %1 %2 %3 %4"
+alias zcfl "zcsetflag %1 %2 %3 %4"
 
 alias zcgive "netevent zc_give@@%1@@%2@@%3@@%4"
 alias zctake "netevent zc_take@@%1@@%2@@%3@@%4"
@@ -32,14 +32,14 @@ alias zcact "netevent zc_actoraction@@%1@@%2@@%3"
 
 alias zcsummon "netevent zc_summon@@%1@@%2@@%3@@%4"
 
-alias zccopyclass "zcvarsctl %1 set $savedclass $linetarget"
+alias zccopyclass "zcvars %1 set $savedclass $linetarget"
 alias zccopysummon "zcsummon $savedclass %1 %2 %3"
 
 
 // ZChecker information, internal and global control:
 alias zcpanel "netevent zc_infopanelcontrol@@%1@@%2@@%3@@%4"
 alias zcclassinfo "netevent zc_classinfo@@%1@@%2"
-alias zcvarsctl "netevent zc_variablescontrol@@%1@@%2@@%3@@%4"
+alias zcvars "netevent zc_variablescontrol@@%1@@%2@@%3@@%4"
 
 alias zcthinkers "netevent zc_thinkerscontrol@@%1@@%2@@%3@@%4"
 

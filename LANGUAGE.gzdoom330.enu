@@ -514,7 +514,7 @@ ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<amount=1>] [
 ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "A paired command. \"zccopyclass\" saves a linetarget actor class into $savedclass classname variable; \"zccopysummon\" summons a $savedclass actor(s).";
 
 //  "zcsetflag":
-ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcsf [<pos>] <flag name> [<value>[,nospec]]";
+ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcfl [<pos>] <flag name> [<value>[,nospec]]";
 ZCHECKER_ZCSETFLAG_HELP_DESC          = "Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Flag \"%s\" for actor %s is succesfully set to %i.";
 
@@ -523,7 +523,7 @@ ZCHECKER_ZCSETSTATE_HELP_TITLE        = "zcsetstate [<pos>] <state label>;zcsets
 ZCHECKER_ZCSETSTATE_HELP_DESC         = "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution, in singleplayer the result for most of the flags will be delayed by 1 tic.";
 
 //  "zcsetprop":
-ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcsp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
+ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcpr [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
 ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;\
@@ -640,8 +640,8 @@ ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAIN = "\c~Final replacements chain:";
 ZCHECKER_ZCCLASSINFO_NOREPLACEMENTCHAIN = "\c~Actor isn't in the replacements chain.";
 ZCHECKER_ZCCLASSINFO_REPLACEMENTCHAINSEPARATOR = " \cv->\c~ ";
 
-//  "zcvarsctl":
-ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvarsctl set|new <$varname> <string value or placeholder>;zcvarsctl del[ete]|rm|rem[ove] <$varname>|all;zcvarsctl l[ist]|i[nfo]";
+//  "zcvars":
+ZCHECKER_ZCVARSCTL_HELP_TITLE         = "zcvars set|new <$varname> <string value or placeholder>;zcvars del[ete]|rm|rem[ove] <$varname>|all;zcvars l[ist]|i[nfo]";
 ZCHECKER_ZCVARSCTL_HELP_DESC          = "Perform control on classname ZChecker variables; identifiers must be started with \"$\".\n  Possible placeholders for the <string value> (first symbol must be \"$\"): \"$self\" (caller itself), \"$lt\"|\"$linetarget\" (caller's linetarget), \"$target\" (caller's target field), \"$master\" (its master), \"$tracer\" (its tracer).";
 ZCHECKER_ZCVARSCTL_SETSUCCESS         = "Variable \"\cn%s\c-\" is \cdset\c- to \"%s\".";
 ZCHECKER_ZCVARSCTL_LISTHEADER         = "\cyClassname variables \c~(total \c-%i\c~): ";
@@ -665,7 +665,7 @@ Note that a class inheritance filter is applied for some commands.\
 Also, you may substitute values from `1ZChecker classname variables`1 `d(must begin with \"`2$`d\")`x like:\
 \t'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;\
 \t'`1$last`1' for the last class added to any panel;\
-\tAny other `1$zchecker_variable`1 defined internally or via \"`Czcvarsctl`x\".";
+\tAny other `1$zchecker_variable`1 defined internally or via \"`Czcvars`x\".";
 ZCHECKER_TOOLTIP_ACTORMASKS_EXAMPLES  = "\"`Czcsummon z`2-`Cman 4`x\" creates four Zombiemen;\
 \"`Czcsummon sta`2*`Cff`x\" will print a list with elements \"Staff\" and \"Staff`dPu`xff\";\
 \"`Czcsummon sta`2-`Cff`x\" summons a \"StaffPuff\";\
@@ -792,7 +792,7 @@ Note that only a few frequently used flags change immediately (without a one tic
 \t`2Defences`x: BUDDHA, NODAMAGE, DORMANT, INVULNERABLE; `dand`x\
 \t`2Other`x: BRIGHT.\
 You may disable their special handling by providing the \"nospec\", \"raw\" or \"acs\" keyword as the last argument (comma- or colon-separated if you don't want to toggle a flag).";
-ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES   = "\"`Czcsetflag friendly`x\", \"`Czcsetf friendly`x\" or \"`Czcsf friendly`x\" toggles the `2+FRIENDLY`x flag for the linetarget;\
+ZCHECKER_TOOLTIP_ZCSETFLAG_EXAMPLES   = "\"`Czcsetflag friendly`x\", \"`Czcsetf friendly`x\" or \"`Czcfl friendly`x\" toggles the `2+FRIENDLY`x flag for the linetarget;\
 \"`Czcsetf 1 solid t`x\" or \"`Czcsetf 1 solid 1`x\" sets the `2+SOLID`x flag to \"true\" for the actor in the first infopanel;\
 \"`Czcsetf s touchy`x\" sets the `2+TOUCHY`x flag to `1s`2elf`x, making player able to die at the slightest touch. Note that this flag isn't in the quick access;\
 \"`Czcsetf solid raw`x\" toggles the flag with a one-delay tic, forcibly using an ACS machine;\
@@ -856,7 +856,7 @@ ZCHECKER_TOOLTIP_ZCINTERFACE_TIPS     = "Command \"`Czcif`x\" is actually an abb
 This command returns its integer result to the console variable \"`g%s`x\". You may check it via the built-in \"`Ctest`x\" command, see section \"`HExamples`x\" below.\
 Note, the assigning of that command's result will be delayed by 1 world tic to prevent desynchronizations in multiplayer. Built-in command \"`Cwait`x\" might be helpful. `yWarning: different engine versions processes this command differently!`y You may notice that a \"`Cwait`x\" CCMD will work also in console, menus and a even while the game is paused.";
 ZCHECKER_TOOLTIP_ZCINTERFACE_EXAMPLES = "This alias will `yonly`x summon one specified actor (`g%%1`g) and add it to the first infopanel `yif this panel is not yet linked`x:\
-`Calias zcsa1 `x\"`2zcif panel 1; wait 1; zcvarsctl set $tmp %1; test == $mcm_zchecker_var_interface 0 \\\"zcsummon $tmp 1 add:1\\\"; zcvarsctl rm $tmp`x\";\
+`Calias zcsa1 `x\"`2zcif panel 1; wait 1; zcvars set $tmp %1; test == $mcm_zchecker_var_interface 0 \\\"zcsummon $tmp 1 add:1\\\"; zcvars rm $tmp`x\";\
 \
 The next alias will check if the last actor added to the panel is a DoomImp `~(via classname saved in the variable `1$last`~)`x:\
 `Calias testforimp3 `x\"`2zcinterface strequal $last doomimp; wait 1; test == $mcm_zchecker_var_interface 1 \\\"echo Imp.\\\" \\\"echo Not an Imp.\\\"`x\".\
