@@ -353,8 +353,8 @@ class ZCPanelsStorage {
 	private transient CVar fonttypeCVar;
 	private int lastFontType;
 
-	// As "254 - String.Format( "mcm_zchecker_infopanelsorder_part##" ).Length()":
-	const const_availablePartLen = ( 254 - 36 );
+	// As "254 - String.Format( "lldm_zcinternal_panelsorder##" ).Length()":
+	const const_availablePartLen = ( 254 - 35 );
 
 
 	static ZCPanelsStorage Create( void ) {
@@ -376,7 +376,7 @@ class ZCPanelsStorage {
 		curPanels.Clear();
 
 		String panelsOrderStr = ( fromCVar? GetPanelsorderFromCVars(): panelsstr );
-		int curloglevel = CVar.FindCVar( "mcm_zchecker_loglevel" ).GetInt();
+		int curloglevel = CVar.FindCVar( "lldm_zc_loglevel" ).GetInt();
 
 		if ( panelsOrderStr != "" ) {
 			Array<String> neworder;
@@ -503,7 +503,7 @@ class ZCPanelsStorage {
 
 				ZCGlobal.DataLog( LL_Debug, GetClassName() .. "::TickSetPanelsorderCVars(). Part " .. i .. "/" .. ( newOrderStrPartsAmount - 1 ) .. ": \"" .. TEXTCOLOR_GRAY .. curpart .. LLCOLOR_DEBUG .. "\"" );
 
-				ZCGlobal.PrepareUserCVarString( "mcm_zchecker_infopanelsorder_part" .. i, curpart );
+				ZCGlobal.PrepareUserCVarString( "lldm_zcinternal_panelsorder_part" .. i, curpart );
 				ACS_ExecuteAlways( -int( 'ZChecker_SetInfopanelPartCVar' ), 0, consoleplayer, i );
 			}
 
@@ -516,7 +516,7 @@ class ZCPanelsStorage {
 		String outstr = "";
 
 		for ( int i = 0; i < 10; i++ ) {
-			String curpart = CVar.GetCVar( "mcm_zchecker_infopanelsorder_part" .. i, players[ consoleplayer ] ).GetString();
+			String curpart = CVar.GetCVar( "lldm_zcinternal_panelsorder_part" .. i, players[ consoleplayer ] ).GetString();
 
 			if ( curpart.Length() == 0 )
 				break;
@@ -531,7 +531,7 @@ class ZCPanelsStorage {
 		int fonttype = -1;
 
 		if ( !fonttypeCVar )
-			fonttypeCVar = CVar.GetCVar( "mcm_zchecker_infopanel_fonttype", players[ consoleplayer ] );
+			fonttypeCVar = CVar.GetCVar( "lldm_zc_infopanel_fonttype", players[ consoleplayer ] );
 
 		fonttype = fonttypeCVar.GetInt();
 

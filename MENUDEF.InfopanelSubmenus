@@ -55,9 +55,9 @@ OptionMenu "mcm_ZCheckerSubmenu_main" {
 	Title "$ZCHECKER_PANELSUBMENU_MAIN_TITLE"
 	StaticText " "
 
-	Option "$ZCHECKER_PANELSUBMENU_MAIN_TAG", "mcm_zchecker_infovar_maintags", "mcm_ZCheckerOption_panelmain_tags"
-	Option "$ZCHECKER_PANELSUBMENU_MAIN_SELFPTR", "mcm_zchecker_infovar_mainselfptr", "YesNo"
-	Option "$ZCHECKER_PANELSUBMENU_MAIN_PLAYERINFO", "mcm_zchecker_infovar_mainplayers", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_MAIN_TAG", "lldm_zcpanel_var_maintags", "mcm_ZCheckerOption_panelmain_tags"
+	Option "$ZCHECKER_PANELSUBMENU_MAIN_SELFPTR", "lldm_zcpanel_var_mainselfptr", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_MAIN_PLAYERINFO", "lldm_zcpanel_var_mainplayers", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
@@ -65,21 +65,21 @@ OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 	StaticText " "
 
 	StaticText "$ZCHECKER_PANELSUBMENU_WPOSDIV_TILTS", 1
-	Slider "$ZCHECKER_PANELSUBMENU_WPOS_DECIMAMNT", "mcm_zchecker_infovar_wpostiltdcma", 0, 5, 1, 0
-	Option "$ZCHECKER_PANELSUBMENU_WPOS_NOROLL", "mcm_zchecker_infovar_wposnoroll", "YesNo"
+	Slider "$ZCHECKER_PANELSUBMENU_WPOS_DECIMAMNT", "lldm_zcpanel_var_wpostiltdcma", 0, 5, 1, 0
+	Option "$ZCHECKER_PANELSUBMENU_WPOS_NOROLL", "lldm_zcpanel_var_wposnoroll", "YesNo"
 
 	StaticText " "
 	StaticText "$ZCHECKER_PANELSUBMENU_WPOSDIV_OTHER", 1
-	Option "$ZCHECKER_PANELSUBMENU_WPOS_PLAYERBUTTONS", "mcm_zchecker_infovar_wposplbuttons", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_WPOS_PLAYERBUTTONS", "lldm_zcpanel_var_wposplbuttons", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_inventory" {
 	Title "$ZCHECKER_PANELSUBMENU_INV_TITLE"
 	StaticText " "
 
-	Slider "$ZCHECKER_PANELSUBMENU_INV_ITEMSAMNT", "mcm_zchecker_infovar_invamount", 8, 80, 2, 0
-	Option "$ZCHECKER_PANELSUBMENU_INV_SORTBY", "mcm_zchecker_infovar_invsorttype", "mcm_ZCheckerOption_panelinv_sorttypes"
-	Option "$ZCHECKER_PANELSUBMENU_INV_REVERSE", "mcm_zchecker_infovar_invsortascend", "YesNo"
+	Slider "$ZCHECKER_PANELSUBMENU_INV_ITEMSAMNT", "lldm_zcpanel_var_invamount", 8, 80, 2, 0
+	Option "$ZCHECKER_PANELSUBMENU_INV_SORTBY", "lldm_zcpanel_var_invsorttype", "mcm_ZCheckerOption_panelinv_sorttypes"
+	Option "$ZCHECKER_PANELSUBMENU_INV_REVERSE", "lldm_zcpanel_var_invsortascend", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_states" {
@@ -87,21 +87,21 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 	StaticText " "
 
 	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_GENERAL", 1
-	ScaleSlider "$ZCHECKER_PANELSUBMENU_STATES_AMNT", "mcm_zchecker_infovar_statesamount", 0, 25, 1, "$ZCHECKER_PANELSTATESOPT_UNLIMITED"
+	ScaleSlider "$ZCHECKER_PANELSUBMENU_STATES_AMNT", "lldm_zcpanel_var_statesamount", 0, 25, 1, "$ZCHECKER_PANELSTATESOPT_UNLIMITED"
 	StaticText "$ZCHECKER_PANELSUBMENU_STATESNOTE_CONLOG", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_PANELSUBMENU_STATES_CONLOG", "mcm_zchecker_infovar_stateslogging", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_CONLOG", "lldm_zcpanel_var_stateslogging", "YesNo"
 
 	StaticText " "
 	StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_CUR", 1
-	Option "$ZCHECKER_PANELSUBMENU_STATES_TICSBAR", "mcm_zchecker_infovar_statetic", "YesNo"
-	Option "$ZCHECKER_PANELSUBMENU_STATES_FLAGS", "mcm_zchecker_infovar_stateflags", "mcm_ZCheckerOption_flags_names"
-	Option "$ZCHECKER_PANELSUBMENU_STATES_EXTRAINFO", "mcm_zchecker_infovar_stateextras", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_TICSBAR", "lldm_zcpanel_var_statetic", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_FLAGS", "lldm_zcpanel_var_stateflags", "mcm_ZCheckerOption_flags_names"
+	Option "$ZCHECKER_PANELSUBMENU_STATES_EXTRAINFO", "lldm_zcpanel_var_stateextras", "YesNo"
 
 	//StaticText " "
 	//StaticText "$ZCHECKER_PANELSUBMENU_STATESDIV_PSPRITE", 1
-	//Option "$ZCHECKER_PANELSUBMENU_STATES_OVERLAYS", "mcm_zchecker_infovar_statepsprlayersmode", "mcm_ZCheckerOption_panelstates_psprite_type"
-	//ZCPSpriteInputField "$ZCHECKER_PANELSUBMENU_STATES_SPECIALID", "mcm_zchecker_infovar_statepsprlayerid"
+	//Option "$ZCHECKER_PANELSUBMENU_STATES_OVERLAYS", "lldm_zcpanel_var_statepsprlayersmode", "mcm_ZCheckerOption_panelstates_psprite_type"
+	//ZCPSpriteInputField "$ZCHECKER_PANELSUBMENU_STATES_SPECIALID", "lldm_zcpanel_var_statepsprlayerid"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
@@ -111,20 +111,20 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 	StaticText "$ZCHECKER_PANELSUBMENUNOTE_PLAYSCOPE", FIRE
 	StaticText " "
 
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_SEPARATE", "mcm_zchecker_infovar_geomsecdiffers", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_SEPARATE", "lldm_zcpanel_var_geomsecdiffers", "YesNo"
 	StaticText " "
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_HEIGHTS", "mcm_zchecker_infovar_geomsecheights", "mcm_ZCheckerOption_panelgeom_secheights"
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_LIGHT", "mcm_zchecker_infovar_geomseclight", "YesNo"
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_TEXTURES", "mcm_zchecker_infovar_geomsectex", "YesNo"
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_FLAGS", "mcm_zchecker_infovar_geomsecflags", "mcm_ZCheckerOption_flags_names"
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_DAMAGE", "mcm_zchecker_infovar_geomsecdamage", "YesNo"
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_PHYSICS", "mcm_zchecker_infovar_geomsecphysics", "YesNo"
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_PORTALS", "mcm_zchecker_infovar_geomsecportal", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_HEIGHTS", "lldm_zcpanel_var_geomsecheights", "mcm_ZCheckerOption_panelgeom_secheights"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_LIGHT", "lldm_zcpanel_var_geomseclight", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_TEXTURES", "lldm_zcpanel_var_geomsectex", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_FLAGS", "lldm_zcpanel_var_geomsecflags", "mcm_ZCheckerOption_flags_names"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_DAMAGE", "lldm_zcpanel_var_geomsecdamage", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_PHYSICS", "lldm_zcpanel_var_geomsecphysics", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_PORTALS", "lldm_zcpanel_var_geomsecportal", "YesNo"
 	StaticText " "
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_TERRAIN", "mcm_zchecker_infovar_geomsecterrain", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_TERRAIN", "lldm_zcpanel_var_geomsecterrain", "YesNo"
 	StaticText " "
 	StaticText "$ZCHECKER_PANELSUBMENU_GSECNOTE_WIP", DARKGRAY
-	Option "$ZCHECKER_PANELSUBMENU_GSEC_OTHER", "mcm_zchecker_infovar_geomsecother", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_GSEC_OTHER", "lldm_zcpanel_var_geomsecother", "YesNo"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
@@ -135,18 +135,18 @@ OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	StaticText "$ZCHECKER_PANELSUBMENUNOTE_PLAYSCOPE", FIRE
 	StaticText " "
 
-	Option "Line type", "mcm_zchecker_infovar_geomlinetype", "mcm_ZCheckerOption_panelgeom_linetype"
-	Option "Length and flags", "mcm_zchecker_infovar_geomlnmain", "mcm_ZCheckerOption_flags_names"
-	Option "Textures", "mcm_zchecker_infovar_geomlntex", "YesNo"
-	Option "Portals", "mcm_zchecker_infovar_geomlnportal", "YesNo"
+	Option "Line type", "lldm_zcpanel_var_geomlinetype", "mcm_ZCheckerOption_panelgeom_linetype"
+	Option "Length and flags", "lldm_zcpanel_var_geomlnmain", "mcm_ZCheckerOption_flags_names"
+	Option "Textures", "lldm_zcpanel_var_geomlntex", "YesNo"
+	Option "Portals", "lldm_zcpanel_var_geomlnportal", "YesNo"
 	StaticText " "
 	StaticText "Tags depth depends on the minimal and", 1
 	StaticText "maximal sector/line tag search setting.", 1
-	Option "Line action", "mcm_zchecker_infovar_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
+	Option "Line action", "lldm_zcpanel_var_geomlnaction", "mcm_ZCheckerOption_panelgeom_lineaction"
 }
 
 OptionMenu "mcm_ZCheckerSubmenu_sound" {
 	Title "$ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE"
 	StaticText " "
-	Option "$ZCHECKER_PANELSUBMENU_SNDDEFS_RARE", "mcm_zchecker_infovar_soundsrare", "YesNo"
+	Option "$ZCHECKER_PANELSUBMENU_SNDDEFS_RARE", "lldm_zcpanel_var_soundsrare", "YesNo"
 }

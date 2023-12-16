@@ -2,7 +2,7 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 	transient CVar displayTagsModeCVar, displaySelfPointerCVar, displayPlayersInfoCVar;
 
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_main";
+		optionCVarName = "lldm_zcpanel_main";
 		optionLabel = "$INFOPANELS_MAIN";
 		optionLabelExtraHotkeys = "$INFOPANELKEYS_MAIN";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_main";
@@ -13,9 +13,9 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 		// Caching CVars:
 		if ( !displayTagsModeCVar ) {
-			displayTagsModeCVar = CVar.GetCVar( "mcm_zchecker_infovar_maintags", players[ consoleplayer ] );
-			displaySelfPointerCVar = CVar.GetCVar( "mcm_zchecker_infovar_mainselfptr", players[ consoleplayer ] );
-			displayPlayersInfoCVar = CVar.GetCVar( "mcm_zchecker_infovar_mainplayers", players[ consoleplayer ] );
+			displayTagsModeCVar = CVar.GetCVar( "lldm_zcpanel_var_maintags", players[ consoleplayer ] );
+			displaySelfPointerCVar = CVar.GetCVar( "lldm_zcpanel_var_mainselfptr", players[ consoleplayer ] );
+			displayPlayersInfoCVar = CVar.GetCVar( "lldm_zcpanel_var_mainplayers", players[ consoleplayer ] );
 		}
 
 		// Classname printing:
@@ -92,7 +92,7 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 
 class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_worldpos";
+		optionCVarName = "lldm_zcpanel_worldpos";
 		optionLabel = "$INFOPANELS_WORLDPOS";
 		optionLabelExtraHotkeys = "$INFOPANELKEYS_WORLDPOS";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_worldpos";
@@ -138,8 +138,8 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
 		String outStr = "";
 
-		bool skipRollTilt = CVar.GetCVar( "mcm_zchecker_infovar_wposnoroll", players[ consoleplayer ] ).GetBool();
-		int decimalsAmount = CVar.GetCVar( "mcm_zchecker_infovar_wpostiltdcma", players[ consoleplayer ] ).GetInt();
+		bool skipRollTilt = CVar.GetCVar( "lldm_zcpanel_var_wposnoroll", players[ consoleplayer ] ).GetBool();
+		int decimalsAmount = CVar.GetCVar( "lldm_zcpanel_var_wpostiltdcma", players[ consoleplayer ] ).GetInt();
 
 		String decimalsfmt = ( decimalsAmount == 0? "%i" : "%." .. decimalsAmount .. "f" );
 
@@ -159,7 +159,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 				String.Format( "Size: " .. N .. "r" .. TEAL .. "%.3f" .. N .. "/h" .. TEAL .. "%.3f" .. N .. ".", thing.radius, thing.height );
 
 
-		bool showPlayerButtons = CVar.GetCVar( "mcm_zchecker_infovar_wposplbuttons", players[ consoleplayer ] ).GetBool();
+		bool showPlayerButtons = CVar.GetCVar( "lldm_zcpanel_var_wposplbuttons", players[ consoleplayer ] ).GetBool();
 
 		if ( thing is "PlayerPawn" && thing.player && showPlayerButtons ) {
 			outStr.AppendFormat( DARKGRAY .. "\nKeys 0x" .. GRAY .. "%08x\n", thing.player.cmd.buttons );
@@ -228,7 +228,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 
 class ZCMainInteractionInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_maininteract";
+		optionCVarName = "lldm_zcpanel_maininteract";
 		optionLabel = "$INFOPANELS_INTERACTION";
 		optionLabelExtraHotkeys = "$INFOPANELKEYS_INTERACTION";
 	}

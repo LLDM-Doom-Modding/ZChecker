@@ -29,21 +29,21 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
 
 	StaticText " "
 	StaticText "$ZCHECKER_MAINMENU_DIV_OTHER", 1
-	Option "$ZCHECKER_MAINMENU_NETEVENTS", "mcm_zchecker_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
+	Option "$ZCHECKER_MAINMENU_NETEVENTS", "lldm_zc_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
     StaticText "$ZCHECKER_MAINMENU_NETEVENTS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_ALLOWDANGEROUS", "mcm_zchecker_allowdangerccmds", "YesNo"
+	Option "$ZCHECKER_MAINMENU_ALLOWDANGEROUS", "lldm_zc_allowdangerccmds", "YesNo"
     StaticText "$ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_ZCADDTWICE", "mcm_zchecker_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
+	Option "$ZCHECKER_MAINMENU_ZCADDTWICE", "lldm_zc_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
     StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP1", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_SPECIALHANDLING", "mcm_zchecker_internalclasses_nospecialhandling", "YesNo"
+	Option "$ZCHECKER_MAINMENU_SPECIALHANDLING", "lldm_zc_internalclasses_rawhandling", "YesNo"
     StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_LOGLEVEL", "mcm_zchecker_loglevel", "mcm_ZCheckerOption_LogLevels"
+	Option "$ZCHECKER_MAINMENU_LOGLEVEL", "lldm_zc_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "$ZCHECKER_MAINMENU_LOGLEVEL_TIP", DARKGRAY
 }
 
@@ -59,29 +59,29 @@ OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
     StaticText " "
 
     StaticText "$ZCHECKER_VISUALDIV_POSITIONING", 1
-	Slider "$ZCHECKER_VISUAL_START_X",    "mcm_zchecker_infopanel_startx", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_START_X_10", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_START_Y",    "mcm_zchecker_infopanel_starty", -50.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_START_Y_10", "mcm_zchecker_infopanel_starty", -50.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_OFFSET_X", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "mcm_zchecker_infopanel_scale", 0.5, 8.0, 0.1, 1
-	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
+	Slider "$ZCHECKER_VISUAL_START_X",    "lldm_zc_infopanel_startx", 0.0, 99.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_START_X_10", "lldm_zc_infopanel_startx", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_START_Y",    "lldm_zc_infopanel_starty", -50.0, 99.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_START_Y_10", "lldm_zc_infopanel_starty", -50.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_OFFSET_X", "lldm_zc_infopanel_offsetx", 0.0, 100.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "lldm_zc_infopanel_scale", 0.5, 8.0, 0.1, 1
+	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "lldm_zc_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "
     StaticText "$ZCHECKER_VISUALDIV_BACKGROUND", 1
-	Option "$ZCHECKER_VISUAL_ENABLED", "mcm_zchecker_infopanel_dimenabled", "YesNo"
-	ColorPicker "$ZCHECKER_VISUAL_DIMCOLOR", "mcm_zchecker_infopanel_dimcolor"
-	Slider "$ZCHECKER_VISUAL_DIMALPHA", "mcm_zchecker_infopanel_dimalpha", 0.0, 1.0, 0.05, 2
-	Slider "$ZCHECKER_VISUAL_DIMBORDERWIDTH", "mcm_zchecker_infopanel_dimborderwidth", 0.0, 2.0, 0.1, 1
+	Option "$ZCHECKER_VISUAL_ENABLED", "lldm_zc_infopanel_dimenabled", "YesNo"
+	ColorPicker "$ZCHECKER_VISUAL_DIMCOLOR", "lldm_zc_infopanel_dimcolor"
+	Slider "$ZCHECKER_VISUAL_DIMALPHA", "lldm_zc_infopanel_dimalpha", 0.0, 1.0, 0.05, 2
+	Slider "$ZCHECKER_VISUAL_DIMBORDERWIDTH", "lldm_zc_infopanel_dimborderwidth", 0.0, 2.0, 0.1, 1
     StaticText " "
     StaticText "$ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO", 1
-	Slider "$ZCHECKER_VISUAL_INFOSTR_X",    "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_X10", "mcm_zchecker_ev_infostr_centerx", 0.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_Y",    "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_Y10", "mcm_zchecker_ev_infostr_centery", 0.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_SCALE", "mcm_zchecker_ev_infostr_scale", 0.5, 8.0, 0.1, 1
+	Slider "$ZCHECKER_VISUAL_INFOSTR_X",    "lldm_zc_evinfostr_centerx", 0.0, 99.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_INFOSTR_X10", "lldm_zc_evinfostr_centerx", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_INFOSTR_Y",    "lldm_zc_evinfostr_centery", 0.0, 99.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_INFOSTR_Y10", "lldm_zc_evinfostr_centery", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_INFOSTR_SCALE", "lldm_zc_evinfostr_scale", 0.5, 8.0, 0.1, 1
     StaticText " "
     StaticText "$ZCHECKER_VISUALDIV_OTHER", 1
-	Option "$ZCHECKER_VISUAL_FONTTYPES", "mcm_zchecker_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
+	Option "$ZCHECKER_VISUAL_FONTTYPES", "lldm_zc_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
 }
 
 OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
@@ -90,32 +90,32 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 
     StaticText "$ZCHECKER_EVMAPMENU_SPAWNOPTIONS", 1
 	StaticText "$ZCHECKER_EVMAPMENUDIV_GENERAL", DARKBROWN
-	Option "$ZCHECKER_EVMAPMENU_SPAWNBUILTIN", "mcm_zchecker_ev_spawnbuiltin", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_SPAWNREPLACED", "mcm_zchecker_ev_spawnreplaced", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_RESTRICT", "mcm_zchecker_ev_restrictreplacements", "NoYes"
+	Option "$ZCHECKER_EVMAPMENU_SPAWNBUILTIN", "lldm_zcev_spawnbuiltin", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_SPAWNREPLACED", "lldm_zcev_spawnreplaced", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_RESTRICT", "lldm_zcev_restrictreplacements", "NoYes"
 	StaticText "$ZCHECKER_EVMAPMENUDIV_SPRITES", DARKBROWN
-	Option "$ZCHECKER_EVMAPMENU_TNT1A0", "mcm_zchecker_ev_spawntnt1a0", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_MISSING", "mcm_zchecker_ev_spawnmissingsprites", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_PLYC", "mcm_zchecker_ev_spawncorruptedsprites", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_TNT1A0", "lldm_zcev_spawntnt1a0", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_MISSING", "lldm_zcev_spawnmissingsprites", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_PLYC", "lldm_zcev_spawncorruptedsprites", "YesNo"
 	StaticText "$ZCHECKER_EVMAPMENUDIV_CODEBASED", DARKBROWN
-	Option "$ZCHECKER_EVMAPMENU_MISSILES", "mcm_zchecker_ev_spawnmissiles", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_STEALTH", "mcm_zchecker_ev_spawnstealth", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_INVISIBLE", "mcm_zchecker_ev_spawninvisible", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_PLAYERCHUNK", "mcm_zchecker_ev_spawnplrchunks", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_BOSSBRAIN", "mcm_zchecker_ev_spawnbossbrains", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_MISSILES", "lldm_zcev_spawnmissiles", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_STEALTH", "lldm_zcev_spawnstealth", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_INVISIBLE", "lldm_zcev_spawninvisible", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_PLAYERCHUNK", "lldm_zcev_spawnplrchunks", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_BOSSBRAIN", "lldm_zcev_spawnbossbrains", "YesNo"
 
     StaticText " "
     StaticText "$ZCHECKER_EVMAPMENUDIV_OTHER", 1
-	Option "$ZCHECKER_EVMAPMENU_AUTONOTARGET", "mcm_zchecker_ev_auto_notarget", "YesNo"
-	Option "$ZCHECKER_EVMAPMENU_AUTOGOD", "mcm_zchecker_ev_auto_iddqd", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_AUTONOTARGET", "lldm_zcev_auto_notarget", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_AUTOGOD", "lldm_zcev_auto_iddqd", "YesNo"
     StaticText "$ZCHECKER_EVMAPMENU_SPEC_CHEATS", DARKGRAY
     StaticText "$ZCHECKER_EVMAPMENU_ENTERING", DARKGRAY
     StaticText " "
-	Option "$ZCHECKER_EVMAPMENU_LOGSPAWN", "mcm_zchecker_ev_logspawninfo", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_LOGSPAWN", "lldm_zcev_logspawninfo", "YesNo"
     StaticText "$ZCHECKER_EVMAPMENU_LOGCREATED1", DARKGRAY
     StaticText "$ZCHECKER_EVMAPMENU_LOGCREATED2", DARKGRAY
     StaticText " "
-	Option "$ZCHECKER_EVMAPMENU_FORCEUSE", "mcm_zchecker_ev_forcemap", "YesNo"
+	Option "$ZCHECKER_EVMAPMENU_FORCEUSE", "lldm_zcev_forcemap", "YesNo"
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC1", DARKGRAY
     StaticText "$ZCHECKER_EVMAPMENU_ALLOWSPEC2", DARKGRAY
 	StaticText " "

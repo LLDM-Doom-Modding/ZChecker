@@ -10,7 +10,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	int printSecFlagsMode, printSecHeightsMode;
 
 	override void OnCreate_play( void ) {
-		optionCVarName = "mcm_zchecker_info_geomsectors";
+		optionCVarName = "lldm_zcpanel_geomsectors";
 		optionLabel = "$ZCHECKER_INFOPANELS_GEOMSECTORS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_GEOMSECTORS";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
@@ -265,17 +265,17 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		outinfo = "";
 		infothing = thing;
 
-		bool differFloorCeilSectors = CVar.GetCVar( "mcm_zchecker_infovar_geomsecdiffers", players[ consoleplayer ] ).GetBool();
+		bool differFloorCeilSectors = CVar.GetCVar( "lldm_zcpanel_var_geomsecdiffers", players[ consoleplayer ] ).GetBool();
 
-		printSecHeightsMode = CVar.GetCVar( "mcm_zchecker_infovar_geomsecheights", players[ consoleplayer ] ).GetInt();
-		printSecLights = CVar.GetCVar( "mcm_zchecker_infovar_geomseclight", players[ consoleplayer ] ).GetBool();
-		printSecFlagsMode = CVar.GetCVar( "mcm_zchecker_infovar_geomsecflags", players[ consoleplayer ] ).GetInt();
-		printSecTextures = CVar.GetCVar( "mcm_zchecker_infovar_geomsectex", players[ consoleplayer ] ).GetBool();
-		printSecDamage = CVar.GetCVar( "mcm_zchecker_infovar_geomsecdamage", players[ consoleplayer ] ).GetBool();
-		printSecPortal = CVar.GetCVar( "mcm_zchecker_infovar_geomsecportal", players[ consoleplayer ] ).GetBool();
-		printSecInteraction = CVar.GetCVar( "mcm_zchecker_infovar_geomsecphysics", players[ consoleplayer ] ).GetBool();
-		printSecTerrain = CVar.GetCVar( "mcm_zchecker_infovar_geomsecterrain", players[ consoleplayer ] ).GetBool();
-		printSecOther = CVar.GetCVar( "mcm_zchecker_infovar_geomsecother", players[ consoleplayer ] ).GetBool();
+		printSecHeightsMode = CVar.GetCVar( "lldm_zcpanel_var_geomsecheights", players[ consoleplayer ] ).GetInt();
+		printSecLights = CVar.GetCVar( "lldm_zcpanel_var_geomseclight", players[ consoleplayer ] ).GetBool();
+		printSecFlagsMode = CVar.GetCVar( "lldm_zcpanel_var_geomsecflags", players[ consoleplayer ] ).GetInt();
+		printSecTextures = CVar.GetCVar( "lldm_zcpanel_var_geomsectex", players[ consoleplayer ] ).GetBool();
+		printSecDamage = CVar.GetCVar( "lldm_zcpanel_var_geomsecdamage", players[ consoleplayer ] ).GetBool();
+		printSecPortal = CVar.GetCVar( "lldm_zcpanel_var_geomsecportal", players[ consoleplayer ] ).GetBool();
+		printSecInteraction = CVar.GetCVar( "lldm_zcpanel_var_geomsecphysics", players[ consoleplayer ] ).GetBool();
+		printSecTerrain = CVar.GetCVar( "lldm_zcpanel_var_geomsecterrain", players[ consoleplayer ] ).GetBool();
+		printSecOther = CVar.GetCVar( "lldm_zcpanel_var_geomsecother", players[ consoleplayer ] ).GetBool();
 
 		if ( differFloorCeilSectors ) {
 			if ( thing.cursector != thing.floorsector && thing.cursector != thing.ceilingsector ) {
@@ -400,7 +400,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 
 class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {
-		optionCVarName = "mcm_zchecker_info_geomlines";
+		optionCVarName = "lldm_zcpanel_geomlines";
 		optionLabel = "$ZCHECKER_INFOPANELS_GEOMLINES";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_GEOMLINES";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_geomlines";

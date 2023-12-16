@@ -2,7 +2,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 	Actor testeething;
 
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_mainpointers";
+		optionCVarName = "lldm_zcpanel_mainpointers";
 		optionLabel = "$ZCHECKER_INFOPANELS_PTRCOMMON";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTRCOMMON";
 	}
@@ -66,7 +66,7 @@ class ZCCommonPointersInfoPanel: ZCBaseInfoPanelPart {
 
 class ZCInteractionPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 	override void OnCreate_play( void ) {
-		optionCVarName = "mcm_zchecker_info_levelpointers";
+		optionCVarName = "lldm_zcpanel_levelpointers";
 		optionLabel = "$ZCHECKER_INFOPANELS_PTRINTERACT";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTRINTERACT";
 	}
@@ -85,7 +85,7 @@ class ZCInteractionPointersInfoPanel: ZCBaseInfoPanelPart_PlayScope {
 
 class ZCDeferredLinksPointersInfoPanel: ZCCommonPointersInfoPanel {
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_dfrlinkpointers";
+		optionCVarName = "lldm_zcpanel_dfrlinkpointers";
 		optionLabel = "$ZCHECKER_INFOPANELS_PTRDEFLINKS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTRDEFLINKS";
 	}
@@ -103,7 +103,7 @@ class ZCDeferredLinksPointersInfoPanel: ZCCommonPointersInfoPanel {
 
 class ZCOtherPointersInfoPanel: ZCCommonPointersInfoPanel {
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_otherpointers";
+		optionCVarName = "lldm_zcpanel_otherpointers";
 		optionLabel = "$ZCHECKER_INFOPANELS_PTROTHER";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_PTROTHER";
 	}

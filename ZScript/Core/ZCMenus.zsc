@@ -474,7 +474,7 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 		if ( mCVar ) {
 			outval = mCVar.GetInt();
 
-			if ( outval >= 0xFF )
+			if ( outval >= 0xFFFF )
 				outval = getvalueAllEnabled();
 		}
 
@@ -486,7 +486,7 @@ class ZCOptionMenuItemInfopanel: OptionMenuItemOptionBase {
 			int const_AllEnabled = getvalueAllEnabled();
 
 			if ( selection >= const_AllEnabled )
-				selection = 0xFF;
+				selection = 0xFFFF;
 			else
 				selection = clamp( selection, const_AllDisabled, const_AllEnabled );
 

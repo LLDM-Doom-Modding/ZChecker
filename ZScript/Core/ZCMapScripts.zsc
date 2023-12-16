@@ -336,22 +336,22 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		} // of for ( int i = 0; i < S__Quantity; i++ ) {}
 
 
-		bool spawnReplaced = CVar.FindCVar( "mcm_zchecker_ev_spawnreplaced" ).GetBool();
-		bool spawnBuiltinActors = CVar.FindCVar( "mcm_zchecker_ev_spawnbuiltin" ).GetBool();
-		bool skipRestrictedReplacements = CVar.FindCVar( "mcm_zchecker_ev_restrictreplacements" ).GetBool();
+		bool spawnReplaced = CVar.FindCVar( "lldm_zcev_spawnreplaced" ).GetBool();
+		bool spawnBuiltinActors = CVar.FindCVar( "lldm_zcev_spawnbuiltin" ).GetBool();
+		bool skipRestrictedReplacements = CVar.FindCVar( "lldm_zcev_restrictreplacements" ).GetBool();
 
-		bool spawnStealth = CVar.FindCVar( "mcm_zchecker_ev_spawnstealth" ).GetBool();
-		bool spawnInvis = CVar.FindCVar( "mcm_zchecker_ev_spawninvisible" ).GetBool();
-		bool spawnPlayerChunks = CVar.FindCVar( "mcm_zchecker_ev_spawnplrchunks" ).GetBool();
-		bool spawnBossBrain = CVar.FindCVar( "mcm_zchecker_ev_spawnbossbrains" ).GetBool();
-		bool spawnMissiles = CVar.FindCVar( "mcm_zchecker_ev_spawnmissiles" ).GetBool();
+		bool spawnStealth = CVar.FindCVar( "lldm_zcev_spawnstealth" ).GetBool();
+		bool spawnInvis = CVar.FindCVar( "lldm_zcev_spawninvisible" ).GetBool();
+		bool spawnPlayerChunks = CVar.FindCVar( "lldm_zcev_spawnplrchunks" ).GetBool();
+		bool spawnBossBrain = CVar.FindCVar( "lldm_zcev_spawnbossbrains" ).GetBool();
+		bool spawnMissiles = CVar.FindCVar( "lldm_zcev_spawnmissiles" ).GetBool();
 
-		bool spawnCorruptedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawncorruptedsprites" ).GetBool();
-		bool spawnTNT1A0 = CVar.FindCVar( "mcm_zchecker_ev_spawntnt1a0" ).GetBool();
-		bool spawnMissedSprites = CVar.FindCVar( "mcm_zchecker_ev_spawnmissingsprites" ).GetBool();
+		bool spawnCorruptedSprites = CVar.FindCVar( "lldm_zcev_spawncorruptedsprites" ).GetBool();
+		bool spawnTNT1A0 = CVar.FindCVar( "lldm_zcev_spawntnt1a0" ).GetBool();
+		bool spawnMissedSprites = CVar.FindCVar( "lldm_zcev_spawnmissingsprites" ).GetBool();
 
 		int spriteTNT1A0 = Actor.GetSpriteIndex( "TNT1A0" );
-		logSpawnInfo = CVar.FindCVar( "mcm_zchecker_ev_logspawninfo" ).GetBool();
+		logSpawnInfo = CVar.FindCVar( "lldm_zcev_logspawninfo" ).GetBool();
 
 		embeddedClassesRecreating = true;
 
@@ -663,14 +663,14 @@ class ZCheckerEverythingMapHandler: EventHandler {
 		if ( ZCGlobal.IsEverythingLevel() ) {
 			PlayerInfo pl = players[ e.PlayerNumber ];
 
-			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_notarget", pl ).GetBool() ) {
+			if ( CVar.GetCVar( "lldm_zcev_auto_notarget", pl ).GetBool() ) {
 				pl.cheats |= CF_NOTARGET;
 
 				if ( e.PlayerNumber == consoleplayer )
 					ZCGlobal.Log( LL_Main, "$EVMAP_AUTONOTARGET" );
 			}
 
-			if ( CVar.GetCVar( "mcm_zchecker_ev_auto_iddqd", pl ).GetBool() ) {
+			if ( CVar.GetCVar( "lldm_zcev_auto_iddqd", pl ).GetBool() ) {
 				pl.cheats |= CF_GODMODE;
 
 				if ( e.PlayerNumber == consoleplayer )
@@ -771,9 +771,9 @@ class ZCheckerEverythingMapHandler: EventHandler {
 			return;
 
 		if ( !configuration.infostrScaleCVar ) {
-			configuration.infostrXCenterCVar = CVar.GetCVar( "mcm_zchecker_ev_infostr_centerx", players[ consoleplayer ] );
-			configuration.infostrYCenterCVar = CVar.GetCVar( "mcm_zchecker_ev_infostr_centery", players[ consoleplayer ] );
-			configuration.infostrScaleCVar = CVar.GetCVar( "mcm_zchecker_ev_infostr_scale", players[ consoleplayer ] );
+			configuration.infostrXCenterCVar = CVar.GetCVar( "lldm_zc_evinfostr_centerx", players[ consoleplayer ] );
+			configuration.infostrYCenterCVar = CVar.GetCVar( "lldm_zc_evinfostr_centery", players[ consoleplayer ] );
+			configuration.infostrScaleCVar = CVar.GetCVar( "lldm_zc_evinfostr_scale", players[ consoleplayer ] );
 		}
 
 		double infostrXCenter = configuration.infostrXCenterCVar.GetFloat() / 100.0;

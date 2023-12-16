@@ -42,16 +42,16 @@ extend class ZCheckerHandler {
 		if ( !datascoped.infopanelStartXCVar ) {
 			PlayerInfo pl = players[ consoleplayer ];
 
-			datascoped.infopanelStartXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_startx", pl );
-			datascoped.infopanelStartYCVar = CVar.GetCVar( "mcm_zchecker_infopanel_starty", pl );
-			datascoped.infopanelScaleCVar = CVar.GetCVar( "mcm_zchecker_infopanel_scale", pl );
-			datascoped.infopanelOffsetXCVar = CVar.GetCVar( "mcm_zchecker_infopanel_offsetx", pl );
-			datascoped.infopanelPartsSpaceYCVar = CVar.GetCVar( "mcm_zchecker_infopanelparts_y_gap", pl );
+			datascoped.infopanelStartXCVar = CVar.GetCVar( "lldm_zc_infopanel_startx", pl );
+			datascoped.infopanelStartYCVar = CVar.GetCVar( "lldm_zc_infopanel_starty", pl );
+			datascoped.infopanelScaleCVar = CVar.GetCVar( "lldm_zc_infopanel_scale", pl );
+			datascoped.infopanelOffsetXCVar = CVar.GetCVar( "lldm_zc_infopanel_offsetx", pl );
+			datascoped.infopanelPartsSpaceYCVar = CVar.GetCVar( "lldm_zc_infopanelparts_y_gap", pl );
 
-			datascoped.infopanelDimEnabledCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimenabled", pl );
-			datascoped.infopanelDimColorCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimcolor", pl );
-			datascoped.infopanelDimAlphaCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimalpha", pl );
-			datascoped.infopanelDimBorderWidthCVar = CVar.GetCVar( "mcm_zchecker_infopanel_dimborderwidth", pl );
+			datascoped.infopanelDimEnabledCVar = CVar.GetCVar( "lldm_zc_infopanel_dimenabled", pl );
+			datascoped.infopanelDimColorCVar = CVar.GetCVar( "lldm_zc_infopanel_dimcolor", pl );
+			datascoped.infopanelDimAlphaCVar = CVar.GetCVar( "lldm_zc_infopanel_dimalpha", pl );
+			datascoped.infopanelDimBorderWidthCVar = CVar.GetCVar( "lldm_zc_infopanel_dimborderwidth", pl );
 		}
 
 		double infopanelStartX = datascoped.infopanelStartXCVar.GetFloat();

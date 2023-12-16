@@ -16,7 +16,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 
 
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_inventory";
+		optionCVarName = "lldm_zcpanel_inventory";
 		optionLabel = "$ZCHECKER_INFOPANELS_INVENTORY";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_INVENTORY";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_inventory";
@@ -42,9 +42,9 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		//interpretation of obtaining/losing inventory isn't ready yet...
 
 
-		uint cellsAmountOption = CVar.GetCVar( "mcm_zchecker_infovar_invamount", players[ consoleplayer ] ).GetInt();
-		uint sortTypeOption = CVar.GetCVar( "mcm_zchecker_infovar_invsorttype", players[ consoleplayer ] ).GetInt();
-		bool sortReverseOption = CVar.GetCVar( "mcm_zchecker_infovar_invsortascend", players[ consoleplayer ] ).GetBool();
+		uint cellsAmountOption = CVar.GetCVar( "lldm_zcpanel_var_invamount", players[ consoleplayer ] ).GetInt();
+		uint sortTypeOption = CVar.GetCVar( "lldm_zcpanel_var_invsorttype", players[ consoleplayer ] ).GetInt();
+		bool sortReverseOption = CVar.GetCVar( "lldm_zcpanel_var_invsortascend", players[ consoleplayer ] ).GetBool();
 
 		// Reiniting a quicksort keeper:
 		if ( !qsort || ( sortPrevTypeOption != sortTypeOption && sortTypeOption != ZCInventoryQuicksort.QST_None ) ) {
@@ -198,7 +198,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_states";
+		optionCVarName = "lldm_zcpanel_states";
 		optionLabel = "$ZCHECKER_INFOPANELS_STATES";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_STATES";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_states";
@@ -342,13 +342,13 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		Array<String> prevstatesstr;
 
 		if ( !statesAmountCVar ) {
-			statesAmountCVar = CVar.GetCVar( "mcm_zchecker_infovar_statesamount", players[ consoleplayer ] );
-			statesLoggingCVar = CVar.GetCVar( "mcm_zchecker_infovar_stateslogging", players[ consoleplayer ] );
-			stateTicsCVar = CVar.GetCVar( "mcm_zchecker_infovar_statetic", players[ consoleplayer ] );
-			stateFlagsCVar = CVar.GetCVar( "mcm_zchecker_infovar_stateflags", players[ consoleplayer ] );
-			stateExtraInfoCVar = CVar.GetCVar( "mcm_zchecker_infovar_stateextras", players[ consoleplayer ] );
-			pspriteOverlaysModeCVar = CVar.GetCVar( "mcm_zchecker_infovar_statepsprlayersmode", players[ consoleplayer ] );
-			pspriteExtraOverlayIDCVar = CVar.GetCVar( "mcm_zchecker_infovar_statepsprlayerid", players[ consoleplayer ] );
+			statesAmountCVar = CVar.GetCVar( "lldm_zcpanel_var_statesamount", players[ consoleplayer ] );
+			statesLoggingCVar = CVar.GetCVar( "lldm_zcpanel_var_stateslogging", players[ consoleplayer ] );
+			stateTicsCVar = CVar.GetCVar( "lldm_zcpanel_var_statetic", players[ consoleplayer ] );
+			stateFlagsCVar = CVar.GetCVar( "lldm_zcpanel_var_stateflags", players[ consoleplayer ] );
+			stateExtraInfoCVar = CVar.GetCVar( "lldm_zcpanel_var_stateextras", players[ consoleplayer ] );
+			pspriteOverlaysModeCVar = CVar.GetCVar( "lldm_zcpanel_var_statepsprlayersmode", players[ consoleplayer ] );
+			pspriteExtraOverlayIDCVar = CVar.GetCVar( "lldm_zcpanel_var_statepsprlayerid", players[ consoleplayer ] );
 		}
 
 		uint statesAmount = statesAmountCVar.GetInt();
@@ -588,7 +588,7 @@ class ZCSpritesInfoPanel: ZCBaseInfoPanelPart {
 	};
 
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_visual";
+		optionCVarName = "lldm_zcpanel_visual";
 		optionLabel = "$ZCHECKER_INFOPANELS_VISUAL";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_VISUAL";
 	}

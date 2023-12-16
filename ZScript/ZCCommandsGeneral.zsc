@@ -151,7 +151,7 @@ class ZCAddCommand: ZCConsoleCommand {
 	// - Returns "newSupposedPlace" if no duplicates found.
 	static int HandleDuplicateActorFields( ZCheckerCCMDInfo fccmd, Actor testthing, int newSupposedPlace ) {
 		int newplace = newSupposedPlace;
-		int sameActorBehaviourSetting = CVar.GetCVar( "mcm_zchecker_zcadd_sameactor_behaviour" ).GetInt();
+		int sameActorBehaviourSetting = CVar.GetCVar( "lldm_zc_zcadd_sameactor_behaviour" ).GetInt();
 
 		bool isFirstDup = false;
 

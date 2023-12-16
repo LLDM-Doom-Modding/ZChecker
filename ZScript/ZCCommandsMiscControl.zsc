@@ -393,7 +393,7 @@ class ZCVariablesControlCommand: ZCConsoleCommand {
 
 class ZCExternalInterfaceCommand: ZCConsoleCommand {
 	transient CVar interfaceCVar;
-	const const_interfaceCVarName = "mcm_zchecker_var_interface";
+	const const_interfaceCVarName = "lldm_zcexternal";
 
 	enum EInterfaceControlTypes {
 		ICT_Error = 0,

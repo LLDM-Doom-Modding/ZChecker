@@ -1029,7 +1029,7 @@ class ZCBaseInfoPanelPart abstract {
 	/* API section */
 
 	virtual void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_...";
+		optionCVarName = "lldm_zc_info_...";
 		optionLabel = "<" .. GetClassName() .. ">";
 		optionSubmenuName = "";
 		optionLabelExtraHotkeys = "";

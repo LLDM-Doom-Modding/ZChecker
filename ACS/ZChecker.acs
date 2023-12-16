@@ -39,21 +39,21 @@ script "ZChecker_CCMD_SetFlag" ( int setType ) {
 // https://forum.zdoom.org/viewtopic.php?f=2&t=62501
 //  [McM]: suddenly CVar name + CVar value cannot store more than 254 symbols.
 script "ZChecker_SetUserCVarStringMeta" ( int playernum ) {
-	str cvarname = GetUserCVarString( playernum, "mcm_zchecker_internal_metastring" );
+	str cvarname = GetUserCVarString( playernum, "lldm_zcinternal_metastring" );
 	str data = GetUserCVarString( playernum, cvarname );
 
     SetUserCVarString( playernum, cvarname, data );
 }
 
 script "ZChecker_SetInfopanelPartCVar" ( int playernum, int infopanelPart ) {
-	str cvarname = StrParam( s:"mcm_zchecker_infopanelsorder_part", i:infopanelPart );
+	str cvarname = StrParam( s:"lldm_zcinternal_panelsorder_part", i:infopanelPart );
 	str data = GetUserCVarString( playernum, cvarname );
 
 	SetUserCVarString( playernum, cvarname, data );
 }
 
 script "ZChecker_SetExternalInterfaceCVar" ( int playernum ) {
-	str cvarname = "mcm_zchecker_var_interface";
+	str cvarname = "lldm_zcexternal";
 	int data = GetUserCVar( playernum, cvarname );
 
 	SetUserCVar( playernum, cvarname, data );

@@ -180,7 +180,7 @@ class ZCheckerHandler: StaticEventHandler {
 			ZCGlobal.ClearscopeLog( LL_Debug, debugstr );
 		}
 
-		int interceptNeteventsMode = clamp( CVar.GetCVar( "mcm_zchecker_specinfo_netevents", players[ e.Player ] ).GetInt(), 0, 3 );
+		int interceptNeteventsMode = clamp( CVar.GetCVar( "lldm_zc_specinfo_netevents", players[ e.Player ] ).GetInt(), 0, 3 );
 		int nonblockingCommandsAmount = 0;
 
 		// Polling ZChecker CCMD handlers by stored netevent name:

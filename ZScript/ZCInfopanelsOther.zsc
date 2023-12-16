@@ -1,6 +1,6 @@
 class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_args";
+		optionCVarName = "lldm_zcpanel_args";
 		optionLabel = "$ZCHECKER_INFOPANELS_ARGSTIDS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_ARGSTIDS";
 	}
@@ -21,7 +21,7 @@ class ZCSpecialsArgsInfoPanel: ZCBaseInfoPanelPart {
 
 class ZCFriendPlayersInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_players";
+		optionCVarName = "lldm_zcpanel_players";
 		optionLabel = "$ZCHECKER_INFOPANELS_FRIENDPLAYERS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_FRIENDPLAYERS";
 	}
@@ -83,7 +83,7 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 
 	override void OnCreate( void ) 
 	{
-		optionCVarName = "mcm_zchecker_info_sounddefs";
+		optionCVarName = "lldm_zcpanel_sounddefs";
 		optionLabel = "$ZCHECKER_INFOPANELS_SOUNDDEFS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_SOUNDDEFS";
 		optionSubmenuName = "mcm_ZCheckerSubmenu_sound";
@@ -102,7 +102,7 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 	{
 		String info = "";
 		
-		int soundsVariantModeExtra = CVar.GetCVar( "mcm_zchecker_infovar_soundsrare", players[ consoleplayer ] ).GetInt();
+		int soundsVariantModeExtra = CVar.GetCVar( "lldm_zcpanel_var_soundsrare", players[ consoleplayer ] ).GetInt();
 
 		info = info .. TEXTCOLOR_WHITE .. "Sounds:";
 		info = info .. TEXTCOLOR_RED .. "\n Attack: " .. TEXTCOLOR_ORANGE .. FormatSoundName(Thing.AttackSound);
@@ -130,7 +130,7 @@ class ZCCheatsInfoPanel: ZCBaseInfoPanelPart {
 	// [McM] This class is being developed by @InfernalSky, so I decided not to alter it heavily.
 
 	override void OnCreate( void ) {
-		optionCVarName = "mcm_zchecker_info_cheatsdefs";
+		optionCVarName = "lldm_zcpanel_cheatsdefs";
 		optionLabel = "$ZCHECKER_INFOPANELS_CHEATS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_CHEATS";
 	}

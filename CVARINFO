@@ -1,142 +1,146 @@
-// Common console variables.
-server int mcm_zchecker_loglevel = 2;
-server bool mcm_zchecker_allowdangerccmds = false;
-server bool mcm_zchecker_internalclasses_nospecialhandling = false;
+//
+/* Common console variables. */
+//
+server int lldm_zc_loglevel = 2;
+server bool lldm_zc_allowdangerccmds = false;
+server bool lldm_zc_internalclasses_rawhandling = false;
 
-server int mcm_zchecker_zcadd_sameactor_behaviour = 2;
+server int lldm_zc_zcadd_sameactor_behaviour = 2; // "Copy/Move silently", "Copy/Move with warning".
 
-user   int mcm_zchecker_specinfo_netevents	= 0; // "Disabled", "Name and args", "Name, args and maptime", "All information".
-
-
-// Interfaces.
-user noarchive int mcm_zchecker_var_interface; // External interface, for the user aliases. Will be in the "nosave" scope in a non-compatible ZChecker version.
-
-user noarchive string mcm_zchecker_internal_metastring; // Internal string for the API between ZScript and ACS.
+user   int lldm_zc_specinfo_netevents = 0; // "Disabled", "Name and args", "Name, args and maptime", "All information".
 
 
-// Common variables which are not used right now.
-//user int mcm_zchecker_min_sectorslines_tag	= 1;
-//user int mcm_zchecker_max_sectorslines_tag	= 700;
+//
+/* Interfaces. */
+//
+user noarchive int lldm_zcexternal; // External interface, for the user aliases. Maybe will have a "nosave" scope in a non-compatible ZChecker version.
+
+user noarchive string lldm_zcinternal_metastring; // Internal string for the API between ZScript and ACS.
 
 
-// General information panel variables.
-user float mcm_zchecker_infopanel_startx	= 8.0;
-user float mcm_zchecker_infopanel_starty	= 8.0;
-user float mcm_zchecker_infopanel_offsetx	= 30.0;
-user float mcm_zchecker_infopanel_scale		= 1.0;
-user float mcm_zchecker_infopanelparts_y_gap= 0.55;
-user int mcm_zchecker_infopanel_fonttype	= 0;
+//
+/* General information panel variables. */
+//
+user float lldm_zc_infopanel_startx	= 8.0;
+user float lldm_zc_infopanel_starty	= 8.0;
+user float lldm_zc_infopanel_offsetx	= 30.0;
+user float lldm_zc_infopanel_scale		= 1.0;
+user float lldm_zc_infopanelparts_y_gap= 0.55;
+user int lldm_zc_infopanel_fonttype	= 0;
 
-user bool mcm_zchecker_infopanel_dimenabled		= true;
-user color mcm_zchecker_infopanel_dimcolor		= "00 00 00";
-user float mcm_zchecker_infopanel_dimalpha		= 0.5;
-user float mcm_zchecker_infopanel_dimborderwidth= 0.5;
+user bool lldm_zc_infopanel_dimenabled		= true;
+user color lldm_zc_infopanel_dimcolor		= "00 00 00";
+user float lldm_zc_infopanel_dimalpha		= 0.5;
+user float lldm_zc_infopanel_dimborderwidth= 0.5;
 
 // The Everything map actor infostring CVars.
-user float mcm_zchecker_ev_infostr_centerx	= 50.0;
-user float mcm_zchecker_ev_infostr_centery	= 5.0;
-user float mcm_zchecker_ev_infostr_scale	= 1.0;
+user float lldm_zc_evinfostr_centerx	= 50.0;
+user float lldm_zc_evinfostr_centery	= 5.0;
+user float lldm_zc_evinfostr_scale	= 1.0;
 
 // Awful decision, but user-scoped string CVar cannot contain more than 255 
-//characters... Scope must be changed to "nosave" in non-compatible branch, 
+//characters... Scope might be changed to "nosave" in non-compatible branch, 
 //because nosave-CVars may store strings of unlimited length.
-user string mcm_zchecker_infopanelsorder_part0;
-user string mcm_zchecker_infopanelsorder_part1;
-user string mcm_zchecker_infopanelsorder_part2;
-user string mcm_zchecker_infopanelsorder_part3;
-user string mcm_zchecker_infopanelsorder_part4;
-user string mcm_zchecker_infopanelsorder_part5;
-user string mcm_zchecker_infopanelsorder_part6;
-user string mcm_zchecker_infopanelsorder_part7;
-user string mcm_zchecker_infopanelsorder_part8;
-user string mcm_zchecker_infopanelsorder_part9;
+user string lldm_zcinternal_panelsorder_part0;
+user string lldm_zcinternal_panelsorder_part1;
+user string lldm_zcinternal_panelsorder_part2;
+user string lldm_zcinternal_panelsorder_part3;
+user string lldm_zcinternal_panelsorder_part4;
+user string lldm_zcinternal_panelsorder_part5;
+user string lldm_zcinternal_panelsorder_part6;
+user string lldm_zcinternal_panelsorder_part7;
+user string lldm_zcinternal_panelsorder_part8;
+user string lldm_zcinternal_panelsorder_part9;
 
 
 
-// Information panel parts settings.
-user int  mcm_zchecker_info_main			= 0xFF;	 // Classname, pointer.
-user int  mcm_zchecker_infovar_maintags		= 2;	 //  \_ "Never", "If different from classname", "Always".
-user bool mcm_zchecker_infovar_mainselfptr	= false; //  \_ Pointer "self".
-user bool mcm_zchecker_infovar_mainplayers	= false; //  \_ Player information.
+//
+/* Information panel parts settings. */
+//
+user int  lldm_zcpanel_main				 = 0xFFFF;	// Classname, pointer.
+user int  lldm_zcpanel_var_maintags		 = 2;		//  \_ "Never", "If different from classname", "Always".
+user bool lldm_zcpanel_var_mainselfptr	 = false;	//  \_ Pointer "self".
+user bool lldm_zcpanel_var_mainplayers	 = false;	//  \_ Player information.
 
-user int  mcm_zchecker_info_worldpos		= 0xFF;	 // Tilts, position, velocity.
-user int  mcm_zchecker_infovar_wpostiltdcma	= 2;	 //  \_ Tilts decimals amount.
-user bool mcm_zchecker_infovar_wposnoroll 	= false; //  \_ Remove roll tilt displaying.
-user bool mcm_zchecker_infovar_wposplbuttons= false; //  \_ Show player buttons.
+user int  lldm_zcpanel_worldpos			 = 0xFFFF;	// Tilts, position, velocity.
+user int  lldm_zcpanel_var_wpostiltdcma	 = 2;		//  \_ Tilts decimals amount.
+user bool lldm_zcpanel_var_wposnoroll 	 = false;	//  \_ Remove roll tilt displaying.
+user bool lldm_zcpanel_var_wposplbuttons = false;	//  \_ Show player buttons.
 
-user int  mcm_zchecker_info_maininteract	= 0xFF;	 // Health, mass, etc.
+user int  lldm_zcpanel_maininteract		 = 0xFFFF;	// Health, mass, etc.
 
-user int  mcm_zchecker_info_geomsectors		= 0x00;	 // Sectors linked to the actor.
-user bool mcm_zchecker_infovar_geomsecdiffers = false;// \_ Show "floorsector"/"ceilingsector" only if they differs from the "cursector".
-user bool mcm_zchecker_infovar_geomseclight	= true;	 //  \_ Sector light level.
-user int  mcm_zchecker_infovar_geomsecflags	= 0;	 //  \_ Sector flags: "Disabled", "Short names", "Long names".
-user int  mcm_zchecker_infovar_geomsecheights = 1;	 //  \_ "Off", "Heights", "Heights & delta to actor".
-user bool mcm_zchecker_infovar_geomsectex	= false; //  \_ Sector textures.
-user bool mcm_zchecker_infovar_geomsecdamage= false; //  \_ Sector damage (also for terrain).
-user bool mcm_zchecker_infovar_geomsecphysics = false;// \_ Sector interactions: friction, movefactor, gravity.
-user bool mcm_zchecker_infovar_geomsecportal= false; //  \_ Sector portal info.
-user bool mcm_zchecker_infovar_geomsecterrain = false;// \_ Shows floorsector terrain, if any.
-user bool mcm_zchecker_infovar_geomsecother	= false; //  \_ Other sector info (special, ...).
+user int  lldm_zcpanel_geomsectors		 = 0x00;	// Sectors linked to the actor.
+user bool lldm_zcpanel_var_geomsecdiffers= false;	//  \_ Show "floorsector"/"ceilingsector" only if they differs from the "cursector".
+user bool lldm_zcpanel_var_geomseclight	 = true;	//  \_ Sector light level.
+user int  lldm_zcpanel_var_geomsecflags	 = 0;		//  \_ Sector flags: "Disabled", "Short names", "Long names".
+user int  lldm_zcpanel_var_geomsecheights= 1;		//  \_ "Off", "Heights", "Heights & delta to actor".
+user bool lldm_zcpanel_var_geomsectex	 = false;	//  \_ Sector textures.
+user bool lldm_zcpanel_var_geomsecdamage = false;	//  \_ Sector damage (also for terrain).
+user bool lldm_zcpanel_var_geomsecphysics= false;	//  \_ Sector interactions: friction, movefactor, gravity.
+user bool lldm_zcpanel_var_geomsecportal = false;	//  \_ Sector portal info.
+user bool lldm_zcpanel_var_geomsecterrain= false;	//  \_ Shows floorsector terrain, if any.
+user bool lldm_zcpanel_var_geomsecother  = false;	//  \_ Other sector info (special, ...).
 // Something about sector normals?
 
-user int  mcm_zchecker_info_geomlines		= 0x00;	 // Lines linked to the actor.
-user int  mcm_zchecker_infovar_geomlinetype	= 1;	 //  \_ "On line of sight", "Blocking line", "Both" (a mask).
-user int  mcm_zchecker_infovar_geomlnmain	= 0;	 //  \_ Length and flags: "Disabled", "Short names", "Long names".
-user bool mcm_zchecker_infovar_geomlntex	= true;	 //  \_ Line textures.
-user int  mcm_zchecker_infovar_geomlnaction	= 1;	 //  \_ Line action info: "Disabled", "Action & tag", "Action, args & tag", "Everything".
-user bool mcm_zchecker_infovar_geomlnportal	= false; //  \_ Line portal info.
+user int  lldm_zcpanel_geomlines		= 0x00;		// Lines linked to the actor.
+user int  lldm_zcpanel_var_geomlinetype	= 1;		//  \_ "On line of sight", "Blocking line", "Both" (a mask).
+user int  lldm_zcpanel_var_geomlnmain	= 0;		//  \_ Length and flags: "Disabled", "Short names", "Long names".
+user bool lldm_zcpanel_var_geomlntex	= true;		//  \_ Line textures.
+user int  lldm_zcpanel_var_geomlnaction	= 1;		//  \_ Line action info: "Disabled", "Action & tag", "Action, args & tag", "Everything".
+user bool lldm_zcpanel_var_geomlnportal	= false;	//  \_ Line portal info.
 
-user int  mcm_zchecker_info_inventory		= 0xFF;	 // Inventory.
-user int  mcm_zchecker_infovar_invamount	= 40;    //  \_ Maximal amount of elements in output.
-user int  mcm_zchecker_infovar_invsorttype	= 0;	 //  \_ Sorting type: "Unsorted", "By names", "By amount", "By max amount".
-user bool mcm_zchecker_infovar_invsortascend= false; //  \_ Descending (false) or ascending (true) order.
+user int  lldm_zcpanel_inventory		= 0xFFFF;	// Inventory.
+user int  lldm_zcpanel_var_invamount	= 40;		//  \_ Maximal amount of elements in output.
+user int  lldm_zcpanel_var_invsorttype	= 0;		//  \_ Sorting type: "Unsorted", "By names", "By amount", "By max amount".
+user bool lldm_zcpanel_var_invsortascend= false; 	//  \_ Descending (false) or ascending (true) order.
 
-user int  mcm_zchecker_info_states			= 0xFF;	 // States and frames.
-user int  mcm_zchecker_infovar_statesamount	= 11;	 //  \_ Amount of states: "Unlimited", 1, 2, ..., 25.
-user bool mcm_zchecker_infovar_statetic 	= true;	 //  \_ Current state tic information.
-user int  mcm_zchecker_infovar_stateflags 	= 0;	 //  \_ Current state flags: "Disabled", "Short names", "Long names".
-user bool mcm_zchecker_infovar_stateextras 	= false; //  \_ Current state extra information (TicRange, state scope, PSprite X/Y, etc.).
-//user int  mcm_zchecker_infovar_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays".
-//user string mcm_zchecker_infovar_statepsprlayerid="1001";//  \_ Current PSprite special layer.
-user bool mcm_zchecker_infovar_stateslogging= false; //  \_ States logging.
+user int  lldm_zcpanel_states			= 0xFFFF;	// States and frames.
+user int  lldm_zcpanel_var_statesamount	= 11;		//  \_ Amount of states: "Unlimited", 1, 2, ..., 25.
+user bool lldm_zcpanel_var_statetic		= true;		//  \_ Current state tic information.
+user int  lldm_zcpanel_var_stateflags 	= 0;		//  \_ Current state flags: "Disabled", "Short names", "Long names".
+user bool lldm_zcpanel_var_stateextras 	= false;	//  \_ Current state extra information (TicRange, state scope, PSprite X/Y, etc.).
+//user int  lldm_zcpanel_var_statepsprlayersmode= 2;//  \_ Current PSprite layers/overlays output: "Disabled", "Main only", "Main + flash", "Special only", "Main + special", "All overlays".
+//user string lldm_zcpanel_var_statepsprlayerid="1001";//  \_ Current PSprite special layer.
+user bool lldm_zcpanel_var_stateslogging = false;	//  \_ States logging.
 
-user int  mcm_zchecker_info_visual			= 0x00;	 // Sprite, alpha, RenderStyle, etc.
+user int  lldm_zcpanel_visual			= 0x00;		// Sprite, alpha, RenderStyle, etc.
 
-user int  mcm_zchecker_info_mainpointers	= 0xFF;	 // master, target, tracer.
-user int  mcm_zchecker_info_levelpointers 	= 0x00;	 // Linetarget, BlockingMobj.
-user int  mcm_zchecker_info_dfrlinkpointers	= 0x00;	 // LastHeard, LastEnemy, LastLookActor, Poisoner.
-user int  mcm_zchecker_info_otherpointers	= 0x00;	 // alternative, &inv, goal, &snext.
+user int  lldm_zcpanel_mainpointers		= 0xFFFF;	// master, target, tracer.
+user int  lldm_zcpanel_levelpointers 	= 0x0005;	// Linetarget, BlockingMobj.
+user int  lldm_zcpanel_dfrlinkpointers	= 0x00;		// LastHeard, LastEnemy, LastLookActor, Poisoner.
+user int  lldm_zcpanel_otherpointers	= 0x00;		// alternative, &inv, goal, &snext.
 
-user int  mcm_zchecker_info_args			= 0x00;	 // TIDs, arguments, special.
-user int  mcm_zchecker_info_players			= 0x00;	 // FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
+user int  lldm_zcpanel_args				= 0x00;		// TIDs, arguments, special.
+user int  lldm_zcpanel_players			= 0x00;		// FriendPlayer, DesignatedTeam, LastLookPlayerNumber, ...
 
-//user int  mcm_zchecker_info_other			= 0x00;	 // "PainThreshold", "WoundHealth", ...
+//user int  lldm_zcpanel_other			= 0x00;		// "PainThreshold", "WoundHealth", ...
 
-user int  mcm_zchecker_info_sounddefs		= 0x00;
-user bool mcm_zchecker_infovar_soundsrare	= true;
+user int  lldm_zcpanel_sounddefs		= 0x00;		// Static sound definitions.
+user bool lldm_zcpanel_var_soundsrare	= true;		//  \_ Also show used less frequently.
 
-user int  mcm_zchecker_info_cheatsdefs      = 0x00;
-
-
-// The "Everything" map console variables.
-server bool mcm_zchecker_ev_forcemap		= false; // Skip the Everything map check (use the code attached to it on any map).
+user int  lldm_zcpanel_cheatsdefs		= 0x0005;	// Current cheats.
 
 
-server bool mcm_zchecker_ev_spawnbuiltin			= true;
-server bool mcm_zchecker_ev_spawnreplaced			= true;
-server bool mcm_zchecker_ev_restrictreplacements	= true;
-
-server bool mcm_zchecker_ev_spawnmissingsprites		= false;
-server bool mcm_zchecker_ev_spawntnt1a0				= false;
-server bool mcm_zchecker_ev_spawncorruptedsprites	= false;
-
-server bool mcm_zchecker_ev_spawnmissiles			= true;
-server bool mcm_zchecker_ev_spawninvisible			= true;
-server bool mcm_zchecker_ev_spawnstealth			= true;
-server bool mcm_zchecker_ev_spawnplrchunks			= false;
-server bool mcm_zchecker_ev_spawnbossbrains			= false;
+//
+/* The "Everything" map console variables. */
+//
+server bool lldm_zcev_forcemap			= false;	// Skip the Everything map check (use the code attached to it on any map).
+server bool lldm_zcev_logspawninfo		= false;	// Log information to console about spawned (or skipped) actors.
+server bool lldm_zcev_auto_notarget		= true;		// Automatically set a "notarget" cheat when entering an Everything map.
+server bool lldm_zcev_auto_iddqd		= false;	// Automatically set a "god" cheat when entering an Everything map.
 
 
-server bool mcm_zchecker_ev_logspawninfo	= false;  // Log information to console about created (or skipped) actors.
-server bool mcm_zchecker_ev_auto_notarget	= true;   // Automatically set a "notarget" cheat when entering an Everything map.
-server bool mcm_zchecker_ev_auto_iddqd		= false;  // Automatically set a "god" cheat when entering an Everything map.
+server bool lldm_zcev_spawnbuiltin			= true;
+server bool lldm_zcev_spawnreplaced			= true;
+server bool lldm_zcev_restrictreplacements	= true;
+
+server bool lldm_zcev_spawnmissingsprites	= false;
+server bool lldm_zcev_spawntnt1a0			= false;
+server bool lldm_zcev_spawncorruptedsprites	= false;
+
+server bool lldm_zcev_spawnmissiles			= true;
+server bool lldm_zcev_spawninvisible		= true;
+server bool lldm_zcev_spawnstealth			= true;
+server bool lldm_zcev_spawnplrchunks		= false;
+server bool lldm_zcev_spawnbossbrains		= false;
+
