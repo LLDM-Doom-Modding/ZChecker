@@ -188,8 +188,8 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		zcForceActionListThinkers = false;
 
 
-		// Splitting action string to "command" and "flags".
-		// Yep, currently code not optimal at all.
+		// Splitting action string into "command" and "flags".
+		// Yep, current code not optimal at all.
 		Array<String> actstrSplitted;
 		actstrSplitted.Clear();
 

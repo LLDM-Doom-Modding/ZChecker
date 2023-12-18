@@ -531,6 +531,7 @@ ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for the act
   POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;\
   SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique.";
 ZCHECKER_ZCSETP_RELPLAYER             = "\c~Base actor for relative properties \c-is set to calling player\c~.";
+ZCHECKER_ZCSETP_RELNOTFOUND           = "The object from which to take properties not found.";
 ZCHECKER_ZCSETP_UNKNOWNMODE           = "\c!Unknown mode \c~\"\c-%s\c~\". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.";
 ZCHECKER_ZCSETP_NODELIMCHARS          = "\c!No delimiter character \c-(\":\" or \"=\") \c!provided \c-for property \"%s\".";
 ZCHECKER_ZCSETP_WRONGARG              = "\c!Wrong argument number \c-in parameter \"%s\"";

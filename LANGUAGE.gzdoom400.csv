@@ -537,6 +537,7 @@ unused),,,,
   УКАЗАТЕЛИ: target|tp <кто>|null, master|mp <кто>|null, tracer|trp|rp <кто>|null;
   ДРУГОЕ   : arg0..arg4 <цел>, special|action <цел>, tid <значение>|unique."
 ,,ZCHECKER_ZCSETP_RELPLAYER,\c~Base actor for relative properties \c-is set to calling player\c~.,\c~В качестве базового актора для относительных значений \c-взят вызывающий игрок\c~.
+,,ZCHECKER_ZCSETP_RELNOTFOUND,The object from which to take properties not found.,"Актор, с которого нужно получить свойства, не найден."
 ,,ZCHECKER_ZCSETP_UNKNOWNMODE,"\c!Unknown mode \c~""\c-%s\c~"". Must be empty, \c-raw\c~, \c-add\c~ or \c-rel[:<ptr>]\c~.","\c!Неизвестный режим \c~""\c-%s\c~"". Должен быть пустым, \c-raw\c~ (прямым присвоением), \c-add\c~ (добавлением к текущему) или \c-rel[:<ptr>]\c~ (относительным к другому актору)."
 ,,ZCHECKER_ZCSETP_NODELIMCHARS,"\c!No delimiter character \c-("":"" or ""="") \c!provided \c-for property ""%s"".","\c!Нет разделителя \c-("":"" или ""="") \c-для свойства ""%s""."
 ,,ZCHECKER_ZCSETP_WRONGARG,"\c!Wrong argument number \c-in parameter ""%s""","\c!Неверное числовое значение \с-в параметре ""%s"""

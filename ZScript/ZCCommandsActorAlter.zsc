@@ -737,13 +737,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 			optionstr[ 0 ] = ccmd.args[ ccmdArgsSize - 1 ];
 			optionstr[ 0 ].ToLower();
 
-			int delimIndex = optionstr[ 0 ].IndexOf( "," );
-
-			if ( delimIndex == -1 )
-				delimIndex = optionstr[ 0 ].IndexOf( "=" );
-
-			if ( delimIndex == -1 )
-				delimIndex = optionstr[ 0 ].IndexOf( ":" );
+			int delimIndex = ZCGlobal.StringIndexOfAny( optionstr[ 0 ], ",:" );
 
 			if ( delimIndex != -1 ) {
 				optionstr[ 1 ] = optionstr[ 0 ].Mid( delimIndex + 1, optionstr[ 0 ].Length() - delimIndex - 1 );
@@ -1194,33 +1188,32 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			String modeargstr = ccmd.args[ ccmdArgsSize - 2 ];
 			modeargstr.ToLower();
 
-			String modeargstrLeft2 = modeargstr.Left( 2 );
+			String modeargstrLeft3 = modeargstr.Left( 3 );
 
 			// Set mode parsing:
 			if ( modeargstr == "add" || modeargstr == "a" || modeargstr == "+" ) {
 				setmode = PSM_Add;
 
-			} else if ( modeargstr.Left( 3 ) == "rel" || modeargstr == "r" /* Dangerous but convenient. */ || modeargstrLeft2 == "r:" || modeargstrLeft2 == "r=" ) {
-				setmode = PSM_Error;
+			} else if ( modeargstrLeft3 == "rel" || modeargstr.Left( 1 ) == "r" /* Dangerous but convenient. */ ) {
+				setmode = PSM_Relative;
 
-				int delimIndex = modeargstr.IndexOf( ":" );
+				int delimIndex = ZCGlobal.StringIndexOfAny( modeargstr, ":,=" );
 
-				if ( delimIndex == -1 )
-					delimIndex = modeargstr.IndexOf( "=" );
-
-				if ( delimIndex != -1 ) {
-					String relactorstr = modeargstr.Mid( delimIndex + 1, modeargstr.Length() - delimIndex - 1 );
-
-					if ( ( testeeStatus = getPlaceTestee( relativeTo, specialstring: relactorstr ) ) > PPS_WrongPos )
-						setmode = PSM_Relative;
+				if ( delimIndex == -1 || ( modeargstr.Length() == delimIndex + 1 ) ) {
+					relativeTo = players[ ccmd.e.Player ].mo;
+					ZCGlobal.Log( LL_Detailed, "$ZCSETP_RELPLAYER" );
 
 				} else {
-					relativeTo = players[ ccmd.e.Player ].mo;
-					setmode = PSM_Relative;
-					ZCGlobal.Log( LL_Detailed, "$ZCSETP_RELPLAYER" );
+					String relactorstr = modeargstr.Mid( delimIndex + 1, modeargstr.Length() - delimIndex - 1 );
+
+					if ( getPlaceTestee( relativeTo, specialstring: relactorstr ) == PPS_Error )
+						setmode = PSM_Error;
+					else if ( !relativeTo )
+						ZCGlobal.Log( LL_Main, "$ZCSETP_RELNOTFOUND" );
 				}
 
-			} else if ( modeargstr == "raw" ) {
+
+			} else if ( modeargstr == "raw" || modeargstrLeft3 == "dir" ) {
 				setmode = PSM_Raw;
 
 			} else {
@@ -1228,21 +1221,27 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			}
 
 
-			// In general an alteree actor place parsing:
-			if ( ccmdArgsSize != 2 || setmode == PSM_Error ) {
+			// In general an alteree actor place parsing.
+			if ( setmode == PSM_Relative && !relativeTo ) {
+				// If relative actor not found:
+				alteree = NULL;
+				outValue = true;
+
+			} else if ( ccmdArgsSize != 2 || setmode == PSM_Error ) {
+				// If something is unclear:
 
 				if ( ccmdArgsSize == 3 && setmode == PSM_Error ) {
 					// 3 args [pos, wrong_mode, props]:
 					LogLocalize2Str( LL_Main, "ZCSETP_UNKNOWNMODE", modeargstr );
 
-				} else if ( PPS_Error != ( testeeStatus = getPlaceTestee( alteree, 0 ) ) ) {
+				} else if ( PPS_Error != getPlaceTestee( alteree, 0 ) ) {
 					// 2 args [pos, props]; or
 					// 3 args [pos, mode, props]:
 					outValue = true;
 				}
 
 			} else {
-				// 2 args [mode, props].
+				// If linetarget as 2 args [mode, props].
 				alteree = LinetraceActor();
 				outValue = true;
 			}
@@ -1261,10 +1260,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				String curparam = paramlist[ i ];
 				curparam.ToLower();
 
-				int delimIndex = curparam.IndexOf( ":" );
-
-				if ( delimIndex == -1 )
-					delimIndex = curparam.IndexOf( "=" );
+				int delimIndex = ZCGlobal.StringIndexOfAny( curparam, "=:" );
 
 				if ( delimIndex == -1 && setmode != PSM_Relative ) {
 					LogLocalize2Str( LL_Main, "ZCSETP_NODELIMCHARS", curparam );
