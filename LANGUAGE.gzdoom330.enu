@@ -455,8 +455,8 @@ ZCHECKER_ZCREM_EMPTYPOS               = "Cannot remove, there's no actor in posi
 // File "ZCCommandsActorAlter.zsc":
 
 //  "zcact":
-ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<pos>] <action>";
-ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with actor in <pos> (or linetarget, if omitted). Possible <action>s: \"rev[ive]\"/\"res[urrect]\", \"k[ill]\", \"xk[ill]\"/\"mdk\", \"rem[ove]\"/\"rm\"/\"del[ete]\", \"stop\", \"[state]freeze\"/\"[state]frz\", \"[state]skip\", \"[tics]revert\".";
+ZCHECKER_ZCACT_HELP_TITLE             = "zcact [<whom>] <action>";
+ZCHECKER_ZCACT_HELP_DESC              = "Do special complex action with the actor <whom> (or with the linetarget if omitted). Possible <action>s: \"rev[ive]\"/\"res[urrect]\", \"k[ill]\", \"xk[ill]\"/\"mdk\", \"rem[ove]\"/\"rm\"/\"del[ete]\", \"stop\", \"[state]freeze\"/\"[state]frz\", \"[state]skip\", \"[tics]revert\".";
 ZCHECKER_ZCACT_CANNOTREVIVE           = "Cannot revive actor %s";
 ZCHECKER_ZCACT_REVIVED                = "Revived actor %s";
 ZCHECKER_ZCACT_REVIVEVANISH           = "Actor %s revived, but vanished.";
@@ -472,15 +472,15 @@ ZCHECKER_ZCACT_STATESKIPPED           = "Skipped state for actor %s.";
 ZCHECKER_ZCACT_STATETICSRESET         = "Reset state delay for actor %s.";
 
 //  "zcgive":
-ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<pos>] <item> [<amount=1>]";
-ZCHECKER_ZCGIVE_HELP_DESC             = "Give <amount> <item>s to the testee <pos> (or linetarget, if omitted)";
+ZCHECKER_ZCGIVE_HELP_TITLE            = "zcgive [<whom>] <item> [<amount=1>]";
+ZCHECKER_ZCGIVE_HELP_DESC             = "Give <amount> <item>s to the actor <whom> (or to the linetarget if omitted)";
 ZCHECKER_ZCGIVE_SUCCESS               = "Item \"%s\" was given to actor \"%s\".";
 ZCHECKER_ZCGIVE_CANNOTRECEIVE         = "Actor %s cannot receive item.";
 ZCHECKER_ZCGIVE_NOTINVCLASS           = "\"%s\" isn't an Inventory actor.";
 
 //  "zctake":
-ZCHECKER_ZCTAKE_HELP_TITLE            = "zctake [<pos>] <item> [<amount=1>]";
-ZCHECKER_ZCTAKE_HELP_DESC             = "Take <amount> <item>s from the testee <pos> (or linetarget, if omitted)";
+ZCHECKER_ZCTAKE_HELP_TITLE            = "zctake [<whom>] <item> [<amount=1>]";
+ZCHECKER_ZCTAKE_HELP_DESC             = "Take <amount> <item>s from the actor <whom> (or from the linetarget if omitted)";
 ZCHECKER_ZCTAKE_SUCCESS               = "Item \"%s\" is taken from actor \"%s\".";
 ZCHECKER_ZCTAKE_CANNOTRECEIVE         = "Cannot take item from actor %s.";
 ZCHECKER_ZCTAKE_NOTINVCLASS           = "\"%s\" isn't an Inventory actor.";
@@ -490,7 +490,7 @@ ZCHECKER_ZCSUMMON_HELP_TITLE          = "zcsummon <class> [<amount=1>] [<comma-s
 ZCHECKER_ZCSUMMON_HELP_DESC           = "Summon <amount> of <class>es by rules of build-in eponymous command. Extended info (<extras>) may be provided as a comma-separated list without spaces. Possible parameters are:\
   BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile], dormant;\
   WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>, [float]speed:<speed>;\
-  SPECIAL : panel|add[:<pos>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.";
+  SPECIAL : panel|add[:<panel>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.";
 ZCHECKER_ZCSUMMON_CLAMPINT            = "\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.";
 ZCHECKER_ZCSUMMON_CLAMPFLOAT          = "\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.";
 ZCHECKER_ZCSUMMON_WRONGPANEL          = "\c!Wrong panel number \"%s\".";
@@ -514,21 +514,21 @@ ZCHECKER_ZCCOPYPASTE_HELP_TITLE       = "zccopyclass;zccopysummon [<amount=1>] [
 ZCHECKER_ZCCOPYPASTE_HELP_DESC        = "A paired command. \"zccopyclass\" saves a linetarget actor class into $savedclass classname variable; \"zccopysummon\" summons a $savedclass actor(s).";
 
 //  "zcsetflag":
-ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<pos>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<pos>] <flag name> [<value>[,nospec]];zcfl [<pos>] <flag name> [<value>[,nospec]]";
-ZCHECKER_ZCSETFLAG_HELP_DESC          = "Set/reset a <flag> for the testee in <pos> (or linetarget actor, if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.";
+ZCHECKER_ZCSETFLAG_HELP_TITLE         = "zcsetflag [<whom>] <flag name> [<value: 0/f[alse]/reset or 1/t[rue]/set>[,nospec]];zcsetf [<whom>] <flag name> [<value>[,nospec]];zcfl [<whom>] <flag name> [<value>[,nospec]]";
+ZCHECKER_ZCSETFLAG_HELP_DESC          = "Set/reset a <flag> for the actor <whom> (or for the linetarget if omitted). If no <value> is provided, toggles the <flag>. Note: because of asynchronous ZScript netevent and ACS machine execution, the result for most of the flags will be delayed by 1 tic.";
 ZCHECKER_ZCSETFLAG_SUCCESS            = "Flag \"%s\" for actor %s is succesfully set to %i.";
 
 //  "zcsetstate":
-ZCHECKER_ZCSETSTATE_HELP_TITLE        = "zcsetstate [<pos>] <state label>;zcsets [<pos>] <state label>;zcsetst [<pos>] <state label>;zcst [<pos>] <state label>";
-ZCHECKER_ZCSETSTATE_HELP_DESC         = "Set a state to <state label> for the testee in <pos> (or actor on line of sight if omitted). Note: because of asynchronous ZScript/ACS execution, in singleplayer the result for most of the flags will be delayed by 1 tic.";
+ZCHECKER_ZCSETSTATE_HELP_TITLE        = "zcsetstate [<whom>] <state label>;zcsets [<whom>] <state label>;zcsetst [<whom>] <state label>;zcst [<whom>] <state label>";
+ZCHECKER_ZCSETSTATE_HELP_DESC         = "Set a state to <state label> for the actor <whom> (or for the linetarget if omitted). Note: because of asynchronous ZScript/ACS execution, in singleplayer the result for most of the flags will be delayed by 1 tic.";
 
 //  "zcsetprop":
-ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<pos>] [add|rel[ative][:<pos>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zcpr [<pos>] [add|rel[:<pos>]] <property>:<value>[,...];zchate [<pos>] [<pos_newtarget>|null]";
-ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for the actor in position <pos> (or for the linetarget, if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<pos>]\" will be added relative to the specified actor's properties or to calling player if <pos> is omitted (also if it is possible). Recognizable properties are:\
+ZCHECKER_ZCSETP_HELP_TITLE            = "zcsetprop [<whom>] [add|rel[ative][:<whom>]|raw] <property>:<value>[,<property>:<value>,[...]];zcsetp [<whom>] [add|rel[:<whom>]] <property>:<value>[,...];zcpr [<whom>] [add|rel[:<whom>]] <property>:<value>[,...];zchate [<whom>] [<pos_newtarget>|null]";
+ZCHECKER_ZCSETP_HELP_DESC             = "Set a <property> to <value> for <whom> (or for the linetarget if omitted). By default or with a \"raw\" parameter all properties will be simply overwritten; with \"add\" they will be added to the current values (if possible); and with \"rel[ative]][:<whom>]\" will be added relative to the specified actor's properties or to calling player if <whom> is omitted (also if it is possible). Recognizable properties are:\
   WORLD   : x <float>, y <float>, z <float>|floor|ceil|rawceil, velx|vely|velz <float>, angle|pitch|roll <float>;\
   INTERACT: health|hp <int>|s[pawn]|max, [float]speed <float>, radius <float>, height <float>, mass <int>, gravity <float>, rawhp <int>;\
   VISUAL  : scale[x|y] <float>, alpha <float>, renderstyle <style>;\
-  POINTERS: target|tp <pos>|null, master|mp <pos>|null, tracer|trp|rp <pos>|null;\
+  POINTERS: target|tp <whom>|null, master|mp <whom>|null, tracer|trp|rp <whom>|null;\
   SPECIAL : arg0..arg4 <int>, special|action <int>, tid <val>|unique.";
 ZCHECKER_ZCSETP_RELPLAYER             = "\c~Base actor for relative properties \c-is set to calling player\c~.";
 ZCHECKER_ZCSETP_RELNOTFOUND           = "The object from which to take properties not found.";
@@ -648,7 +648,7 @@ ZCHECKER_ZCVARSCTL_SETSUCCESS         = "Variable \"\cn%s\c-\" is \cdset\c- to \
 ZCHECKER_ZCVARSCTL_LISTHEADER         = "\cyClassname variables \c~(total \c-%i\c~): ";
 
 //  "zcinterface"/"zcif":
-ZCHECKER_ZCIF_HELP_TITLE              = "zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <pos>;zcif panelinherit <pos> <class>|<$variable>;zcif panelequal <pos1> <pos2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree";
+ZCHECKER_ZCIF_HELP_TITLE              = "zcif strequal <name1>|<$variable1> <name2>|<$variable2>;zcif dangerccmds|ev[map|erything];zcif panel <whom>;zcif panelinherit <panel> <class>|<$variable>;zcif panelequal <panel1> <panel2>;zcif validplacepos <string>;zcif validpos <string>;zcinterface panelfind <name>;zcinterface panelfindfree";
 ZCHECKER_ZCIF_HELP_DESC               = "Provide a conditional operator external interface for the user-defined aliases and other similar stuff. On return sets an integer console variable \"%s\". A \"Development/API\" log level must be enabled to track the command results.";
 ZCHECKER_ZCIF_TRACEPREFIX             = "\csExternal interface\c~. \c-";
 
@@ -661,7 +661,7 @@ ZCHECKER_ZCIF_TRACEPREFIX             = "\csExternal interface\c~. \c-";
 ZCHECKER_TOOLTIP_ACTORMASKS_TIPS      = "For almost all commands that take actor name as argument (\"`Czcsummon`x\", \"`Czcgive`x\", \"`Czctake`x\", \"`Czcev goto`x\", ...) you may use a simple regex search:\
 \t'`2*`2' for any number of any characters, including amount of zero; `dand`x\
 \t'`2-`2' for any number of characters greater than 0.\
-If more than one actor class candidate is found, only `2numbered list`x will be printed. A value may be selected from it by using `2:N`x or `2,N`x.\
+If more than one actor class candidate is found, only `2numbered list`x will be printed. A value can be selected from it by using `2:N`x or `2,N`x.\
 Note that a class inheritance filter is applied for some commands.\
 Also, you may substitute values from `1ZChecker classname variables`1 `d(must begin with \"`2$`d\")`x like:\
 \t'`1$1`1', '`1$2`1', '`1$3`1' for the classname in the specified panel. They will be stored until the next class overwrites them;\
@@ -678,8 +678,8 @@ You can find more specific examples in the help pages of all of the commands men
 
 
 ZCHECKER_TOOLTIP_CCMDRULES_HEADER     = "About general console commands rules";
-ZCHECKER_TOOLTIP_CCMDRULES_TIPS       = "Most of the ZChecker console commands which works with only one actor have the same first argument: it's a pointer to (position of) the source actor. The most notable exceptions are commands of the \"`Czcadd`C\" family, which have special arguments handling.\
-Argument `g<pos>`g can take the following values and keywords:\
+ZCHECKER_TOOLTIP_CCMDRULES_TIPS       = "Most of the ZChecker console commands which works with only one actor have the same first argument `g<whom>`g: it's a pointer to (position of) the source actor. The most notable exceptions are commands of the \"`Czcadd`C\" family, which have special arguments handling.\
+Argument `g<whom>`g can take the following values and keywords:\
 \t`~\"`C1`~\"`x..`~\"`C3`~\" (up to the max amount of the infopanels).`x Refers to previously saved actors in the informational panels;\
 \t`~\"`Clt`~\"`x or `~\"`Clinetarget`~\".`x Takes the first tangible actor from the player's line of sight;\
 \t`~\"`Cs`~\"`x or `~\"`Cself`~\".`x Specifies a caller player itself;\
