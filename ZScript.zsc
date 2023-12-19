@@ -26,6 +26,7 @@ version "3.3.0"
 #include "ZScript/ZCBaseClasses.zsc"
 #include "ZScript/Core/ZCMenus.zsc"
 #include "ZScript/Core/ZCMapScripts.zsc"
+#include "ZScript/Core/ZCCommandMenuItems.zsc"
 
 #include "ZScript/Core/ZCInitializationCore.zsc"
 #include "ZScript/Core/ZCRendererCore.zsc"

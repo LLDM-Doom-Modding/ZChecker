@@ -1,0 +1,51 @@
+//
+// Base menu items for CCMD menus.
+//
+
+/*
+class OptionMenuItemZCCommandDataKeeper: OptionMenuItem {
+	Array<String> ccmd;
+
+	static OptionMenuItemZCCommandDataKeeper GetKeeper( OptionMenuDescriptor desc ) {
+		return NULL;
+	}
+
+	OptionMenuItemZCCommandDataKeeper Init() {
+	}
+
+	virtual String GetExecCommand() {
+		return "";
+	}
+
+	virtual String GetVisualCommand() {
+		return GetExecCommand();
+	}
+}
+*/
+
+class OptionMenuItemZCCommandExecute: OptionMenuItemCommand {
+	int counter;
+
+	OptionMenuItemZCCommandExecute Init( String label, String command ) {
+		let newitem = OptionMenuItemZCCommandExecute( Super.Init( label, command ) );
+
+		return newitem;
+	}
+
+	override bool Activate() {
+		Init( mLabel, "zcadd " .. counter );
+		counter = ( counter + 1 ) % 4;
+
+		bool activateResult = Super.Activate();
+		return activateResult;
+	}
+} // of class OptionMenuItemZCCommandExecute: OptionMenuItemCommand {}
+
+
+// 
+
+class OptionMenuItemZCCommandOption: OptionMenuItemOption {
+}
+
+class OptionMenuItemZCCommandTextField: OptionMenuItemTextField {
+}

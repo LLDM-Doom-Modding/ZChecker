@@ -12,6 +12,7 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
+	ZCCommandExecute "Test", "r"
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_ZCHANDLER_ERROR"
 
 	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
