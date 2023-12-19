@@ -63,5 +63,5 @@ script "ZChecker_WarpToEverything" ( int simplified_level ) {
 	if ( simplified_level )
 		ChangeLevel( "Everything_simple", 0, CHANGELEVEL_NOINTERMISSION, -1 );
 	else
-		ChangeLevel( "Everything_SC77", 0, CHANGELEVEL_NOINTERMISSION, -1 );
+		ChangeLevel( "Everything_alternative", 0, CHANGELEVEL_NOINTERMISSION, -1 );
 }

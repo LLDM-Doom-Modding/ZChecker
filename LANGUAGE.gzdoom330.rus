@@ -530,7 +530,7 @@ ZCHECKER_ZCSETP_SUCCESS               = "Свойства для актора \"
 
 //  "zcev (*)":
 ZCHECKER_ZCEV_HELP_TITLE              = "zcev goto <класс>|<категория>|start;zcev re[create|load];zcev resec[tors];zcev map[2]|level[2]";
-ZCHECKER_ZCEV_HELP_DESC               = "Управление миром на картах Everything. Исключением являются команды \"map\"/\"level\", которые переносят игрока на карты \"map everything_simple\" и \"map everything_sc77\".";
+ZCHECKER_ZCEV_HELP_DESC               = "Управление миром на картах Everything. Исключением являются команды \"map\"/\"level\", которые переносят игрока на карты \"map everything_simple\" и \"map everything_alternative\".";
 ZCHECKER_ZCEV_NOTEVMAP                = "Использование этой команды невозможно вне карт Everything.";
 
 ZCHECKER_ZCEVGOTO_HELP_TITLE          = "zcev goto <класс>|<категория>|start;zcevg <класс>|<категория>|start";
@@ -674,7 +674,7 @@ ZCHECKER_TOOLTIP_EVERYTHINGMAP_HEADER = "О картах \"Everything\"";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_TEXT   = "Уровни с названием \"`2Everything`2\" являются универсальными картотеками акторов.\
 На данный момент в ZChecker присутствуют две карты:\
 \"`2Everything_simple`2\", легковесный, но полностью функциональный вариант; `~и`x\
-\"`2Everything_SC77`2\" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей.\
+\"`2Everything_alternatiive`2\" от StormCatcher.77. Учтите, в бета-версиях и предварительных сборках ZChecker она может быть устаревшей.\
 \t`yВнимание: в некоторых модификациях обычное создание акторов - без специальных условий - может блокироваться `d(впрочем, вполне возможно, что не намеренно)`y. `xПоследствия могут быть совершенно разными, от спама в консоль предупреждающими сообщениями до вылета игрового движка. Если Вы обнаружите подобное поведение, имеет смысл связаться с авторами той модификации. Или с разработчиками ZChecker (командой LLDM), но в большинстве случаев мы в итоге переадресуем Вас на них же.";
 ZCHECKER_TOOLTIP_EVERYTHINGMAP_EXAMPLES = "\"`Cmap everything_simple`C\" сменяет уровень на карту Everything (упрощенную версию);\
 \"`Czcev map`x\" на практике делает то же самое.\
