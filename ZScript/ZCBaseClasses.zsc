@@ -468,7 +468,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 
 	// Returns a position parse status depending of the string argument provided:
-	protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0, String specialstring = "" ) {
+	protected EPositionParseStatus ParsePositionString( out Actor newTestee, uint argpos = 0, String specialstring = "" ) {
 		EPositionParseStatus newTesteePosStatus = PPS_Error;
 		newTestee = NULL;
 
@@ -500,10 +500,10 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "GETACTOR_UNKNOWNKEYWORD" ), arg, argpos + 1, MaxTestee ) );
 		}
 
-		ZCGlobal.Log( LL_Debug, GetClassName() .. "::getPlaceTestee(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg[ " .. argpos .. " ] == \"" .. arg .. "\"." );
+		ZCGlobal.Log( LL_Debug, GetClassName() .. "::ParsePositionString(). Actor \"" .. ZCGlobal.ObjectName( newTestee ) .. "\" with status " .. newTesteePosStatus .. ". Arg[ " .. argpos .. " ] == \"" .. arg .. "\"." );
 
 		return newTesteePosStatus;
-	} // of protected EPositionParseStatus getPlaceTestee( out Actor newTestee, uint argpos = 0 ) {}
+	} // of protected EPositionParseStatus ParsePositionString( out Actor newTestee, uint argpos = 0 ) {}
 
 
 	// Returns "-1" if argument cannot be resolved as boolean, and "0"/"1" otherwise:

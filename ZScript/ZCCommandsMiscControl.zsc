@@ -475,10 +475,10 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 
 		} else if ( argcmd == "panelequal" || argcmd == "panelsequal" ) {
 			if ( ccmdArgsSize == 2 ) {
-				zcPos = getPlaceTestee( testeePos1, 1 );
+				zcPos = ParsePositionString( testeePos1, 1 );
 
 				if ( zcPos != PPS_WrongPos && zcPos != PPS_Error )
-					zcPos = getPlaceTestee( testeePos2, 2 );
+					zcPos = ParsePositionString( testeePos2, 2 );
 
 				if ( zcPos != PPS_Error && zcPos != PPS_WrongPos ) {
 					outval = true;
@@ -598,7 +598,7 @@ class ZCExternalInterfaceCommand: ZCConsoleCommand {
 							: TEXTCOLOR_BRICK .. " not valid" .. LLCOLOR_MAIN .. " (false)." ) );
 				break;
 			case ICT_ValidPlacePos:
-				zcPos = getPlaceTestee( testeeInPos, 1 );
+				zcPos = ParsePositionString( testeeInPos, 1 );
 				outval = ( zcPos != PPS_Error && zcPos != PPS_WrongPos );
 				InterfaceDebugLog( "Place validation: \"" .. ccmd.args[ 1 ] .. "\" is" .. ( outval
 							? TEXTCOLOR_GREEN .. " valid" .. LLCOLOR_MAIN .. " (true)."
