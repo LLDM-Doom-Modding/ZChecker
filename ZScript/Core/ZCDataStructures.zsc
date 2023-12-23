@@ -658,7 +658,7 @@ class ZCInternalStringDictionaryCell {
 	String value;
 }
 
-// Storage cell of the actors names slightly speeding up the names search 
+// Storage cell of the actors names slightly speeds up the names search 
 //process. No binary tree or hashmap used because name masks/wildcards may be 
 //used, absolutely removing all pros from specified data structures.
 class ZCInternalActorNameCell {

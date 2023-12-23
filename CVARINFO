@@ -140,3 +140,7 @@ server bool mcm_zchecker_ev_spawnbossbrains			= false;
 server bool mcm_zchecker_ev_logspawninfo	= false;  // Log information to console about created (or skipped) actors.
 server bool mcm_zchecker_ev_auto_notarget	= true;   // Automatically set a "notarget" cheat when entering an Everything map.
 server bool mcm_zchecker_ev_auto_iddqd		= false;  // Automatically set a "god" cheat when entering an Everything map.
+
+
+// CVars for CCMD menus.
+user string lldm_zcmenuarg_zcadd		= "";

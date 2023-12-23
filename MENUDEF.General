@@ -12,7 +12,6 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
-	ZCCommandExecute "Test", "r"
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_ZCHANDLER_ERROR"
 
 	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
@@ -64,7 +63,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
 	Slider "$ZCHECKER_VISUAL_START_X_10", "mcm_zchecker_infopanel_startx", 0.0, 99.0, 10.0, 0
 	Slider "$ZCHECKER_VISUAL_START_Y",    "mcm_zchecker_infopanel_starty", -50.0, 99.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_START_Y_10", "mcm_zchecker_infopanel_starty", -50.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_OFFSET_X", "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_OFFSET_X",   "mcm_zchecker_infopanel_offsetx", 0.0, 100.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "mcm_zchecker_infopanel_scale", 0.5, 8.0, 0.1, 1
 	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "mcm_zchecker_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "
@@ -173,6 +172,9 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     StaticText "$ZCHECKER_CCMDMENU_EXAMPLES", 1
     StaticText " "
 
+	Submenu "Add actor to infopanel...", "mcm_ZChecker_CommandsMenu_zcadd"
+
+    StaticText " "
 	Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
 	Command "$ZCHECKER_CCMDMENU_ZCADD_SELF", "zcadd self"
 	Command "$ZCHECKER_CCMDMENU_ZCREM", "zcrem"

@@ -2,29 +2,555 @@
 // Base menu items for CCMD menus.
 //
 
-/*
-class OptionMenuItemZCCommandDataKeeper: OptionMenuItem {
-	Array<String> ccmd;
+class ZCCommandKeeperItem {
+	String identifier;	// Like "add" for zcsummon or "health" for zcsetprop. May be empty.
+	String value;		// Like "3", "z-man" or "18.75". Also may be empty.
+	String prefix;		// Primarily for slider-based values like "x:1.819,y:0".
 
-	static OptionMenuItemZCCommandDataKeeper GetKeeper( OptionMenuDescriptor desc ) {
+	static ZCCommandKeeperItem Create( String identifier, String value ) {
+		ZCCommandKeeperItem newitem = ZCCommandKeeperItem( new( "ZCCommandKeeperItem" ) );
+
+		newitem.identifier = identifier;
+		newitem.value = value;
+
+		return newitem;
+	}
+}
+
+class ZCCommandKeeperArg {
+	const CVAR_COMMANDS_SEPARATOR = ZCHECKER_AGRS_SEPARATOR;	// Currently "@@".
+	const CVAR_ITEMS_SEPARATOR = "\x20"; 	// Separator between items (pairs "id:value") in one arg. A space.
+	const CVAR_IDVAL_SEPARATOR = ":";		// Separator between identifier and its value. Only the leftmost character will be treated as it.
+	// So, hypothetical CVar for the "zcsummon" command may be saved as:
+	//	"*card:3@@:1@@add:4 fwdofs:23.25 arg0:1 tid:unique hp:999"
+
+	int argpos;
+	Array<ZCCommandKeeperItem> items;
+
+	bool isstatic;		// Must not be changed with CVars etc. For example, command itself ("zcadd").
+	String defaultval;	// If "isstatic == true", used as an unchangeable value.
+	String prefix;
+	String delimiter;
+
+	String linkedCVarName;
+	CVar linkedCVar;		// Seems like "transient" modifier not so important in menus processing...
+	//int curLinkedCVar;	// To minimize all-args check delay when severeal args are saved into one CVar.
+
+	ZCCommandKeeperItem FindItem( String identifier ) {
+		for ( int i = 0; i < items.Size(); i++ ) {
+			if ( items[ i ].identifier == identifier )
+				return items[ i ];
+		}
+
 		return NULL;
 	}
 
-	OptionMenuItemZCCommandDataKeeper Init() {
+	void AddItem( String identifier, String value ) {
+		items.Push( ZCCommandKeeperItem.Create( identifier, value ) );
+	}
+} // of class ZCCommandKeeperArg {}
+
+
+
+class OptionMenuItemZCCommandKeeper: OptionMenuItem {
+	Array<ZCCommandKeeperArg> args;
+
+	//Array<OptionMenuItemZCCommandVisual> visuals; // In theory it may be more than 1, e.g. in the "zcact" menu.
+	OptionMenuItemZCCommandVisual visual;
+
+
+	static OptionMenuItemZCCommandKeeper Get( void ) {
+		OptionMenu m = OptionMenu( Menu.GetCurrentMenu() );
+
+		if ( m == NULL )
+			return NULL;
+
+
+		OptionMenuDescriptor mDesc = m.mDesc;
+		OptionMenuItemZCCommandKeeper item = NULL;
+
+		for ( int i = 0; i < mDesc.mItems.Size(); i++ ) {
+			item = OptionMenuItemZCCommandKeeper( mDesc.mItems[ i ] );
+
+			if ( item )
+				break;
+		}
+
+		if ( !item ) {
+			item = new( "OptionMenuItemZCCommandKeeper" );
+			mDesc.mItems.Insert( 0, item );
+			ZCGlobal.UILog( LL_APIMessage, item.GetClassName() .. ".Get(). Injected omitted CCMD keeper \"" .. item.GetClassName() .. "\"" );
+		}
+
+		return item;
+	} // of static OptionMenuItemZCCommandKeeper GetKeeper( void ) {}
+
+	protected bool validateArgIndex( int argindex ) {
+		if ( argindex > args.Size() ) {
+			ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::validateArgIndex(). Argument number " .. argindex .. " is too large (args.Size() == " .. args.Size() .. ")." );
+			return false;
+		}
+
+		if ( args[ argindex ] == NULL ) {
+			ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::validateArgIndex(). args[ " .. argindex .. " ] is NULL. Array size " .. args.Size() .. ":" );
+
+			for ( int i = 0; i < args.Size(); i++ )
+				ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, "args[ " .. i .. " ] == " .. ZCGlobal.ObjectName( args[ i ] ) );
+
+			return false;
+		}
+
+		return true;
+	} // of protected bool checkArgIndex( int argindex ) {}
+
+
+	OptionMenuItemZCCommandKeeper Init( int argsamount, String initoptions ) {
+		// Initializes once per game engine reload (in contrast to "::OnMenuCreated()").
+
+		for ( int i = 0; i < argsamount; i++ )
+			args.Push( new( "ZCCommandKeeperArg" ) );
+
+
+		// Parsing the options string.
+		initoptions.Replace( "\t", " " );
+
+		Array<String> options; // Options are separated with a Space character:
+		initoptions.Split( options, " ", TOK_SKIPEMPTY );
+
+		// Examples:
+		//  "0 default:zcgive   1 cvar:lldm_zcmenuarg_who   2 cvar:lldm_zcmenuarg_zcgive2   3 cvar:- prefix:item"
+		//
+		//  "all cvar:lldm_zcmenuarg_zcthinkers   1 cvar:lldm_zcmenuarg_who   2 separator:,"
+
+
+		int changingArg = -1; // All.
+
+		for ( int i = 0; i < options.Size(); i++ ) {
+			String curopt = options[ i ];
+
+			bool isOptionWrong = false;
+			int temp_IntConversion;
+
+			bool argIsStaticVal = false; // Precedence over all other options.
+			String argDefaultVal = "";
+			String argPrefix = "";
+			String argDelimiter = "";
+			String argCVarName = "";
+
+
+			if ( curopt ~== "all" ) {
+				changingArg = -1;
+
+			} else if ( ZCGlobal.str2int_Ptr( curopt, +temp_IntConversion, false ) ) {
+				if ( temp_IntConversion >= 0 ) {
+					changingArg = temp_IntConversion;
+					console.printf( "New changingArg: " .. changingArg );
+				} else {
+					isOptionWrong = true;
+				}
+
+			} else {
+				int colonindex = curopt.IndexOf( ":" );
+
+				if ( colonindex != -1 ) {
+					// Split into parts before colon and after it:
+					String curoptname = curopt.Left( colonindex );
+					String curoptvalue = curopt.Mid( colonindex + 1, curopt.Length() - colonindex );
+
+					curoptname.ToLower();
+
+					if ( curoptvalue == "-" )
+						curoptvalue = ""; // Reset value (for convenience "keyword:-" equals to "keyword:").
+
+					// Check for keywords:
+					if ( curoptname == "default" ) {
+						argDefaultVal = curoptvalue;
+					} else if ( curoptname == "static" || curoptname == "unchangeable" ) {
+						argIsStaticVal = true;
+						argDefaultVal = curoptvalue;
+					} else if ( curoptname == "cvar" ) {
+						argCVarName = curoptvalue;
+					} else if ( curoptname == "prefix" ) {
+						argPrefix = curoptvalue;
+					} else if ( curoptname == "separator" || curoptname == "delimiter" ) {
+						argDelimiter = curoptvalue;
+
+					} else {
+						isOptionWrong = true;
+					}
+
+				} else {
+					isOptionWrong = true;
+
+				} // of else of if ( colonindex != -1 ) {}
+
+
+				if ( !isOptionWrong ) {
+					int argfirst = ( changingArg < 0? 0 : changingArg );
+					int arglast = ( changingArg < 0? argsamount - 1 : changingArg );
+
+					console.printf( "Set args from " .. argfirst .. " to " .. arglast );
+
+					for ( int i = argfirst; i <= arglast; i++ ) {
+						ZCCommandKeeperArg arg = args[ i ];
+						arg.isstatic = argIsStaticVal;
+
+						if ( arg.defaultval == "" )
+							arg.defaultval = argDefaultVal;
+
+						if ( !argIsStaticVal ) {
+							if ( arg.delimiter == "" )
+								arg.delimiter = argDelimiter;
+
+							if ( arg.prefix == "" )
+								arg.prefix = argPrefix;
+
+							if ( arg.linkedCVarName == "" )
+								arg.linkedCVarName = argCVarName;
+						} // of if ( !argIsStaticVal ) {}
+					} // of for ( int i = argfirst; i < arglast; i++ ) {}
+
+				} // of if ( !isOptionWrong ) {}
+
+
+			} // of "curopt" parsing.
+
+
+			if ( isOptionWrong )
+				ZCGlobal.UILog( LL_Main, GetClassName() .. "::Init(). Cannot understand option \"" .. curopt .. "\", skipped." );
+
+		} // of for ( int i = 0; i < options.Size(); i++ ) {}
+
+
+		for ( int i = 0; i < argsamount; i++ ) {
+			if ( args[ i ].linkedCVarName != "" )
+				args[ i ].linkedCVar = CVar.FindCVar( args[ i ].linkedCVarName );
+		}
+
+
+		Super.Init( GetClassName(), "" );
+
+		ZCGlobal.UILog( LL_Debug, GetClassName() .. "::Init(). " .. args.Size() .. " args:" );
+
+		for ( int i = 0; i < args.Size(); i++ ) {
+			ZCCommandKeeperArg arg = args[ i ];
+
+			if ( !arg ) {
+				ZCGlobal.UILog( LL_Debug, "#" .. i .. ". <NULL>" );
+				continue;
+			}
+
+			ZCGlobal.UILog( LL_Debug, String.Format(
+					"#%i. static is %i, defval \"%s\", CVar name \"%s\", delim \"%s\", prefix \"%s\".", 
+					i, arg.isstatic, arg.defaultval, arg.linkedCVarName, arg.delimiter, arg.prefix
+				) );
+		}
+
+		return self;
+	} // of OptionMenuItemZCCommandKeeper Init( int argsamount, String initoptions ) {}
+
+	override void OnMenuCreated() {
+		// Initializes every time when entering menu (in contrast to "::Init()").
+
+		Array<String> usedArgCVarNames;
+		Array<String> usedArgCVarValues;
+		Array<int> curCVarArgPositions;
+
+		usedArgCVarNames.Clear(); // "OnMenuCreated()" calls once, GC should have time to remove array items...
+		usedArgCVarValues.Clear();
+		curCVarArgPositions.Clear();
+
+
+		// Update arg values from linked CVars:
+		for ( int curargnum = 0; curargnum < args.Size(); curargnum++ ) {
+			ZCCommandKeeperArg arg = args[ curargnum ];
+
+			if ( arg.isstatic || !arg.linkedCVar )
+				continue; // Skip static (unchangeable) args and args without linked CVars.
+
+
+			int curindex = usedArgCVarNames.Find( arg.linkedCVarName );
+
+			if ( curindex == usedArgCVarNames.Size() ) {
+				// Save new CVar:
+				usedArgCVarNames.Push( arg.linkedCVarName );
+
+				usedArgCVarValues.Push( arg.linkedCVar.GetString() );
+				curCVarArgPositions.Push( 0 );
+			}
+
+			if ( usedArgCVarValues[ curindex ] == "" ) {
+				if ( curCVarArgPositions[ curindex ] == 0 )
+					// Set up item with default value:
+					usedArgCVarValues[ curindex ] = arg.defaultval;
+				else
+					continue; // CVar has no value at all.
+			}
+
+			arg.items.Clear();
+
+
+			// Locating current arg start and end char positions in the whole CVar string:
+			int argEndIndex = usedArgCVarValues[ curindex ].IndexOf( ZCCommandKeeperArg.CVAR_COMMANDS_SEPARATOR, curCVarArgPositions[ curindex ] );
+
+			if ( argEndIndex == -1 ) {
+				ZCGlobal.UILog( LL_Detailed, String.Format( 
+						"%s%s::OnMenuCreated(). Unexpected end-of-string when parsing CVar \"%s%s%s\"=\"%s\" (last used index %i) for CCMD argument %s%i%s.",
+						LLCOLOR_DARK, GetClassName(),
+						LLCOLOR_NORMAL, usedArgCVarNames[ curindex ], LLCOLOR_DARK, usedArgCVarValues[ curindex ],
+						curCVarArgPositions[ curindex ], LLCOLOR_NORMAL, curargnum, LLCOLOR_DARK
+					) );
+				continue; // CVar value is broken.
+			}
+
+			String argdata = usedArgCVarValues[ curindex ].Mid( curCVarArgPositions[ curindex ], usedArgCVarValues[ curindex ].Length() - argEndIndex + 1 );
+			curCVarArgPositions[ curindex ] = argEndIndex + 1;
+
+
+			// Parsing current arg data:
+			Array<String> argitems;
+			argdata.Split( argitems, ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR, TOK_KEEPEMPTY );
+
+			for ( int i = 0; i < argitems.Size(); i++ ) {
+				String argitem = argitems[ i ];
+
+				if ( argitem == "" ) {
+					ZCGlobal.UILog( LL_Detailed, LLCOLOR_DARK .. GetClassName() .. "::OnMenuCreated(). Empty arg " .. curargnum .. " item " .. i .. "; maybe data is corrupted." );
+					continue; // CVar value is broken.
+				}
+
+				// Searching for the first "id:value" separator.
+				int colonindex = argitem.IndexOf( ZCCommandKeeperArg.CVAR_IDVAL_SEPARATOR );
+
+				if ( colonindex == -1 ) {
+					// No separator in pair "id:value". Or this is normal situation?..
+					ZCGlobal.UILog( LL_Detailed, LLCOLOR_DARK .. GetClassName() .. "::OnMenuCreated(). No value in arg " .. curargnum .. " item " .. i .. " (\"" .. argitem .. "\"); maybe data is corrupted." );
+				} else {
+					String value = argitem.Mid( colonindex + 1, argitem.Length() - colonindex + 2 );
+
+					arg.items.Push( ZCCommandKeeperItem.Create( argitem, value ) );
+				}
+
+			} // of for ( int i = 0; i < argitems.Size(); i++ ) {}
+
+
+		} // of for ( int curargnum = 0; curargnum < args.Size(); curargnum++ ) {}
+
+	} // of override void OnMenuCreated() {}
+
+
+	void ExportArgCVar( int argindex ) {
+		if ( !validateArgIndex( argindex ) ) {
+			ZCGlobal.UILog( LL_Main, GetClassName() .. "::UpdateLinkedCVar( " .. argindex .. " ) failed." );
+			return;
+		}
+
+		ZCCommandKeeperArg outputarg = args[ argindex ];
+
+		if ( outputarg.linkedCVar == NULL )
+			return;
+
+
+		String outstr = "";
+
+		for ( int i = 0; i < args.Size(); i++ ) {
+			ZCCommandKeeperArg arg = args[ i ];
+
+			if ( arg.isstatic )
+				continue; // Skip static (unchangeable) args.
+
+
+			// Creates new value for CVar from all arguments which uses it:
+			if ( arg.linkedCVar == outputarg.linkedCVar ) {
+				int argItemsSize = arg.items.Size();
+
+				if ( argItemsSize > 0 ) {
+					// First element has no CVAR_ITEMS_SEPARATOR.
+					outstr.AppendFormat( "%s%s%s", arg.items[ 0 ].identifier, arg.CVAR_IDVAL_SEPARATOR, arg.items[ 0 ].value );
+
+					// All other elements have it.
+					for ( int i = 1; i < argItemsSize; i++ ) {
+						outstr.AppendFormat( "%s%s%s%s",
+								arg.CVAR_ITEMS_SEPARATOR, arg.items[ i ].identifier,
+								arg.CVAR_IDVAL_SEPARATOR, arg.items[ i ].value
+							);
+					}
+				} // of if ( argItemsSize > 0 ) {}
+
+				outstr.AppendFormat( arg.CVAR_COMMANDS_SEPARATOR );
+			}
+		} // of for ( int i = 0; i < args.Size(); i++ ) {}
+
+
+		if ( args.Size() > 0 )
+			outstr = outstr.Left( outstr.Length() - ZCCommandKeeperArg.CVAR_COMMANDS_SEPARATOR.Length() );
+
+		outputarg.linkedCVar.SetString( outstr );
+	} // of void ExportArgCVar( int argindex ) {}
+
+
+
+	/*
+	void AddCommandItem( String arg_identifier, String prefix ) {
+		int argpos;
+
+		if ( !ZCGlobal.str2int_Ptr( arg_identifier, +argpos ) || argpos < 0 ) {
+			ZCGlobal.UILog( LL_Main, GetClassName() .. "::AddCommandItem(). Wrong numeric arg in identifier \"" .. arg_identifier .. "\"." );
+			return;
+		}
+
+		if ( argpos >= 15 )
+			ZCGlobal.UILog( LL_APIMessage, GetClassName() .. "::AddCommandItem(). Got value \"" .. argpos .. "\". Note that ZDoom has arguments substitution console limit (\"%1\"..\"%15\")." );
+
+
+		if ( args.Size() < argpos ) {
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::AddCommandItem(). 'Array<ZCCommandKeeperArg> args' expanding: prev size " .. args.Size() .. ", new size " .. argpos .. "." );
+			args.Resize( argpos ); // To check: may not work in older verisons.
+			//args.Insert( argpos, arg );
+			//args.Delete( argpos + 1, 1 );
+		}
+
+		ZCCommandKeeperArg arg = args[ argpos ];
+
+		if ( arg == NULL ) {
+			// Create new item if it doesn't exist already.
+			arg = new( "ZCCommandKeeperArg" );
+			arg.argpos = argpos;
+
+			ZCGlobal.UILog( LL_Debug, GetClassName() .. "::AddCommandItem(). Created new " .. arg.GetClassName() .. " with argpos " .. argpos .. "." );
+		}
+
+		ZCCommandKeeperItem item = new( "ZCCommandKeeperItem" );
+		item.argpos = argpos;
+		item.identifier = arg_identifier;
+
+		arg.items.Push( item );
+	} // of void AddCommandItem( String arg_identifier, String prefix ) {}
+	*/
+
+
+	void SetString( int argindex, String identifier, String value ) {
+		if ( !validateArgIndex( argindex ) ) {
+			ZCGlobal.UILog( LL_Main, String.Format( "%s::SetString( %i, \"%s\", \"%s\" ) failed.", GetClassName(), argindex, identifier, value ) );
+			return;
+		}
+
+		if ( args[ argindex ].isstatic ) {
+			ZCGlobal.UILog( LL_Main, GetClassName() .. "::SetString(). Cannot set value to static arg " .. argindex .. " (\"" .. args[ argindex ].defaultval .. "\")." );
+			return;
+		}
+
+		ZCCommandKeeperItem item = args[ argindex ].FindItem( identifier );
+
+		if ( item ) {
+			// Use previously defined item:
+			item.value = value;
+
+		} else {
+			// Create new item:
+			args[ argindex ].AddItem( identifier, value );
+
+			//ZCGlobal.UILog( LL_Main, GetClassName() .. "::SetString(). Identifier \"" .. identifier .. "\" for index " .. argindex .. " not found; passed value \"" .. value .. "\" dropped." );
+		}
+
+		ExportArgCVar( argindex );
+	} // of void SetString( int arg, String identifier, String value ) {}
+
+	String GetString( int argindex, String identifier ) {
+		if ( !validateArgIndex( argindex ) ) {
+			ZCGlobal.UILog( LL_Main, String.Format( "%s::GetString( %i, \"%s\" ) failed.", GetClassName(), argindex, identifier ) );
+			return "";
+		}
+
+		ZCCommandKeeperItem item = args[ argindex ].FindItem( identifier );
+
+		return ( item? item.value: "" );
+	} // of String GetString( int argindex, String identifier ) {}
+
+
+	void SetFloat( int argindex, String identifier, double value ) {
+		SetString( argindex, identifier, "" .. value );
 	}
 
-	virtual String GetExecCommand() {
-		return "";
+	double GetFloat( int argindex, String identifier ) {
+		return GetString( argindex, identifier ).ToDouble();
 	}
+
+
+
+	virtual protected void UpdateVisual( void ) {
+		if ( !visual && !( visual = OptionMenuItemZCCommandVisual.Get() ) ) {
+			ZCGlobal.UILog( LL_Emergency, GetClassName() .. "::UpdateVisual(). Cannot find \"OptionMenuItemZCCommandVisual\" class." );
+			return;
+		}
+
+		visual.Update( GetVisualCommand() );
+	}
+
+
+	// Returns a final command to execute.
+	// By default forms a string from "args[]" and "arg.items[]".
+	virtual String GetExecCommand() {
+		String outstr;
+
+		for ( int i = 0; i < args.Size(); i++ ) {
+			ZCCommandKeeperArg arg = args[ i ];
+
+			if ( arg.isstatic ) {
+				outstr = outstr .. arg.defaultval;
+				continue; // Skip the rest of processing of static (unchangeable) args.
+			}
+
+
+			int argItemsSize = arg.items.Size();
+
+			if ( argItemsSize > 0 ) {
+				outstr.AppendFormat( "%s%s", arg.items[ 0 ].prefix, arg.items[ 0 ].value );
+
+				for ( int i = 1; i < argItemsSize; i++ ) {
+					outstr.AppendFormat( "%s%s%s", arg.delimiter, arg.items[ i ].prefix, arg.items[ i ].value );
+				}
+			} // of if ( argItemsSize > 0 ) {}
+
+			outstr = outstr .. " ";
+		} // of for ( int i = 0; i < args.Size(); i++ ) {}
+
+		return outstr;
+	} // of virtual String GetExecCommand() {}
 
 	virtual String GetVisualCommand() {
 		return GetExecCommand();
 	}
-}
-*/
+
+} // of class OptionMenuItemZCCommandKeeper: OptionMenuItem {}
+
+
+
+class OptionMenuItemZCCommandVisual: OptionMenuItemStaticText {
+	static OptionMenuItemZCCommandVisual Get( void ) {
+		OptionMenu m = OptionMenu( Menu.GetCurrentMenu() );
+
+		if ( m == NULL )
+			return NULL;
+
+		for ( int i = 0; i < m.mDesc.mItems.Size(); i++ ) {
+			if ( m.mDesc.mItems[ i ].GetClass() == "OptionMenuItemZCCommandVisual" )
+				return OptionMenuItemZCCommandVisual( m.mDesc.mItems[ i ] );
+		}
+
+		return NULL;
+	} // of static OptionMenuItemZCCommandVisual Get( void ) {}
+
+
+	void Update( String newtext ) {
+		mLabel = newtext;
+	}
+} // of class OptionMenuItemZCCommandVisual: OptionMenuItemStaticText {}
+
+
 
 class OptionMenuItemZCCommandExecute: OptionMenuItemCommand {
-	int counter;
+	OptionMenuItemZCCommandKeeper keeper;
 
 	OptionMenuItemZCCommandExecute Init( String label, String command ) {
 		let newitem = OptionMenuItemZCCommandExecute( Super.Init( label, command ) );
@@ -33,19 +559,108 @@ class OptionMenuItemZCCommandExecute: OptionMenuItemCommand {
 	}
 
 	override bool Activate() {
-		Init( mLabel, "zcadd " .. counter );
-		counter = ( counter + 1 ) % 4;
+		if ( !keeper )
+			keeper = OptionMenuItemZCCommandKeeper.Get();
 
-		bool activateResult = Super.Activate();
-		return activateResult;
+
+		Init( mLabel, keeper.GetExecCommand() );
+
+		return Super.Activate();
 	}
 } // of class OptionMenuItemZCCommandExecute: OptionMenuItemCommand {}
 
 
-// 
 
-class OptionMenuItemZCCommandOption: OptionMenuItemOption {
-}
+class OptionMenuItemZCCommandOption: OptionMenuItemOptionBase {
+	OptionMenuItemZCCommandKeeper keeper;
 
-class OptionMenuItemZCCommandTextField: OptionMenuItemTextField {
-}
+	int mArgIndex;
+	String mIdentifier;			// Default "mAction" automatically converts empty String to the Name 'None'.
+	String mPrefix;				// What to add before a value.
+	//String mRemovingValue;		// Treat this value as an empty parameter.
+
+	private bool updateSelection;
+	private int prevSelection;
+
+	OptionMenuItemZCCommandOption Init( String label, int argindex, String identifier, Name values, String prefix = "" ) {
+		updateSelection = true;
+		prevSelection = -1;
+
+		if ( ZCGlobal.StringIndexOfAny( identifier, ZCCommandKeeperArg.CVAR_IDVAL_SEPARATOR .. ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR .. ZCCommandKeeperArg.CVAR_COMMANDS_SEPARATOR ) != -1 ) {
+			ZCGlobal.UILog( LL_Main,
+					String.Format( "%s::Init(). Identifier \"%s\" has forbidden control characters (\"%s\", \"%s\" and \"%s\" ). They has been removed from the string.",
+							GetClassName(), identifier,
+							ZCCommandKeeperArg.CVAR_IDVAL_SEPARATOR, ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR, ZCCommandKeeperArg.CVAR_COMMANDS_SEPARATOR
+					)
+			);
+
+			identifier.Replace( ZCCommandKeeperArg.CVAR_IDVAL_SEPARATOR, "" );
+			identifier.Replace( ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR, "" );
+			identifier.Replace( ZCCommandKeeperArg.CVAR_COMMANDS_SEPARATOR, "" );
+		}
+
+
+		mPrefix = prefix;
+		mArgIndex = argindex;
+		mIdentifier = identifier;
+
+		// "",  "rel",  "rel:",  "rel:2",  "rel:s",  "rel:linetarget"
+
+
+		Super.Init( label, identifier, values, NULL, 0 );
+
+		return self;
+	} // of OptionMenuItemZCCommandOption Init( String label, int argindex, String identifier, Name values, String prefix = "" ) {}
+
+	override bool MenuEvent( int mkey, bool fromcontroller ) {
+		if ( mkey == Menu.MKEY_Left || mkey == Menu.MKEY_Right || mkey == Menu.MKEY_Enter )
+			updateSelection = true;
+
+		return Super.MenuEvent( mkey, fromcontroller );
+	}
+
+
+	// Copied and modified from "class OptionMenuItemOption".
+	override int GetSelection() {
+		int Selection = -1;
+		int cnt = OptionValues.GetCount( mValues );
+
+		if ( !keeper )
+			keeper = OptionMenuItemZCCommandKeeper.Get();
+
+		if ( !updateSelection )
+			return prevSelection; // Return a "cached" selection.
+
+
+		updateSelection = false;
+
+		if ( cnt > 0 ) {
+			// The keeper can contain only string values.
+			String cv = keeper.GetString( mArgIndex, mAction );
+
+			for ( int i = 0; i < cnt; i++ ) {
+				if ( cv ~== OptionValues.GetTextValue( mValues, i ) ) {
+					prevSelection = selection = i;
+					break;
+				}
+			}
+		} // of if ( cnt > 0 ) {}
+
+		return selection;
+	}
+
+	override void SetSelection( int Selection ) {
+		if ( !keeper )
+			keeper = OptionMenuItemZCCommandKeeper.Get();
+
+		if ( OptionValues.GetCount( mValues ) > 0 ) {
+			// Must be transferred:
+			//	Arg index and item identifier;
+			//	Value.
+			keeper.SetString( mArgIndex, mAction, OptionValues.GetTextValue( mValues, Selection ) );
+			updateSelection = true;
+		}
+	}
+} // of class OptionMenuItemZCCommandOption: OptionMenuItemOptionBase {}
+
+

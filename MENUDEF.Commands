@@ -1,0 +1,30 @@
+//
+
+OptionMenu "mcm_ZChecker_CommandsMenu_zcadd" {
+    Title "zcadd menu"
+
+    StaticText " "
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcadd   0 static:zcadd"
+
+	ZCCommandOption "Panel number", 2, "", "mcm_ZCheckerOptionCCMD_zcadd_panel"
+	ZCCommandOption "Actor source", 1, "", "mcm_ZCheckerOptionCCMD_zcadd_source"
+
+    StaticText " "
+	StaticText "[Execute]"
+	ZCCommandVisual ""
+}
+
+
+OptionString "mcm_ZCheckerOptionCCMD_zcadd_source" {
+	"", "Linetarget"
+	"self", "Player itself"
+	"weapon", "Weapon"
+	"force", "Ethereal linetarget"
+}
+
+OptionString "mcm_ZCheckerOptionCCMD_zcadd_panel" {
+	"", "First free"
+	"1", "1 (left)"
+	"2", "2 (middle)"
+	"3", "3 (right)"
+}

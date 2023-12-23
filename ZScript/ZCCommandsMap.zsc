@@ -12,7 +12,7 @@ class ZCEvmapCommand: ZCConsoleCommand {
 		InitEvmapCCMD(
 			"$ZCEV_HELP_TITLE",
 			"$ZCEV_HELP_DESC",
-			"ev, map, everything, everything_sc77, everything_simple",
+			"ev, map, everything, everything_simple, everything_alt, everything_alternative",
 			'ZCTooltipEvmapCommand'
 		);
 	}
