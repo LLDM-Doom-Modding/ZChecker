@@ -6,8 +6,8 @@ OptionMenu "mcm_ZChecker_CommandsMenu_zcadd" {
     StaticText " "
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcadd   0 static:zcadd"
 
-	ZCCommandOption "Panel number", 2, "", "mcm_ZCheckerOptionCCMD_zcadd_panel"
-	ZCCommandOption "Actor source", 1, "", "mcm_ZCheckerOptionCCMD_zcadd_source"
+	ZCCommandOption "Panel number", 2, "panel", "mcm_ZCheckerOptionCCMD_zcadd_panel"
+	ZCCommandOption "Actor source", 1, "src", "mcm_ZCheckerOptionCCMD_zcadd_source"
 
     StaticText " "
 	StaticText "[Execute]"

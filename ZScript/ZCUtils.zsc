@@ -3,7 +3,7 @@
 //
 
 // Main constants:
-const ZCHECKER_AGRS_SEPARATOR = "@@";
+const ZCHECKER_AGRS_SEPARATOR = "``"; // Default console show/hide button.
 
 // [McM] Reserved handler orders in other projects:
 //   AutoAmbient:    0x7FAA0004;
