@@ -143,4 +143,6 @@ server bool mcm_zchecker_ev_auto_iddqd		= false;  // Automatically set a "god" c
 
 
 // CVars for CCMD menus.
-user string lldm_zcmenuarg_zcadd		= "";
+user string lldm_zcmenuarg_actorsource	= "";
+user string lldm_zcmenuarg_zcaddrem		= "";
+user string lldm_zcmenuarg_zcgivetake	= "";

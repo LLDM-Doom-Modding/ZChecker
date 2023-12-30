@@ -660,11 +660,20 @@ class ZCZScriptACSStringsAPI: Thinker {
 class ZCInternalStringDictionaryCell {
 	String key;
 	String value;
+
+	static ZCInternalStringDictionaryCell Create( String initkey, String initval ) {
+		ZCInternalStringDictionaryCell newcell = new( "ZCInternalStringDictionaryCell" );
+
+		newcell.key = initkey;
+		newcell.value = initval;
+
+		return newcell;
+	}
 }
 
 // Storage cell of the actors names slightly speeds up the names search 
 //process. No binary tree or hashmap used because name masks/wildcards may be 
-//used, absolutely removing all pros from specified data structures.
+//provided, absolutely removing all pros from specified data structures.
 class ZCInternalActorNameCell {
 	const ARRAY_Quantity = 28;
 

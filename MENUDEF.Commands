@@ -1,30 +1,104 @@
 //
+// Console commands menu.
+//
 
-OptionMenu "mcm_ZChecker_CommandsMenu_zcadd" {
-    Title "zcadd menu"
+// === General options ===
 
-    StaticText " "
-	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcadd   0 static:zcadd"
-
-	ZCCommandOption "Panel number", 2, "panel", "mcm_ZCheckerOptionCCMD_zcadd_panel"
-	ZCCommandOption "Actor source", 1, "src", "mcm_ZCheckerOptionCCMD_zcadd_source"
-
-    StaticText " "
-	StaticText "[Execute]"
-	ZCCommandVisual ""
+// Actor source:
+OptionString "ZCheckerOptionCCMD_actorsource" {
+	"", "Linetarget"
+	"1", "1 (left)"
+	"2", "2 (middle)"
+	"3", "3 (right)"
+	"self", "Player itself"
+	"camera", "Current player's camera"
+	"lt", "Force linetarget"
 }
 
 
-OptionString "mcm_ZCheckerOptionCCMD_zcadd_source" {
+
+// === Command menus ===
+
+// "zcadd":
+OptionMenu "ZChecker_CommandsMenu_zcadd" {
+    Title "zcadd menu"
+
+    StaticText " "
+	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcaddrem   0 static:zcadd"
+
+	ZCCommandOption "Panel number", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
+	ZCCommandOption "Actor source", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
+
+    StaticText " "
+	StaticText "[Execute]"
+	ZCCommandVisual " "
+}
+
+OptionString "ZCheckerOptionCCMD_zcadd_source" {
 	"", "Linetarget"
 	"self", "Player itself"
 	"weapon", "Weapon"
 	"force", "Ethereal linetarget"
 }
 
-OptionString "mcm_ZCheckerOptionCCMD_zcadd_panel" {
+OptionString "ZCheckerOptionCCMD_zcadd_panel" {
 	"", "First free"
 	"1", "1 (left)"
 	"2", "2 (middle)"
 	"3", "3 (right)"
 }
+
+
+
+// "zcrem":
+OptionMenu "ZChecker_CommandsMenu_zcrem" {
+    Title "zcrem menu"
+
+    StaticText " "
+	ZCCommandKeeper 1, "0 static:zcadd   1 cvar:lldm_zcmenuarg_zcaddrem"
+	ZCCommandOption "Panel number", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
+}
+
+OptionString "ZCheckerOptionCCMD_zcrem_panel" {
+	"", "Clear all panels"
+	"1", "1 (left)"
+	"2", "2 (middle)"
+	"3", "3 (right)"
+}
+
+
+// "zcgive"/"zctake":
+OptionMenu "ZChecker_CommandsMenu_zcgivetake" {
+    Title "zcgive/zctake menu"
+
+    StaticText " "
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcgivetake   0 default:cmd:give   1 cvar:lldm_zcmenuarg_actorsource   2 default:-   3 default:1"
+	ZCCommandOption "Give/take",      0, "cmd", "ZCheckerOptionCCMD_zcgivetake_main", "zc"
+	ZCCommandOption "Actor source",   1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCCommandOption "Inventory name", 2, "cls", ""
+	ZCCommandOption "Quantity",       3, "q", "ZCheckerOptionCCMD_zcgivetake_quantity"
+
+    StaticText " "
+	ZCCommandVisual " "
+}
+
+OptionString "ZCheckerOptionCCMD_zcgivetake_main" {
+	"zcgive", "Give to actor"
+	"zctake", "Take from actor"
+}
+
+OptionString "ZCheckerOptionCCMD_zcgivetake_quantity" {
+	"1", "1"
+	"2", "2"
+	"3", "3"
+	"5", "5"
+	"10", "10"
+	"100", "100"
+}
+
+
+// "zcact":
+OptionMenu "ZChecker_CommandsMenu_zcact" {
+    Title "zcact menu"
+}
+
