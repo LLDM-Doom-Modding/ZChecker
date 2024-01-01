@@ -176,13 +176,17 @@ OptionMenu "ZChecker_ControlMenu_CallCCMD" {
 	Submenu "Remove actor from infopanel...", "ZChecker_CommandsMenu_zcrem"
 	Submenu "Give/take item...", "ZChecker_CommandsMenu_zcgivetake"
 	Submenu "Do something with actor...", "ZChecker_CommandsMenu_zcact"
-
     StaticText " "
+	Submenu "Summon actor(s)...", "ZChecker_CommandsMenu_zcsummon"
+
+    /*
+	StaticText " "
 	Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
 	Command "$ZCHECKER_CCMDMENU_ZCADD_SELF", "zcadd self"
 	Command "$ZCHECKER_CCMDMENU_ZCREM", "zcrem"
     StaticText " "
 	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp"
+	*/
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
 	//class "ZCOptionMenuCallCCMD" // [WIP]: not written yet.

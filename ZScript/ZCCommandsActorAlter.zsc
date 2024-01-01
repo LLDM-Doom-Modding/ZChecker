@@ -470,7 +470,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
 							String panelposStr = curparam.Mid( colonIndex + 1, curparam.Length() - colonIndex - 1 );
 
-							if ( panelposStr == "" ) {
+							if ( panelposStr == "" || panelposStr == "free" || panelposStr == "-" ) {
 								params.infopanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
 							} else {
 								int panelposNum;

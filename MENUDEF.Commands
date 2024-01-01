@@ -6,10 +6,10 @@
 
 // Actor source:
 OptionString "ZCheckerOptionCCMD_actorsource" {
-	"", "Linetarget"
-	"1", "1 (left)"
-	"2", "2 (middle)"
-	"3", "3 (right)"
+	"", "Linetarget (default)"
+	"1", "Panel 1 (left)"
+	"2", "Panel 2 (middle)"
+	"3", "Panel 3 (right)"
 	"self", "Player itself"
 	"camera", "Current player's camera"
 	"lt", "Force linetarget"
@@ -23,15 +23,13 @@ OptionString "ZCheckerOptionCCMD_actorsource" {
 OptionMenu "ZChecker_CommandsMenu_zcadd" {
     Title "zcadd menu"
 
-    StaticText " "
 	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcaddrem   0 static:zcadd"
-
-	ZCCommandOption "Panel number", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
-	ZCCommandOption "Actor source", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
-
-    StaticText " "
-	StaticText "[Execute]"
+	ZCCommandExecute "Execute"
 	ZCCommandVisual " "
+    StaticText " "
+
+	ZCOption "Panel number", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
+	ZCOption "Actor source", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
 }
 
 OptionString "ZCheckerOptionCCMD_zcadd_source" {
@@ -54,9 +52,12 @@ OptionString "ZCheckerOptionCCMD_zcadd_panel" {
 OptionMenu "ZChecker_CommandsMenu_zcrem" {
     Title "zcrem menu"
 
+	ZCCommandKeeper 1, "0 static:zcrem   1 cvar:lldm_zcmenuarg_zcaddrem"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
     StaticText " "
-	ZCCommandKeeper 1, "0 static:zcadd   1 cvar:lldm_zcmenuarg_zcaddrem"
-	ZCCommandOption "Panel number", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
+
+	ZCOption "Panel number", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
 }
 
 OptionString "ZCheckerOptionCCMD_zcrem_panel" {
@@ -71,34 +72,84 @@ OptionString "ZCheckerOptionCCMD_zcrem_panel" {
 OptionMenu "ZChecker_CommandsMenu_zcgivetake" {
     Title "zcgive/zctake menu"
 
-    StaticText " "
-	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcgivetake   0 default:cmd:give   1 cvar:lldm_zcmenuarg_actorsource   2 default:-   3 default:1"
-	ZCCommandOption "Give/take",      0, "cmd", "ZCheckerOptionCCMD_zcgivetake_main", "zc"
-	ZCCommandOption "Actor source",   1, "src", "ZCheckerOptionCCMD_actorsource"
-	ZCCommandOption "Inventory name", 2, "cls", ""
-	ZCCommandOption "Quantity",       3, "q", "ZCheckerOptionCCMD_zcgivetake_quantity"
-
-    StaticText " "
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcgivetake   0 default:cmd:zcgive   1 cvar:lldm_zcmenuarg_actorsource   2 default:cls:-   3 default:q:1"
+	ZCCommandExecute "Execute"
 	ZCCommandVisual " "
+    StaticText " "
+
+	ZCClassnameField "Inventory name",	2, "cls"
+	ZCNumberField "Quantity, 1..100",	3, "q", 1, 100, 1
+	ZCStaticText "Quantity can be set with left/right arrows or direct input", DARKGRAY
+	ZCStaticText ""
+	ZCOption "Give/take",       0, "cmd", "ZCheckerOptionCCMD_zcgivetake_maincmd"
+	ZCOption "Actor source",    1, "src", "ZCheckerOptionCCMD_actorsource"
+
 }
 
-OptionString "ZCheckerOptionCCMD_zcgivetake_main" {
+OptionString "ZCheckerOptionCCMD_zcgivetake_maincmd" {
 	"zcgive", "Give to actor"
 	"zctake", "Take from actor"
-}
-
-OptionString "ZCheckerOptionCCMD_zcgivetake_quantity" {
-	"1", "1"
-	"2", "2"
-	"3", "3"
-	"5", "5"
-	"10", "10"
-	"100", "100"
 }
 
 
 // "zcact":
 OptionMenu "ZChecker_CommandsMenu_zcact" {
     Title "zcact menu"
+
+	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcact   0 static:zcact   1 cvar:lldm_zcmenuarg_actorsource   2 default:act:rm"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+	ZCStaticText ""
+
+	ZCOption "Action",			2, "act", "ZCheckerOptionCCMD_zcact_action"
+	ZCOption "Actor source",	1, "src", "ZCheckerOptionCCMD_actorsource"
+}
+
+OptionString "ZCheckerOptionCCMD_zcact_action" {
+	"revive", "Revive"
+	"k", "Kill"
+	"xk", "Extreme kill"
+	"rm", "Remove"
+	"statefreeze", "Freeze current state"
+	"stateskip", "Skip current state"
+	"staterevert", "Reset current state"
+}
+
+
+// "zcsummon":
+OptionMenu "ZChecker_CommandsMenu_zcsummon" {
+	Title "zcsummon menu"
+
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsummon   0 static:zcsummon   1 default:cls:-   2 default:q:1"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+	ZCStaticText ""
+
+	ZCClassnameField "Actor to spawn",	1, "cls"
+	ZCNumberField "Quantity, 1..100",	2, "q", 1, 100, 1
+	ZCStaticText "Quantity can be set with left/right arrows or direct input", DARKGRAY
+	ZCStaticText ""
+	ZCOption "Panel to add (only one of spawned)", 3, "panel", "ZCheckerOptionCCMD_zcsummon_addpanel"
+	ZCOption "Friendness", 3, "f/f", "ZCheckerOptionCCMD_zcsummon_friendorfoe"
+	ZCOption "Dormant", 3, "+dor", "ZCheckerOptionCCMD_zcsummon_dormantflag"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsummon_addpanel" {
+	"", "Do not add"
+	"panel:free", "First free"
+	"panel:1", "1 (left)"
+	"panel:2", "2 (middle)"
+	"panel:3", "3 (right)"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsummon_friendorfoe" {
+	"", "Default (no change)"
+	"friend", "Friend"
+	"foe", "Foe"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsummon_dormantflag" {
+	"", "Non-dormant"
+	"dormant", "Dormant"
 }
 
