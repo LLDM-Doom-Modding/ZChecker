@@ -21,22 +21,22 @@ user noarchive string lldm_zcinternal_metastring; // Internal string for the API
 //
 /* General information panel variables. */
 //
-user float lldm_zc_infopanel_startx	= 8.0;
-user float lldm_zc_infopanel_starty	= 8.0;
+user float lldm_zc_infopanel_startx		= 8.0;
+user float lldm_zc_infopanel_starty		= 8.0;
 user float lldm_zc_infopanel_offsetx	= 30.0;
 user float lldm_zc_infopanel_scale		= 1.0;
-user float lldm_zc_infopanelparts_y_gap= 0.55;
-user int lldm_zc_infopanel_fonttype	= 0;
+user float lldm_zc_infopanelparts_y_gap	= 0.55;
+user int lldm_zc_infopanel_fonttype		= 0;
 
 user bool lldm_zc_infopanel_dimenabled		= true;
 user color lldm_zc_infopanel_dimcolor		= "00 00 00";
 user float lldm_zc_infopanel_dimalpha		= 0.5;
-user float lldm_zc_infopanel_dimborderwidth= 0.5;
+user float lldm_zc_infopanel_dimborderwidth	= 0.5;
 
 // The Everything map actor infostring CVars.
 user float lldm_zc_evinfostr_centerx	= 50.0;
 user float lldm_zc_evinfostr_centery	= 5.0;
-user float lldm_zc_evinfostr_scale	= 1.0;
+user float lldm_zc_evinfostr_scale		= 1.0;
 
 // Awful decision, but user-scoped string CVar cannot contain more than 255 
 //characters... Scope might be changed to "nosave" in non-compatible branch, 

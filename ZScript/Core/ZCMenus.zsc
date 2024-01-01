@@ -289,7 +289,7 @@ class ZCOptionMenuPanels: OptionMenu {
 
 		if ( actiontype == PMAT_None && isSearchEventType && ch > 0x20 && ch < 0x7E ) {
 			// Converting to lowercase:
-			if ( ch >= LETTER_A_UPPER && ch <= LETTER_Z_UPPER )
+			if ( ch >= CHAR_LETTER_A_UPPER && ch <= CHAR_LETTER_Z_UPPER )
 				ch |= 0x20;
 
 			int foundIndex = -1;

@@ -63,7 +63,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
 	Slider "$ZCHECKER_VISUAL_START_X_10", "lldm_zc_infopanel_startx", 0.0, 99.0, 10.0, 0
 	Slider "$ZCHECKER_VISUAL_START_Y",    "lldm_zc_infopanel_starty", -50.0, 99.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_START_Y_10", "lldm_zc_infopanel_starty", -50.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_OFFSET_X", "lldm_zc_infopanel_offsetx", 0.0, 100.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_OFFSET_X", "lldm_zc_infopanel_offsetx", 1.0, 100.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "lldm_zc_infopanel_scale", 0.5, 8.0, 0.1, 1
 	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "lldm_zc_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "

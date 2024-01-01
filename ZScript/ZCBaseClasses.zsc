@@ -106,12 +106,12 @@ class ZCTooltipClass: ZCConsoleClass {
 		int prevTypeChar = -1;
 
 		while ( ( curCharIndex = origstr.IndexOf( "`", prevCharIndexStart ) ) != -1 ) {
-			outstr = outstr .. origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart );
+			outstr.AppendFormat( "%s", origstr.Mid( prevCharIndexStart, curCharIndex - prevCharIndexStart ) );
 
 			int typechar = origstr.CharCodeAt( curCharIndex + 1 );
 
 			// Converting to uppercase:
-			if ( typechar >= LETTER_A_LOWER && typechar <= LETTER_Z_LOWER )
+			if ( typechar >= CHAR_LETTER_A_LOWER && typechar <= CHAR_LETTER_Z_LOWER )
 				typechar &= ~0x20;
 
 			if ( typechar == prevTypeChar ) {
@@ -521,7 +521,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 
 	/*// Returns "-1" if input string has no one of the ":,=" or the first occurence index otherwise:
 	static clearscope int indexOfArgDelimiter( String str, bool checkcomma = true, int startindex = 0 ) {
-		return ZCGlobal.StringIndexOfAny( str, ( checkcomma? ":,=" : ":=" ), startindex );
+		return ZCGlobal.StrIndexOfAny( str, ( checkcomma? ":,=" : ":=" ), startindex );
 
 		/*int colonIndex = str.IndexOf( ":" );
 
@@ -719,7 +719,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		// Classname or mask:
 
 		int preventiveChoice = -1;
-		int preventiveChoiceStrStart = ZCGlobal.StringIndexOfAny( classname, ":," );
+		int preventiveChoiceStrStart = ZCGlobal.StrIndexOfAny( classname, ":," );
 
 		if ( preventiveChoiceStrStart != -1 ) {
 			String preventiveChoiceStr = classname.Mid( preventiveChoiceStrStart + 1, classname.Length() - preventiveChoiceStrStart - 1 );
@@ -737,7 +737,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 		} // of if ( preventiveChoiceStrStart != -1 ) {}
 
 
-		if ( ccmd && ccmd.handler && ZCGlobal.StringIndexOfAny( classname, "*-" ) != -1 ) {
+		if ( ccmd && ccmd.handler && ZCGlobal.StrIndexOfAny( classname, "*-" ) != -1 ) {
 			// Regexp mask parsing:
 			String curpart = "";
 			int lastpart = 0;

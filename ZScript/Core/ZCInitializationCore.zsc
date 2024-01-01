@@ -223,7 +223,7 @@ extend class ZCheckerHandler {
 			if ( IndexOfCommentStart != -1 )
 				curLine.Truncate( IndexOfCommentStart );
 
-			curLine = ZCGlobal.TruncateStringBySpaces( curLine );
+			curLine = ZCGlobal.StrStripEmptyChars( curLine );
 
 			// Try to unparse current line if it isn't empty or remove it elsewere:
 			if ( curLine != "" ) {

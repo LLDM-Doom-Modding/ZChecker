@@ -737,7 +737,7 @@ class ZCSetFlagCommand: ZCConsoleCommand {
 			optionstr[ 0 ] = ccmd.args[ ccmdArgsSize - 1 ];
 			optionstr[ 0 ].ToLower();
 
-			int delimIndex = ZCGlobal.StringIndexOfAny( optionstr[ 0 ], ",:" );
+			int delimIndex = ZCGlobal.StrIndexOfAny( optionstr[ 0 ], ",:" );
 
 			if ( delimIndex != -1 ) {
 				optionstr[ 1 ] = optionstr[ 0 ].Mid( delimIndex + 1, optionstr[ 0 ].Length() - delimIndex - 1 );
@@ -1196,7 +1196,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			} else if ( modeargstrLeft3 == "rel" || modeargstr.Left( 1 ) == "r" /* Dangerous but convenient. */ ) {
 				setmode = PSM_Relative;
 
-				int delimIndex = ZCGlobal.StringIndexOfAny( modeargstr, ":,=" );
+				int delimIndex = ZCGlobal.StrIndexOfAny( modeargstr, ":,=" );
 
 				if ( delimIndex == -1 || ( modeargstr.Length() == delimIndex + 1 ) ) {
 					relativeTo = players[ ccmd.e.Player ].mo;
@@ -1259,7 +1259,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 				String curparam = paramlist[ i ];
 				curparam.ToLower();
 
-				int delimIndex = ZCGlobal.StringIndexOfAny( curparam, "=:" );
+				int delimIndex = ZCGlobal.StrIndexOfAny( curparam, "=:" );
 
 				if ( delimIndex == -1 && setmode != PSM_Relative ) {
 					LogLocalize2Str( LL_Main, "ZCSETP_NODELIMCHARS", curparam );

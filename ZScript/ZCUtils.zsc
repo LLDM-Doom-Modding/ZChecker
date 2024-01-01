@@ -50,10 +50,13 @@ const LLCOLOR_EMERGENCY = TEXTCOLOR_FIRE;
 
 
 // Constants of limited use in API:
-const LETTER_A_UPPER = 65;
-const LETTER_Z_UPPER = 90;
-const LETTER_A_LOWER = 97;
-const LETTER_Z_LOWER = 122;
+const CHAR_LETTER_A_UPPER	= 65;
+const CHAR_LETTER_Z_UPPER	= 90;
+const CHAR_LETTER_A_LOWER	= 97;
+const CHAR_LETTER_Z_LOWER	= 122;
+const CHAR_DIGIT_0			= 0x40;
+const CHAR_DIGIT_9			= 0x49;
+const CHAR_UNDERSCORE		= 0x5F;
 
 
 // Slows down a ZCheckerActorInfo objects handling and thus now archived.
@@ -78,7 +81,8 @@ class ZCGlobal: Thinker {
 	};
 
 
-	/* === ZChecker utils === */
+
+	/* === Work with ZChecker global variables and this thinker === */
 
 	void UpdateLogLevel( void ) {
 		if ( !zcLoglevelCVar )
@@ -131,6 +135,9 @@ class ZCGlobal: Thinker {
 		return ClearscopeGet().zcHandler;
 	}
 
+
+
+	/* === Logging and strings util === */
 
 	// Prints well-decorated information string:
 	static clearscope void ClearscopeLog( EZCheckerLogLevels loglevel, String text ) {
@@ -233,6 +240,16 @@ class ZCGlobal: Thinker {
 		return text;
 	}
 
+
+	static clearscope String ObjectName( Object obj ) {
+		return ( obj? obj.GetClassName() .. "" : "<NULL>" );
+	}
+
+	static clearscope String ClassName( class cls ) {
+		return ( cls? cls.GetClassName() .. "" : "<NULL>" );
+	}
+
+
 	static clearscope bool StrStartsWith( String text, String prefix ) {
 		return !!( text.Left( prefix.Length() ) == prefix );
 	}
@@ -247,6 +264,39 @@ class ZCGlobal: Thinker {
 		return !!( text.Mid( textlen - postlen, postlen ) == postfix );
 	}
 
+	// Remove all first and all last spaces and tabs in the string. Ancient function, to be honest.
+	static clearscope String StrStripEmptyChars( String str ) {
+
+		uint code = str.CharCodeAt( 0 );
+		while ( ( code == 9 || code == 11 || code == 32 ) && str.Length() ) {
+			str = str.Mid( 1 );
+			code = str.CharCodeAt( 0 );
+		}
+
+		uint len = str.Length() - 1;
+		code = str.CharCodeAt( len );
+
+		while ( ( code == 9 || code == 11 || code == 32 ) ) {
+			str = str.Left( len );
+			len = str.Length() - 1;
+			code = str.CharCodeAt( len );
+		}
+
+		return str;
+	}
+
+	static clearscope int StrIndexOfAny( String str, String tokens, int startindex = 0 ) {
+		int foundpos = -1;
+
+		for ( int i = 0; i < tokens.Length() && foundpos == -1; i++ )
+			foundpos = str.IndexOf( tokens.CharAt( i ), startindex );
+
+		return foundpos;
+	}
+
+
+
+	/* === General checks wrapper section === */
 
 	// Check for the special ZChecker level:
 	static clearscope bool IsEverythingLevel( void ) {
@@ -275,17 +325,6 @@ class ZCGlobal: Thinker {
 	/* === ZChecker operating on the internal and saves-through variables === */
 
 	// Fixing an ancient ZScript bug...
-	/*static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
-		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
-
-		if ( usercvar ) {
-			CVar metastring = CVar.FindCVar( "lldm_zcinternal_metastring" );
-			metastring.SetString( cvarName );
-			usercvar.SetString( cvarValue );
-
-			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
-		}
-	}*/
 	static clearscope void PrepareUserCVarMetastring( String cvarName, String cvarValue ) {
 		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
 
@@ -297,6 +336,18 @@ class ZCGlobal: Thinker {
 			DataLog( LL_Emergency, "ZCGlobal.PrepareUserCVarMetastring(). Cannot find CVar \"" .. TEXTCOLOR_RED .. cvarName .. LLCOLOR_EMERGENCY .. "\" (setup value \"" .. cvarValue .. "\")" );
 		}
 	}
+
+	/*static clearscope void SetUserCVarString( String cvarName, String cvarValue ) {
+		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
+
+		if ( usercvar ) {
+			CVar metastring = CVar.FindCVar( "lldm_zcinternal_metastring" );
+			metastring.SetString( cvarName );
+			usercvar.SetString( cvarValue );
+
+			ACS_Execute( -int( 'ZChecker_SetUserCVar' ), 0, consoleplayer );
+		}
+	}*/
 
 	static clearscope void PrepareUserCVarString( String cvarName, String cvarValue ) {
 		CVar usercvar = CVar.GetCVar( cvarName, players[ consoleplayer ] );
@@ -324,7 +375,7 @@ class ZCGlobal: Thinker {
 		}
 
 		return outStr;
-	}
+	} // of clearscope String GetClassnameVariable( String zcname ) {}
 
 	play bool DeleteClassnameVariable( String zcname ) {
 		if ( zcname.CharAt( 0 ) != "$" ) {
@@ -350,7 +401,7 @@ class ZCGlobal: Thinker {
 		}
 
 		return found;
-	}
+	} // of play bool DeleteClassnameVariable( String zcname ) {}
 
 	play void ClearAllClassnameVariables( void ) {
 		savedClassnameVariables.Clear();
@@ -383,10 +434,11 @@ class ZCGlobal: Thinker {
 		ZCGlobal.Log( LL_Debug, GetClassName() .. "::SetClassnameVariable(). Dict[\"" .. zcname .. "\"] == \"" .. GetClassnameVariable( zcname ) .. "\"." );
 
 		return true;
-	}
+	} // of play bool SetClassnameVariable( String zcname, String zcvalue ) {}
 
 
-	/* === General (other) utils === */
+
+	/* === Math and pseudo-math utils === */
 
     static clearscope String squeezeVector2( vector2 vec ) {
 		return String.Format( "(%i, %i)", int( vec.x ), int( vec.y ) );
@@ -406,14 +458,16 @@ class ZCGlobal: Thinker {
 		return String.Format( formatted, vec.x, vec.y, vec.z );
 	}
 
-	static clearscope double det2( Vector2 a, Vector2 b ) {
-		return a.x * b.y - a.y * b.x;
+
+	static clearscope double det2( vector2 a, vector2 b ) {
+		return ( a.x * b.y - a.y * b.x ); // Determinant of the matrix 2x2.
 	}
 
-	static clearscope Vector2 BasisCoefficients2( Vector2 a1, Vector2 a2, Vector2 b ) {
+	static clearscope vector2 BasisCoefficients2( vector2 a1, vector2 a2, vector2 b ) {
 		double det = det2( a1, a2 );
 		return ( det2( b, a2 ) / det, det2( a1, b ) / det );
 	}
+
 
 	static clearscope double, double vector3ToAnglePitch( vector3 vec ) {
 		return atan2( vec.y, vec.x ), -atan2( vec.z, vec.xy.length() );
@@ -426,13 +480,6 @@ class ZCGlobal: Thinker {
 		return ( cosangle * cospitch, sin( angle ) * cospitch, sin( pitch ) );
 	}
 
-	static clearscope String ObjectName( Object obj ) {
-		return ( obj? obj.GetClassName() .. "" : "<NULL>" );
-	}
-
-	static clearscope String ClassName( class cls ) {
-		return ( cls? cls.GetClassName() .. "" : "<NULL>" );
-	}
 
 	// Returns "true" is string is an integer; "converted" is a pointer:
 	static clearscope bool str2int_Ptr( in String str, out int converted, bool usesign = false ) {
@@ -496,37 +543,8 @@ class ZCGlobal: Thinker {
 	}
 
 
+
 	/* === Specific utils. May be useless in the non-core scripts === */
-
-	// Remove all first and all last spaces and tabs in the string.
-	static clearscope String TruncateStringBySpaces( String str ) {
-
-		uint code = str.CharCodeAt( 0 );
-		while ( ( code == 9 || code == 11 || code == 32 ) && str.Length() ) {
-			str = str.Mid( 1 );
-			code = str.CharCodeAt( 0 );
-		}
-
-		uint len = str.Length() - 1;
-		code = str.CharCodeAt( len );
-
-		while ( ( code == 9 || code == 11 || code == 32 ) ) {
-			str = str.Left( len );
-			len = str.Length() - 1;
-			code = str.CharCodeAt( len );
-		}
-
-		return str;
-	}
-
-	static clearscope int StringIndexOfAny( String str, String tokens, int startindex = 0 ) {
-		int foundpos = -1;
-
-		for ( int i = 0; i < tokens.Length() && foundpos == -1; i++ )
-			foundpos = str.IndexOf( tokens.CharAt( i ), startindex );
-
-		return foundpos;
-	}
 
 	// Parses newline type in the text file (DOS, Linux, MacOS).
 	static clearscope ENewlineTypes GetTextNewlinesType( String text ) {

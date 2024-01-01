@@ -689,13 +689,13 @@ class ZCInternalActorNameCell {
 			int firstchar = clsname.CharCodeAt( 0 );
 
 			// Converting to uppercase:
-			if ( firstchar >= LETTER_A_LOWER && firstchar <= LETTER_Z_LOWER )
+			if ( firstchar >= CHAR_LETTER_A_LOWER && firstchar <= CHAR_LETTER_Z_LOWER )
 				firstchar &= ~0x20;
 
-			if ( firstchar == 0x5F )
+			if ( firstchar == CHAR_UNDERSCORE )
 				outIndex = 0; // '_'.
-			else if ( firstchar >= LETTER_A_UPPER && firstchar <= LETTER_Z_UPPER )
-				outIndex = firstchar - LETTER_A_UPPER + 1; // 'A'..'Z'.
+			else if ( firstchar >= CHAR_LETTER_A_UPPER && firstchar <= CHAR_LETTER_Z_UPPER )
+				outIndex = firstchar - CHAR_LETTER_A_UPPER + 1; // 'A'..'Z'.
 		}
 
 		return outIndex;

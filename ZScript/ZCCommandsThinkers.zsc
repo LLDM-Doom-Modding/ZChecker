@@ -193,14 +193,14 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 		Array<String> actstrSplitted;
 		actstrSplitted.Clear();
 
-		int colonIndex = ZCGlobal.StringIndexOfAny( actstr, ",:" );
+		int colonIndex = ZCGlobal.StrIndexOfAny( actstr, ",:" );
 		String strpart = actstr;
 
 		while ( colonIndex != -1 ) {
 			actstrSplitted.Push( strpart.Left( colonIndex ) );
 			strpart = strpart.Mid( colonIndex + 1, strpart.Length() - colonIndex - 1 );
 
-			colonIndex = ZCGlobal.StringIndexOfAny( strpart, ",:" );
+			colonIndex = ZCGlobal.StrIndexOfAny( strpart, ",:" );
 		}
 
 		actstrSplitted.Push( strpart );
@@ -363,11 +363,11 @@ class ZCThinkersControlCommand: ZCConsoleCommand {
 			testArgClassInheritance( arg );
 
 			// Check for the colon ("doomimp:1") and class mask ("*sphere"):
-			int colonIndex = ZCGlobal.StringIndexOfAny( arg, ":=," );
-			int regexCharIndex = ZCGlobal.StringIndexOfAny( arg, "*-" );
+			int colonIndex = ZCGlobal.StrIndexOfAny( arg, ":=," );
+			int regexCharIndex = ZCGlobal.StrIndexOfAny( arg, "*-" );
 
 			if ( regexCharIndex != -1 && regexCharIndex < colonIndex )
-				colonIndex = ZCGlobal.StringIndexOfAny( arg, ":=,", colonIndex + 1 );
+				colonIndex = ZCGlobal.StrIndexOfAny( arg, ":=,", colonIndex + 1 );
 
 
 			bool isListIndexSet = false;
