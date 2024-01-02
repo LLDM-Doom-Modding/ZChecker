@@ -181,6 +181,8 @@ OptionMenu "ZChecker_ControlMenu_CallCCMD" {
 	Submenu "Give/take item...", "ZChecker_CommandsMenu_zcgivetake"
 	Submenu "Set flag...", "ZChecker_CommandsMenu_zcsetflag"
 	Submenu "Set state...", "ZChecker_CommandsMenu_zcsetstate"
+    StaticText " "
+	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp"
 
     /*
 	StaticText " "

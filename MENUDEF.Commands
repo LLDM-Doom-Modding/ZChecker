@@ -68,7 +68,7 @@ OptionString "ZCheckerOptionCCMD_zcrem_panel" {
 OptionMenu "ZChecker_CommandsMenu_zcgivetake" {
     Title "zcgive/zctake menu"
 
-	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcgivetake   0 default:cmd:zcgive   1 cvar:lldm_zcmenuarg_actorsource   2 default:cls:-   3 default:q:1"
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcgivetake   0 default:cmd:give   1 cvar:lldm_zcmenuarg_actorsource   2 default:cls:-   3 default:q:1"
 	ZCCommandExecute "Execute"
 	ZCCommandVisual " "
     StaticText " "
