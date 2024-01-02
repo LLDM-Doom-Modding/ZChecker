@@ -55,15 +55,15 @@ unused),,,,
 ,,ZCHECKER_MAINMENU_NETEVENTS,Netevent info intercepting,Перехват Netevents
 ,,ZCHECKER_MAINMENU_NETEVENTS_TIP,Try to obtain information from network events.,Перехватывает информацию с сетевых событий.
 ,,ZCHECKER_MAINMENU_ALLOWDANGEROUS,Allow dangerous actions,Разрешить опасные действия
-,,ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP,Allow operations that are known to crash the game.,"Действия, при обычных условиях всегда ломающие игровой движок."
+,,ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP,Allow operations that are known to crash the game.,"Действия, почти всегда ломающие игровой движок."
 ,,ZCHECKER_MAINMENU_ZCADDTWICE,Repeated actor addition handling,Поведение при дублировании указателя
-,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP1,"Behaviour when using ""zcadd"" on an actor which","Поведение при использовании команд вроде ""zcadd"" на акторе,"
-,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP2,is already present in the information panels list.,который уже присутствует в инфопанелях.
+,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP1,"Behaviour when using ""zcadd"" on an actor which","Поведение при использовании команд вроде ""zcadd"""
+,,ZCHECKER_MAINMENU_ZCADDTWICE_TIP2,is already present in the information panels list.,"на акторе, который уже присутствует в инфопанелях."
 ,,ZCHECKER_MAINMENU_SPECIALHANDLING,Disable ZC classes special handling,Отключить особую обработку ZC-классов
 ,,ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1,Do not alter handling for the special,Не изменять способ обработки для
 ,,ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2,ZChecker actors and classes.,внутренних акторов и классов ZChecker.
 ,,ZCHECKER_MAINMENU_LOGLEVEL,Log level,Уровень журналирования
-,,ZCHECKER_MAINMENU_LOGLEVEL_TIP,Will be updated within 5 world tics.,Будет обновлён в течение пяти игровых тактов.
+,,ZCHECKER_MAINMENU_LOGLEVEL_TIP,Almost always the Detailed level is enough.,Почти всегда достаточно второго уровня.
 ,,,,
 ,,ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN,1. General,1. Минимальный
 ,,ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED,2. Detailed (default),2. Подробный (по умолч.)

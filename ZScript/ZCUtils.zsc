@@ -64,10 +64,14 @@ const CHAR_UNDERSCORE		= 0x5F;
 
 
 
+struct ZCGlobalClearscopeVariables {
+	EZCheckerLogLevels curLogLevel;
+	transient CVar zcLoglevelCVar;
+}
+
 class ZCGlobal: Thinker {
-	EZCheckerLogLevels zcCurLogLevel;
+	private ZCGlobalClearscopeVariables clearscopevars;
 	private ZCheckerHandler zcHandler;
-	private transient CVar zcLoglevelCVar;
 
 	Array<ZCInternalStringDictionaryCell> savedClassnameVariables;
 
@@ -84,15 +88,15 @@ class ZCGlobal: Thinker {
 
 	/* === Work with ZChecker global variables and this thinker === */
 
-	void UpdateLogLevel( void ) {
-		if ( !zcLoglevelCVar )
-			zcLoglevelCVar = CVar.FindCVar( "lldm_zc_loglevel" );
+	clearscope void UpdateLogLevel( void ) {
+		if ( !clearscopevars.zcLoglevelCVar )
+			clearscopevars.zcLoglevelCVar = CVar.FindCVar( "lldm_zc_loglevel" );
 
-		zcCurLogLevel = zcLoglevelCVar.GetInt();
+		clearscopevars.curLogLevel = clearscopevars.zcLoglevelCVar.GetInt();
 	}
 
 	static void ForceSetLogLevel( EZCheckerLogLevels loglevel ) {
-		Get().zcCurLogLevel = clamp( loglevel, LL_Emergency, LL_Debug );
+		Get().clearscopevars.curLogLevel = clamp( loglevel, LL_Emergency, LL_Debug );
 	}
 
 	static clearscope ZCGlobal ClearscopeGet( void ) {
@@ -114,13 +118,13 @@ class ZCGlobal: Thinker {
 	} // of static play ZCGlobal Get( void ) {}
 
 	static clearscope EZCheckerLogLevels GetLoglevelClearscope( void ) {
-		return ClearscopeGet().zcCurLogLevel;
+		return ClearscopeGet().clearscopevars.curLogLevel;
 	}
 	static play EZCheckerLogLevels GetLoglevel( void ) {
-		return Get().zcCurLogLevel;
+		return Get().clearscopevars.curLogLevel;
 	}
 	clearscope EZCheckerLogLevels LoglevelClearscope( void ) {
-		return zcCurLogLevel;
+		return clearscopevars.curLogLevel;
 	}
 
 	void SaveHandler( ZCheckerHandler inithandler ) {

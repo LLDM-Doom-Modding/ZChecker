@@ -43,7 +43,7 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_LOGLEVEL", "lldm_zc_loglevel", "mcm_ZCheckerOption_LogLevels"
+	ZCLoglevelOption "$ZCHECKER_MAINMENU_LOGLEVEL", "lldm_zc_loglevel", "mcm_ZCheckerOption_LogLevels"
     StaticText "$ZCHECKER_MAINMENU_LOGLEVEL_TIP", DARKGRAY
 }
 

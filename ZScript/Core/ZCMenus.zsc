@@ -812,3 +812,33 @@ class OptionMenuItemZCHandlerExistenceCheckWarning: OptionMenuItemStaticText {
 	} // of override void Ticker() {}
 
 } // of class OptionMenuItemZCHandlerCheck: OptionMenuItemStaticText {}
+
+
+class OptionMenuItemZCLoglevelOption: OptionMenuItemOption {
+	ZCGlobal global;
+	int updateTicsCountdown;
+
+	override void SetSelection( int newselection ) {
+		Super.SetSelection( newselection );
+
+		if ( !global )
+			global = ZCGlobal.ClearscopeGet();
+
+		if ( global )
+			updateTicsCountdown = 2; // CVar must have time to spread itself throughout the network.
+		else
+			ZCGlobal.ClearscopeLog( LL_Main, GetClassName() .. "::SetSelection(). No global variables storage found, log level cannot be changed immediately." );
+	} // of override void SetSelection( int newselection ) {}
+
+	override void Ticker() {
+		if ( updateTicsCountdown > 0 ) {
+			updateTicsCountdown--;
+
+			if ( updateTicsCountdown <= 0 && global )
+				global.UpdateLogLevel();
+		}
+
+		Super.Ticker();
+	} // of override void Ticker() {}
+} // of class OptionMenuItemZCLoglevelOption: OptionMenuItemOption {}
+

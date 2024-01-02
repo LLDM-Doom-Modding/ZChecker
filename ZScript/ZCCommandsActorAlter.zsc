@@ -103,7 +103,7 @@ class ZCTakeCommand: ZCGiveCommand {
 
 					Inventory inv = testee.FindInventory( itemName );
 
-					if ( inv && inv.amount == 0 )
+					if ( inv && inv.amount == 0 && !inv.bKEEPDEPLETED )
 						inv.Destroy();
 
 					ZCGlobal.Log( LL_Detailed, String.Format( ZCGlobal.Locz( "ZCTAKE_SUCCESS" ), itemClass.GetClassName(), testee.GetClassName() ) );

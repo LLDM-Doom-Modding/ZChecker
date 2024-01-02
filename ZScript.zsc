@@ -343,7 +343,7 @@ class ZCheckerHandler: StaticEventHandler {
 
 
 	override void WorldTick() {
-		if ( ( gamestate == GS_LEVEL || gamestate == GS_DEMOSCREEN ) && !( level.maptime % 5 ) )
+		if ( ( gamestate == GS_LEVEL || gamestate == GS_DEMOSCREEN ) && !( level.maptime % 17 ) )
 			globalclass.UpdateLogLevel();
 
 		// ACS works only in the play scope.

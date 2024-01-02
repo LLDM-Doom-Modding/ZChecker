@@ -67,7 +67,7 @@ ZCHECKER_MAINMENU_SPECIALHANDLING     = "Disable ZC classes special handling";
 ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1 = "Do not alter handling for the special";
 ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2 = "ZChecker actors and classes.";
 ZCHECKER_MAINMENU_LOGLEVEL            = "Log level";
-ZCHECKER_MAINMENU_LOGLEVEL_TIP        = "Will be updated within 5 world tics.";
+ZCHECKER_MAINMENU_LOGLEVEL_TIP        = "Almost always the Detailed level is enough.";
 
 ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN    = "1. General";
 ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED = "2. Detailed (default)";
