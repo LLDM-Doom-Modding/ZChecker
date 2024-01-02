@@ -486,12 +486,14 @@ unused),,,,
 ," ""zcsummon"":",,,
 ,,ZCHECKER_ZCSUMMON_HELP_TITLE,zcsummon <class> [<amount=1>] [<comma-separated list of extra properties>],zcsummon <класс> [<количество=1>] [<разделённый запятыми список дополнительных свойств>]
 ,,ZCHECKER_ZCSUMMON_HELP_DESC,"Summon <amount> of <class>es by rules of build-in eponymous command. Extended info (<extras>) may be provided as a comma-separated list without spaces. Possible parameters are:
-  BEHAVIOR: f[riend]|foe, aggr[essiveness]:<dflt55>, [no]infi[ght], notproj[ectile], dormant;
-  WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>, [float]speed:<speed>;
-  SPECIAL : panel|add[:<panel>], tid:<TID>, spec:<special>, a[rg]0:<arg0>,...,a[rg]4:<arg4>, hp|health:<hp>.","Создаёт <количество> <класс>ов аналогично встроенной одноимённой команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (""rel"" — относительно игрока):
-  ПОВЕДЕНИЕ: f[riend]|foe, aggr[essiveness]:<0-255>, [no]infi[ght], notproj[ectile], dormant;
-  МИР      : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>, [float]speed:<скорость>;
-  ДРУГОЕ   : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>, hp|health:<hp>."
+  FLAGS   : f[riend], foe, [no]infi[ght], notproj[ectile], dormant, nograv[ity]
+  WORLD   : [rel]ang[le]:<angle>, [rel]pitch:<pitch>, zofs:<mappixels>, f[wd]ofs:<mappixels>
+  PROPERTY: hp|health:<hp>, [float]speed:<speed>, aggr[essiveness]:<0-255>
+  OTHER   : panel|add[:<panel>], tid:<TID>, spec:<action>, a[rg]0:<arg0>,...,a[rg]4:<arg4>","Создаёт <количество> <класс>ов аналогично встроенной одноимённой команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (""rel"" — относительно игрока):
+  ФЛАГИ   : f[riend]|foe, [no]infi[ght], notproj[ectile], dormant, nograv[ity]
+  МИР     : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>
+  СВОЙСТВА: hp|health:<hp>, [float]speed:<скорость>, aggr[essiveness]:<0-255>
+  ДРУГОЕ  : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>"
 ,,ZCHECKER_ZCSUMMON_CLAMPINT,\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.,\c!%s (%i) вне диапазона [%i; %i]. \c-Ограничено до %i.
 ,,ZCHECKER_ZCSUMMON_CLAMPFLOAT,\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.,\c!%s (%f) вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.
 ,,ZCHECKER_ZCSUMMON_WRONGPANEL,"\c!Wrong panel number ""%s"".","\c!Неверный номер панели ""%s""."

@@ -331,6 +331,7 @@ struct ZCSummonExtraParameters play {
 	// Flags:
 	bool notProjectileRules;
 	bool dormant;
+	bool noGravity;
 
 	bool isFriend;		// Mutual exclusive with the next flag.
 	bool isFoe;
@@ -356,7 +357,7 @@ struct ZCSummonExtraParameters play {
 		for ( int i = 0; i < SPECARGS_MAX; i++ )
 			specargs[ i ] = 0;
 
-		isFriend = isFoe = notProjectileRules = dormant = forceInfight = cannotInfight = false;
+		isFriend = isFoe = notProjectileRules = dormant = noGravity = forceInfight = cannotInfight = false;
 	}
 
 	void clampfloat( out double value, String valuedesc, double minlimit, double maxlimit ) {
@@ -458,6 +459,8 @@ class ZCSummonCommand: ZCConsoleCommand {
 						params.notProjectileRules = true;
 					} else if ( curparam == "dormant" ) {
 						params.dormant = true;
+					} else if ( ZCGlobal.StrStartsWith( curparam, "nograv" ) ) {
+						params.noGravity = true;
 					} else if ( curparam.Left( 4 ) == "infi" ) {
 						params.forceInfight = true;
 						params.cannotInfight = false;
@@ -597,7 +600,10 @@ class ZCSummonCommand: ZCConsoleCommand {
 			summoned.floatspeed = params.floatspeed;
 
 		if ( params.dormant )
-			summoned.bDORMANT = true;
+			summoned.Deactivate( NULL );
+
+		if ( params.noGravity )
+			summoned.bNOGRAVITY = true;
 
 		if ( params.forceInfight ) {
 			summoned.bFORCEINFIGHTING = true;

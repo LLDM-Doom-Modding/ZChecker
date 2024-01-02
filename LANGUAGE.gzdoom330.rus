@@ -468,9 +468,10 @@ ZCHECKER_ZCTAKE_NOTINVCLASS           = "\"%s\" - не класс Inventory.";
 //  "zcsummon":
 ZCHECKER_ZCSUMMON_HELP_TITLE          = "zcsummon <класс> [<количество=1>] [<разделенный запятыми список дополнительных свойств>]";
 ZCHECKER_ZCSUMMON_HELP_DESC           = "Создает <количество> <класс>ов аналогично встроенной одноименной команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (\"rel\" - относительно игрока):\
-  ПОВЕДЕНИЕ: f[riend]|foe, aggr[essiveness]:<0-255>, [no]infi[ght], notproj[ectile], dormant;\
-  МИР      : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>, [float]speed:<скорость>;\
-  ДРУГОЕ   : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>, hp|health:<hp>.";
+  ФЛАГИ   : f[riend]|foe, [no]infi[ght], notproj[ectile], dormant, nograv[ity]\
+  МИР     : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>\
+  СВОЙСТВА: hp|health:<hp>, [float]speed:<скорость>, aggr[essiveness]:<0-255>\
+  ДРУГОЕ  : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>";
 ZCHECKER_ZCSUMMON_CLAMPINT            = "\c!%s (%i) вне диапазона [%i; %i]. \c-Ограничено до %i.";
 ZCHECKER_ZCSUMMON_CLAMPFLOAT          = "\c!%s (%f) вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.";
 ZCHECKER_ZCSUMMON_WRONGPANEL          = "\c!Неверный номер панели \"%s\".";
