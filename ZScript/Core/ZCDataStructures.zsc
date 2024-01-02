@@ -75,10 +75,11 @@ class ZCheckerCCMDInfo play {
 
 		// If debug is enabled, display maximal amount of arguments (sometimes 
 		//it saves about ten minutes of the bughunting...):
-		if ( curLoglevel >= LL_Debug ) {
+		if ( curLoglevel >= LL_APIMessage ) {
 			int curpos = 0;
+			int separatorStrLen = ZCHECKER_AGRS_SEPARATOR.Length();
 
-			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + 2 ) ) )
+			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + separatorStrLen ) ) )
 				maxArgsAmount++;
 		}
 

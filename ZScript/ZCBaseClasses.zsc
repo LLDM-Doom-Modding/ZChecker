@@ -400,7 +400,7 @@ class ZCConsoleCommand: ZCConsoleClass abstract play {
 			splitAliasesData();
 
 		if ( ZCGlobal.GetLogLevel() >= LL_APIMessage ) {
-			String devstr = String.Format( LLCOLOR_DARK .. "Help aliases for the " .. LLCOLOR_MAIN .. "%-24s" .. LLCOLOR_DARK .. ":" .. LLCOLOR_MAIN, GetClassName() );
+			String devstr = String.Format( LLCOLOR_DARK .. "Aliases for " .. LLCOLOR_MAIN .. "%-25s" .. LLCOLOR_DARK .. ":" .. LLCOLOR_MAIN, GetClassName() );
 
 			for ( int i = 0; i < ccmdInterfaceData.helpInternalAliases.Size(); i++ )
 				devstr = devstr .. " \"" .. TEXTCOLOR_TEAL .. ccmdInterfaceData.helpInternalAliases[ i ] .. LLCOLOR_MAIN .. "\"";

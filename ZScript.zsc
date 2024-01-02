@@ -15,8 +15,8 @@ version "3.3.0"
 //   Spaces style      - generous/rife.
 //
 // If you want to change something in the project core, please try to use this 
-//style. Modules like infopanels and console commands are formally free from 
-//this rule...
+//style (of course, gist of the code has higher priority). Modules like
+//infopanels and console commands are formally free from this rule...
 
 
 // General, base, utility and miscellaneous code; constants are in "ZCUtils.zsc":
@@ -195,8 +195,8 @@ class ZCheckerHandler: StaticEventHandler {
 			if ( curCCMDNeteventName != "" && ccmdName ~== curCCMDNeteventName ) {
 				curCCMD.ccmd = zcCCMDInfo;
 
-				if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
-					ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). Maximal amount of arguments (excluding name): " .. zcCCMDInfo.maxArgsAmount );
+				if ( nonblockingCommandsAmount == 0 )
+					ZCGlobal.Log( LL_APIMessage, LLCOLOR_DARK .. GetClassName() .. "::NetworkProcess(). " .. LLCOLOR_MAIN .. "Maximal amount of arguments (excluding name): " .. zcCCMDInfo.maxArgsAmount );
 
 				if ( zcCCMDInfo.paramCallHelp && !( curCCMD.zcFlags & curCCMD.CCF_HelpArgOverride ) ) {
 					// Converts a "zc<ccmd> help" to a "zchelp <ccmd>".
@@ -222,8 +222,8 @@ class ZCheckerHandler: StaticEventHandler {
 
 				} else if ( curCCMD.zcFlags & ( curCCMD.CCF_NonblockingSuccess | curCCMD.CCF_NonblockingFailure ) ) {
 					// Requires a non-blocking execution.
-					if ( isDebugLoggingLevel && nonblockingCommandsAmount == 0 )
-						ZCGlobal.Log( LL_Debug, GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_OLIVE .. "Requested a non-blocking execution" .. LLCOLOR_DEBUG .. "." );
+					if ( nonblockingCommandsAmount != 0 )
+						ZCGlobal.Log( LL_APIMessage, LLCOLOR_DEBUG .. GetClassName() .. "::NetworkProcess(). " .. TEXTCOLOR_OLIVE .. "Requested a non-blocking execution" .. LLCOLOR_DEBUG .. "." );
 
 					zcCCMDInfo.nonblockingCommands.Push( curCCMD );
 					nonblockingCommandsAmount++;
@@ -361,6 +361,7 @@ class ZCheckerHandler: StaticEventHandler {
 		}
 
 		Super.WorldTick();
+
 
 		// Test for asynchronous actors:
 		int playernum = ( level.maptime % MAXPLAYERS );
