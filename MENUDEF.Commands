@@ -18,7 +18,7 @@ OptionString "ZCheckerOptionCCMD_actorsource" {
 
 // === Command menus ===
 
-// "zcadd":
+// "zcadd" and "zcrem":
 OptionMenu "ZChecker_CommandsMenu_zcadd" {
     Title "zcadd menu"
 
@@ -29,6 +29,17 @@ OptionMenu "ZChecker_CommandsMenu_zcadd" {
 
 	ZCOption "Panel number", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
 	ZCOption "Actor source", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
+}
+
+OptionMenu "ZChecker_CommandsMenu_zcrem" {
+    Title "zcrem menu"
+
+	ZCCommandKeeper 1, "0 static:zcrem   1 cvar:lldm_zcmenuarg_zcaddrem"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+    StaticText " "
+
+	ZCOption "Panel number", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
 }
 
 OptionString "ZCheckerOptionCCMD_zcadd_source" {
@@ -43,20 +54,6 @@ OptionString "ZCheckerOptionCCMD_zcadd_panel" {
 	"1", "1 (left)"
 	"2", "2 (middle)"
 	"3", "3 (right)"
-}
-
-
-
-// "zcrem":
-OptionMenu "ZChecker_CommandsMenu_zcrem" {
-    Title "zcrem menu"
-
-	ZCCommandKeeper 1, "0 static:zcrem   1 cvar:lldm_zcmenuarg_zcaddrem"
-	ZCCommandExecute "Execute"
-	ZCCommandVisual " "
-    StaticText " "
-
-	ZCOption "Panel number", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
 }
 
 OptionString "ZCheckerOptionCCMD_zcrem_panel" {
@@ -78,16 +75,16 @@ OptionMenu "ZChecker_CommandsMenu_zcgivetake" {
 
 	ZCClassnameField "Inventory name",	2, "cls"
 	ZCNumberField "Quantity, 1..1E6",	3, "q", 1, 1000000, 1
-	ZCStaticText "Quantity can be set with left/right arrows or direct input", DARKGRAY
+	ZCStaticText "Quantity can be set with left/right arrows or keyboard input", DARKGRAY
 	ZCStaticText ""
-	ZCOption "Give/take",       0, "cmd", "ZCheckerOptionCCMD_zcgivetake_maincmd"
+	ZCOption "Give/take",       0, "cmd", "ZCheckerOptionCCMD_zcgivetake_maincmd", "zc"
 	ZCOption "Actor source",    1, "src", "ZCheckerOptionCCMD_actorsource"
 
 }
 
 OptionString "ZCheckerOptionCCMD_zcgivetake_maincmd" {
-	"zcgive", "Give to actor"
-	"zctake", "Take from actor"
+	"give", "Give to actor"
+	"take", "Take from actor"
 }
 
 
@@ -119,36 +116,96 @@ OptionString "ZCheckerOptionCCMD_zcact_action" {
 OptionMenu "ZChecker_CommandsMenu_zcsummon" {
 	Title "zcsummon menu"
 
-	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsummon   0 static:zcsummon   1 default:cls:-   2 default:q:1"
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsummon_main   0 static:zcsummon   1 default:cls:-   2 default:q:1   3 default:relang:360.0  cvar:lldm_zcmenuarg_zcsummon_param"
 	ZCCommandExecute "Execute"
 	ZCCommandVisual " "
 	ZCStaticText ""
 
 	ZCClassnameField "Actor to spawn",	1, "cls"
 	ZCNumberField "Quantity, 1..100",	2, "q", 1, 100, 1
-	ZCStaticText "Quantity can be set with left/right arrows or direct input", DARKGRAY
+	ZCStaticText "Quantity can be set with left/right arrows or keyboard input", DARKGRAY
 	ZCStaticText ""
-	ZCOption "Panel to add (only one of spawned)", 3, "panel", "ZCheckerOptionCCMD_zcsummon_addpanel"
-	ZCOption "Friendness", 3, "f/f", "ZCheckerOptionCCMD_zcsummon_friendorfoe"
-	ZCOption "Dormant", 3, "+dor", "ZCheckerOptionCCMD_zcsummon_dormantflag"
+	ZCStaticText "= World =", DARKBROWN
+	ZCNumberField "Forward offset, mappixels",	3, "fofs", 0.0, 32768.0, 16.0, 0, "fofs:", 0.0, "Default"
+	ZCNumberField "Vertical offset, mappixels",	3, "zofs", -32768.0, 32768.0, 4.0, 0, "zofs:", 0.0, "Default"
+	ZCNumberField "Relative angle",				3, "rang", 0.0, 360.0, 45.0, 1, "relang:", 360.0
+	ZCStaticText ""
+	ZCStaticText "= Behaviour =", DARKBROWN
+	ZCNumberField "Health",						3, "hp", 0, 1000000, 10, 0, "hp:", 0, "No change"
+	ZCOption "Panel to add (last spawned only)",3, "panel", "ZCheckerOptionCCMD_zcsummon_addpanel"
+	ZCNumberField "TID",						3, "tid", 0, 65535, 1, 0, "tid:"
+	ZCNumberField "Argument 0",					3, "a0", -1, 255, 1, 0, "arg0:", -1, "Default"
+	ZCNumberField "Argument 1",					3, "a1", -1, 255, 1, 0, "arg1:", -1, "Default"
+	ZCNumberField "Argument 2",					3, "a2", -1, 255, 1, 0, "arg2:", -1, "Default"
+	ZCStaticText ""
+	ZCStaticText "= Flags =", DARKBROWN
+	ZCOption "Friendliness", 		3, "+f/f", "ZCheckerOptionCCMD_zcsummon_flagsfriendliness"
+	ZCOption "Infighting", 			3, "+infi", "ZCheckerOptionCCMD_zcsummon_flagsinfighting"
+	ZCOption "Projectile rules", 	3, "+nprj", "ZCheckerOptionCCMD_zcsummon_flagnotproj"
+	ZCOption "Dormant", 			3, "+dt", "ZCheckerOptionCCMD_zcsummon_flagdormant"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_addpanel" {
-	"", "Do not add"
-	"panel:free", "First free"
-	"panel:1", "1 (left)"
-	"panel:2", "2 (middle)"
-	"panel:3", "3 (right)"
+	"", "-"
+	"add", "First free"
+	"add:1", "1 (left)"
+	"add:2", "2 (middle)"
+	"add:3", "3 (right)"
 }
 
-OptionString "ZCheckerOptionCCMD_zcsummon_friendorfoe" {
-	"", "Default (no change)"
+OptionString "ZCheckerOptionCCMD_zcsummon_flagsfriendliness" {
+	"", "-"
 	"friend", "Friend"
 	"foe", "Foe"
 }
+OptionString "ZCheckerOptionCCMD_zcsummon_flagsinfighting" {
+	"", "-"
+	"noinfight", "Disable infighting"
+	"infight", "Force infighting"
+}
 
-OptionString "ZCheckerOptionCCMD_zcsummon_dormantflag" {
-	"", "Non-dormant"
-	"dormant", "Dormant"
+OptionString "ZCheckerOptionCCMD_zcsummon_flagdormant" {
+	"", "-"
+	"dormant", "Force dormant"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsummon_flagnotproj" {
+	"", "-"
+	"notproj", "Do not apply"
+}
+
+
+// "zcsetflag"/"zcfl":
+OptionMenu "ZChecker_CommandsMenu_zcsetflag" {
+	Title "zcsummon menu"
+
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetf   0 static:zcsetflag   1 cvar:lldm_zcmenuarg_actorsource   2 default:f:yflip   3"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+	ZCStaticText ""
+
+	ZCIdentifierField "Flag name",	2, "f"
+	ZCOption "Operation",			3, "op", "ZCheckerOptionCCMD_zcsetflag_operation"
+	ZCOption "Actor source",		1, "src", "ZCheckerOptionCCMD_actorsource"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsetflag_operation" {
+	"", "Toggle"
+	"true", "Set to 1"
+	"false", "Reset to 0"
+}
+
+
+// "zcsetstate"/"zcst":
+OptionMenu "ZChecker_CommandsMenu_zcsetstate" {
+	Title "zcsummon menu"
+
+	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcsetst   0 static:zcsetstate   1 cvar:lldm_zcmenuarg_actorsource   2 default:st:Spawn"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+	ZCStaticText ""
+
+	ZCIdentifierField "State label",2, "st"
+	ZCOption "Actor source",		1, "src", "ZCheckerOptionCCMD_actorsource"
 }
 

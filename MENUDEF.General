@@ -174,10 +174,13 @@ OptionMenu "ZChecker_ControlMenu_CallCCMD" {
 
 	Submenu "Add actor to infopanel...", "ZChecker_CommandsMenu_zcadd"
 	Submenu "Remove actor from infopanel...", "ZChecker_CommandsMenu_zcrem"
-	Submenu "Give/take item...", "ZChecker_CommandsMenu_zcgivetake"
-	Submenu "Do something with actor...", "ZChecker_CommandsMenu_zcact"
     StaticText " "
 	Submenu "Summon actor(s)...", "ZChecker_CommandsMenu_zcsummon"
+    StaticText " "
+	Submenu "Do something with actor...", "ZChecker_CommandsMenu_zcact"
+	Submenu "Give/take item...", "ZChecker_CommandsMenu_zcgivetake"
+	Submenu "Set flag...", "ZChecker_CommandsMenu_zcsetflag"
+	Submenu "Set state...", "ZChecker_CommandsMenu_zcsetstate"
 
     /*
 	StaticText " "

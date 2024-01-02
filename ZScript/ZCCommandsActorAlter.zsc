@@ -381,8 +381,8 @@ struct ZCSummonExtraParameters play {
 		faceangle %= 360.0;
 		clampfloat( facepitch, "Pitch", -90.0, 90.0 );
 
-		clampfloat( zofs, "Z offset", -32767.0, 32768.0 );
-		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
+		clampfloat( zofs, "Z offset", -32768.0, 32768.0 );
+		clampfloat( forwardofs, "Forward offset", -32768.0, 32768.0 );
 
 		if ( isSpeedSet )
 			clampfloat( speed, "Speed", 0.0, 32768.0 );
