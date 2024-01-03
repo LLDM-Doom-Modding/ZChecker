@@ -382,8 +382,8 @@ struct ZCSummonExtraParameters play {
 		faceangle %= 360.0;
 		clampfloat( facepitch, "Pitch", -90.0, 90.0 );
 
-		clampfloat( zofs, "Z offset", -32767.0, 32768.0 );
-		clampfloat( forwardofs, "Forward offset", -32767.0, 32768.0 );
+		clampfloat( zofs, "Z offset", -32768.0, 32768.0 );
+		clampfloat( forwardofs, "Forward offset", -32768.0, 32768.0 );
 
 		if ( isSpeedSet )
 			clampfloat( speed, "Speed", 0.0, 32768.0 );
@@ -473,7 +473,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 						if ( -1 != ( colonIndex = curparam.IndexOf( ":" ) ) || -1 != ( colonIndex = curparam.IndexOf( "=" ) ) ) {
 							String panelposStr = curparam.Mid( colonIndex + 1, curparam.Length() - colonIndex - 1 );
 
-							if ( panelposStr == "" ) {
+							if ( panelposStr == "" || panelposStr == "free" || panelposStr == "-" ) {
 								params.infopanelPos = ZCAddCommand.FindFreeTesteePlace( ccmd );
 							} else {
 								int panelposNum;

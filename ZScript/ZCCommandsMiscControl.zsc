@@ -178,7 +178,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 
 				if ( mo ) {
 					LogLocalize2Str( LL_Main | LL_NoDot, "ZCPANELINFO_ZCCLASSINFO", mo.GetClassName() );
-					EventHandler.SendNetworkEvent( "zc_classinfo@@" .. mo.GetClassName() );
+					EventHandler.SendNetworkEvent( "zc_classinfo" .. ZCHECKER_AGRS_SEPARATOR .. mo.GetClassName() );
 
 				} else {
 					ZCGlobal.Log( LL_Main, String.Format( ZCGlobal.Locz( "ZCPANEL_NOACTORINPOS" ), zcPos + 1 ) );

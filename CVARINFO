@@ -144,3 +144,15 @@ server bool lldm_zcev_spawnstealth			= true;
 server bool lldm_zcev_spawnplrchunks		= false;
 server bool lldm_zcev_spawnbossbrains		= false;
 
+
+//
+/* CVars for CCMD menus. */
+//
+user string lldm_zcmenuarg_actorsource	= "";
+user string lldm_zcmenuarg_zcaddrem		= "";
+user string lldm_zcmenuarg_zcgivetake	= "";
+user string lldm_zcmenuarg_zcact		= "";
+user string lldm_zcmenuarg_zcsummon_main	= "";
+user string lldm_zcmenuarg_zcsummon_param	= "";
+user string lldm_zcmenuarg_zcsetf		= "";
+user string lldm_zcmenuarg_zcsetst		= "";

@@ -4,38 +4,38 @@
 
 AddOptionMenu "OptionsMenu" {
 	StaticText " "
-	Submenu "$ZCHECKER_MAINMENU_TITLE", "mcm_ZChecker_ControlMenu"
+	Submenu "$ZCHECKER_MAINMENU_TITLE", "ZChecker_ControlMenu"
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR"
 }
 
-OptionMenu "mcm_ZChecker_ControlMenu" {
+OptionMenu "ZChecker_ControlMenu" {
     Title "$ZCHECKER_MAINMENU_TITLE"
 
 	StaticText " "
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_MAINMENU_ZCHANDLER_ERROR"
 
 	StaticText "$ZCHECKER_MAINMENU_DIV_GENERAL", 1
-	Submenu "$ZCHECKER_MAINMENU_INFOPANELS", "mcm_ZChecker_ControlMenu_Panels"
-	Submenu "$ZCHECKER_MAINMENU_CCMDS", "mcm_ZChecker_ControlMenu_CallCCMD"
-	Submenu "$ZCHECKER_MAINMENU_EVMAP", "mcm_ZChecker_ControlMenu_MapEverything"
-	Submenu "$ZCHECKER_MAINMENU_VISUAL", "mcm_ZChecker_ControlMenu_VisualSettings"
+	Submenu "$ZCHECKER_MAINMENU_INFOPANELS", "ZChecker_ControlMenu_Panels"
+	Submenu "$ZCHECKER_MAINMENU_CCMDS", "ZChecker_ControlMenu_CallCCMD"
+	Submenu "$ZCHECKER_MAINMENU_EVMAP", "ZChecker_ControlMenu_MapEverything"
+	Submenu "$ZCHECKER_MAINMENU_VISUAL", "ZChecker_ControlMenu_VisualSettings"
 	StaticText " "
 	StaticText "$ZCHECKER_MAINMENU_DIV_HOTKEYS", 1	
-	Control "$ZCHECKER_MAINMENU_OPEN_MENU_KEY", "openmenu mcm_ZChecker_ControlMenu"
-	Control "$ZCHECKER_MAINMENU_OPENINFOPANELS", "openmenu mcm_ZChecker_ControlMenu_Panels"
-	Control "$ZCHECKER_MAINMENU_OPENCCMDS", "openmenu mcm_ZChecker_ControlMenu_CallCCMD"
-	Control "$ZCHECKER_MAINMENU_OPENEVMAP", "openmenu mcm_ZChecker_ControlMenu_MapEverything"
-	Control "$ZCHECKER_MAINMENU_OPENVISUAL", "openmenu mcm_ZChecker_ControlMenu_VisualSettings"
+	Control "$ZCHECKER_MAINMENU_OPEN_MENU_KEY", "openmenu ZChecker_ControlMenu"
+	Control "$ZCHECKER_MAINMENU_OPENINFOPANELS", "openmenu ZChecker_ControlMenu_Panels"
+	Control "$ZCHECKER_MAINMENU_OPENCCMDS", "openmenu ZChecker_ControlMenu_CallCCMD"
+	Control "$ZCHECKER_MAINMENU_OPENEVMAP", "openmenu ZChecker_ControlMenu_MapEverything"
+	Control "$ZCHECKER_MAINMENU_OPENVISUAL", "openmenu ZChecker_ControlMenu_VisualSettings"
 
 	StaticText " "
 	StaticText "$ZCHECKER_MAINMENU_DIV_OTHER", 1
-	Option "$ZCHECKER_MAINMENU_NETEVENTS", "lldm_zc_specinfo_netevents", "mcm_ZCheckerOption_NeteventsInfo"
+	Option "$ZCHECKER_MAINMENU_NETEVENTS", "lldm_zc_specinfo_netevents", "ZCheckerOption_NeteventsInfo"
     StaticText "$ZCHECKER_MAINMENU_NETEVENTS_TIP", DARKGRAY
 	StaticText " "
 	Option "$ZCHECKER_MAINMENU_ALLOWDANGEROUS", "lldm_zc_allowdangerccmds", "YesNo"
     StaticText "$ZCHECKER_MAINMENU_ALLOWDANGEROUS_TIP", DARKGRAY
 	StaticText " "
-	Option "$ZCHECKER_MAINMENU_ZCADDTWICE", "lldm_zc_zcadd_sameactor_behaviour", "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour"
+	Option "$ZCHECKER_MAINMENU_ZCADDTWICE", "lldm_zc_zcadd_sameactor_behaviour", "ZCheckerOption_ZCAddActorTwiceBehaviour"
     StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP1", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_ZCADDTWICE_TIP2", DARKGRAY
 	StaticText " "
@@ -43,18 +43,18 @@ OptionMenu "mcm_ZChecker_ControlMenu" {
     StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP1", DARKGRAY
 	StaticText "$ZCHECKER_MAINMENU_SPECIALHANDLING_TIP2", DARKGRAY
 	StaticText " "
-	ZCLoglevelOption "$ZCHECKER_MAINMENU_LOGLEVEL", "lldm_zc_loglevel", "mcm_ZCheckerOption_LogLevels"
+	ZCLoglevelOption "$ZCHECKER_MAINMENU_LOGLEVEL", "lldm_zc_loglevel", "ZCheckerOption_LogLevels"
     StaticText "$ZCHECKER_MAINMENU_LOGLEVEL_TIP", DARKGRAY
 }
 
-OptionMenu "mcm_ZChecker_ControlMenu_Panels" protected {
+OptionMenu "ZChecker_ControlMenu_Panels" protected {
     Title "$ZCHECKER_INFOPANELSMENU_TITLE"
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
     class "ZCOptionMenuPanels"
 }
 
-OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
+OptionMenu "ZChecker_ControlMenu_VisualSettings" {
     Title "$ZCHECKER_VISUAL_TITLE"
     StaticText " "
 
@@ -81,10 +81,10 @@ OptionMenu "mcm_ZChecker_ControlMenu_VisualSettings" {
 	Slider "$ZCHECKER_VISUAL_INFOSTR_SCALE", "lldm_zc_evinfostr_scale", 0.5, 8.0, 0.1, 1
     StaticText " "
     StaticText "$ZCHECKER_VISUALDIV_OTHER", 1
-	Option "$ZCHECKER_VISUAL_FONTTYPES", "lldm_zc_infopanel_fonttype", "mcm_ZCheckerOption_InfoPanelFontTypes"
+	Option "$ZCHECKER_VISUAL_FONTTYPES", "lldm_zc_infopanel_fonttype", "ZCheckerOption_InfoPanelFontTypes"
 }
 
-OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
+OptionMenu "ZChecker_ControlMenu_MapEverything" {
     Title "$ZCHECKER_EVMAPMENU_TITLE"
     StaticText " "
 
@@ -158,7 +158,7 @@ OptionMenu "mcm_ZChecker_ControlMenu_MapEverything" {
 	Command "$ZCHECKER_EVMAPMENU_RECREATEACTORS", "zcev reload", 0, 1
 }
 
-OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
+OptionMenu "ZChecker_ControlMenu_CallCCMD" {
     Title "$ZCHECKER_CCMDMENU_TITLE"
 
     StaticText " "
@@ -172,25 +172,40 @@ OptionMenu "mcm_ZChecker_ControlMenu_CallCCMD" {
     StaticText "$ZCHECKER_CCMDMENU_EXAMPLES", 1
     StaticText " "
 
+	Submenu "Add actor to infopanel...", "ZChecker_CommandsMenu_zcadd"
+	Submenu "Remove actor from infopanel...", "ZChecker_CommandsMenu_zcrem"
+    StaticText " "
+	Submenu "Summon actor(s)...", "ZChecker_CommandsMenu_zcsummon"
+    StaticText " "
+	Submenu "Do something with actor...", "ZChecker_CommandsMenu_zcact"
+	Submenu "Give/take item...", "ZChecker_CommandsMenu_zcgivetake"
+	Submenu "Set flag...", "ZChecker_CommandsMenu_zcsetflag"
+	Submenu "Set state...", "ZChecker_CommandsMenu_zcsetstate"
+    StaticText " "
+	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp", 0, 1
+
+    /*
+	StaticText " "
 	Command "$ZCHECKER_CCMDMENU_ZCADD", "zcadd"
 	Command "$ZCHECKER_CCMDMENU_ZCADD_SELF", "zcadd self"
 	Command "$ZCHECKER_CCMDMENU_ZCREM", "zcrem"
     StaticText " "
 	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp"
+	*/
 
     // See "ZScript/ZCMenus.zsc" for the full menu code.
 	//class "ZCOptionMenuCallCCMD" // [WIP]: not written yet.
 }
 
 
-OptionValue "mcm_ZCheckerOption_LogLevels" {
+OptionValue "ZCheckerOption_LogLevels" {
 	1, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_MAIN"
 	2, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_DETAILED"
 	3, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_DEVELOPER"
 	4, "$ZCHECKER_MAINMENUOPT_LOGLEVEL_DEBUG"
 }
 
-OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {
+OptionValue "ZCheckerOption_InfopanelFontTypes" {
 	0, "$ZCHECKER_MAINMENUOPT_FONTS_SMALL"
 	1, "$ZCHECKER_MAINMENUOPT_FONTS_SMSHORT"
 	2, "$ZCHECKER_MAINMENUOPT_FONTS_SMFULL"
@@ -199,14 +214,14 @@ OptionValue "mcm_ZCheckerOption_InfopanelFontTypes" {
 	5, "$ZCHECKER_MAINMENUOPT_FONTS_NEWCON"
 }
 
-OptionValue "mcm_ZCheckerOption_NeteventsInfo" {
+OptionValue "ZCheckerOption_NeteventsInfo" {
 	0, "$ZCHECKER_MAINMENUOPT_NETEVENS_DISABLED"
 	1, "$ZCHECKER_MAINMENUOPT_NETEVENS_NA"
 	2, "$ZCHECKER_MAINMENUOPT_NETEVENS_NAM"
 	3, "$ZCHECKER_MAINMENUOPT_NETEVENS_FULL"
 }
 
-OptionValue "mcm_ZCheckerOption_ZCAddActorTwiceBehaviour" {
+OptionValue "ZCheckerOption_ZCAddActorTwiceBehaviour" {
 	0, "$ZCHECKER_MAINMENUOPT_TWICE_SMOVE"
 	1, "$ZCHECKER_MAINMENUOPT_TWICE_SCOPY"
 	2, "$ZCHECKER_MAINMENUOPT_TWICE_MOVEWARN"

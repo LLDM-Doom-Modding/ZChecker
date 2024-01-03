@@ -1041,6 +1041,10 @@ class ZCBaseInfoPanelPart abstract {
 
 
 	ui virtual String GetSubmenuLabel( OptionMenuDescriptor submenuDesc ) {
+		if ( !OptionMenuDescriptor( submenuDesc ) )
+			return FIRE .. "No submenu descriptor for \"" .. ZCGlobal.FreeLocalize( optionLabel ) .. "\".";
+
+
 		String label;
 
 		int errorCountdown = 256;

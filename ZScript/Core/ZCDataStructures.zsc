@@ -4,7 +4,7 @@
 
 // Class used to transfer the data between "NetworkProcess()", console commands manager and CCMDs itselfs.
 class ZCheckerCCMDInfo play {
-	const ZCHECKER_CCMDINFO_PARAMETERS_SEPARATOR = "##";
+	const CCMDINFO_PARAMETERS_SEPARATOR = "##";
 
 	Array<String> args;			// Arguments excluding ZC-CCMD name;
 	ZCheckerHandler handler;	// Pointer to the main StaticEventHandler (some GZDoom versions strangely crashes on the "FindEventHandler()" calls);
@@ -24,7 +24,7 @@ class ZCheckerCCMDInfo play {
 		parameters.Clear();
 
 		args[ 0 ].ToLower();
-		args[ 0 ].Split( parameters, ZCHECKER_CCMDINFO_PARAMETERS_SEPARATOR, TOK_SKIPEMPTY );
+		args[ 0 ].Split( parameters, CCMDINFO_PARAMETERS_SEPARATOR, TOK_SKIPEMPTY );
 
 		for ( int i = 0; i < parameters.Size(); i++ ) {
 			String curparam = parameters[ i ];
@@ -81,7 +81,10 @@ class ZCheckerCCMDInfo play {
 
 			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + separatorStrLen ) ) )
 				maxArgsAmount++;
+
+			//console.printf( "maxArgsAmount " .. maxArgsAmount .. " as \"" .. e.Name .. "\" index " .. e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR ) );
 		}
+
 
 		String zcCommandName = "";
 
@@ -98,7 +101,7 @@ class ZCheckerCCMDInfo play {
 				String arg0 = args[ 0 ];
 				arg0.ToLower();
 
-				if ( arg0.Left( 2 ) == ZCHECKER_CCMDINFO_PARAMETERS_SEPARATOR ) {
+				if ( arg0.Left( 2 ) == CCMDINFO_PARAMETERS_SEPARATOR ) {
 					handleSpecialParameters();
 					args.Delete( 0, 1 );
 
@@ -663,11 +666,20 @@ class ZCZScriptACSStringsAPI: Thinker {
 class ZCInternalStringDictionaryCell {
 	String key;
 	String value;
+
+	static ZCInternalStringDictionaryCell Create( String initkey, String initval ) {
+		ZCInternalStringDictionaryCell newcell = new( "ZCInternalStringDictionaryCell" );
+
+		newcell.key = initkey;
+		newcell.value = initval;
+
+		return newcell;
+	}
 }
 
-// Storage cell of the actors names slightly speeding up the names search 
+// Storage cell of the actors names slightly speeds up the names search 
 //process. No binary tree or hashmap used because name masks/wildcards may be 
-//used, absolutely removing all pros from specified data structures.
+//provided, absolutely removing all pros from specified data structures.
 class ZCInternalActorNameCell {
 	const ARRAY_Quantity = 28;
 
