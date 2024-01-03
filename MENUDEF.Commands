@@ -323,5 +323,24 @@ OptionString "ZCheckerOptionCCMD_zcsetprop_renderstyle" {
 // "zcpanel":
 OptionMenu "ZChecker_CommandsMenu_zcpanel_copymove" {
 	Title "zcpanel menu"
+
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcpanel   0 static:zcpanel   1 default:p1:1   2 default:cmd:move   3 default:p2:3"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+
+	ZCStaticText ""
+	ZCOption "Source panel",  1, "p1", "ZCheckerOptionCCMD_zcpanel_panelindex"
+	ZCOption "Destination panel",  3, "p2", "ZCheckerOptionCCMD_zcpanel_panelindex"
+	ZCOption "Operation",  2, "cmd", "ZCheckerOptionCCMD_zcpanel_operation"
 }
 
+OptionString "ZCheckerOptionCCMD_zcpanel_panelindex" {
+	"1", "Panel 1 (left)"
+	"2", "Panel 2 (middle)"
+	"3", "Panel 3 (right)"
+}
+
+OptionString "ZCheckerOptionCCMD_zcpanel_operation" {
+	"move", "Move"
+	"copy", "Copy"
+}

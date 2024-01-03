@@ -158,4 +158,4 @@ user string lldm_zcmenuarg_zcsetf		= "";
 user string lldm_zcmenuarg_zcsetst		= "";
 user string lldm_zcmenuarg_zcsetp_p1	= "";
 user string lldm_zcmenuarg_zcsetp_p2	= "";
-
+user string lldm_zcmenuarg_zcpanel		= "";
