@@ -1326,9 +1326,9 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 						} else if ( prop == "scale" ) {
 							params.doubles[ params.PFD_ScaleX ].set( paramdouble );
 							params.doubles[ params.PFD_ScaleY ].set( paramdouble );
-						} else if ( prop == "scalex" ) {
+						} else if ( prop == "scalex" || prop == "xscale" ) {
 							params.doubles[ params.PFD_ScaleX ].set( paramdouble );
-						} else if ( prop == "scaley" ) {
+						} else if ( prop == "scaley" || prop == "yscale" ) {
 							params.doubles[ params.PFD_ScaleY ].set( paramdouble );
 						} else if ( prop == "alpha" ) {
 							params.doubles[ params.PFD_Alpha ].set( paramdouble );
@@ -1363,6 +1363,8 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 						Actor baseactor = ( relativeTo? relativeTo : alteree );
 
 						if ( prop.Left( 6 ) == "render" || prop == "rstyle" || prop == "rst" ) {
+							int paramint;
+
 							if ( setmode == PSM_Relative || pvalue == "none" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_None );
 							else if ( pvalue.Left( 4 ) == "norm" || pvalue == "x" || pvalue == "n" )
@@ -1371,7 +1373,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_OptFuzzy );
 							else if ( pvalue == "stencil" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_Stencil );
-							else if ( pvalue == "translucentstencil" || pvalue == "transstencil" )
+							else if ( pvalue == "translucentstencil" || ZCGlobal.StrStartsWith( pvalue, "transst" ) )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_TranslucentStencil );
 							else if ( pvalue.Left( 5 ) == "trans" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_Translucent );
@@ -1383,20 +1385,22 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_Shadow );
 							else if ( pvalue == "subtract" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_Subtract );
-							else if ( pvalue == "addstencil" )
+							else if ( pvalue == "addstencil" || pvalue == "addstc" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_AddStencil );
-							else if ( pvalue == "addshaded" )
+							else if ( pvalue == "addshaded" || pvalue == "addshd" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_AddShaded );
-							else if ( pvalue == "multiply" )
+							else if ( pvalue.Left( 3 ) == "mul" )
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_Multiply );
-							else if ( pvalue == "inversemultiply" )
+							else if ( ZCGlobal.StrStartsWith( pvalue, "inversemul" ) || pvalue.Left( 6 ) == "invmul" )
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_InverseMultiply );
-							else if ( pvalue == "colorblend" )
+							else if ( pvalue.Left( 7 ) == "colorbl" )
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_ColorBlend );
 							else if ( pvalue == "source" ) // Engine internal value, actually.
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_Source );
 							else if ( pvalue == "coloradd" )
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_ColorAdd );
+							else if ( str2int_Ptr( pvalue, +paramint, false ) && ( paramint < ZCSpritesInfoPanel.STYLE_Quantity ) )
+								params.integers[ params.PFI_RenderStyle ].set( paramint	);
 							else
 								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDRENDERSTYLE", pvalue ); 
 

@@ -156,3 +156,6 @@ user string lldm_zcmenuarg_zcsummon_main	= "";
 user string lldm_zcmenuarg_zcsummon_param	= "";
 user string lldm_zcmenuarg_zcsetf		= "";
 user string lldm_zcmenuarg_zcsetst		= "";
+user string lldm_zcmenuarg_zcsetp_p1	= "";
+user string lldm_zcmenuarg_zcsetp_p2	= "";
+

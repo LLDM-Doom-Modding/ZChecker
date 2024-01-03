@@ -512,7 +512,7 @@ class OptionMenuItemZCCommandKeeper: OptionMenuItem {
 		if ( item )
 			ZCGlobal.UILog( LL_Debug, String.Format( "%s::GetString(). Got pair \"%s:%s\"", const_ClassName, identifier, item.value ) );
 
-		UpdateVisual();
+		UpdateVisualMenuItem();
 
 		return ( item? item.value: "" );
 	} // of String GetString( int argindex, String identifier ) {}
@@ -539,13 +539,24 @@ class OptionMenuItemZCCommandKeeper: OptionMenuItem {
 		items.Clear();
 
 		if ( visualupdate )
-			UpdateVisual();
+			UpdateVisualMenuItem();
 	}
 
 
-	void UpdateVisual( void ) {
+	void UpdateAllMenuItems( void ) {
+		OptionMenu curmenu = OptionMenu( Menu.GetCurrentMenu() );
+
+		if ( !curmenu )
+			return;
+
+		for ( int i = 0; i < curmenu.mDesc.mItems.Size(); i++ )
+			curmenu.mDesc.mItems[ i ].OnMenuCreated();
+	} // of void UpdateAllItems( void ) {}
+
+	void UpdateVisualMenuItem( void ) {
 		updateVisualRequest = true;
 	}
+
 
 	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
 		if ( updateVisualRequest ) {
@@ -728,16 +739,14 @@ class OptionMenuItemZCOption: OptionMenuItemOptionBase {
 
 	int mArgIndex;
 	String mIdentifier;		// Default "mAction" automatically converts empty String to the Name 'None'.
-	String mPrefix;			// What to add before a value.
+	String mPrefix;			// What to add before a non-empty value.
 
 	protected bool updateSelection;
 	protected int prevSelection;
 	protected bool itemInitialized;
 
-	OptionMenuItemZCOption Init( String label, int argindex, String identifier, Name values, String prefix = "" ) {
-		prevSelection = -1;
-		itemInitialized = false;
 
+	static String FilterIdentifierString( String identifier, int argindex, OptionMenuItem selfobj ) {
 		if ( identifier == "" ) {
 			// Automatic index:
 			identifier = "#" .. argindex;
@@ -745,8 +754,8 @@ class OptionMenuItemZCOption: OptionMenuItemOptionBase {
 		} else if ( ZCGlobal.StrIndexOfAny( identifier, ZCCommandKeeperArg.CVAR_IDVAL_SEPARATOR .. ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR ) != -1 ) {
 			// Replace danger name:
 			ZCGlobal.UILog( LL_Main,
-					String.Format( "%s::Init(). Identifier \"%s\" has forbidden control characters (\"%s\" and \"%s\"). They has been removed from the string.",
-							GetClassName(), identifier,
+					String.Format( "OptionMenuItemZCOption.FilterIdentifierString() for %s. Identifier \"%s\" has forbidden control characters (\"%s\" and \"%s\"). They has been removed from the string.",
+							selfobj.GetClassName(), identifier,
 							ZCCommandKeeperArg.CVAR_IDVAL_SEPARATOR, ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR
 					)
 			);
@@ -755,10 +764,18 @@ class OptionMenuItemZCOption: OptionMenuItemOptionBase {
 			identifier.Replace( ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR, "" );
 		}
 
+		return identifier;
+	} // of static String FilterIdentifierString( OptionMenuItem selfobj, int argindex, String identifier ) {}
+
+
+
+	OptionMenuItemZCOption Init( String label, int argindex, String identifier, Name values, String prefix = "" ) {
+		prevSelection = -1;
+		itemInitialized = false;
 
 		mPrefix = prefix;
 		mArgIndex = argindex;
-		mIdentifier = identifier;
+		mIdentifier = FilterIdentifierString( identifier, argindex, self );
 
 		// Examples: "",  "rel",  "rel:",  "rel:2",  "rel:s",  "rel:linetarget".
 
@@ -781,10 +798,10 @@ class OptionMenuItemZCOption: OptionMenuItemOptionBase {
 	}
 
 	void InitKeeperItem( void ) {
-		if ( !itemInitialized ) {
+		//if ( !itemInitialized ) {
 			keeper.SetItemExtraData( mArgIndex, mIdentifier, prefix: mPrefix );
 			itemInitialized = true;
-		}
+		//}
 	}
 
 
@@ -848,7 +865,7 @@ class OptionMenuItemZCTextField: OptionMenuItemTextField {
 
 	int mArgIndex;			// Argument index in the forming CCMD.
 	String mIdentifier;		// Default "mAction" automatically converts empty String to the Name 'None'.
-	String mPrefix;			// What to add before a value.
+	String mPrefix;			// What to add before a non-empty value.
 	//class<TextEnterMenu> mEnterTextProcessorClass;
 	int mEnterTextMaxLength;
 
@@ -858,7 +875,7 @@ class OptionMenuItemZCTextField: OptionMenuItemTextField {
 
 
 	OptionMenuItemZCTextField Init( String label, int argindex, String identifier, String prefix = "", int maxtextlen = 63 ) {
-		mIdentifier = identifier;
+		mIdentifier = OptionMenuItemZCOption.FilterIdentifierString( identifier, argindex, self );
 		mArgIndex = argindex;
 		mPrefix = prefix;
 		mEnterTextMaxLength = maxtextlen;
@@ -1023,15 +1040,18 @@ class OptionMenuItemZCIdentifierField: OptionMenuItemZCTextField {
 
 
 class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
-	float mMinimum, mMaximum, mStep, mEmptyValue;
+	float mMinimum, mMaximum, mStep;
 	int mPrecision;
 
+	float mEmptyValue;
 	String mEmptyValueName;
+	bool mEmptyIsShifted;	// An empty value will be added to the left of the "mEmptyValue". Like "<...>, -3, -2, -1, Default, 0, 1, 2, 3, <...>".
+	bool mCurrentIsEmpty;
 
 	private bool updateFloatValue;
 	private float prevFloatValue;
 
-	OptionMenuItemZCNumberField Init( String label, int argindex, String identifier, float minimum = 0.0, float maximum = 100.0, float step = 1.0, int precision = 0, String prefix = "", float emptyval = 0.0, String emptyname = "-" ) {
+	OptionMenuItemZCNumberField Init( String label, int argindex, String identifier, float minimum = 0.0, float maximum = 100.0, float step = 1.0, int precision = 0, String prefix = "", float emptyval = 0.0, String emptyname = "-", bool emptyaddshifted = false ) {
 		Super.Init( label, argindex, identifier, prefix, 15 );
 
 		mMinimum = min( minimum, maximum );
@@ -1040,8 +1060,13 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 		mPrecision = max( 0, precision );
 		mEmptyValue = emptyval;
 		mEmptyValueName = emptyname;
+		mEmptyIsShifted = emptyaddshifted;
 
 		return self;
+	}
+
+	protected bool IsCurrentValueEmpty( float value ) {
+		return ( mEmptyIsShifted? mCurrentIsEmpty : value == mEmptyValue );
 	}
 
 	override String Represent() {
@@ -1050,7 +1075,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 
 		float curvalue = GetFloatOption();
 
-		if ( curvalue == mEmptyValue )
+		if ( IsCurrentValueEmpty( curvalue ) )
 			return mEmptyValueName;
 
 		return String.Format( String.Format( "%%.%if", mPrecision ), curvalue );
@@ -1072,17 +1097,21 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 			updateFloatValue = false;
 			prevFloatValue = keeper.GetFloat( mArgIndex, mIdentifier );
 			InitKeeperItem();
+			mCurrentIsEmpty = false;
 
 			if ( prevFloatValue == 0.0 ) {
 				if ( "" == keeper.GetString( mArgIndex, mIdentifier ) ) {
 					itemInitialized = false;
 					prevFloatValue = mEmptyValue;
+
+					if ( mEmptyIsShifted )
+						mCurrentIsEmpty = true;
 				}
 			}
 		} // of if ( updateFloatValue ) {}
 
 		return prevFloatValue;
-	}
+	} // of protected float GetFloatOption( void ) {}
 
 	protected void SetFloatOption( float newvalue ) {
 		if ( !OptionMenuItemZCCommandKeeper.SetupKeeper( keeper ) ) {
@@ -1090,7 +1119,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 			return;
 		}
 
-		if ( newvalue == mEmptyValue ) {
+		if ( IsCurrentValueEmpty( newvalue ) ) {
 			keeper.SetString( mArgIndex, mIdentifier, "" );
 			itemInitialized = false;
 		} else {
@@ -1099,23 +1128,51 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 
 		updateFloatValue = true;
 		InitKeeperItem();
-	}
+	} // of protected void SetFloatOption( float newvalue ) {}
 
 
 	override bool MenuEvent( int mkey, bool fromcontroller ) {
 		float value = GetFloatOption();
 
 		if ( mkey == Menu.MKEY_Left ) {
-			value -= mStep;
+			bool iterate = true;
 
-			if ( value < mMinimum )
-				value = mMaximum;
+			if ( mEmptyIsShifted ) {
+				if ( mCurrentIsEmpty ) {
+					value = mEmptyValue;
+					mCurrentIsEmpty = false;
 
-		} else if ( mkey == Menu.MKEY_Right /*|| mkey == Menu.MKEY_Enter*/ ) {
-			value += mStep;
+				} else if ( value == mEmptyValue ) {
+					mCurrentIsEmpty = true;
+					iterate = false;
+				}
+			} // of if ( mEmptyIsShifted ) {}
 
-			if ( value > mMaximum )
-				value = mMinimum;
+			if ( iterate ) {
+				value -= mStep;
+
+				if ( value < mMinimum )
+					value = mMaximum;
+			} // of if ( iterate ) {}
+
+		} else if ( mkey == Menu.MKEY_Right ) {
+			bool iterate = true;
+
+			if ( mEmptyIsShifted && mCurrentIsEmpty ) {
+				value = mEmptyValue;
+				iterate = false;
+				mCurrentIsEmpty = false;
+			} // of if ( mEmptyIsShifted && mCurrentIsEmpty ) {}
+
+			if ( iterate ) {
+				value += mStep;
+
+				if ( value > mMaximum )
+					value = mMinimum;
+
+				if ( mEmptyIsShifted && value == mEmptyValue )
+					mCurrentIsEmpty = true;
+			} // of if ( iterate ) {}
 
 		} else if ( mkey == Menu.MKEY_Enter ) {
 			Menu.MenuSound( "menu/choose" );
@@ -1127,8 +1184,18 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 		} else if ( mkey == Menu.MKEY_Input ) {
 			String temp_EnteredText = mEnter.GetText();
 			mEnter = NULL;
+			mCurrentIsEmpty = false;
 
-			value = clamp( temp_EnteredText.ToDouble(), mMinimum, mMaximum );
+			// Value which cannot be represented as a number falls back to Default.
+			if ( ZCGlobal.str2double_Ptr( temp_EnteredText, +value ) ) {
+				value = clamp( value, mMinimum, mMaximum );
+
+			} else if ( mEmptyIsShifted ) {
+				mCurrentIsEmpty = true;
+
+			} else {
+				value = mEmptyValue;
+			}
 
 		} else {
 			return Super.MenuEvent( mkey, fromcontroller );
@@ -1143,7 +1210,6 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 
 } // of class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {}
 
-// Should update other menu items. Temporally commented out.
 /*class OptionMenuItemZCSetOption: OptionMenuItem {
 	OptionMenuItemZCCommandKeeper keeper;
 
@@ -1152,8 +1218,8 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 	String mValue;			// Value to set.
 
 	OptionMenuItemZCSetOption Init( String label, int argindex, String identifier, String setvalue ) {
+		mIdentifier = OptionMenuItemZCOption.FilterIdentifierString( identifier, argindex, self );
 		mArgIndex = argindex;
-		mIdentifier = identifier;
 		mValue = setvalue;
 
 		Super.Init( label, 'None' );
@@ -1167,6 +1233,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 		}
 
 		keeper.SetString( mArgIndex, mIdentifier, mValue );
+		keeper.UpdateAllMenuItems();
 	}
 
 	override int Draw( OptionMenuDescriptor desc, int y, int indent, bool selected ) {
@@ -1179,5 +1246,4 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 		SetTextOption();
 		return true;
 	}
-} // of class OptionMenuItemZCSetOption: OptionMenuItem {}
-*/
+} // of class OptionMenuItemZCSetOption: OptionMenuItem {} */

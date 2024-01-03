@@ -126,17 +126,17 @@ OptionMenu "ZChecker_CommandsMenu_zcsummon" {
 	ZCStaticText "Quantity can be set with left/right arrows or keyboard input", DARKGRAY
 	ZCStaticText ""
 	ZCStaticText "= World =", DARKBROWN
-	ZCNumberField "Forward offset, mappixels",	3, "fofs", 0.0, 32768.0, 16.0, 0, "fofs:", 0.0, "Default"
-	ZCNumberField "Vertical offset, mappixels",	3, "zofs", -32768.0, 32768.0, 4.0, 0, "zofs:", 0.0, "Default"
+	ZCNumberField "Forward offset, mappixels",	3, "fofs", -32768.0, 32768.0, 16.0, 0, "fofs:", 0.0, "Default offset"
+	ZCNumberField "Vertical offset, mappixels",	3, "zofs", -32768.0, 32768.0, 4.0, 0, "zofs:", 0.0, "Default offset"
 	ZCNumberField "Relative angle",				3, "rang", 0.0, 360.0, 45.0, 1, "relang:", 360.0
 	ZCStaticText ""
 	ZCStaticText "= Behaviour =", DARKBROWN
 	ZCNumberField "Health",						3, "hp", 0, 1000000, 10, 0, "hp:", 0, "No change"
 	ZCOption "Panel to add (last spawned only)",3, "panel", "ZCheckerOptionCCMD_zcsummon_addpanel"
 	ZCNumberField "TID",						3, "tid", 0, 65535, 1, 0, "tid:"
-	ZCNumberField "Argument 0",					3, "a0", -1, 255, 1, 0, "arg0:", -1, "Default"
-	ZCNumberField "Argument 1",					3, "a1", -1, 255, 1, 0, "arg1:", -1, "Default"
-	ZCNumberField "Argument 2",					3, "a2", -1, 255, 1, 0, "arg2:", -1, "Default"
+	ZCNumberField "Argument 0",					3, "a0", 0, 255, 1, 0, "arg0:", 0, "Default", 1
+	ZCNumberField "Argument 1",					3, "a1", 0, 255, 1, 0, "arg1:", 0, "Default", 1
+	ZCNumberField "Argument 2",					3, "a2", 0, 255, 1, 0, "arg2:", 0, "Default", 1
 	ZCStaticText ""
 	ZCStaticText "= Flags =", DARKBROWN
 	ZCOption "Friendliness", 		3, "+f/f", "ZCheckerOptionCCMD_zcsummon_flagsfriendliness"
@@ -158,6 +158,7 @@ OptionString "ZCheckerOptionCCMD_zcsummon_flagsfriendliness" {
 	"friend", "Friend"
 	"foe", "Foe"
 }
+
 OptionString "ZCheckerOptionCCMD_zcsummon_flagsinfighting" {
 	"", "-"
 	"noinfight", "Disable infighting"
@@ -207,5 +208,120 @@ OptionMenu "ZChecker_CommandsMenu_zcsetstate" {
 
 	ZCIdentifierField "State label",2, "st"
 	ZCOption "Actor source",		1, "src", "ZCheckerOptionCCMD_actorsource"
+}
+
+
+// "zcsetprop"/"zcpr":
+OptionMenu "ZChecker_CommandsMenu_zcsetp_interaction" {
+	Title "zcsetproperty menu"
+
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetp_p1   0 static:zcsetprop   1 cvar:lldm_zcmenuarg_actorsource   2   3 default:"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+	ZCStaticText ""
+
+	ZCOption "Actor source", 			1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCOption "Values operation type", 	2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
+	ZCStaticText ""
+	ZCStaticText "= World =", DARKBROWN
+	ZCNumberField "X, mappixels",			3, "x", -32768.0, 32768.0, 1.0, 1, "x:", 0.0, "Do not change", 1
+	ZCNumberField "Y, mappixels",			3, "y", -32768.0, 32768.0, 1.0, 1, "y:", 0.0, "Do not change", 1
+	ZCNumberField "Z, mappixels",			3, "z", -32768.0, 32768.0, 1.0, 1, "z:", 0.0, "Do not change", 1
+	ZCNumberField "X velocity, mappixels",	3, "xv", -32768.0, 32768.0, 1.0, 2, "velx:", 0.0, "Do not change", 1
+	ZCNumberField "Y velocity, mappixels",	3, "yv", -32768.0, 32768.0, 1.0, 2, "vely:", 0.0, "Do not change", 1
+	ZCNumberField "Z velocity, mappixels",	3, "zv", -32768.0, 32768.0, 1.0, 2, "velz:", 0.0, "Do not change", 1
+	ZCNumberField "Angle",					3, "an", 0.0, 360.0, 1.0, 1, "angle:", 360.0
+	ZCNumberField "Pitch",					3, "ap", -90.0, 90.0, 1.0, 1, "pitch:"
+	ZCNumberField "Roll",					3, "ar", -180.0, 180.0, 1.0, 1, "roll:"
+	ZCStaticText ""
+	ZCStaticText "= Interaction =", DARKBROWN
+	ZCNumberField "Health",					3, "hp", 0, 1000000, 10, 0, "hp:", 0
+	ZCNumberField "Radius",					3, "ir", 0, 32767, 1, 0, "radius:", 0
+	ZCNumberField "Height",					3, "ih", 0, 32767, 1, 0, "height:", 0
+	ZCNumberField "Speed",					3, "is", 0.0, 32768.0, 1.0, 1, "speed:", 0.0, "-", 1
+	ZCNumberField "Mass",					3, "im", 0, 32767, 1, 0, "mass:", 0, "-", 1
+	ZCNumberField "Gravity",				3, "ig", 0, 32767, 1, 0, "grav:", 0, "-", 1
+	ZCStaticText ""
+	ZCStaticText "= Actor pointers =", DARKBROWN
+	ZCOption "Target pointer",				3, "pt", "ZCheckerOptionCCMD_zcsetprop_pointers", "target:"
+	ZCOption "Master pointer",				3, "pm", "ZCheckerOptionCCMD_zcsetprop_pointers", "master:"
+	ZCOption "Tracer pointer",				3, "pr", "ZCheckerOptionCCMD_zcsetprop_pointers", "tracer:"
+}
+
+OptionMenu "ZChecker_CommandsMenu_zcsetp_other" {
+	Title "zcsetproperty menu"
+
+	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetp_p2   0 static:zcsetprop   1 cvar:lldm_zcmenuarg_actorsource   2   3 default:"
+	ZCCommandExecute "Execute"
+	ZCCommandVisual " "
+	ZCStaticText ""
+	ZCOption "Actor source", 			1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCOption "Values operation type", 	2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
+	ZCStaticText ""
+	ZCStaticText "= Visual =", DARKBROWN
+	ZCOption "Render style",			3, "vrs", "ZCheckerOptionCCMD_zcsetprop_renderstyle", "rstyle:"
+	ZCNumberField "Alpha",				3, "va", 0.0, 1.0, 0.025, 3, "alpha:", 0.0, "No change", 1
+	ZCNumberField "Scale",				3, "vs", -32768.0, 32768.0, 1.0, 2, "scale:"
+	ZCNumberField "Scale by X axis",	3, "vsx", -32768.0, 32768.0, 1.0, 2, "scalex:"
+	ZCNumberField "Scale by Y axis",	3, "vsy", -32768.0, 32768.0, 1.0, 2, "scaley:"
+	ZCStaticText ""
+	ZCStaticText "= Special =", DARKBROWN
+	ZCNumberField "TID",						3, "tid", 0, 65535, 1, 0, "tid:"
+	ZCNumberField "Argument 0",					3, "a0", 0, 255, 1, 0, "arg0:", 0, "Default", 1
+	ZCNumberField "Argument 1",					3, "a1", 0, 255, 1, 0, "arg1:", 0, "Default", 1
+	ZCNumberField "Argument 2",					3, "a2", 0, 255, 1, 0, "arg2:", 0, "Default", 1
+	ZCNumberField "Argument 3",					3, "a3", 0, 255, 1, 0, "arg3:", 0, "Default", 1
+	ZCNumberField "Argument 4",					3, "a4", 0, 255, 1, 0, "arg4:", 0, "Default", 1
+	ZCNumberField "Special/action",				3, "spec", 0, 65535, 1, 0, "special:"
+}
+
+
+OptionString "ZCheckerOptionCCMD_zcsetprop_operationtype" {
+	"", "Replace"
+	"add", "Add"
+	"rel:s", "Add from player"
+	"rel:lt", "Add from linetarget"
+	"rel:1", "Add from 1st panel"
+	"rel:2", "Add from 2nd panel"
+	"rel:3", "Add from 3rd panel"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsetprop_pointers" {
+	"", "Do not change"
+	"lt", "Linetarget"
+	"1", "Panel 1 (left)"
+	"2", "Panel 2 (middle)"
+	"3", "Panel 3 (right)"
+	"self", "Player itself"
+	"cam", "Player's camera"
+	"null", "Clear pointer"
+}
+
+OptionString "ZCheckerOptionCCMD_zcsetprop_renderstyle" {
+	"", "Do not change"
+	"norm",		"Normal"
+	"transl",	"Translucent"
+	"fuzzy",	"Fuzzy"
+	"optfuzzy",	"Optional fuzzy"
+	"stencil",	"Stencil"
+	"add",		"Add"
+	"shaded",	"Shaded"
+	"transstc",	"Translucent stencil"
+	"shadow",	"Shadow"
+	"subtract",	"Subtract"
+	"addstc",	"Add stencil"
+	"addshd",	"Add shaded"
+	"multiply",	"Multiply"
+	"invmul",	"Inverse multiply"
+	"coloradd",	"Color add"
+	"colorbl",	"Color blend"
+	"none",		"None"
+}
+
+
+
+// "zcpanel":
+OptionMenu "ZChecker_CommandsMenu_zcpanel_copymove" {
+	Title "zcpanel menu"
 }
 
