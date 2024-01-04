@@ -327,49 +327,62 @@ ZCHECKER_EVMAPMENU_WARPOTHER          = "Особые акторы\cc: \"\cmzcev
 //  === Console commands control menu ===
 
 ZCHECKER_CCMDMENU_TITLE               = "ZChecker: вызов консольных команд";
-ZCHECKER_CCMDMENU_HELPNOTE1           = "[В разработке] Часто используемые консольные команды.";
+ZCHECKER_CCMDMENU_HELPNOTE1           = "Часто используемые консольные команды.";
 ZCHECKER_CCMDMENU_HELPNOTE2           = "Все команды могут быть показаны через \"zchelp all\";";
 ZCHECKER_CCMDMENU_HELPNOTE3           = "также можно использовать \"zchelp <команда>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\"\n\cxНе удается найти ZChecker static event handler.\n\ciВозможная причина: \cu\"\crEventHandler = ...\cu\"\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы.";
-ZCHECKER_CCMDMENU_EXAMPLES            = "Примеры команд:";
-ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Добавление цели под курсором в панель"; // Not more used.
-ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Добавление себя в панель"; // Not more used.
-ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Очистка всех панелей"; // Not more used.
-ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Вывести краткую справку в консоль";
+ZCHECKER_CCMDMENU_CONSOLEVSMENU       = "Имейте в виду, консоль всегда мощнее меню!";
+
+ZCHECKER_CCMDMENULABEL_ZCADD          = "Добавить актора в инфопанель...";
+ZCHECKER_CCMDMENULABEL_ZCREM          = "Очистить инфопанели...";
+ZCHECKER_CCMDMENULABEL_ZCSUMMON       = "Создать акторов...";
+ZCHECKER_CCMDMENULABEL_ZCACT          = "Действие над актором...";
+ZCHECKER_CCMDMENULABEL_ZCGIVETAKE     = "Дать/забрать предмет...";
+ZCHECKER_CCMDMENULABEL_ZCSETFLAG      = "Установить флаг...";
+ZCHECKER_CCMDMENULABEL_ZCSETSTATE     = "Установить стейт...";
+ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION = "Установить свойство взаимодействия...";
+ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER = "Установить другое свойство...";
+ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE = "Копировать/переместить инфопанели...";
+ZCHECKER_CCMDMENULABEL_ZCHELP         = "Вывести краткую справку в консоль";
+ZCHECKER_CCMDMENULABEL_AUTOCLOSE      = "Закрывать меню после выполнения";
 
 ZCHECKER_CCMDMENU_EXECUTE             = "Выполнить";
 ZCHECKER_CCMDMENU_RESETITEMS          = "Сбросить настройки";
 
-ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Источник";
+ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Целевой актор";
 ZCHECKER_CCMDMENU_SOURCE_LT           = "Цель под курсором";
 ZCHECKER_CCMDMENU_SOURCE_PANEL1       = "Панель 1 (слева)";
 ZCHECKER_CCMDMENU_SOURCE_PANEL2       = "Панель 2 (в центре)";
 ZCHECKER_CCMDMENU_SOURCE_PANEL3       = "Панель 3 (справа)";
 ZCHECKER_CCMDMENU_SOURCE_SELF         = "Сам игрок";
-ZCHECKER_CCMDMENU_SOURCE_CAMERA       = "Камера игрока";
+ZCHECKER_CCMDMENU_SOURCE_CAMERA       = "Камера игрока"; // Currently not used because this option slightly gets in the way with player selection.
 
-ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE    = "zcadd. Добавление в инфопанели";
+ZCHECKER_CCMDMENU_ZCADD_TITLE         = "zcadd. Добавление в инфопанели";
 ZCHECKER_CCMDMENU_ZCADD_PN            = "Номер панели";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_LT     = "Цель под курсором";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF   = "Сам игрок";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON = "Оружие";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE  = "Неосязаемая цель под курсором";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE    = "Первая свободная панель";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_P1      = "Панель 1 (слева)";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_P2      = "Панель 2 (в центре)";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_P3      = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE        = "Источник";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_LT  = "Цель под курсором";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_SELF = "Сам игрок";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_WEAPON = "Оружие";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_CAMERA = "Камера игрока";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_FORCE = "Неосязаемая цель под курсором";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_FREE = "Первая свободная панель";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P1   = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P2   = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P3   = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_ZCADD_NOTE_CAMERA   = "Камера игрока зачастую совпадает с самим игроком.";
+ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE    = "Неосязаемые акторы имеют флаги вроде +NOBLOCKMAP.";
 
-ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE    = "zcrem. Очистка инфопанелей";
+ZCHECKER_CCMDMENU_ZCREM_TITLE         = "zcrem. Очистка инфопанелей";
 ZCHECKER_CCMDMENU_ZCREM_PN            = "Номер панели";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR   = "Очистить все";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_P1      = "Панель 1 (слева)";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_P2      = "Панель 2 (в центре)";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_P3      = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_CLEAR = "Очистить все";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P1   = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P2   = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3   = "Панель 3 (справа)";
 
 ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake. Инвентарь";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Название предмета";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES = "Количество, 1..1E6";
-ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT   = "Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT   = "Количество задается через стрелки влево/вправо или ввод с клавиатуры";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GT       = "Операция";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE     = "Дать актору";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE     = "Забрать у актора";
@@ -413,7 +426,7 @@ ZCHECKER_CCMDMENU_ZCSUMMONOPT_FOE     = "Враждебный";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT = "Отключить инфайтинг";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT = "Принудительный инфайтинг";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT = "Отключить";
-ZCHECKER_CCMDMENU_ZCSUMMONOPT_DNA     = "Не применять";
+ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ = "Не применять";
 
 ZCHECKER_CCMDMENU_ZCSETFLAG_MENU      = "zcsetflag. Манипулирование флагами";
 ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG      = "Название флага";

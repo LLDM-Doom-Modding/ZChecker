@@ -347,15 +347,24 @@ ZCHECKER_EVMAPMENU_WARPOTHER          = "Special actors\cc: \"\cmzcevg #\cdspeci
 //  === Console commands control menu ===
 
 ZCHECKER_CCMDMENU_TITLE               = "ZChecker: call console command";
-ZCHECKER_CCMDMENU_HELPNOTE1           = "[WIP] Some frequently used commands will be here.";
+ZCHECKER_CCMDMENU_HELPNOTE1           = "Some frequently used commands are stored here.";
 ZCHECKER_CCMDMENU_HELPNOTE2           = "All commands may be shown via the \"zchelp all\"";
 ZCHECKER_CCMDMENU_HELPNOTE3           = "console command; also you may use \"zchelp <command>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.";
-ZCHECKER_CCMDMENU_EXAMPLES            = "Command examples:";
-ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Add linetarget to panel"; // Not more used.
-ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Add self to panel"; // Not more used.
-ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Clear all panels"; // Not more used.
-ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Print short help to console";
+ZCHECKER_CCMDMENU_CONSOLEVSMENU       = "Note that console is always mighter that menu!";
+
+ZCHECKER_CCMDMENULABEL_ZCADD          = "Add actor to infopanel...";
+ZCHECKER_CCMDMENULABEL_ZCREM          = "Remove actor(s) from infopanel...";
+ZCHECKER_CCMDMENULABEL_ZCSUMMON       = "Summon actor(s)...";
+ZCHECKER_CCMDMENULABEL_ZCACT          = "Do something with actor...";
+ZCHECKER_CCMDMENULABEL_ZCGIVETAKE     = "Give/take item...";
+ZCHECKER_CCMDMENULABEL_ZCSETFLAG      = "Set flag...";
+ZCHECKER_CCMDMENULABEL_ZCSETSTATE     = "Set state...";
+ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION = "Set interactive properties...";
+ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER = "Set other properties...";
+ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE = "Infopanels copy/move...";
+ZCHECKER_CCMDMENULABEL_ZCHELP         = "Print short help to console";
+ZCHECKER_CCMDMENULABEL_AUTOCLOSE      = "Close CCMD menu after execute";
 
 ZCHECKER_CCMDMENU_EXECUTE             = "Execute";
 ZCHECKER_CCMDMENU_RESETITEMS          = "Reset menu options";
@@ -366,25 +375,29 @@ ZCHECKER_CCMDMENU_SOURCE_PANEL1       = "Panel 1 (left)";
 ZCHECKER_CCMDMENU_SOURCE_PANEL2       = "Panel 2 (middle)";
 ZCHECKER_CCMDMENU_SOURCE_PANEL3       = "Panel 3 (right)";
 ZCHECKER_CCMDMENU_SOURCE_SELF         = "Player itself";
-ZCHECKER_CCMDMENU_SOURCE_CAMERA       = "Player camera";
+ZCHECKER_CCMDMENU_SOURCE_CAMERA       = "Player camera"; // Currently not used because this option slightly gets in the way with player selection.
 
-ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE    = "zcadd menu";
+ZCHECKER_CCMDMENU_ZCADD_TITLE         = "zcadd menu";
 ZCHECKER_CCMDMENU_ZCADD_PN            = "Panel number";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_LT     = "Linetarget";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF   = "Player itself";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON = "Weapon";
-ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE  = "Ethereal linetarget";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE    = "First free panel";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_P1      = "Panel 1 (left)";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_P2      = "Panel 2 (middle)";
-ZCHECKER_CCMDMENU_ZCADD_PANEL_P3      = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE        = "Actor source";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_LT  = "Linetarget";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_SELF = "Player itself";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_WEAPON = "Weapon";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_CAMERA = "Player's camera";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_FORCE = "Intangible linetarget";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_FREE = "First free panel";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P1   = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P2   = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P3   = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_ZCADD_NOTE_CAMERA   = "The player's camera is almost always the same as the player himself.";
+ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE    = "Intangible objects have flags like +NOBLOCKMAP.";
 
-ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE    = "zcrem menu";
+ZCHECKER_CCMDMENU_ZCREM_TITLE         = "zcrem menu";
 ZCHECKER_CCMDMENU_ZCREM_PN            = "Panel number";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR   = "Clear all panels";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_P1      = "Panel 1 (left)";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_P2      = "Panel 2 (middle)";
-ZCHECKER_CCMDMENU_ZCREM_PANEL_P3      = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_CLEAR = "Clear all panels";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P1   = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P2   = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3   = "Panel 3 (right)";
 
 ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake menu";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Inventory name";
@@ -433,7 +446,7 @@ ZCHECKER_CCMDMENU_ZCSUMMONOPT_FOE     = "Foe";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT = "Disable infighting";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT = "Force infighting";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT = "Force dormant";
-ZCHECKER_CCMDMENU_ZCSUMMONOPT_DNA     = "Do not apply";
+ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ = "Do not apply";
 
 ZCHECKER_CCMDMENU_ZCSETFLAG_MENU      = "zcsetflag menu";
 ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG      = "Flag name";

@@ -11,7 +11,6 @@ OptionString "ZCheckerOptionCCMD_actorsource" {
 	"2", "$ZCHECKER_CCMDMENU_SOURCE_PANEL2"
 	"3", "$ZCHECKER_CCMDMENU_SOURCE_PANEL3"
 	"self", "$ZCHECKER_CCMDMENU_SOURCE_SELF"
-	"camera", "$ZCHECKER_CCMDMENU_SOURCE_CAMERA"
 }
 
 
@@ -20,7 +19,7 @@ OptionString "ZCheckerOptionCCMD_actorsource" {
 
 // "zcadd" and "zcrem":
 OptionMenu "ZChecker_CommandsMenu_zcadd" {
-    Title "$ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE"
+    Title "$ZCHECKER_CCMDMENU_ZCADD_TITLE"
 
 	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcaddrem   0 static:zcadd"
 	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
@@ -28,11 +27,15 @@ OptionMenu "ZChecker_CommandsMenu_zcadd" {
     StaticText " "
 
 	ZCOption "$ZCHECKER_CCMDMENU_ZCADD_PN", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
-	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCADD_SOURCE", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
+    StaticText " "
+    StaticText "$ZCHECKER_CCMDMENU_ZCADD_NOTE_CAMERA"
+    StaticText " "
+    StaticText "$ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE"
 }
 
 OptionMenu "ZChecker_CommandsMenu_zcrem" {
-    Title "$ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE"
+    Title "$ZCHECKER_CCMDMENU_ZCREM_TITLE"
 
 	ZCCommandKeeper 1, "0 static:zcrem   1 cvar:lldm_zcmenuarg_zcaddrem"
 	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
@@ -43,24 +46,25 @@ OptionMenu "ZChecker_CommandsMenu_zcrem" {
 }
 
 OptionString "ZCheckerOptionCCMD_zcadd_source" {
-	"", "$ZCHECKER_CCMDMENU_SOURCE_LT"
-	"self", "$ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF"
-	"weapon", "$ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON"
-	"force", "$ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE"
+	"", "$ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_LT"
+	"self", "$ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_SELF"
+	"weapon", "$ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_WEAPON"
+	"camera", "$ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_CAMERA"
+	"force", "$ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_FORCE"
 }
 
 OptionString "ZCheckerOptionCCMD_zcadd_panel" {
-	"", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE"
-	"1", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_P1"
-	"2", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_P2"
-	"3", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_P3"
+	"", "$ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_FREE"
+	"1", "$ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P1"
+	"2", "$ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P2"
+	"3", "$ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P3"
 }
 
 OptionString "ZCheckerOptionCCMD_zcrem_panel" {
-	"", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR"
-	"1", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_P1"
-	"2", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_P2"
-	"3", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_P3"
+	"", "$ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_CLEAR"
+	"1", "$ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P1"
+	"2", "$ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P2"
+	"3", "$ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3"
 }
 
 

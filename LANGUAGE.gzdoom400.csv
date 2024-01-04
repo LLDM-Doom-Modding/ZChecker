@@ -343,49 +343,62 @@ unused),,,,
 , === Console commands control menu ===,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_TITLE,ZChecker: call console command,ZChecker: вызов консольных команд
-,,ZCHECKER_CCMDMENU_HELPNOTE1,[WIP] Some frequently used commands will be here.,[В разработке] Часто используемые консольные команды.
+,,ZCHECKER_CCMDMENU_HELPNOTE1,Some frequently used commands are stored here.,Часто используемые консольные команды.
 ,,ZCHECKER_CCMDMENU_HELPNOTE2,"All commands may be shown via the ""zchelp all""","Все команды могут быть показаны через ""zchelp all"";"
 ,,ZCHECKER_CCMDMENU_HELPNOTE3,"console command; also you may use ""zchelp <command>"".","также можно использовать ""zchelp <команда>""."
 ,,ZCHECKER_CCMDMENU_ZCHANDLER_ERROR,"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu""\crEventHandler = ...\cu""\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.","""\n\cxНе удаётся найти ZChecker static event handler.\n\ciВозможная причина: \cu""\crEventHandler = ...\cu""\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы."
-,,ZCHECKER_CCMDMENU_EXAMPLES,Command examples:,Примеры команд:
-,Not more used.,ZCHECKER_CCMDMENU_ZCADD,"""zcadd"": Add linetarget to panel","""zcadd"": Добавление цели под курсором в панель"
-,Not more used.,ZCHECKER_CCMDMENU_ZCADD_SELF,"""zcadd self"": Add self to panel","""zcadd self"": Добавление себя в панель"
-,Not more used.,ZCHECKER_CCMDMENU_ZCREM,"""zcrem"": Clear all panels","""zcrem"": Очистка всех панелей"
-,,ZCHECKER_CCMDMENU_ZCHELP,"""zchelp"": Print short help to console","""zchelp"": Вывести краткую справку в консоль"
+,,ZCHECKER_CCMDMENU_CONSOLEVSMENU,Note that console is always mighter that menu!,"Имейте в виду, консоль всегда мощнее меню!"
+,,,,
+,,ZCHECKER_CCMDMENULABEL_ZCADD,Add actor to infopanel...,Добавить актора в инфопанель...
+,,ZCHECKER_CCMDMENULABEL_ZCREM,Remove actor(s) from infopanel...,Очистить инфопанели...
+,,ZCHECKER_CCMDMENULABEL_ZCSUMMON,Summon actor(s)...,Создать акторов...
+,,ZCHECKER_CCMDMENULABEL_ZCACT,Do something with actor...,Действие над актором...
+,,ZCHECKER_CCMDMENULABEL_ZCGIVETAKE,Give/take item...,Дать/забрать предмет...
+,,ZCHECKER_CCMDMENULABEL_ZCSETFLAG,Set flag...,Установить флаг...
+,,ZCHECKER_CCMDMENULABEL_ZCSETSTATE,Set state...,Установить стейт...
+,,ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION,Set interactive properties...,Установить свойство взаимодействия...
+,,ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER,Set other properties...,Установить другое свойство...
+,,ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE,Infopanels copy/move...,Копировать/переместить инфопанели...
+,,ZCHECKER_CCMDMENULABEL_ZCHELP,Print short help to console,Вывести краткую справку в консоль
+,,ZCHECKER_CCMDMENULABEL_AUTOCLOSE,Close CCMD menu after execute,Закрывать меню после выполнения
 ,,,,
 ,,ZCHECKER_CCMDMENU_EXECUTE,Execute,Выполнить
 ,,ZCHECKER_CCMDMENU_RESETITEMS,Reset menu options,Сбросить настройки
 ,,,,
-,,ZCHECKER_CCMDMENU_ACTOR_SOURCE,Actor source,Источник
+,,ZCHECKER_CCMDMENU_ACTOR_SOURCE,Actor source,Целевой актор
 ,,ZCHECKER_CCMDMENU_SOURCE_LT,Linetarget,Цель под курсором
 ,,ZCHECKER_CCMDMENU_SOURCE_PANEL1,Panel 1 (left),Панель 1 (слева)
 ,,ZCHECKER_CCMDMENU_SOURCE_PANEL2,Panel 2 (middle),Панель 2 (в центре)
 ,,ZCHECKER_CCMDMENU_SOURCE_PANEL3,Panel 3 (right),Панель 3 (справа)
 ,,ZCHECKER_CCMDMENU_SOURCE_SELF,Player itself,Сам игрок
-,,ZCHECKER_CCMDMENU_SOURCE_CAMERA,Player camera,Камера игрока
+,Currently not used because this option slightly gets in the way with player selection.,ZCHECKER_CCMDMENU_SOURCE_CAMERA,Player camera,Камера игрока
 ,,,,
-,,ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE,zcadd menu,zcadd. Добавление в инфопанели
+,,ZCHECKER_CCMDMENU_ZCADD_TITLE,zcadd menu,zcadd. Добавление в инфопанели
 ,,ZCHECKER_CCMDMENU_ZCADD_PN,Panel number,Номер панели
-,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_LT,Linetarget,Цель под курсором
-,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF,Player itself,Сам игрок
-,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON,Weapon,Оружие
-,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE,Ethereal linetarget,Неосязаемая цель под курсором
-,,ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE,First free panel,Первая свободная панель
-,,ZCHECKER_CCMDMENU_ZCADD_PANEL_P1,Panel 1 (left),Панель 1 (слева)
-,,ZCHECKER_CCMDMENU_ZCADD_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
-,,ZCHECKER_CCMDMENU_ZCADD_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCADD_SOURCE,Actor source,Источник
+,,ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_LT,Linetarget,Цель под курсором
+,,ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_SELF,Player itself,Сам игрок
+,,ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_WEAPON,Weapon,Оружие
+,,ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_CAMERA,Player's camera,Камера игрока
+,,ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_FORCE,Intangible linetarget,Неосязаемая цель под курсором
+,,ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_FREE,First free panel,Первая свободная панель
+,,ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCADD_NOTE_CAMERA,The player's camera is almost always the same as the player himself.,Камера игрока зачастую совпадает с самим игроком.
+,,ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE,Intangible objects have flags like +NOBLOCKMAP.,Неосязаемые акторы имеют флаги вроде +NOBLOCKMAP.
 ,,,,
-,,ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE,zcrem menu,zcrem. Очистка инфопанелей
+,,ZCHECKER_CCMDMENU_ZCREM_TITLE,zcrem menu,zcrem. Очистка инфопанелей
 ,,ZCHECKER_CCMDMENU_ZCREM_PN,Panel number,Номер панели
-,,ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR,Clear all panels,Очистить все
-,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P1,Panel 1 (left),Панель 1 (слева)
-,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
-,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_CLEAR,Clear all panels,Очистить все
+,,ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3,Panel 3 (right),Панель 3 (справа)
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE,zcgive/zctake menu,zcgive/zctake. Инвентарь
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_IN,Inventory name,Название предмета
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES,"Quantity, 1..1E6","Количество, 1..1E6"
-,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество задаётся через стрелки влево/вправо или ввод с клавиатуры
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GT,Give/take,Операция
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE,Give to actor,Дать актору
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE,Take from actor,Забрать у актора
@@ -429,7 +442,7 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT,Disable infighting,Отключить инфайтинг
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT,Force infighting,Принудительный инфайтинг
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT,Force dormant,Отключить
-,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_DNA,Do not apply,Не применять
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ,Do not apply,Не применять
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_MENU,zcsetflag menu,zcsetflag. Манипулирование флагами
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG,Flag name,Название флага

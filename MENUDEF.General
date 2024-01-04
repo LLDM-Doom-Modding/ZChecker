@@ -167,25 +167,26 @@ OptionMenu "ZChecker_ControlMenu_CallCCMD" {
     StaticText "$ZCHECKER_CCMDMENU_HELPNOTE3", DARKGREEN
     StaticText " "
 	ZCHandlerExistenceCheckWarning "$ZCHECKER_CCMDMENU_ZCHANDLER_ERROR"
+
+    StaticText "$ZCHECKER_CCMDMENU_CONSOLEVSMENU", 1
+    StaticText " "
     StaticText " "
 
-    StaticText "$ZCHECKER_CCMDMENU_EXAMPLES", 1
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCADD", "ZChecker_CommandsMenu_zcadd"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCREM", "ZChecker_CommandsMenu_zcrem"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCSUMMON", "ZChecker_CommandsMenu_zcsummon"
     StaticText " "
-
-	Submenu "Add actor to infopanel...", "ZChecker_CommandsMenu_zcadd"
-	Submenu "Remove actor from infopanel...", "ZChecker_CommandsMenu_zcrem"
-	Submenu "Summon actor(s)...", "ZChecker_CommandsMenu_zcsummon"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCACT", "ZChecker_CommandsMenu_zcact"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCGIVETAKE", "ZChecker_CommandsMenu_zcgivetake"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION", "ZChecker_CommandsMenu_zcsetp_interaction"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER", "ZChecker_CommandsMenu_zcsetp_other"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCSETFLAG", "ZChecker_CommandsMenu_zcsetflag"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCSETSTATE", "ZChecker_CommandsMenu_zcsetstate"
     StaticText " "
-	Submenu "Do something with actor...", "ZChecker_CommandsMenu_zcact"
-	Submenu "Give/take item...", "ZChecker_CommandsMenu_zcgivetake"
-	Submenu "Set flag...", "ZChecker_CommandsMenu_zcsetflag"
-	Submenu "Set state...", "ZChecker_CommandsMenu_zcsetstate"
-	Submenu "Set interactive properties...", "ZChecker_CommandsMenu_zcsetp_interaction"
-	Submenu "Set other properties...", "ZChecker_CommandsMenu_zcsetp_other"
+	Submenu "$ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE", "ZChecker_CommandsMenu_zcpanel_copymove"
+	Command "$ZCHECKER_CCMDMENULABEL_ZCHELP", "zchelp", 0, 1
     StaticText " "
-	Submenu "Panels copy/move...", "ZChecker_CommandsMenu_zcpanel_copymove"
-	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp", 0, 1
-	Option "Close CCMD menu after execute", "lldm_zc_autocloseccmdmenu", "YesNo"
+	Option "$ZCHECKER_CCMDMENULABEL_AUTOCLOSE", "lldm_zc_autocloseccmdmenu", "YesNo"
 
     /*
 	StaticText " "
