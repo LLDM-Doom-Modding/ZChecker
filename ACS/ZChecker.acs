@@ -8,18 +8,32 @@
 #define LL_Emergency 0
 #define LL_General 1
 #define LL_Detailed 2
-#define LL_Debug 3
+#define LL_Developer 3
+#define LL_Debug 4
 
 #define LL_Common LL_General
 #define LL_Normal LL_General
+#define LL_Main LL_General
 #define LL_Extended LL_Detailed
+#define LL_Details LL_Detailed
+#define LL_Extra LL_Developer
+#define LL_Development LL_Developer
+#define LL_Interface LL_Developer
+#define LL_APIMessage LL_Developer
+
+#define LL_FlagsMask 0xFFF0
+#define LL_NoLocalize 0x2000
+#define LL_NoDot 0x4000
+#define LL_NoPrefix 0x8000
 
 
 script "ZChecker_CCMD_SetState" ( void ) {
 	str newStateName = ScriptCall( "ZCSetStateCommand", "ACS_GetStateName" );
 
 	if ( SetActorState( 0, newStateName, true ) ) {
-		ScriptCall( "ZCGlobal", "Log", LL_Detailed, StrParam( s:"State \"", s:newStateName, s:"\" for actor ", s:GetActorClass( 0 ), s:" is succesfully set" ) );
+		ScriptCall( "ZCGlobal", "Log", LL_Detailed, StrParam( s:"State \"", s:newStateName, s:"\" for actor ", s:GetActorClass( 0 ), s:" is succesfully set." ) );
+	} else {
+		ScriptCall( "ZCGlobal", "Log", LL_Main, StrParam( s:"Cannot set state \"", s:newStateName, s:"\" for actor ", s:GetActorClass( 0 ) ) );
 	}
 }
 
@@ -28,7 +42,7 @@ script "ZChecker_CCMD_SetFlag" ( int setType ) {
 	str flagName = ScriptCall( "ZCSetFlagCommand", "ACS_GetFlagName" );
 	int newValue = setType;
 
-	newValue = ( setType == -1 )? !CheckFlag( 0, flagName ) : setType;
+	newValue = ( setType != -1? setType : !CheckFlag( 0, flagName ) );
 
 	if ( SetActorFlag( 0, flagName, newValue ) ) {
 		ScriptCall( "ZCGlobal", "Log", LL_Detailed, StrParam( s:"Flag \"", s:flagName, s:"\" for actor ", s:GetActorClass( 0 ), s:" is succesfully set to ", i:newValue ) );
