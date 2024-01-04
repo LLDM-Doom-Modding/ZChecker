@@ -1199,7 +1199,7 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 			if ( modeargstr == "add" || modeargstr == "a" || modeargstr == "+" ) {
 				setmode = PSM_Add;
 
-			} else if ( modeargstrLeft3 == "rel" || modeargstr.Left( 1 ) == "r" /* Dangerous but convenient. */ ) {
+			} else if ( modeargstrLeft3 == "rel" || modeargstr == "r" /* Dangerous but convenient. */ ) {
 				setmode = PSM_Relative;
 
 				int delimIndex = ZCGlobal.StrIndexOfAny( modeargstr, ":,=" );
