@@ -148,6 +148,8 @@ server bool lldm_zcev_spawnbossbrains		= false;
 //
 /* CVars for CCMD menus. */
 //
+user bool lldm_zc_autocloseccmdmenu		= true;
+
 user string lldm_zcmenuarg_actorsource	= "";
 user string lldm_zcmenuarg_zcaddrem		= "";
 user string lldm_zcmenuarg_zcgivetake	= "";

@@ -63,7 +63,7 @@ OptionMenu "ZChecker_ControlMenu_VisualSettings" {
 	Slider "$ZCHECKER_VISUAL_START_X_10", "lldm_zc_infopanel_startx", 0.0, 99.0, 10.0, 0
 	Slider "$ZCHECKER_VISUAL_START_Y",    "lldm_zc_infopanel_starty", -50.0, 99.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_START_Y_10", "lldm_zc_infopanel_starty", -50.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_OFFSET_X", "lldm_zc_infopanel_offsetx", 1.0, 100.0, 1.0, 0
+	Slider "$ZCHECKER_VISUAL_OFFSET_X",   "lldm_zc_infopanel_offsetx", 1.0, 100.0, 1.0, 0
 	Slider "$ZCHECKER_VISUAL_PANELS_SCALE", "lldm_zc_infopanel_scale", 0.5, 8.0, 0.1, 1
 	Slider "$ZCHECKER_VISUAL_PANELS_Y_GAP", "lldm_zc_infopanelparts_y_gap", 0.0, 1.5, 0.05, 2
     StaticText " "
@@ -75,10 +75,10 @@ OptionMenu "ZChecker_ControlMenu_VisualSettings" {
     StaticText " "
     StaticText "$ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO", 1
 	Slider "$ZCHECKER_VISUAL_INFOSTR_X",    "lldm_zc_evinfostr_centerx", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_X10", "lldm_zc_evinfostr_centerx", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_INFOSTR_X10",  "lldm_zc_evinfostr_centerx", 0.0, 99.0, 10.0, 0
 	Slider "$ZCHECKER_VISUAL_INFOSTR_Y",    "lldm_zc_evinfostr_centery", 0.0, 99.0, 1.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_Y10", "lldm_zc_evinfostr_centery", 0.0, 99.0, 10.0, 0
-	Slider "$ZCHECKER_VISUAL_INFOSTR_SCALE", "lldm_zc_evinfostr_scale", 0.5, 8.0, 0.1, 1
+	Slider "$ZCHECKER_VISUAL_INFOSTR_Y10",  "lldm_zc_evinfostr_centery", 0.0, 99.0, 10.0, 0
+	Slider "$ZCHECKER_VISUAL_INFOSTR_SCALE","lldm_zc_evinfostr_scale", 0.5, 8.0, 0.1, 1
     StaticText " "
     StaticText "$ZCHECKER_VISUALDIV_OTHER", 1
 	Option "$ZCHECKER_VISUAL_FONTTYPES", "lldm_zc_infopanel_fonttype", "ZCheckerOption_InfoPanelFontTypes"
@@ -185,6 +185,7 @@ OptionMenu "ZChecker_ControlMenu_CallCCMD" {
     StaticText " "
 	Submenu "Panels copy/move...", "ZChecker_CommandsMenu_zcpanel_copymove"
 	Command "$ZCHECKER_CCMDMENU_ZCHELP", "zchelp", 0, 1
+	Option "Close CCMD menu after execute", "lldm_zc_autocloseccmdmenu", "YesNo"
 
     /*
 	StaticText " "

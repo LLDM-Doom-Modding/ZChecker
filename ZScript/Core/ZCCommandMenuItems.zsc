@@ -690,6 +690,13 @@ class OptionMenuItemZCStaticText: OptionMenuItemStaticText {
 } // of class OptionMenuItemZCStaticText: OptionMenuItemStaticText {}
 
 class ZCheckerAutocloseMenu: GenericMenu {
+	static void Call( void ) {
+		CVar autocloseCVar = CVar.FindCVar( "lldm_zc_autocloseccmdmenu" );
+
+		if ( autocloseCVar && autocloseCVar.GetBool() )
+			Menu.SetMenu( 'ZCheckerAutocloseMenu' );
+	}
+
 	override void Init( Menu parent ) {
 		Close();
 	}
@@ -697,36 +704,33 @@ class ZCheckerAutocloseMenu: GenericMenu {
 	override void Drawer() {
 		Close();
 	}
-}
+} // of class ZCheckerAutocloseMenu: GenericMenu {}
 
 
 class OptionMenuItemZCCommandExecute: OptionMenuItemCommand {
 	OptionMenuItemZCCommandKeeper keeper;
 	bool mCloseOnExec;
 
+	protected void InitExecute( String label, Name command ) {
+		Super.Init( label, command, true, false );
+	}
+
 	OptionMenuItemZCCommandExecute Init( String label, bool activateclose = true ) {
-		Super.Init( label, 'None', true, false );
+		InitExecute( label, 'None' );
 		mCloseOnExec = activateclose;
 
 		return self;
-	}
-
-	override int Draw(OptionMenuDescriptor desc, int y, int indent, bool selected) {
-		int x = drawLabel( indent, y, selected? OptionMenuSettings.mFontColorSelection : OptionMenuSettings.mFontColorMore );
-
-		// Centered:
-		return x - 16 * CleanXfac_1;
 	}
 
 	override bool Activate() {
 		if ( !keeper )
 			keeper = OptionMenuItemZCCommandKeeper.Get();
 
-		Super.Init( mLabel, keeper.GetExecCommand(), closeonselect: mCloseOnSelect );
+		InitExecute( mLabel, keeper.GetExecCommand() );
 		bool outval = Super.Activate();
 
 		if ( mCloseOnExec )
-			Menu.SetMenu( 'ZCheckerAutocloseMenu' );
+			ZCheckerAutocloseMenu.Call();
 
 		return outval;
 	}

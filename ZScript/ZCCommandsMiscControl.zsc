@@ -163,7 +163,7 @@ class ZCInfoPanelControlCommand: ZCConsoleCommand {
 					if ( zcNewPos != -1 )
 						handler.Testee[ zcNewPos ].mo = handler.Testee[ zcPos ].mo;
 
-					if ( zcPanelControlType == PCT_Move )
+					if ( zcPanelControlType == PCT_Move && zcPos != zcNewPos )
 						handler.Testee[ zcPos ].mo = NULL;
 
 					ccmd.handler.UpdateInternalClassnameByField( zcPos );
