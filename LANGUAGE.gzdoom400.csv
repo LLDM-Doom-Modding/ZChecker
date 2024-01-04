@@ -368,6 +368,7 @@ unused),,,,
 ,,ZCHECKER_CCMDMENUITEM_DEFAULT,Default,По умолчанию
 ,,ZCHECKER_CCMDMENUITEM_DEFAULTSYMB,-,-
 ,,ZCHECKER_CCMDMENUITEM_NOCHANGE,Do not change,Не изменять
+,,ZCHECKER_CCMDMENUITEM_PRECEDENCENOTE,"In a conflict, the latest item has a higher precedence.",При конфликте последний элемент имеет более высокий приоритет.
 ,,,,
 ,,ZCHECKER_CCMDMENU_ACTOR_SOURCE,Actor source,Целевой актор
 ,,ZCHECKER_CCMDMENU_SOURCE_LT,Linetarget,Цель под курсором
@@ -401,8 +402,8 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE,zcgive/zctake menu,zcgive/zctake. Инвентарь
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_IN,Inventory name,Название предмета
-,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES,"Quantity, 1..1E6","Количество, 1..1E6"
-,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество задаётся через стрелки влево/вправо или ввод с клавиатуры
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY,"Quantity, 1..1E6","Количество, 1..1E6"
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITYNOTE,Quantity can be set with left/right arrows or keyboard input,Количество задаётся через стрелки влево/вправо или ввод с клавиатуры
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GT,Give/take,Операция
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE,Give to actor,Дать актору
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE,Take from actor,Забрать у актора
@@ -419,12 +420,13 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_TITLE,zcsummon menu,zcsummon. Создание акторов
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN,Actor name,Название актора
-,,ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES,"Quantity, 1..100","Количество, 1..100"
-,,ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры
+,,ZCHECKER_CCMDMENU_ZCSUMMON_QUANTITY,"Quantity, 1..100","Количество, 1..100"
+,,ZCHECKER_CCMDMENU_ZCSUMMON_QUANTITYNOTE,Quantity can be set with left/right arrows or keyboard input,Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры
 ,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD,= World =,= Мир =
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET,"Forward offset, mappixels","Смещение вперёд, в маппикселях"
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET,"Vertical offset, mappixels","Смещение по вертикали, в маппикселях"
-,,ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE,Relative angle,Относительный угол
+,,ZCHECKER_CCMDMENU_ZCSUMMON_ANGLE,Angle,Угол
+,,ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE,Angle relative to player,Угол относительно игрока
 ,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR,= Behaviour =,= Поведение =
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH,Health,Здоровье
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_APANEL,Panel to add (last spawned only),Добавить в панель (для последнего созданного)

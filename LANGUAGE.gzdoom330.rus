@@ -352,6 +352,7 @@ ZCHECKER_CCMDMENUITEM_CLASSNAMEFIELD_NOSPACES = "Пробелы в назван�
 ZCHECKER_CCMDMENUITEM_DEFAULT         = "По умолчанию";
 ZCHECKER_CCMDMENUITEM_DEFAULTSYMB     = "-";
 ZCHECKER_CCMDMENUITEM_NOCHANGE        = "Не изменять";
+ZCHECKER_CCMDMENUITEM_PRECEDENCENOTE  = "При конфликте последний элемент имеет более высокий приоритет.";
 
 ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Целевой актор";
 ZCHECKER_CCMDMENU_SOURCE_LT           = "Цель под курсором";
@@ -385,8 +386,8 @@ ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3   = "Панель 3 (справа)";
 
 ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake. Инвентарь";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Название предмета";
-ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES = "Количество, 1..1E6";
-ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT   = "Количество задается через стрелки влево/вправо или ввод с клавиатуры";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY = "Количество, 1..1E6";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITYNOTE = "Количество задается через стрелки влево/вправо или ввод с клавиатуры";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GT       = "Операция";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE     = "Дать актору";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE     = "Забрать у актора";
@@ -403,12 +404,13 @@ ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT = "Перезапустить состоя
 
 ZCHECKER_CCMDMENU_ZCSUMMON_TITLE      = "zcsummon. Создание акторов";
 ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN = "Название актора";
-ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES   = "Количество, 1..100";
-ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT     = "Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры";
+ZCHECKER_CCMDMENU_ZCSUMMON_QUANTITY   = "Количество, 1..100";
+ZCHECKER_CCMDMENU_ZCSUMMON_QUANTITYNOTE = "Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD   = "= Мир =";
 ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET    = "Смещение вперед, в маппикселях";
 ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET    = "Смещение по вертикали, в маппикселях";
-ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE   = "Относительный угол";
+ZCHECKER_CCMDMENU_ZCSUMMON_ANGLE      = "Угол";
+ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE   = "Угол относительно игрока";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR = "= Поведение =";
 ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH     = "Здоровье";
 ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Добавить в панель (для последнего созданного)";

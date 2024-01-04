@@ -372,6 +372,7 @@ ZCHECKER_CCMDMENUITEM_CLASSNAMEFIELD_NOSPACES = "Spaces in class names are not a
 ZCHECKER_CCMDMENUITEM_DEFAULT         = "Default";
 ZCHECKER_CCMDMENUITEM_DEFAULTSYMB     = "-";
 ZCHECKER_CCMDMENUITEM_NOCHANGE        = "Do not change";
+ZCHECKER_CCMDMENUITEM_PRECEDENCENOTE  = "In a conflict, the latest item has a higher precedence.";
 
 ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Actor source";
 ZCHECKER_CCMDMENU_SOURCE_LT           = "Linetarget";
@@ -405,8 +406,8 @@ ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3   = "Panel 3 (right)";
 
 ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake menu";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Inventory name";
-ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES = "Quantity, 1..1E6";
-ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT   = "Quantity can be set with left/right arrows or keyboard input";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY = "Quantity, 1..1E6";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITYNOTE = "Quantity can be set with left/right arrows or keyboard input";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GT       = "Give/take";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE     = "Give to actor";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE     = "Take from actor";
@@ -423,12 +424,13 @@ ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT = "Revert current state tics";
 
 ZCHECKER_CCMDMENU_ZCSUMMON_TITLE      = "zcsummon menu";
 ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN = "Actor name";
-ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES   = "Quantity, 1..100";
-ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT     = "Quantity can be set with left/right arrows or keyboard input";
+ZCHECKER_CCMDMENU_ZCSUMMON_QUANTITY   = "Quantity, 1..100";
+ZCHECKER_CCMDMENU_ZCSUMMON_QUANTITYNOTE = "Quantity can be set with left/right arrows or keyboard input";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD   = "= World =";
 ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET    = "Forward offset, mappixels";
 ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET    = "Vertical offset, mappixels";
-ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE   = "Relative angle";
+ZCHECKER_CCMDMENU_ZCSUMMON_ANGLE      = "Angle";
+ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE   = "Angle relative to player";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR = "= Behaviour =";
 ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH     = "Health";
 ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Panel to add (last spawned only)";
