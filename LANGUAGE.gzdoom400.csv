@@ -249,6 +249,7 @@ unused),,,,
 ,,ZCHECKER_PANELSUBMENU_SNDDEFS_RARE,Output rare sounds,Вывод используемых редко
 ,,,,
 ,,,,
+,,,,
 , === Visual Settings control menu ===,,,
 ,,,,
 ,,ZCHECKER_VISUAL_TITLE,ZChecker: HUD and visual settings,ZChecker: настройки отображения
@@ -347,11 +348,176 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_HELPNOTE3,"console command; also you may use ""zchelp <command>"".","также можно использовать ""zchelp <команда>""."
 ,,ZCHECKER_CCMDMENU_ZCHANDLER_ERROR,"\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu""\crEventHandler = ...\cu""\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.","""\n\cxНе удаётся найти ZChecker static event handler.\n\ciВозможная причина: \cu""\crEventHandler = ...\cu""\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы."
 ,,ZCHECKER_CCMDMENU_EXAMPLES,Command examples:,Примеры команд:
-,,ZCHECKER_CCMDMENU_ZCADD,"""zcadd"": Add linetarget to panel","""zcadd"": Добавление цели под курсором в панель"
-,,ZCHECKER_CCMDMENU_ZCADD_SELF,"""zcadd self"": Add self to panel","""zcadd self"": Добавление себя в панель"
-,,ZCHECKER_CCMDMENU_ZCREM,"""zcrem"": Clear all panels","""zcrem"": Очистка всех панелей"
+,Not more used.,ZCHECKER_CCMDMENU_ZCADD,"""zcadd"": Add linetarget to panel","""zcadd"": Добавление цели под курсором в панель"
+,Not more used.,ZCHECKER_CCMDMENU_ZCADD_SELF,"""zcadd self"": Add self to panel","""zcadd self"": Добавление себя в панель"
+,Not more used.,ZCHECKER_CCMDMENU_ZCREM,"""zcrem"": Clear all panels","""zcrem"": Очистка всех панелей"
 ,,ZCHECKER_CCMDMENU_ZCHELP,"""zchelp"": Print short help to console","""zchelp"": Вывести краткую справку в консоль"
 ,,,,
+,,ZCHECKER_CCMDMENU_EXECUTE,Execute,Выполнить
+,,ZCHECKER_CCMDMENU_ACTOR_SOURCE,Actor source,Источник
+,,ZCHECKER_CCMDMENU_SOURCE_LT,Linetarget,Цель под курсором
+,,ZCHECKER_CCMDMENU_SOURCE_PANEL1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_SOURCE_PANEL2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_SOURCE_PANEL3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_SOURCE_SELF,Player itself,Сам игрок
+,,ZCHECKER_CCMDMENU_SOURCE_CAMERA,Player camera,Камера игрока
+,,,,
+,,ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE,zcadd menu,zcadd. Добавление в инфопанели
+,,ZCHECKER_CCMDMENU_ZCADD_PN,Panel number,Номер панели
+,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_LT,Linetarget,Цель под курсором
+,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF,Player itself,Сам игрок
+,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON,Weapon,Оружие
+,,ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE,Ethereal linetarget,Неосязаемая цель под курсором
+,,ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE,First free panel,Первая свободная панель
+,,ZCHECKER_CCMDMENU_ZCADD_PANEL_P1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCADD_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCADD_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,,,
+,,ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE,zcrem menu,zcrem. Очистка инфопанелей
+,,ZCHECKER_CCMDMENU_ZCREM_PN,Panel number,Номер панели
+,,ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR,Clear all panels,Очистить всё
+,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,,,
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE,zcgive/zctake menu,zcgive/zctake. Инвентарь
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_IN,Inventory name,Название предмета
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES,"Quantity, 1..1E6","Количество, 1..1E6"
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GT,Give/take,Операция
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE,Give to actor,Дать актору
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE,Take from actor,Забрать у актора
+,,,,
+,,ZCHECKER_CCMDMENU_ZCACT_MENU,zcact menu,zcact. Действие над актором
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION,Action,Действие
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_REVIVE,Revive,Оживить
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_KILL,Kill,Убить
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_EK,Extreme kill,Жестоко убить
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_RM,Remove,Удалить
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE,Freeze current state,Заморозить состояние
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP,Skip current state,Пропустить текущее состояние
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT,Revert current state tics,Перезапустить состояние
+,,,,
+,,ZCHECKER_CCMDMENU_ZCSUMMON_MENU,zcsummon menu,zcsummon. Создание акторов
+,,ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN,Actor to spawn,Актор для порождения
+,,ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES,"Quantity, 1..100","Количество, 1..100"
+,,ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры
+,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD,= World =,= Мир =
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET,"Forward offset, mappixels","Смещение вперед, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET,"Vertical offset, mappixels","Смещение по вертикали, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE,Relative angle,Относительный угол
+,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR,= Behaviour =,= Поведение =
+,,ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH,Health,Здоровье
+,,ZCHECKER_CCMDMENU_ZCSUMMON_APANEL,Panel to add (last spawned only),Добавить в панель последнего созданного
+,,ZCHECKER_CCMDMENU_ZCSUMMON_TID,TID,TID
+,,ZCHECKER_CCMDMENU_ZCSUMMON_A0,Argument 0,Аргумент 0
+,,ZCHECKER_CCMDMENU_ZCSUMMON_A1,Argument 1,Аргумент 1
+,,ZCHECKER_CCMDMENU_ZCSUMMON_A2,Argument 2,Аргумент 2
+,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS,= Flags =,= Флаги =
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS,Friendliness,Дружественность
+,,ZCHECKER_CCMDMENU_ZCSUMMON_INF,Infighting,Инфайтинг
+,,ZCHECKER_CCMDMENU_ZCSUMMON_PR,Projectile rules,Правила создания снарядов
+,,ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT,Dormant,Отключить актора (флаг Dormant)
+,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_FREE,First free panel,Первая свободная панель
+,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FRIEND,Friend,Дружественный
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FOE,Foe,Враждебный
+,,ZCHECKER_CCMDMENU_ZCSUMMON_DINFIGHT,Disable infighting,Отключить инфайтинг
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FINFIGHT,Force infighting,Принудительный инфайтинг
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FDORMANT,Force dormant,Отключить
+,,ZCHECKER_CCMDMENU_ZCSUMMON_DNA,Do not apply,Не применять
+,,ZCHECKER_CCMDMENU_ZCSUMMON_FLAG,Flag name,Название флага
+,,,,
+,,ZCHECKER_CCMDMENU_ZCSETFLAG_MENU,zcsetflag menu,zcsetflag. Манипулирование флагами
+,,ZCHECKER_CCMDMENU_ZCSETFLAG_OPERATION,Operation,Операция
+,,ZCHECKER_CCMDMENU_ZCSETFLAG_TOGGLE,Toggle,Переключить
+,,ZCHECKER_CCMDMENU_ZCSETFLAG_SET1,Set to 1,Установить в 1
+,,ZCHECKER_CCMDMENU_ZCSETFLAG_SET0,Reset to 0,Сбросить в 0
+,,,,
+,,ZCHECKER_CCMDMENU_ZCSETSTATE_MENU,zcsetstate menu,zcsetstate. Установка стейтов
+,,ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL,State label,Название стейта
+,,,,
+,,ZCHECKER_CCMDMENU_ZCSETPROP_MENU,zcsetproperty menu,zcsetprop. Установка свойств
+,,ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE,Values operation type,Операция над значениями
+,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD,= World =,= Мир =
+,,ZCHECKER_CCMDMENU_ZCSETPROP_POSX,"X, mappixels","X, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_POSY,"Y, mappixels","Y, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_POSZ,"Z, mappixels","Z, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_VELX,"X velocity, mappixels","Скорость по X, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_VELY,"Y velocity, mappixels","Скорость по Y, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_VELZ,"Z velocity, mappixels","Скорость по Z, в маппикселях"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE,Angle,"Угол (angle, рыскание)"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_PITCH,Pitch,"Наклонение (pitch, тангаж)"
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ROLL,Roll,Крен (roll)
+,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT,= Interaction =,= Взаимодействие =
+,,ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH,Health,Здоровье
+,,ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS,Radius,Радиус
+,,ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT,Height,Высота
+,,ZCHECKER_CCMDMENU_ZCSETPROP_SPEED,Speed,Скорость
+,,ZCHECKER_CCMDMENU_ZCSETPROP_MASS,Mass,Масса
+,,ZCHECKER_CCMDMENU_ZCSETPROP_GRAVTY,Gravity,Гравитация
+,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_POINTERS,= Actor pointers =,= Указатели =
+,,ZCHECKER_CCMDMENU_ZCSETPROP_PTRTARGET,Target pointer,Указатель Target
+,,ZCHECKER_CCMDMENU_ZCSETPROP_PTRMASTER,Master pointer,Указатель Master
+,,ZCHECKER_CCMDMENU_ZCSETPROP_PTRTRACER,Tracer pointer,Указатель Tracer
+,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_VISUAL,= Visual =,= Отображение =
+,,ZCHECKER_CCMDMENU_ZCSETPROP_RENDERSTYLE,Render style,Способ рендеринга (render style)
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ALPHA,Alpha,Непрозрачность (альфа)
+,,ZCHECKER_CCMDMENU_ZCSETPROP_SCALE,Scale,Масштабирование
+,,ZCHECKER_CCMDMENU_ZCSETPROP_SCALEX,Scale by X axis,Масштабирование по X
+,,ZCHECKER_CCMDMENU_ZCSETPROP_SCALEY,Scale by Y axis,Масштабирование по Y
+,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_SPECIAL,= Special =,= Остальное =
+,,ZCHECKER_CCMDMENU_ZCSETPROP_TID,TID,TID
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG0,Argument 0,Аргумент 0
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG1,Argument 1,Аргумент 1
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG2,Argument 2,Аргумент 2
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG3,Argument 3,Аргумент 3
+,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG4,Argument 4,Аргумент 4
+,,ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL,Special/action,Действие (special/action)
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE,Replace,Заменить
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD,Add,Добавить
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF,Add from player,Добавить от игрока
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDLT,Add from linetarget,Добавить от цели под курсором
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP1,Add from 1st panel,Добавить от 1й панели
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP2,Add from 2nd panel,Добавить от 2й панели
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP3,Add from 3rd panel,Добавить от 3й панели
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNOCHANGE,Do not change,Не изменять
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRLT,Linetarget,Цель под курсором
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRSELF,Player itself,Сам игрок
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRCAMERA,Player camera,Камера игрока
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNULL,Clear pointer,Очистить указатель
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_NORMAL,Normal (no alpha channel),Normal (без альфа-канала)
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRANSLUCENT,Translucent,Translucent
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_FUZZY,Fuzzy,Fuzzy
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OFUZZY,Optional fuzzy,Optional fuzzy
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_STENCIL,Stencil,Stencil
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_ADD,Add,Add
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADED,Shaded,Shaded
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRSTENCIL,Translucent stencil,Translucent stencil
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADOW,Shadow,Shadow
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_SUBTRACT,Subtract,Subtract
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASTENCIL,Add stencil,Add stencil
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASHADED,Add shaded,Add shaded
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_MULTIPLY,Multiply,Multiply
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_IMULTIPLY,Inverse multiply,Inverse multiply
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_ACOLOR,Color add,Color add
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_BCOLOR,Color blend,Color blend
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_NONE,None (do not render),None (не отображать)
+,,,,
+,,ZCHECKER_CCMDMENU_ZCPANEL_TITLE,zcpanel menu,zcpanel. Контроль инфопанелей
+,,ZCHECKER_CCMDMENU_ZCPANEL_SRCPANEL,Source panel,Откуда
+,,ZCHECKER_CCMDMENU_ZCPANEL_DESTPANEL,Destination panel,Куда
+,,ZCHECKER_CCMDMENU_ZCPANEL_OPERATION,Operation,Операция
+,,ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCPANELOPT_MOVE,Move,Переместить
+,,ZCHECKER_CCMDMENU_ZCPANELOPT_COPY,Copy,Скопировать
 ,,,,
 ," === An Everything"" maps ==",,,
 ,,,,
@@ -841,7 +1007,7 @@ Resurrection of the dead player is not supported, use the built-in ""`Cresurrect
 ""`Czcsetp 3 add x:0.5`~,`Cy:0.333`C"" moves the actor in the `G3`xrd infopanel diagonally, by X and Y axis;
 ""`Czcsetp 1 add alpha:-0.2`C"" reduces the opaqueness of the actor in the `G1`xst panel. `YNote, that actor must have a suitable RenderStyle`x;
 
-""`Czcsetp 1 relative:1 alpha:-0.2`C"" same as the command on previous line;
+""`Czcsetp 1 relative:1 alpha:-0.2`C"" same as the command on previous line `d(add to actor in panel 1 relative to itself)`d;
 ""`Czcsetp 1 rel:s hp:0`C"" sets the health of the actor in the `G1`xst infopanel to the value of the calling player's health `~(as sum of `xplayer.health`~ and `x0`~)`x;
 ""`Czcsetp 1 rel hp:0`C"" same as the command above: ""`Yrel`x"" without the argument treated as ""`Yrel`~:`Gself`x"";
 ""`Czcsetp 2 master:self,scalex:0.75,scaley:2`C"" sets the `Gmaster pointer `xto the calling player and `Gscale `xseparately for the `GX and Y`x for the actor in `G2`xnd panel;
@@ -856,7 +1022,7 @@ Resurrection of the dead player is not supported, use the built-in ""`Cresurrect
 ""`Czcsetp 3 add x:0.5`~,`Cy:0.333`C"" перемещает актора в `G3`x-й инфопанели по диагонали (и по X и Y);
 ""`Czcsetp 1 add alpha:-0.2`C"" уменьшает непрозрачность (альфа-канал) актора в `G1`x-й панели. `YИмейте в виду, актор должен иметь подходящий RenderStyle`x;
 
-""`Czcsetp 1 relative:1 alpha:-0.2`C"" делает то же, что и предыдущая команда (""relative"" — ""относительно"");
+""`Czcsetp 1 relative:1 alpha:-0.2`C"" делает то же, что и предыдущая команда `d(""relative"" — ""относительно"", здесь — для актора в первой панели относительно него же)`d;
 ""`Czcsetp 1 rel:s hp:0`C"" устанавливает здоровье актора в `G1`x-й инфопанели равным здоровью игрока `~(как сумма `xplayer.health`~ и `x0`~)`x;
 ""`Czcsetp 1 rel hp:0`C"" — то же, что и команда выше: ""`Yrel`x"" без аргументов считается за ""`Yrel`~:`Gself`x"";
 ""`Czcsetp 2 master:self,scalex:0.75,scaley:2`C"" устанавливает `Gуказатель master`x на вызывающего игрока, а также меняет `Gscale`x (`GX и Y`x по-разному) для актора во `G2`x-й панели;

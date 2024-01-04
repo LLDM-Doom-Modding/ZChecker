@@ -253,6 +253,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "ZChecker panel: Sound definitions";
 ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Output rare sounds";
 
 
+
 //  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: HUD and visual settings";
@@ -351,11 +352,176 @@ ZCHECKER_CCMDMENU_HELPNOTE2           = "All commands may be shown via the \"zch
 ZCHECKER_CCMDMENU_HELPNOTE3           = "console command; also you may use \"zchelp <command>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.";
 ZCHECKER_CCMDMENU_EXAMPLES            = "Command examples:";
-ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Add linetarget to panel";
-ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Add self to panel";
-ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Clear all panels";
+ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Add linetarget to panel"; // Not more used.
+ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Add self to panel"; // Not more used.
+ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Clear all panels"; // Not more used.
 ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Print short help to console";
 
+ZCHECKER_CCMDMENU_EXECUTE             = "Execute";
+ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Actor source";
+ZCHECKER_CCMDMENU_SOURCE_LT           = "Linetarget";
+ZCHECKER_CCMDMENU_SOURCE_PANEL1       = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_SOURCE_PANEL2       = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_SOURCE_PANEL3       = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_SOURCE_SELF         = "Player itself";
+ZCHECKER_CCMDMENU_SOURCE_CAMERA       = "Player camera";
+
+ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE    = "zcadd menu";
+ZCHECKER_CCMDMENU_ZCADD_PN            = "Panel number";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_LT     = "Linetarget";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF   = "Player itself";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON = "Weapon";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE  = "Ethereal linetarget";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE    = "First free panel";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_P1      = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_P2      = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_P3      = "Panel 3 (right)";
+
+ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE    = "zcrem menu";
+ZCHECKER_CCMDMENU_ZCREM_PN            = "Panel number";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR   = "Clear all panels";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_P1      = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_P2      = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_P3      = "Panel 3 (right)";
+
+ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake menu";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Inventory name";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES = "Quantity, 1..1E6";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT   = "Quantity can be set with left/right arrows or keyboard input";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_GT       = "Give/take";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE     = "Give to actor";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE     = "Take from actor";
+
+ZCHECKER_CCMDMENU_ZCACT_MENU          = "zcact menu";
+ZCHECKER_CCMDMENU_ZCACT_ACTION        = "Action";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_REVIVE = "Revive";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_KILL   = "Kill";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_EK     = "Extreme kill";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_RM     = "Remove";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE = "Freeze current state";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP   = "Skip current state";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT = "Revert current state tics";
+
+ZCHECKER_CCMDMENU_ZCSUMMON_MENU       = "zcsummon menu";
+ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN = "Actor to spawn";
+ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES   = "Quantity, 1..100";
+ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT     = "Quantity can be set with left/right arrows or keyboard input";
+ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD   = "= World =";
+ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET    = "Forward offset, mappixels";
+ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET    = "Vertical offset, mappixels";
+ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE     = "Relative angle";
+ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR = "= Behaviour =";
+ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH     = "Health";
+ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Panel to add (last spawned only)";
+ZCHECKER_CCMDMENU_ZCSUMMON_TID        = "TID";
+ZCHECKER_CCMDMENU_ZCSUMMON_A0         = "Argument 0";
+ZCHECKER_CCMDMENU_ZCSUMMON_A1         = "Argument 1";
+ZCHECKER_CCMDMENU_ZCSUMMON_A2         = "Argument 2";
+ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS   = "= Flags =";
+ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS = "Friendliness";
+ZCHECKER_CCMDMENU_ZCSUMMON_INF        = "Infighting";
+ZCHECKER_CCMDMENU_ZCSUMMON_PR         = "Projectile rules";
+ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT    = "Dormant";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_FREE = "First free panel";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P1   = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P2   = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P3   = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_ZCSUMMON_FRIEND     = "Friend";
+ZCHECKER_CCMDMENU_ZCSUMMON_FOE        = "Foe";
+ZCHECKER_CCMDMENU_ZCSUMMON_DINFIGHT   = "Disable infighting";
+ZCHECKER_CCMDMENU_ZCSUMMON_FINFIGHT   = "Force infighting";
+ZCHECKER_CCMDMENU_ZCSUMMON_FDORMANT   = "Force dormant";
+ZCHECKER_CCMDMENU_ZCSUMMON_DNA        = "Do not apply";
+ZCHECKER_CCMDMENU_ZCSUMMON_FLAG       = "Flag name";
+
+ZCHECKER_CCMDMENU_ZCSETFLAG_MENU      = "zcsetflag menu";
+ZCHECKER_CCMDMENU_ZCSETFLAG_OPERATION = "Operation";
+ZCHECKER_CCMDMENU_ZCSETFLAG_TOGGLE    = "Toggle";
+ZCHECKER_CCMDMENU_ZCSETFLAG_SET1      = "Set to 1";
+ZCHECKER_CCMDMENU_ZCSETFLAG_SET0      = "Reset to 0";
+
+ZCHECKER_CCMDMENU_ZCSETSTATE_MENU     = "zcsetstate menu";
+ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL  = "State label";
+
+ZCHECKER_CCMDMENU_ZCSETPROP_MENU      = "zcsetproperty menu";
+ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE    = "Values operation type";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD  = "= World =";
+ZCHECKER_CCMDMENU_ZCSETPROP_POSX      = "X, mappixels";
+ZCHECKER_CCMDMENU_ZCSETPROP_POSY      = "Y, mappixels";
+ZCHECKER_CCMDMENU_ZCSETPROP_POSZ      = "Z, mappixels";
+ZCHECKER_CCMDMENU_ZCSETPROP_VELX      = "X velocity, mappixels";
+ZCHECKER_CCMDMENU_ZCSETPROP_VELY      = "Y velocity, mappixels";
+ZCHECKER_CCMDMENU_ZCSETPROP_VELZ      = "Z velocity, mappixels";
+ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE     = "Angle";
+ZCHECKER_CCMDMENU_ZCSETPROP_PITCH     = "Pitch";
+ZCHECKER_CCMDMENU_ZCSETPROP_ROLL      = "Roll";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT = "= Interaction =";
+ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH    = "Health";
+ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS    = "Radius";
+ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT    = "Height";
+ZCHECKER_CCMDMENU_ZCSETPROP_SPEED     = "Speed";
+ZCHECKER_CCMDMENU_ZCSETPROP_MASS      = "Mass";
+ZCHECKER_CCMDMENU_ZCSETPROP_GRAVTY    = "Gravity";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_POINTERS = "= Actor pointers =";
+ZCHECKER_CCMDMENU_ZCSETPROP_PTRTARGET = "Target pointer";
+ZCHECKER_CCMDMENU_ZCSETPROP_PTRMASTER = "Master pointer";
+ZCHECKER_CCMDMENU_ZCSETPROP_PTRTRACER = "Tracer pointer";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_VISUAL = "= Visual =";
+ZCHECKER_CCMDMENU_ZCSETPROP_RENDERSTYLE = "Render style";
+ZCHECKER_CCMDMENU_ZCSETPROP_ALPHA     = "Alpha";
+ZCHECKER_CCMDMENU_ZCSETPROP_SCALE     = "Scale";
+ZCHECKER_CCMDMENU_ZCSETPROP_SCALEX    = "Scale by X axis";
+ZCHECKER_CCMDMENU_ZCSETPROP_SCALEY    = "Scale by Y axis";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_SPECIAL = "= Special =";
+ZCHECKER_CCMDMENU_ZCSETPROP_TID       = "TID";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG0      = "Argument 0";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG1      = "Argument 1";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG2      = "Argument 2";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG3      = "Argument 3";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG4      = "Argument 4";
+ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL   = "Special/action";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE = "Replace";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD  = "Add";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF = "Add from player";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDLT = "Add from linetarget";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP1 = "Add from 1st panel";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP2 = "Add from 2nd panel";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP3 = "Add from 3rd panel";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNOCHANGE = "Do not change";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRLT  = "Linetarget";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP1  = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP2  = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP3  = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRSELF = "Player itself";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRCAMERA = "Player camera";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNULL = "Clear pointer";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_NORMAL = "Normal (no alpha channel)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRANSLUCENT = "Translucent";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_FUZZY  = "Fuzzy";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OFUZZY = "Optional fuzzy";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_STENCIL = "Stencil";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ADD    = "Add";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADED = "Shaded";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRSTENCIL = "Translucent stencil";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADOW = "Shadow";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_SUBTRACT = "Subtract";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASTENCIL = "Add stencil";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASHADED = "Add shaded";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_MULTIPLY = "Multiply";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_IMULTIPLY = "Inverse multiply";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ACOLOR = "Color add";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_BCOLOR = "Color blend";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_NONE   = "None (do not render)";
+
+ZCHECKER_CCMDMENU_ZCPANEL_TITLE       = "zcpanel menu";
+ZCHECKER_CCMDMENU_ZCPANEL_SRCPANEL    = "Source panel";
+ZCHECKER_CCMDMENU_ZCPANEL_DESTPANEL   = "Destination panel";
+ZCHECKER_CCMDMENU_ZCPANEL_OPERATION   = "Operation";
+ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL1   = "Panel 1 (left)";
+ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL2   = "Panel 2 (middle)";
+ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL3   = "Panel 3 (right)";
+ZCHECKER_CCMDMENU_ZCPANELOPT_MOVE     = "Move";
+ZCHECKER_CCMDMENU_ZCPANELOPT_COPY     = "Copy";
 
 //  === An Everything" maps ==
 
@@ -768,7 +934,7 @@ ZCHECKER_TOOLTIP_ZCSETPROP_EXAMPLES   = "\"`Czcsetprop hp:255`C\" `~or`x \"`Czcs
 \"`Czcsetp 3 add x:0.5`~,`Cy:0.333`C\" moves the actor in the `G3`xrd infopanel diagonally, by X and Y axis;\
 \"`Czcsetp 1 add alpha:-0.2`C\" reduces the opaqueness of the actor in the `G1`xst panel. `YNote, that actor must have a suitable RenderStyle`x;\
 \
-\"`Czcsetp 1 relative:1 alpha:-0.2`C\" same as the command on previous line;\
+\"`Czcsetp 1 relative:1 alpha:-0.2`C\" same as the command on previous line `d(add to actor in panel 1 relative to itself)`d;\
 \"`Czcsetp 1 rel:s hp:0`C\" sets the health of the actor in the `G1`xst infopanel to the value of the calling player's health `~(as sum of `xplayer.health`~ and `x0`~)`x;\
 \"`Czcsetp 1 rel hp:0`C\" same as the command above: \"`Yrel`x\" without the argument treated as \"`Yrel`~:`Gself`x\";\
 \"`Czcsetp 2 master:self,scalex:0.75,scaley:2`C\" sets the `Gmaster pointer `xto the calling player and `Gscale `xseparately for the `GX and Y`x for the actor in `G2`xnd panel;\
