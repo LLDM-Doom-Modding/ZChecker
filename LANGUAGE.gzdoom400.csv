@@ -264,7 +264,7 @@ unused),,,,
 ,,ZCHECKER_VISUALDIV_BACKGROUND,Panels background,Настройки фона панелей
 ,,ZCHECKER_VISUAL_ENABLED,Enabled,Включён
 ,,ZCHECKER_VISUAL_DIMCOLOR,Background color,Цвет фона
-,,ZCHECKER_VISUAL_DIMALPHA,Background alpha,Прозрачность фона
+,,ZCHECKER_VISUAL_DIMALPHA,Background alpha,Непрозрачность фона
 ,,ZCHECKER_VISUAL_DIMBORDERWIDTH,Border width,Ширина границ
 ,,ZCHECKER_VISUALDIV_EVERYTHINGMAP_INFO,"""Everything"" map actor info","Информационный актор на картах ""Everything"""
 ,,ZCHECKER_VISUAL_INFOSTR_X,"Actor info string X, %","Начало строки по X, %"
@@ -354,6 +354,8 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCHELP,"""zchelp"": Print short help to console","""zchelp"": Вывести краткую справку в консоль"
 ,,,,
 ,,ZCHECKER_CCMDMENU_EXECUTE,Execute,Выполнить
+,,ZCHECKER_CCMDMENU_RESETITEMS,Reset menu options,Сбросить настройки
+,,,,
 ,,ZCHECKER_CCMDMENU_ACTOR_SOURCE,Actor source,Источник
 ,,ZCHECKER_CCMDMENU_SOURCE_LT,Linetarget,Цель под курсором
 ,,ZCHECKER_CCMDMENU_SOURCE_PANEL1,Panel 1 (left),Панель 1 (слева)
@@ -375,7 +377,7 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE,zcrem menu,zcrem. Очистка инфопанелей
 ,,ZCHECKER_CCMDMENU_ZCREM_PN,Panel number,Номер панели
-,,ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR,Clear all panels,Очистить всё
+,,ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR,Clear all panels,Очистить все
 ,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P1,Panel 1 (left),Панель 1 (слева)
 ,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
 ,,ZCHECKER_CCMDMENU_ZCREM_PANEL_P3,Panel 3 (right),Панель 3 (справа)
@@ -398,8 +400,8 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP,Skip current state,Пропустить текущее состояние
 ,,ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT,Revert current state tics,Перезапустить состояние
 ,,,,
-,,ZCHECKER_CCMDMENU_ZCSUMMON_MENU,zcsummon menu,zcsummon. Создание акторов
-,,ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN,Actor to spawn,Актор для порождения
+,,ZCHECKER_CCMDMENU_ZCSUMMON_TITLE,zcsummon menu,zcsummon. Создание акторов
+,,ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN,Actor name,Название актора
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES,"Quantity, 1..100","Количество, 1..100"
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT,Quantity can be set with left/right arrows or keyboard input,Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры
 ,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD,= World =,= Мир =
@@ -418,19 +420,19 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_INF,Infighting,Инфайтинг
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_PR,Projectile rules,Правила создания снарядов
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT,Dormant,Отключить актора (флаг Dormant)
-,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_FREE,First free panel,Первая свободная панель
-,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P1,Panel 1 (left),Панель 1 (слева)
-,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
-,,ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P3,Panel 3 (right),Панель 3 (справа)
-,,ZCHECKER_CCMDMENU_ZCSUMMON_FRIEND,Friend,Дружественный
-,,ZCHECKER_CCMDMENU_ZCSUMMON_FOE,Foe,Враждебный
-,,ZCHECKER_CCMDMENU_ZCSUMMON_DINFIGHT,Disable infighting,Отключить инфайтинг
-,,ZCHECKER_CCMDMENU_ZCSUMMON_FINFIGHT,Force infighting,Принудительный инфайтинг
-,,ZCHECKER_CCMDMENU_ZCSUMMON_FDORMANT,Force dormant,Отключить
-,,ZCHECKER_CCMDMENU_ZCSUMMON_DNA,Do not apply,Не применять
-,,ZCHECKER_CCMDMENU_ZCSUMMON_FLAG,Flag name,Название флага
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_FREE,First free panel,Первая свободная панель
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P1,Panel 1 (left),Панель 1 (слева)
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P2,Panel 2 (middle),Панель 2 (в центре)
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P3,Panel 3 (right),Панель 3 (справа)
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FRIEND,Friend,Дружественный
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FOE,Foe,Враждебный
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT,Disable infighting,Отключить инфайтинг
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT,Force infighting,Принудительный инфайтинг
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT,Force dormant,Отключить
+,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_DNA,Do not apply,Не применять
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_MENU,zcsetflag menu,zcsetflag. Манипулирование флагами
+,,ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG,Flag name,Название флага
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_OPERATION,Operation,Операция
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_TOGGLE,Toggle,Переключить
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_SET1,Set to 1,Установить в 1
@@ -439,7 +441,8 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSETSTATE_MENU,zcsetstate menu,zcsetstate. Установка стейтов
 ,,ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL,State label,Название стейта
 ,,,,
-,,ZCHECKER_CCMDMENU_ZCSETPROP_MENU,zcsetproperty menu,zcsetprop. Установка свойств
+,,ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_I,zcsetproperty menu,zcsetprop. Установка свойств
+,,ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_O,zcsetproperty menu,zcsetprop. Установка свойств
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE,Values operation type,Операция над значениями
 ,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD,= World =,= Мир =
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_POSX,"X, mappixels","X, в маппикселях"
@@ -491,10 +494,10 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRSELF,Player itself,Сам игрок
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRCAMERA,Player camera,Камера игрока
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNULL,Clear pointer,Очистить указатель
-,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_NORMAL,Normal (no alpha channel),Normal (без альфа-канала)
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_NORMAL,Normal (no alpha),Normal (без альфа-канала)
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRANSLUCENT,Translucent,Translucent
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_FUZZY,Fuzzy,Fuzzy
-,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OFUZZY,Optional fuzzy,Optional fuzzy
+,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OFUZZY,Fuzzy (option-based),Fuzzy (option-based)
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_STENCIL,Stencil,Stencil
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_ADD,Add,Add
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADED,Shaded,Shaded
