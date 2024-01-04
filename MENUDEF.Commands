@@ -7,11 +7,11 @@
 // Actor source:
 OptionString "ZCheckerOptionCCMD_actorsource" {
 	"", "Linetarget (default)"
-	"1", "Panel 1 (left)"
-	"2", "Panel 2 (middle)"
-	"3", "Panel 3 (right)"
-	"self", "Player itself"
-	"camera", "Current player's camera"
+	"1", "$ZCHECKER_CCMDMENU_SOURCE_PANEL1"
+	"2", "$ZCHECKER_CCMDMENU_SOURCE_PANEL2"
+	"3", "$ZCHECKER_CCMDMENU_SOURCE_PANEL3"
+	"self", "$ZCHECKER_CCMDMENU_SOURCE_SELF"
+	"camera", "$ZCHECKER_CCMDMENU_SOURCE_CAMERA"
 }
 
 
@@ -20,302 +20,302 @@ OptionString "ZCheckerOptionCCMD_actorsource" {
 
 // "zcadd" and "zcrem":
 OptionMenu "ZChecker_CommandsMenu_zcadd" {
-    Title "zcadd menu"
+    Title "$ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE"
 
 	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcaddrem   0 static:zcadd"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
     StaticText " "
 
-	ZCOption "Panel number", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
-	ZCOption "Actor source", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCADD_PN", 2, "paneladd", "ZCheckerOptionCCMD_zcadd_panel"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "addsrc", "ZCheckerOptionCCMD_zcadd_source"
 }
 
 OptionMenu "ZChecker_CommandsMenu_zcrem" {
-    Title "zcrem menu"
+    Title "$ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE"
 
 	ZCCommandKeeper 1, "0 static:zcrem   1 cvar:lldm_zcmenuarg_zcaddrem"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
     StaticText " "
 
-	ZCOption "Panel number", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCREM_PN", 1, "panelrem", "ZCheckerOptionCCMD_zcrem_panel"
 }
 
 OptionString "ZCheckerOptionCCMD_zcadd_source" {
-	"", "Linetarget"
-	"self", "Player itself"
-	"weapon", "Weapon"
-	"force", "Ethereal linetarget"
+	"", "$ZCHECKER_CCMDMENU_SOURCE_LT"
+	"self", "$ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF"
+	"weapon", "$ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON"
+	"force", "$ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE"
 }
 
 OptionString "ZCheckerOptionCCMD_zcadd_panel" {
-	"", "First free"
-	"1", "1 (left)"
-	"2", "2 (middle)"
-	"3", "3 (right)"
+	"", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE"
+	"1", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_P1"
+	"2", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_P2"
+	"3", "$ZCHECKER_CCMDMENU_ZCADD_PANEL_P3"
 }
 
 OptionString "ZCheckerOptionCCMD_zcrem_panel" {
-	"", "Clear all panels"
-	"1", "1 (left)"
-	"2", "2 (middle)"
-	"3", "3 (right)"
+	"", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR"
+	"1", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_P1"
+	"2", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_P2"
+	"3", "$ZCHECKER_CCMDMENU_ZCREM_PANEL_P3"
 }
 
 
 // "zcgive"/"zctake":
 OptionMenu "ZChecker_CommandsMenu_zcgivetake" {
-    Title "zcgive/zctake menu"
+    Title "$ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcgivetake   0 default:cmd:give   1 cvar:lldm_zcmenuarg_actorsource   2 default:cls:-   3 default:q:1"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
     StaticText " "
 
-	ZCClassnameField "Inventory name",	2, "cls"
-	ZCNumberField "Quantity, 1..1E6",	3, "q", 1, 1000000, 1
-	ZCStaticText "Quantity can be set with left/right arrows or keyboard input", DARKGRAY
+	ZCClassnameField "$ZCHECKER_CCMDMENU_ZCGIVETAKE_IN", 2, "cls"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES", 3, "q", 1, 1000000, 1
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT", DARKGRAY
 	ZCStaticText ""
-	ZCOption "Give/take",       0, "cmd", "ZCheckerOptionCCMD_zcgivetake_maincmd", "zc"
-	ZCOption "Actor source",    1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCGIVETAKE_GT", 0, "cmd", "ZCheckerOptionCCMD_zcgivetake_maincmd", "zc"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
 
 }
 
 OptionString "ZCheckerOptionCCMD_zcgivetake_maincmd" {
-	"give", "Give to actor"
-	"take", "Take from actor"
+	"give", "$ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE"
+	"take", "$ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE"
 }
 
 
 // "zcact":
 OptionMenu "ZChecker_CommandsMenu_zcact" {
-    Title "zcact menu"
+    Title "$ZCHECKER_CCMDMENU_ZCACT_MENU"
 
 	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcact   0 static:zcact   1 cvar:lldm_zcmenuarg_actorsource   2 default:act:rm"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 	ZCStaticText ""
 
-	ZCOption "Action",			2, "act", "ZCheckerOptionCCMD_zcact_action"
-	ZCOption "Actor source",	1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCACT_ACTION", 2, "act", "ZCheckerOptionCCMD_zcact_action"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
 }
 
 OptionString "ZCheckerOptionCCMD_zcact_action" {
-	"revive", "Revive"
-	"k", "Kill"
-	"xk", "Extreme kill"
-	"rm", "Remove"
-	"statefreeze", "Freeze current state"
-	"stateskip", "Skip current state"
-	"staterevert", "Revert current state tics"
+	"revive", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_REVIVE"
+	"k", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_KILL"
+	"xk", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_EK"
+	"rm", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_RM"
+	"statefreeze", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE"
+	"stateskip", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP"
+	"staterevert", "$ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT"
 }
 
 
 // "zcsummon":
 OptionMenu "ZChecker_CommandsMenu_zcsummon" {
-	Title "zcsummon menu"
+	Title "$ZCHECKER_CCMDMENU_ZCSUMMON_MENU"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsummon_main   0 static:zcsummon   1 default:cls:-   2 default:q:1   3 default:relang:360.0  cvar:lldm_zcmenuarg_zcsummon_param"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 	ZCStaticText ""
 
-	ZCClassnameField "Actor to spawn",	1, "cls"
-	ZCNumberField "Quantity, 1..100",	2, "q", 1, 100, 1
-	ZCStaticText "Quantity can be set with left/right arrows or keyboard input", DARKGRAY
+	ZCClassnameField "$ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN",	1, "cls"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES", 2, "q", 1, 100, 1
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT", DARKGRAY
 	ZCStaticText ""
-	ZCStaticText "= World =", DARKBROWN
-	ZCNumberField "Forward offset, mappixels",	3, "fofs", -32768.0, 32768.0, 16.0, 0, "fofs:", 0.0, "Default offset"
-	ZCNumberField "Vertical offset, mappixels",	3, "zofs", -32768.0, 32768.0, 4.0, 0, "zofs:", 0.0, "Default offset"
-	ZCNumberField "Relative angle",				3, "rang", 0.0, 360.0, 45.0, 1, "relang:", 360.0
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD", DARKBROWN
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET",	3, "fofs", -32768.0, 32768.0, 16.0, 0, "fofs:", 0.0, "Default offset"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET",	3, "zofs", -32768.0, 32768.0, 4.0, 0, "zofs:", 0.0, "Default offset"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE", 3, "rang", 0.0, 360.0, 45.0, 1, "relang:", 360.0
 	ZCStaticText ""
-	ZCStaticText "= Behaviour =", DARKBROWN
-	ZCNumberField "Health",						3, "hp", 0, 1000000, 10, 0, "hp:", 0, "No change"
-	ZCOption "Panel to add (last spawned only)",3, "panel", "ZCheckerOptionCCMD_zcsummon_addpanel"
-	ZCNumberField "TID",						3, "tid", 0, 65535, 1, 0, "tid:"
-	ZCNumberField "Argument 0",					3, "a0", 0, 255, 1, 0, "arg0:", 0, "Default", 1
-	ZCNumberField "Argument 1",					3, "a1", 0, 255, 1, 0, "arg1:", 0, "Default", 1
-	ZCNumberField "Argument 2",					3, "a2", 0, 255, 1, 0, "arg2:", 0, "Default", 1
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR", DARKBROWN
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH", 3, "hp", 0, 1000000, 10, 0, "hp:", 0, "No change"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_APANEL", 3, "panel", "ZCheckerOptionCCMD_zcsummon_addpanel"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_TID", 3, "tid", 0, 65535, 1, 0, "tid:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_A0", 3, "a0", 0, 255, 1, 0, "arg0:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_A1", 3, "a1", 0, 255, 1, 0, "arg1:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_A2", 3, "a2", 0, 255, 1, 0, "arg2:", 0, "Default", 1
 	ZCStaticText ""
-	ZCStaticText "= Flags =", DARKBROWN
-	ZCOption "Friendliness", 		3, "+f/f", "ZCheckerOptionCCMD_zcsummon_flagsfriendliness"
-	ZCOption "Infighting", 			3, "+infi", "ZCheckerOptionCCMD_zcsummon_flagsinfighting"
-	ZCOption "Projectile rules", 	3, "+nprj", "ZCheckerOptionCCMD_zcsummon_flagnotproj"
-	ZCOption "Dormant", 			3, "+dt", "ZCheckerOptionCCMD_zcsummon_flagdormant"
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS", DARKBROWN
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS", 3, "+f/f", "ZCheckerOptionCCMD_zcsummon_flagsfriendliness"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_INF", 3, "+infi", "ZCheckerOptionCCMD_zcsummon_flagsinfighting"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_PR", 3, "+nprj", "ZCheckerOptionCCMD_zcsummon_flagnotproj"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT", 3, "+dt", "ZCheckerOptionCCMD_zcsummon_flagdormant"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_addpanel" {
 	"", "-"
-	"add", "First free"
-	"add:1", "1 (left)"
-	"add:2", "2 (middle)"
-	"add:3", "3 (right)"
+	"add", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_FREE"
+	"add:1", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P1"
+	"add:2", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P2"
+	"add:3", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P3"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagsfriendliness" {
 	"", "-"
-	"friend", "Friend"
-	"foe", "Foe"
+	"friend", "$ZCHECKER_CCMDMENU_ZCSUMMON_FRIEND"
+	"foe", "$ZCHECKER_CCMDMENU_ZCSUMMON_FOE"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagsinfighting" {
 	"", "-"
-	"noinfight", "Disable infighting"
-	"infight", "Force infighting"
+	"noinfight", "$ZCHECKER_CCMDMENU_ZCSUMMON_DINFIGHT"
+	"infight", "$ZCHECKER_CCMDMENU_ZCSUMMON_FINFIGHT"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagdormant" {
 	"", "-"
-	"dormant", "Force dormant"
+	"dormant", "$ZCHECKER_CCMDMENU_ZCSUMMON_FDORMANT"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagnotproj" {
 	"", "-"
-	"notproj", "Do not apply"
+	"notproj", "$ZCHECKER_CCMDMENU_ZCSUMMON_DNA"
 }
 
 
 // "zcsetflag"/"zcfl":
 OptionMenu "ZChecker_CommandsMenu_zcsetflag" {
-	Title "zcsummon menu"
+	Title "$ZCHECKER_CCMDMENU_ZCSETFLAG_MENU"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetf   0 static:zcsetflag   1 cvar:lldm_zcmenuarg_actorsource   2 default:f:yflip   3"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 	ZCStaticText ""
 
-	ZCIdentifierField "Flag name",	2, "f"
-	ZCOption "Operation",			3, "op", "ZCheckerOptionCCMD_zcsetflag_operation"
-	ZCOption "Actor source",		1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCIdentifierField "$ZCHECKER_CCMDMENU_ZCSUMMON_FLAG", 2, "f"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETFLAG_OPERATION", 3, "op", "ZCheckerOptionCCMD_zcsetflag_operation"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsetflag_operation" {
-	"", "Toggle"
-	"true", "Set to 1"
-	"false", "Reset to 0"
+	"", "$ZCHECKER_CCMDMENU_ZCSETFLAG_TOGGLE"
+	"true", "$ZCHECKER_CCMDMENU_ZCSETFLAG_SET1"
+	"false", "$ZCHECKER_CCMDMENU_ZCSETFLAG_SET0"
 }
 
 
 // "zcsetstate"/"zcst":
 OptionMenu "ZChecker_CommandsMenu_zcsetstate" {
-	Title "zcsummon menu"
+	Title "$ZCHECKER_CCMDMENU_ZCSETSTATE_MENU"
 
 	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcsetst   0 static:zcsetstate   1 cvar:lldm_zcmenuarg_actorsource   2 default:st:Spawn"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 	ZCStaticText ""
 
-	ZCIdentifierField "State label",2, "st"
-	ZCOption "Actor source",		1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCIdentifierField "$ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL",2, "st"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
 }
 
 
 // "zcsetprop"/"zcpr":
 OptionMenu "ZChecker_CommandsMenu_zcsetp_interaction" {
-	Title "zcsetproperty menu"
+	Title "$ZCHECKER_CCMDMENU_ZCSETPROP_MENU"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetp_p1   0 static:zcsetprop   1 cvar:lldm_zcmenuarg_actorsource   2   3 default:"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 	ZCStaticText ""
 
-	ZCOption "Actor source", 			1, "src", "ZCheckerOptionCCMD_actorsource"
-	ZCOption "Values operation type", 	2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE", 2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
 	ZCStaticText ""
-	ZCStaticText "= World =", DARKBROWN
-	ZCNumberField "X, mappixels",			3, "x", -32768.0, 32768.0, 1.0, 1, "x:", 0.0, "Do not change", 1
-	ZCNumberField "Y, mappixels",			3, "y", -32768.0, 32768.0, 1.0, 1, "y:", 0.0, "Do not change", 1
-	ZCNumberField "Z, mappixels",			3, "z", -32768.0, 32768.0, 1.0, 1, "z:", 0.0, "Do not change", 1
-	ZCNumberField "X velocity, mappixels",	3, "xv", -32768.0, 32768.0, 1.0, 2, "velx:", 0.0, "Do not change", 1
-	ZCNumberField "Y velocity, mappixels",	3, "yv", -32768.0, 32768.0, 1.0, 2, "vely:", 0.0, "Do not change", 1
-	ZCNumberField "Z velocity, mappixels",	3, "zv", -32768.0, 32768.0, 1.0, 2, "velz:", 0.0, "Do not change", 1
-	ZCNumberField "Angle",					3, "an", 0.0, 360.0, 1.0, 1, "angle:", 360.0
-	ZCNumberField "Pitch",					3, "ap", -90.0, 90.0, 1.0, 1, "pitch:"
-	ZCNumberField "Roll",					3, "ar", -180.0, 180.0, 1.0, 1, "roll:"
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD", DARKBROWN
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSX", 3, "x", -32768.0, 32768.0, 1.0, 1, "x:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSY", 3, "y", -32768.0, 32768.0, 1.0, 1, "y:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSZ", 3, "z", -32768.0, 32768.0, 1.0, 1, "z:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELX",	3, "xv", -32768.0, 32768.0, 1.0, 2, "velx:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELY",	3, "yv", -32768.0, 32768.0, 1.0, 2, "vely:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELZ",	3, "zv", -32768.0, 32768.0, 1.0, 2, "velz:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE", 3, "an", 0.0, 360.0, 1.0, 1, "angle:", 360.0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_PITCH", 3, "ap", -90.0, 90.0, 1.0, 1, "pitch:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ROLL", 3, "ar", -180.0, 180.0, 1.0, 1, "roll:"
 	ZCStaticText ""
-	ZCStaticText "= Interaction =", DARKBROWN
-	ZCNumberField "Health",					3, "hp", 0, 1000000, 10, 0, "hp:", 0
-	ZCNumberField "Radius",					3, "ir", 0, 32767, 1, 0, "radius:", 0
-	ZCNumberField "Height",					3, "ih", 0, 32767, 1, 0, "height:", 0
-	ZCNumberField "Speed",					3, "is", 0.0, 32768.0, 1.0, 1, "speed:", 0.0, "-", 1
-	ZCNumberField "Mass",					3, "im", 0, 32767, 1, 0, "mass:", 0, "-", 1
-	ZCNumberField "Gravity",				3, "ig", 0, 32767, 1, 0, "grav:", 0, "-", 1
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT", DARKBROWN
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH", 3, "hp", 0, 1000000, 10, 0, "hp:", 0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS", 3, "ir", 0, 32767, 1, 0, "radius:", 0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT", 3, "ih", 0, 32767, 1, 0, "height:", 0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SPEED", 3, "is", 0.0, 32768.0, 1.0, 1, "speed:", 0.0, "-", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_MASS", 3, "im", 0, 32767, 1, 0, "mass:", 0, "-", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_GRAVTY", 	3, "ig", 0, 32767, 1, 0, "grav:", 0, "-", 1
 	ZCStaticText ""
-	ZCStaticText "= Actor pointers =", DARKBROWN
-	ZCOption "Target pointer",				3, "pt", "ZCheckerOptionCCMD_zcsetprop_pointers", "target:"
-	ZCOption "Master pointer",				3, "pm", "ZCheckerOptionCCMD_zcsetprop_pointers", "master:"
-	ZCOption "Tracer pointer",				3, "pr", "ZCheckerOptionCCMD_zcsetprop_pointers", "tracer:"
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_POINTERS", DARKBROWN
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_PTRTARGET", 	3, "pt", "ZCheckerOptionCCMD_zcsetprop_pointers", "target:"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_PTRMASTER", 	3, "pm", "ZCheckerOptionCCMD_zcsetprop_pointers", "master:"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_PTRTRACER", 	3, "pr", "ZCheckerOptionCCMD_zcsetprop_pointers", "tracer:"
 }
 
 OptionMenu "ZChecker_CommandsMenu_zcsetp_other" {
 	Title "zcsetproperty menu"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetp_p2   0 static:zcsetprop   1 cvar:lldm_zcmenuarg_actorsource   2   3 default:"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 	ZCStaticText ""
-	ZCOption "Actor source", 			1, "src", "ZCheckerOptionCCMD_actorsource"
-	ZCOption "Values operation type", 	2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
+	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE", 2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
 	ZCStaticText ""
-	ZCStaticText "= Visual =", DARKBROWN
-	ZCOption "Render style",			3, "vrs", "ZCheckerOptionCCMD_zcsetprop_renderstyle", "rstyle:"
-	ZCNumberField "Alpha",				3, "va", 0.0, 1.0, 0.025, 3, "alpha:", 0.0, "No change", 1
-	ZCNumberField "Scale",				3, "vs", -32768.0, 32768.0, 1.0, 2, "scale:"
-	ZCNumberField "Scale by X axis",	3, "vsx", -32768.0, 32768.0, 1.0, 2, "scalex:"
-	ZCNumberField "Scale by Y axis",	3, "vsy", -32768.0, 32768.0, 1.0, 2, "scaley:"
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_VISUAL", DARKBROWN
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_RENDERSTYLE", 3, "vrs", "ZCheckerOptionCCMD_zcsetprop_renderstyle", "rstyle:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ALPHA", 	3, "va", 0.0, 1.0, 0.025, 3, "alpha:", 0.0, "No change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALE", 	3, "vs", -32768.0, 32768.0, 1.0, 2, "scale:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALEX",	3, "vsx", -32768.0, 32768.0, 1.0, 2, "scalex:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALEY",	3, "vsy", -32768.0, 32768.0, 1.0, 2, "scaley:"
 	ZCStaticText ""
-	ZCStaticText "= Special =", DARKBROWN
-	ZCNumberField "TID",						3, "tid", 0, 65535, 1, 0, "tid:"
-	ZCNumberField "Argument 0",					3, "a0", 0, 255, 1, 0, "arg0:", 0, "Default", 1
-	ZCNumberField "Argument 1",					3, "a1", 0, 255, 1, 0, "arg1:", 0, "Default", 1
-	ZCNumberField "Argument 2",					3, "a2", 0, 255, 1, 0, "arg2:", 0, "Default", 1
-	ZCNumberField "Argument 3",					3, "a3", 0, 255, 1, 0, "arg3:", 0, "Default", 1
-	ZCNumberField "Argument 4",					3, "a4", 0, 255, 1, 0, "arg4:", 0, "Default", 1
-	ZCNumberField "Special/action",				3, "spec", 0, 65535, 1, 0, "special:"
+	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_SPECIAL", DARKBROWN
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_TID", 3, "tid", 0, 65535, 1, 0, "tid:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG0", 3, "a0", 0, 255, 1, 0, "arg0:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG1", 3, "a1", 0, 255, 1, 0, "arg1:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG2", 3, "a2", 0, 255, 1, 0, "arg2:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG3", 3, "a3", 0, 255, 1, 0, "arg3:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG4", 3, "a4", 0, 255, 1, 0, "arg4:", 0, "Default", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL", 	3, "spec", 0, 65535, 1, 0, "special:"
 }
 
 
 OptionString "ZCheckerOptionCCMD_zcsetprop_operationtype" {
-	"", "Replace"
-	"add", "Add"
-	"rel:s", "Add from player"
-	"rel:lt", "Add from linetarget"
-	"rel:1", "Add from 1st panel"
-	"rel:2", "Add from 2nd panel"
-	"rel:3", "Add from 3rd panel"
+	"", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE"
+	"add", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD"
+	"rel:s", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF"
+	"rel:lt", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDLT"
+	"rel:1", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP1"
+	"rel:2", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP2"
+	"rel:3", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP3"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsetprop_pointers" {
-	"", "Do not change"
-	"lt", "Linetarget"
-	"1", "Panel 1 (left)"
-	"2", "Panel 2 (middle)"
-	"3", "Panel 3 (right)"
-	"self", "Player itself"
-	"cam", "Player's camera"
-	"null", "Clear pointer"
+	"", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNOCHANGE"
+	"lt", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRLT"
+	"1", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP1"
+	"2", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP2"
+	"3", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP3"
+	"self", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRSELF"
+	"cam", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRCAMERA"
+	"null", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNULL"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsetprop_renderstyle" {
-	"", "Do not change"
-	"norm",		"Normal"
-	"transl",	"Translucent"
-	"fuzzy",	"Fuzzy"
-	"optfuzzy",	"Optional fuzzy"
-	"stencil",	"Stencil"
-	"add",		"Add"
-	"shaded",	"Shaded"
-	"transstc",	"Translucent stencil"
-	"shadow",	"Shadow"
-	"subtract",	"Subtract"
-	"addstc",	"Add stencil"
-	"addshd",	"Add shaded"
-	"multiply",	"Multiply"
-	"invmul",	"Inverse multiply"
-	"coloradd",	"Color add"
-	"colorbl",	"Color blend"
-	"none",		"None"
+	"", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNOCHANGE"
+	"norm", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_NORMAL"
+	"transl",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRANSLUCENT"
+	"fuzzy",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_FUZZY"
+	"optfuzzy",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_OFUZZY"
+	"stencil",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_STENCIL"
+	"add", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_ADD"
+	"shaded",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADED"
+	"transstc",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRSTENCIL"
+	"shadow",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADOW"
+	"subtract",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_SUBTRACT"
+	"addstc",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASTENCIL"
+	"addshd",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASHADED"
+	"multiply",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_MULTIPLY"
+	"invmul",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_IMULTIPLY"
+	"coloradd",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_ACOLOR"
+	"colorbl",	"$ZCHECKER_CCMDMENU_ZCSETPROPOPT_BCOLOR"
+	"none", "$ZCHECKER_CCMDMENU_ZCSETPROPOPT_NONE"
 }
 
 

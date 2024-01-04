@@ -233,6 +233,7 @@ ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "Панель ZChecker: Звуки (prop
 ZCHECKER_PANELSUBMENU_SNDDEFS_RARE    = "Вывод используемых редко";
 
 
+
 //  === Visual Settings control menu ===
 
 ZCHECKER_VISUAL_TITLE                 = "ZChecker: настройки отображения";
@@ -331,11 +332,176 @@ ZCHECKER_CCMDMENU_HELPNOTE2           = "Все команды могут быт
 ZCHECKER_CCMDMENU_HELPNOTE3           = "также можно использовать \"zchelp <команда>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\"\n\cxНе удается найти ZChecker static event handler.\n\ciВозможная причина: \cu\"\crEventHandler = ...\cu\"\n\ciв MAPINFO с GZDoom ниже версии 4.8.0.\n\cxКонсольные команды не могут быть использованы.";
 ZCHECKER_CCMDMENU_EXAMPLES            = "Примеры команд:";
-ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Добавление цели под курсором в панель";
-ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Добавление себя в панель";
-ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Очистка всех панелей";
+ZCHECKER_CCMDMENU_ZCADD               = "\"zcadd\": Добавление цели под курсором в панель"; // Not more used.
+ZCHECKER_CCMDMENU_ZCADD_SELF          = "\"zcadd self\": Добавление себя в панель"; // Not more used.
+ZCHECKER_CCMDMENU_ZCREM               = "\"zcrem\": Очистка всех панелей"; // Not more used.
 ZCHECKER_CCMDMENU_ZCHELP              = "\"zchelp\": Вывести краткую справку в консоль";
 
+ZCHECKER_CCMDMENU_EXECUTE             = "Выполнить";
+ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Источник";
+ZCHECKER_CCMDMENU_SOURCE_LT           = "Цель под курсором";
+ZCHECKER_CCMDMENU_SOURCE_PANEL1       = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_SOURCE_PANEL2       = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_SOURCE_PANEL3       = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_SOURCE_SELF         = "Сам игрок";
+ZCHECKER_CCMDMENU_SOURCE_CAMERA       = "Камера игрока";
+
+ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE    = "zcadd. Добавление в инфопанели";
+ZCHECKER_CCMDMENU_ZCADD_PN            = "Номер панели";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_LT     = "Цель под курсором";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_SELF   = "Сам игрок";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_WEAPON = "Оружие";
+ZCHECKER_CCMDMENU_ZCADD_SOURCE_FORCE  = "Неосязаемая цель под курсором";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_FREE    = "Первая свободная панель";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_P1      = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_P2      = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCADD_PANEL_P3      = "Панель 3 (справа)";
+
+ZCHECKER_CCMDMENU_ZCREM_MENU_TITLE    = "zcrem. Очистка инфопанелей";
+ZCHECKER_CCMDMENU_ZCREM_PN            = "Номер панели";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_CLEAR   = "Очистить все";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_P1      = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_P2      = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCREM_PANEL_P3      = "Панель 3 (справа)";
+
+ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake. Инвентарь";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Название предмета";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES = "Количество, 1..1E6";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT   = "Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_GT       = "Операция";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE     = "Дать актору";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_TAKE     = "Забрать у актора";
+
+ZCHECKER_CCMDMENU_ZCACT_MENU          = "zcact. Действие над актором";
+ZCHECKER_CCMDMENU_ZCACT_ACTION        = "Действие";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_REVIVE = "Оживить";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_KILL   = "Убить";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_EK     = "Жестоко убить";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_RM     = "Удалить";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE = "Заморозить состояние";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP   = "Пропустить текущее состояние";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT = "Перезапустить состояние";
+
+ZCHECKER_CCMDMENU_ZCSUMMON_MENU       = "zcsummon. Создание акторов";
+ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN = "Актор для порождения";
+ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES   = "Количество, 1..100";
+ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT     = "Количество можно задать с помощью стрелок влево/вправо или ввода с клавиатуры";
+ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD   = "= Мир =";
+ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET    = "Смещение вперед, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET    = "Смещение по вертикали, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE     = "Относительный угол";
+ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR = "= Поведение =";
+ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH     = "Здоровье";
+ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Добавить в панель последнего созданного";
+ZCHECKER_CCMDMENU_ZCSUMMON_TID        = "TID";
+ZCHECKER_CCMDMENU_ZCSUMMON_A0         = "Аргумент 0";
+ZCHECKER_CCMDMENU_ZCSUMMON_A1         = "Аргумент 1";
+ZCHECKER_CCMDMENU_ZCSUMMON_A2         = "Аргумент 2";
+ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS   = "= Флаги =";
+ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS = "Дружественность";
+ZCHECKER_CCMDMENU_ZCSUMMON_INF        = "Инфайтинг";
+ZCHECKER_CCMDMENU_ZCSUMMON_PR         = "Правила создания снарядов";
+ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT    = "Отключить актора (флаг Dormant)";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_FREE = "Первая свободная панель";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P1   = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P2   = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P3   = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_ZCSUMMON_FRIEND     = "Дружественный";
+ZCHECKER_CCMDMENU_ZCSUMMON_FOE        = "Враждебный";
+ZCHECKER_CCMDMENU_ZCSUMMON_DINFIGHT   = "Отключить инфайтинг";
+ZCHECKER_CCMDMENU_ZCSUMMON_FINFIGHT   = "Принудительный инфайтинг";
+ZCHECKER_CCMDMENU_ZCSUMMON_FDORMANT   = "Отключить";
+ZCHECKER_CCMDMENU_ZCSUMMON_DNA        = "Не применять";
+ZCHECKER_CCMDMENU_ZCSUMMON_FLAG       = "Название флага";
+
+ZCHECKER_CCMDMENU_ZCSETFLAG_MENU      = "zcsetflag. Манипулирование флагами";
+ZCHECKER_CCMDMENU_ZCSETFLAG_OPERATION = "Операция";
+ZCHECKER_CCMDMENU_ZCSETFLAG_TOGGLE    = "Переключить";
+ZCHECKER_CCMDMENU_ZCSETFLAG_SET1      = "Установить в 1";
+ZCHECKER_CCMDMENU_ZCSETFLAG_SET0      = "Сбросить в 0";
+
+ZCHECKER_CCMDMENU_ZCSETSTATE_MENU     = "zcsetstate. Установка стейтов";
+ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL  = "Название стейта";
+
+ZCHECKER_CCMDMENU_ZCSETPROP_MENU      = "zcsetprop. Установка свойств";
+ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE    = "Операция над значениями";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD  = "= Мир =";
+ZCHECKER_CCMDMENU_ZCSETPROP_POSX      = "X, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSETPROP_POSY      = "Y, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSETPROP_POSZ      = "Z, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSETPROP_VELX      = "Скорость по X, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSETPROP_VELY      = "Скорость по Y, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSETPROP_VELZ      = "Скорость по Z, в маппикселях";
+ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE     = "Угол (angle, рыскание)";
+ZCHECKER_CCMDMENU_ZCSETPROP_PITCH     = "Наклонение (pitch, тангаж)";
+ZCHECKER_CCMDMENU_ZCSETPROP_ROLL      = "Крен (roll)";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT = "= Взаимодействие =";
+ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH    = "Здоровье";
+ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS    = "Радиус";
+ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT    = "Высота";
+ZCHECKER_CCMDMENU_ZCSETPROP_SPEED     = "Скорость";
+ZCHECKER_CCMDMENU_ZCSETPROP_MASS      = "Масса";
+ZCHECKER_CCMDMENU_ZCSETPROP_GRAVTY    = "Гравитация";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_POINTERS = "= Указатели =";
+ZCHECKER_CCMDMENU_ZCSETPROP_PTRTARGET = "Указатель Target";
+ZCHECKER_CCMDMENU_ZCSETPROP_PTRMASTER = "Указатель Master";
+ZCHECKER_CCMDMENU_ZCSETPROP_PTRTRACER = "Указатель Tracer";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_VISUAL = "= Отображение =";
+ZCHECKER_CCMDMENU_ZCSETPROP_RENDERSTYLE = "Способ рендеринга (render style)";
+ZCHECKER_CCMDMENU_ZCSETPROP_ALPHA     = "Непрозрачность (альфа)";
+ZCHECKER_CCMDMENU_ZCSETPROP_SCALE     = "Масштабирование";
+ZCHECKER_CCMDMENU_ZCSETPROP_SCALEX    = "Масштабирование по X";
+ZCHECKER_CCMDMENU_ZCSETPROP_SCALEY    = "Масштабирование по Y";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_SPECIAL = "= Остальное =";
+ZCHECKER_CCMDMENU_ZCSETPROP_TID       = "TID";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG0      = "Аргумент 0";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG1      = "Аргумент 1";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG2      = "Аргумент 2";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG3      = "Аргумент 3";
+ZCHECKER_CCMDMENU_ZCSETPROP_ARG4      = "Аргумент 4";
+ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL   = "Действие (special/action)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE = "Заменить";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD  = "Добавить";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF = "Добавить от игрока";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDLT = "Добавить от цели под курсором";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP1 = "Добавить от 1й панели";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP2 = "Добавить от 2й панели";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDP3 = "Добавить от 3й панели";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNOCHANGE = "Не изменять";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRLT  = "Цель под курсором";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP1  = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP2  = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRP3  = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRSELF = "Сам игрок";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRCAMERA = "Камера игрока";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_PTRNULL = "Очистить указатель";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_NORMAL = "Normal (без альфа-канала)";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRANSLUCENT = "Translucent";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_FUZZY  = "Fuzzy";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OFUZZY = "Optional fuzzy";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_STENCIL = "Stencil";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ADD    = "Add";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADED = "Shaded";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_TRSTENCIL = "Translucent stencil";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_SHADOW = "Shadow";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_SUBTRACT = "Subtract";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASTENCIL = "Add stencil";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ASHADED = "Add shaded";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_MULTIPLY = "Multiply";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_IMULTIPLY = "Inverse multiply";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_ACOLOR = "Color add";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_BCOLOR = "Color blend";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_NONE   = "None (не отображать)";
+
+ZCHECKER_CCMDMENU_ZCPANEL_TITLE       = "zcpanel. Контроль инфопанелей";
+ZCHECKER_CCMDMENU_ZCPANEL_SRCPANEL    = "Откуда";
+ZCHECKER_CCMDMENU_ZCPANEL_DESTPANEL   = "Куда";
+ZCHECKER_CCMDMENU_ZCPANEL_OPERATION   = "Операция";
+ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL1   = "Панель 1 (слева)";
+ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL2   = "Панель 2 (в центре)";
+ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL3   = "Панель 3 (справа)";
+ZCHECKER_CCMDMENU_ZCPANELOPT_MOVE     = "Переместить";
+ZCHECKER_CCMDMENU_ZCPANELOPT_COPY     = "Скопировать";
 
 //  === An Everything" maps ==
 
@@ -744,7 +910,7 @@ ZCHECKER_TOOLTIP_ZCSETPROP_EXAMPLES   = "\"`Czcsetprop hp:255`C\" `~или`x \"`
 \"`Czcsetp 3 add x:0.5`~,`Cy:0.333`C\" перемещает актора в `G3`x-й инфопанели по диагонали (и по X и Y);\
 \"`Czcsetp 1 add alpha:-0.2`C\" уменьшает непрозрачность (альфа-канал) актора в `G1`x-й панели. `YИмейте в виду, актор должен иметь подходящий RenderStyle`x;\
 \
-\"`Czcsetp 1 relative:1 alpha:-0.2`C\" делает то же, что и предыдущая команда (\"relative\" - \"относительно\");\
+\"`Czcsetp 1 relative:1 alpha:-0.2`C\" делает то же, что и предыдущая команда `d(\"relative\" - \"относительно\", здесь - для актора в первой панели относительно него же)`d;\
 \"`Czcsetp 1 rel:s hp:0`C\" устанавливает здоровье актора в `G1`x-й инфопанели равным здоровью игрока `~(как сумма `xplayer.health`~ и `x0`~)`x;\
 \"`Czcsetp 1 rel hp:0`C\" - то же, что и команда выше: \"`Yrel`x\" без аргументов считается за \"`Yrel`~:`Gself`x\";\
 \"`Czcsetp 2 master:self,scalex:0.75,scaley:2`C\" устанавливает `Gуказатель master`x на вызывающего игрока, а также меняет `Gscale`x (`GX и Y`x по-разному) для актора во `G2`x-й панели;\
