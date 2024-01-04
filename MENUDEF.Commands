@@ -74,12 +74,13 @@ OptionMenu "ZChecker_CommandsMenu_zcgivetake" {
     StaticText " "
 
 	ZCClassnameField "$ZCHECKER_CCMDMENU_ZCGIVETAKE_IN", 2, "cls"
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES", 3, "q", 1, 1000000, 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_VALUES", 3, "q", 1, 1000000, 1, 0, "", 1, "1"
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCGIVETAKE_Q_TEXT", DARKGRAY
 	ZCStaticText ""
 	ZCOption "$ZCHECKER_CCMDMENU_ZCGIVETAKE_GT", 0, "cmd", "ZCheckerOptionCCMD_zcgivetake_maincmd", "zc"
 	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
-
+	ZCStaticText ""
+	ZCResetItems "$ZCHECKER_CCMDMENU_RESETITEMS"
 }
 
 OptionString "ZCheckerOptionCCMD_zcgivetake_maincmd" {
@@ -114,7 +115,7 @@ OptionString "ZCheckerOptionCCMD_zcact_action" {
 
 // "zcsummon":
 OptionMenu "ZChecker_CommandsMenu_zcsummon" {
-	Title "$ZCHECKER_CCMDMENU_ZCSUMMON_MENU"
+	Title "$ZCHECKER_CCMDMENU_ZCSUMMON_TITLE"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsummon_main   0 static:zcsummon   1 default:cls:-   2 default:q:1   3 default:relang:360.0  cvar:lldm_zcmenuarg_zcsummon_param"
 	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
@@ -122,13 +123,13 @@ OptionMenu "ZChecker_CommandsMenu_zcsummon" {
 	ZCStaticText ""
 
 	ZCClassnameField "$ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN",	1, "cls"
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES", 2, "q", 1, 100, 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_Q_VALUES", 2, "q", 1, 100, 1, 0, "", 1, "1"
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT", DARKGRAY
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD", DARKBROWN
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET",	3, "fofs", -32768.0, 32768.0, 16.0, 0, "fofs:", 0.0, "Default offset"
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET",	3, "zofs", -32768.0, 32768.0, 4.0, 0, "zofs:", 0.0, "Default offset"
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE", 3, "rang", 0.0, 360.0, 45.0, 1, "relang:", 360.0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET",	3, "fofs", -32000.0, 32000.0, 16.0, 0, "fofs:", 0.0, "Default offset"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET",	3, "zofs", -32000.0, 32000.0, 4.0, 0, "zofs:", 0.0, "Default offset"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE", 	3, "rang", 0.0, 360.0, 45.0, 1, "relang:", 360.0
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR", DARKBROWN
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH", 3, "hp", 0, 1000000, 10, 0, "hp:", 0, "No change"
@@ -143,36 +144,38 @@ OptionMenu "ZChecker_CommandsMenu_zcsummon" {
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_INF", 3, "+infi", "ZCheckerOptionCCMD_zcsummon_flagsinfighting"
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_PR", 3, "+nprj", "ZCheckerOptionCCMD_zcsummon_flagnotproj"
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT", 3, "+dt", "ZCheckerOptionCCMD_zcsummon_flagdormant"
+	ZCStaticText ""
+	ZCResetItems "$ZCHECKER_CCMDMENU_RESETITEMS"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_addpanel" {
 	"", "-"
-	"add", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_FREE"
-	"add:1", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P1"
-	"add:2", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P2"
-	"add:3", "$ZCHECKER_CCMDMENU_ZCSUMMON_PANEL_P3"
+	"add", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_FREE"
+	"add:1", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P1"
+	"add:2", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P2"
+	"add:3", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P3"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagsfriendliness" {
 	"", "-"
-	"friend", "$ZCHECKER_CCMDMENU_ZCSUMMON_FRIEND"
-	"foe", "$ZCHECKER_CCMDMENU_ZCSUMMON_FOE"
+	"friend", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_FRIEND"
+	"foe", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_FOE"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagsinfighting" {
 	"", "-"
-	"noinfight", "$ZCHECKER_CCMDMENU_ZCSUMMON_DINFIGHT"
-	"infight", "$ZCHECKER_CCMDMENU_ZCSUMMON_FINFIGHT"
+	"noinfight", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT"
+	"infight", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagdormant" {
 	"", "-"
-	"dormant", "$ZCHECKER_CCMDMENU_ZCSUMMON_FDORMANT"
+	"dormant", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT"
 }
 
 OptionString "ZCheckerOptionCCMD_zcsummon_flagnotproj" {
 	"", "-"
-	"notproj", "$ZCHECKER_CCMDMENU_ZCSUMMON_DNA"
+	"notproj", "$ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ"
 }
 
 
@@ -185,7 +188,7 @@ OptionMenu "ZChecker_CommandsMenu_zcsetflag" {
 	ZCCommandVisual " "
 	ZCStaticText ""
 
-	ZCIdentifierField "$ZCHECKER_CCMDMENU_ZCSUMMON_FLAG", 2, "f"
+	ZCIdentifierField "$ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG", 2, "f"
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSETFLAG_OPERATION", 3, "op", "ZCheckerOptionCCMD_zcsetflag_operation"
 	ZCOption "$ZCHECKER_CCMDMENU_ACTOR_SOURCE", 1, "src", "ZCheckerOptionCCMD_actorsource"
 }
@@ -213,7 +216,7 @@ OptionMenu "ZChecker_CommandsMenu_zcsetstate" {
 
 // "zcsetprop"/"zcpr":
 OptionMenu "ZChecker_CommandsMenu_zcsetp_interaction" {
-	Title "$ZCHECKER_CCMDMENU_ZCSETPROP_MENU"
+	Title "$ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_I"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetp_p1   0 static:zcsetprop   1 cvar:lldm_zcmenuarg_actorsource   2   3 default:"
 	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
@@ -224,32 +227,34 @@ OptionMenu "ZChecker_CommandsMenu_zcsetp_interaction" {
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE", 2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD", DARKBROWN
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSX", 3, "x", -32768.0, 32768.0, 1.0, 1, "x:", 0.0, "Do not change", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSY", 3, "y", -32768.0, 32768.0, 1.0, 1, "y:", 0.0, "Do not change", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSZ", 3, "z", -32768.0, 32768.0, 1.0, 1, "z:", 0.0, "Do not change", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELX",	3, "xv", -32768.0, 32768.0, 1.0, 2, "velx:", 0.0, "Do not change", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELY",	3, "yv", -32768.0, 32768.0, 1.0, 2, "vely:", 0.0, "Do not change", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELZ",	3, "zv", -32768.0, 32768.0, 1.0, 2, "velz:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSX", 3, "x", -1000000.0, 1000000.0, 1.0, 1, "x:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSY", 3, "y", -1000000.0, 1000000.0, 1.0, 1, "y:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_POSZ", 3, "z", -1000000.0, 1000000.0, 1.0, 1, "z:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELX",	3, "xv", -32000.0, 32000.0, 1.0, 2, "velx:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELY",	3, "yv", -32000.0, 32000.0, 1.0, 2, "vely:", 0.0, "Do not change", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_VELZ",	3, "zv", -32000.0, 32000.0, 1.0, 2, "velz:", 0.0, "Do not change", 1
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE", 3, "an", 0.0, 360.0, 1.0, 1, "angle:", 360.0
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_PITCH", 3, "ap", -90.0, 90.0, 1.0, 1, "pitch:"
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ROLL", 3, "ar", -180.0, 180.0, 1.0, 1, "roll:"
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT", DARKBROWN
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH", 3, "hp", 0, 1000000, 10, 0, "hp:", 0
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS", 3, "ir", 0, 32767, 1, 0, "radius:", 0
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT", 3, "ih", 0, 32767, 1, 0, "height:", 0
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SPEED", 3, "is", 0.0, 32768.0, 1.0, 1, "speed:", 0.0, "-", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_MASS", 3, "im", 0, 32767, 1, 0, "mass:", 0, "-", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_GRAVTY", 	3, "ig", 0, 32767, 1, 0, "grav:", 0, "-", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS", 3, "ir", 0, 32000, 1, 0, "radius:", 0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT", 3, "ih", 0, 32000, 1, 0, "height:", 0
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_MASS", 3, "im", 0, 32000, 1, 0, "mass:", 0, "-", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SPEED", 3, "is", 0.0, 32000.0, 1.0, 1, "speed:", 0.0, "-", 1
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_GRAVTY", 	3, "ig", 0.0, 32000.0, 1.0, 1, "grav:", 0, "-", 1
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_POINTERS", DARKBROWN
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_PTRTARGET", 	3, "pt", "ZCheckerOptionCCMD_zcsetprop_pointers", "target:"
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_PTRMASTER", 	3, "pm", "ZCheckerOptionCCMD_zcsetprop_pointers", "master:"
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_PTRTRACER", 	3, "pr", "ZCheckerOptionCCMD_zcsetprop_pointers", "tracer:"
+	ZCStaticText ""
+	ZCResetItems "$ZCHECKER_CCMDMENU_RESETITEMS"
 }
 
 OptionMenu "ZChecker_CommandsMenu_zcsetp_other" {
-	Title "zcsetproperty menu"
+	Title "$ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_O"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcsetp_p2   0 static:zcsetprop   1 cvar:lldm_zcmenuarg_actorsource   2   3 default:"
 	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
@@ -259,11 +264,11 @@ OptionMenu "ZChecker_CommandsMenu_zcsetp_other" {
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE", 2, "op", "ZCheckerOptionCCMD_zcsetprop_operationtype"
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_VISUAL", DARKBROWN
-	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_RENDERSTYLE", 3, "vrs", "ZCheckerOptionCCMD_zcsetprop_renderstyle", "rstyle:"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSETPROP_RENDERSTYLE", 	3, "vrs", "ZCheckerOptionCCMD_zcsetprop_renderstyle", "rstyle:"
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ALPHA", 	3, "va", 0.0, 1.0, 0.025, 3, "alpha:", 0.0, "No change", 1
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALE", 	3, "vs", -32768.0, 32768.0, 1.0, 2, "scale:"
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALEX",	3, "vsx", -32768.0, 32768.0, 1.0, 2, "scalex:"
-	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALEY",	3, "vsy", -32768.0, 32768.0, 1.0, 2, "scaley:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALE", 	3, "vs", -32000.0, 32000.0, 1.0, 2, "scale:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALEX",	3, "vsx", -32000.0, 32000.0, 1.0, 2, "scalex:"
+	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SCALEY",	3, "vsy", -32000.0, 32000.0, 1.0, 2, "scaley:"
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSETPROPDIV_SPECIAL", DARKBROWN
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_TID", 3, "tid", 0, 65535, 1, 0, "tid:"
@@ -273,6 +278,8 @@ OptionMenu "ZChecker_CommandsMenu_zcsetp_other" {
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG3", 3, "a3", 0, 255, 1, 0, "arg3:", 0, "Default", 1
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_ARG4", 3, "a4", 0, 255, 1, 0, "arg4:", 0, "Default", 1
 	ZCNumberField "$ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL", 	3, "spec", 0, 65535, 1, 0, "special:"
+	ZCStaticText ""
+	ZCResetItems "$ZCHECKER_CCMDMENU_RESETITEMS"
 }
 
 
@@ -322,25 +329,25 @@ OptionString "ZCheckerOptionCCMD_zcsetprop_renderstyle" {
 
 // "zcpanel":
 OptionMenu "ZChecker_CommandsMenu_zcpanel_copymove" {
-	Title "zcpanel menu"
+	Title "$ZCHECKER_CCMDMENU_ZCPANEL_TITLE"
 
 	ZCCommandKeeper 3, "cvar:lldm_zcmenuarg_zcpanel   0 static:zcpanel   1 default:p1:1   2 default:cmd:move   3 default:p2:3"
-	ZCCommandExecute "Execute"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
 
 	ZCStaticText ""
-	ZCOption "Source panel",  1, "p1", "ZCheckerOptionCCMD_zcpanel_panelindex"
-	ZCOption "Destination panel",  3, "p2", "ZCheckerOptionCCMD_zcpanel_panelindex"
-	ZCOption "Operation",  2, "cmd", "ZCheckerOptionCCMD_zcpanel_operation"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCPANEL_SRCPANEL",  1, "p1", "ZCheckerOptionCCMD_zcpanel_panelindex"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCPANEL_DESTPANEL",  3, "p2", "ZCheckerOptionCCMD_zcpanel_panelindex"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCPANEL_OPERATION",  2, "cmd", "ZCheckerOptionCCMD_zcpanel_operation"
 }
 
 OptionString "ZCheckerOptionCCMD_zcpanel_panelindex" {
-	"1", "Panel 1 (left)"
-	"2", "Panel 2 (middle)"
-	"3", "Panel 3 (right)"
+	"1", "$ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL1"
+	"2", "$ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL2"
+	"3", "$ZCHECKER_CCMDMENU_ZCPANELOPT_PANEL3"
 }
 
 OptionString "ZCheckerOptionCCMD_zcpanel_operation" {
-	"move", "Move"
-	"copy", "Copy"
+	"move", "$ZCHECKER_CCMDMENU_ZCPANELOPT_MOVE"
+	"copy", "$ZCHECKER_CCMDMENU_ZCPANELOPT_COPY"
 }

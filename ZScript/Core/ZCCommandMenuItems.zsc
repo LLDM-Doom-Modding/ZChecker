@@ -455,16 +455,18 @@ class OptionMenuItemZCCommandKeeper: OptionMenuItem {
 		}
 
 
-		ZCGlobal.UILog( LL_Debug, String.Format(
-				"%s::ExportArgCVar(). #%-2i CVar \"%s%s = %s%s\".", const_ClassName,
-				argindex, TEXTCOLOR_DARKBROWN, outputarg.linkedCVarName, outstr, LLCOLOR_DEBUG
-			) );
-
+		int outstrLength = outstr.Length();
 		int limitCVarLength = 254 - outputarg.linkedCVarName.Length();
 
+		ZCGlobal.UILog( LL_Debug, String.Format(
+				"%s::ExportArgCVar(). #%-2i CVar \"%s%s = %s%s\" (len %i, limit left %i).", const_ClassName,
+				argindex, TEXTCOLOR_DARKBROWN, outputarg.linkedCVarName, outstr, LLCOLOR_DEBUG,
+				outstrLength, limitCVarLength - outstrLength
+			) );
+
 		// Save CVar or warn user about variable value length:
-		if ( outstr.Length() > limitCVarLength ) {
-			ZCGlobal.ClearscopeLog( LL_Emergency, const_ClassName .. "::ExportArgCVar(). Too long user CVar value, got " .. outstr.Length() .. " characters (ZDoom limit for this variable is " .. TEXTCOLOR_RED .. limitCVarLength .. LLCOLOR_EMERGENCY .. "). Value not changed." );
+		if ( outstrLength > limitCVarLength ) {
+			ZCGlobal.ClearscopeLog( LL_Emergency, const_ClassName .. "::ExportArgCVar(). Too long user CVar value, got " .. outstrLength .. " characters (ZDoom limit for this variable is " .. TEXTCOLOR_RED .. limitCVarLength .. LLCOLOR_EMERGENCY .. "). Value not changed." );
 			ZCGlobal.ClearscopeLog( LL_Main, "CVar \"" .. LLCOLOR_WARNING .. outputarg.linkedCVarName .. " = " .. outstr .. LLCOLOR_MAIN .. "\"." );
 		} else {
 			outputarg.linkedCVar.SetString( outstr );
@@ -540,6 +542,20 @@ class OptionMenuItemZCCommandKeeper: OptionMenuItem {
 
 		if ( visualupdate )
 			UpdateVisualMenuItem();
+	}
+
+	void ResetAll( void ) {
+		for ( int i = 0; i < args.Size(); i++ ) {
+			ZCCommandKeeperArg arg = args[ i ];
+
+			if ( arg.isstatic || !arg.linkedCVar )
+				continue; // Skip static (unchangeable) args and args without linked CVars.
+
+			arg.linkedCVar.SetString( "" );
+		}
+
+		ImportArgCVars();
+		UpdateAllMenuItems();
 	}
 
 
@@ -1155,7 +1171,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 			if ( iterate ) {
 				value -= mStep;
 
-				if ( value < mMinimum )
+				if ( value < mMinimum - float.epsilon )
 					value = mMaximum;
 			} // of if ( iterate ) {}
 
@@ -1171,7 +1187,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 			if ( iterate ) {
 				value += mStep;
 
-				if ( value > mMaximum )
+				if ( value > mMaximum + float.epsilon )
 					value = mMinimum;
 
 				if ( mEmptyIsShifted && value == mEmptyValue )
@@ -1213,6 +1229,36 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 	} // of override bool MenuEvent( int mkey, bool fromcontroller ) {}
 
 } // of class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {}
+
+
+class OptionMenuItemZCResetItems: OptionMenuItemSafeCommand {
+	OptionMenuItemZCCommandKeeper keeper;
+	OptionMenu curmenu;
+
+	OptionMenuItemZCResetItems Init( String label ) {
+		Super.Init( label, 'None' );
+		return self;
+	}
+
+	override bool MenuEvent( int mkey, bool fromcontroller ) {
+		if ( mkey == Menu.MKEY_MBYes ) {
+			keeper.ResetAll();
+			curmenu.Close();
+			return true;
+		}
+
+		return Super.MenuEvent(mkey, fromcontroller);
+	}
+
+	override bool Activate() {
+		if ( !OptionMenuItemZCCommandKeeper.SetupKeeper( keeper ) )
+			ZCGlobal.UILog( LL_Main, GetClassName() .. "::Activate() failed." );
+
+		curmenu = OptionMenu( Menu.GetCurrentMenu() );
+		return Super.Activate();
+	}
+} // of class OptionMenuItemZCResetItems: OptionMenuItemSafeCommand {}
+
 
 /*class OptionMenuItemZCSetOption: OptionMenuItem {
 	OptionMenuItemZCCommandKeeper keeper;

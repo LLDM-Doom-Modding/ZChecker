@@ -1363,12 +1363,12 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 						Actor baseactor = ( relativeTo? relativeTo : alteree );
 
 						if ( prop.Left( 6 ) == "render" || prop == "rstyle" || prop == "rst" ) {
-							int paramint;
-
 							if ( setmode == PSM_Relative || pvalue == "none" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_None );
 							else if ( pvalue.Left( 4 ) == "norm" || pvalue == "x" || pvalue == "n" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_Normal );
+							else if ( pvalue == "fuzzy" )
+								params.integers[ params.PFI_RenderStyle ].set( STYLE_Fuzzy );
 							else if ( pvalue == "optfuzzy" )
 								params.integers[ params.PFI_RenderStyle ].set( STYLE_OptFuzzy );
 							else if ( pvalue == "stencil" )
@@ -1399,10 +1399,8 @@ class ZCSetPropertyCommand: ZCConsoleCommand {
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_Source );
 							else if ( pvalue == "coloradd" )
 								params.integers[ params.PFI_RenderStyle ].set( ZCSpritesInfoPanel.STYLE_ColorAdd );
-							else if ( str2int_Ptr( pvalue, +paramint, false ) && ( paramint < ZCSpritesInfoPanel.STYLE_Quantity ) )
-								params.integers[ params.PFI_RenderStyle ].set( paramint	);
-							else
-								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDRENDERSTYLE", pvalue ); 
+							else // Integer input is processed above.
+								LogLocalize2Str( LL_Main, "ZCSETP_WRONGKEYWORDRENDERSTYLE", pvalue );
 
 						} else if ( prop == "tid" ) {
 							if ( setmode == PSM_Relative )
