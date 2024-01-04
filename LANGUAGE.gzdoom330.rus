@@ -335,19 +335,23 @@ ZCHECKER_CCMDMENU_CONSOLEVSMENU       = "Имейте в виду, консол�
 
 ZCHECKER_CCMDMENULABEL_ZCADD          = "Добавить актора в инфопанель...";
 ZCHECKER_CCMDMENULABEL_ZCREM          = "Очистить инфопанели...";
-ZCHECKER_CCMDMENULABEL_ZCSUMMON       = "Создать акторов...";
+ZCHECKER_CCMDMENULABEL_ZCSUMMON       = "Создать актор(ов)...";
 ZCHECKER_CCMDMENULABEL_ZCACT          = "Действие над актором...";
 ZCHECKER_CCMDMENULABEL_ZCGIVETAKE     = "Дать/забрать предмет...";
 ZCHECKER_CCMDMENULABEL_ZCSETFLAG      = "Установить флаг...";
 ZCHECKER_CCMDMENULABEL_ZCSETSTATE     = "Установить стейт...";
-ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION = "Установить свойство взаимодействия...";
-ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER = "Установить другое свойство...";
+ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION = "Установить свойства взаимодействия...";
+ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER = "Установить другие свойства...";
 ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE = "Копировать/переместить инфопанели...";
 ZCHECKER_CCMDMENULABEL_ZCHELP         = "Вывести краткую справку в консоль";
 ZCHECKER_CCMDMENULABEL_AUTOCLOSE      = "Закрывать меню после выполнения";
 
-ZCHECKER_CCMDMENU_EXECUTE             = "Выполнить";
-ZCHECKER_CCMDMENU_RESETITEMS          = "Сбросить настройки";
+ZCHECKER_CCMDMENUITEM_EXECUTE         = "Выполнить";
+ZCHECKER_CCMDMENUITEM_RESETITEMS      = "Сбросить настройки";
+ZCHECKER_CCMDMENUITEM_CLASSNAMEFIELD_NOSPACES = "Пробелы в названиях классов не разрешаются. Заменены на \"-\" (подстановочный знак одного или более символов).";
+ZCHECKER_CCMDMENUITEM_DEFAULT         = "По умолчанию";
+ZCHECKER_CCMDMENUITEM_DEFAULTSYMB     = "-";
+ZCHECKER_CCMDMENUITEM_NOCHANGE        = "Не изменять";
 
 ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Целевой актор";
 ZCHECKER_CCMDMENU_SOURCE_LT           = "Цель под курсором";
@@ -364,13 +368,13 @@ ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_LT  = "Цель под курсором";
 ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_SELF = "Сам игрок";
 ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_WEAPON = "Оружие";
 ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_CAMERA = "Камера игрока";
-ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_FORCE = "Неосязаемая цель под курсором";
+ZCHECKER_CCMDMENU_ZCADDOPT_SOURCE_FORCE = "Нематериальная цель под курсором";
 ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_FREE = "Первая свободная панель";
 ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P1   = "Панель 1 (слева)";
 ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P2   = "Панель 2 (в центре)";
 ZCHECKER_CCMDMENU_ZCADDOPT_PANEL_P3   = "Панель 3 (справа)";
 ZCHECKER_CCMDMENU_ZCADD_NOTE_CAMERA   = "Камера игрока зачастую совпадает с самим игроком.";
-ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE    = "Неосязаемые акторы имеют флаги вроде +NOBLOCKMAP.";
+ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE    = "Нематериальные акторы имеют флаги вроде +NOBLOCKMAP.";
 
 ZCHECKER_CCMDMENU_ZCREM_TITLE         = "zcrem. Очистка инфопанелей";
 ZCHECKER_CCMDMENU_ZCREM_PN            = "Номер панели";
@@ -394,7 +398,7 @@ ZCHECKER_CCMDMENU_ZCACT_ACTION_KILL   = "Убить";
 ZCHECKER_CCMDMENU_ZCACT_ACTION_EK     = "Жестоко убить";
 ZCHECKER_CCMDMENU_ZCACT_ACTION_RM     = "Удалить";
 ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE = "Заморозить состояние";
-ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP   = "Пропустить текущее состояние";
+ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP   = "Пропустить состояние";
 ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT = "Перезапустить состояние";
 
 ZCHECKER_CCMDMENU_ZCSUMMON_TITLE      = "zcsummon. Создание акторов";
@@ -404,10 +408,10 @@ ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT     = "Количество можно зад�
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD   = "= Мир =";
 ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET    = "Смещение вперед, в маппикселях";
 ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET    = "Смещение по вертикали, в маппикселях";
-ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE     = "Относительный угол";
+ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE   = "Относительный угол";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR = "= Поведение =";
 ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH     = "Здоровье";
-ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Добавить в панель последнего созданного";
+ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Добавить в панель (для последнего созданного)";
 ZCHECKER_CCMDMENU_ZCSUMMON_TID        = "TID";
 ZCHECKER_CCMDMENU_ZCSUMMON_A0         = "Аргумент 0";
 ZCHECKER_CCMDMENU_ZCSUMMON_A1         = "Аргумент 1";
@@ -425,8 +429,8 @@ ZCHECKER_CCMDMENU_ZCSUMMONOPT_FRIEND  = "Дружественный";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FOE     = "Враждебный";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT = "Отключить инфайтинг";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT = "Принудительный инфайтинг";
-ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT = "Отключить";
-ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ = "Не применять";
+ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT = "Да, отключить";
+ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ = "Нет, не применять";
 
 ZCHECKER_CCMDMENU_ZCSETFLAG_MENU      = "zcsetflag. Манипулирование флагами";
 ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG      = "Название флага";
@@ -438,8 +442,8 @@ ZCHECKER_CCMDMENU_ZCSETFLAG_SET0      = "Сбросить в 0";
 ZCHECKER_CCMDMENU_ZCSETSTATE_MENU     = "zcsetstate. Установка стейтов";
 ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL  = "Название стейта";
 
-ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_I   = "zcsetprop. Установка свойств";
-ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_O   = "zcsetprop. Установка свойств";
+ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_INTERACTION = "zcsetprop. Установка свойств";
+ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_OTHER = "zcsetprop. Установка свойств";
 ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE    = "Операция над значениями";
 ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD  = "= Мир =";
 ZCHECKER_CCMDMENU_ZCSETPROP_POSX      = "X, в маппикселях";
@@ -476,7 +480,7 @@ ZCHECKER_CCMDMENU_ZCSETPROP_ARG2      = "Аргумент 2";
 ZCHECKER_CCMDMENU_ZCSETPROP_ARG3      = "Аргумент 3";
 ZCHECKER_CCMDMENU_ZCSETPROP_ARG4      = "Аргумент 4";
 ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL   = "Действие (special/action)";
-ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE = "Заменить";
+ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE = "Установить";
 ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD  = "Добавить";
 ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF = "Добавить от игрока";
 ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDLT = "Добавить от цели под курсором";

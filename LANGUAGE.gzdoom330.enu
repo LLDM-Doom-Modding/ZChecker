@@ -351,7 +351,7 @@ ZCHECKER_CCMDMENU_HELPNOTE1           = "Some frequently used commands are store
 ZCHECKER_CCMDMENU_HELPNOTE2           = "All commands may be shown via the \"zchelp all\"";
 ZCHECKER_CCMDMENU_HELPNOTE3           = "console command; also you may use \"zchelp <command>\".";
 ZCHECKER_CCMDMENU_ZCHANDLER_ERROR     = "\cxCannot locate ZChecker static event handler.\n\ciPossible reason: \cu\"\crEventHandler = ...\cu\"\n\ciin MAPINFO on GZDoom older than 4.8.0.\n\cxConsole commands cannot be used.";
-ZCHECKER_CCMDMENU_CONSOLEVSMENU       = "Note that console is always mighter that menu!";
+ZCHECKER_CCMDMENU_CONSOLEVSMENU       = "Note that console is always mightier that menu!";
 
 ZCHECKER_CCMDMENULABEL_ZCADD          = "Add actor to infopanel...";
 ZCHECKER_CCMDMENULABEL_ZCREM          = "Remove actor(s) from infopanel...";
@@ -366,8 +366,12 @@ ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE = "Infopanels copy/move...";
 ZCHECKER_CCMDMENULABEL_ZCHELP         = "Print short help to console";
 ZCHECKER_CCMDMENULABEL_AUTOCLOSE      = "Close CCMD menu after execute";
 
-ZCHECKER_CCMDMENU_EXECUTE             = "Execute";
-ZCHECKER_CCMDMENU_RESETITEMS          = "Reset menu options";
+ZCHECKER_CCMDMENUITEM_EXECUTE         = "Execute";
+ZCHECKER_CCMDMENUITEM_RESETITEMS      = "Reset menu options";
+ZCHECKER_CCMDMENUITEM_CLASSNAMEFIELD_NOSPACES = "Spaces in class names are not allowed. All spaces has been changed to \"-\" (wildcard for one or more characters).";
+ZCHECKER_CCMDMENUITEM_DEFAULT         = "Default";
+ZCHECKER_CCMDMENUITEM_DEFAULTSYMB     = "-";
+ZCHECKER_CCMDMENUITEM_NOCHANGE        = "Do not change";
 
 ZCHECKER_CCMDMENU_ACTOR_SOURCE        = "Actor source";
 ZCHECKER_CCMDMENU_SOURCE_LT           = "Linetarget";
@@ -394,7 +398,7 @@ ZCHECKER_CCMDMENU_ZCADD_NOTE_FORCE    = "Intangible objects have flags like +NOB
 
 ZCHECKER_CCMDMENU_ZCREM_TITLE         = "zcrem menu";
 ZCHECKER_CCMDMENU_ZCREM_PN            = "Panel number";
-ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_CLEAR = "Clear all panels";
+ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_CLEAR = "Clear all";
 ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P1   = "Panel 1 (left)";
 ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P2   = "Panel 2 (middle)";
 ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3   = "Panel 3 (right)";
@@ -424,7 +428,7 @@ ZCHECKER_CCMDMENU_ZCSUMMON_Q_TEXT     = "Quantity can be set with left/right arr
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_WORLD   = "= World =";
 ZCHECKER_CCMDMENU_ZCSUMMON_FOFFSET    = "Forward offset, mappixels";
 ZCHECKER_CCMDMENU_ZCSUMMON_VOFFSET    = "Vertical offset, mappixels";
-ZCHECKER_CCMDMENU_ZCSUMMON_RANGLE     = "Relative angle";
+ZCHECKER_CCMDMENU_ZCSUMMON_RELANGLE   = "Relative angle";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_BEHAVIOUR = "= Behaviour =";
 ZCHECKER_CCMDMENU_ZCSUMMON_HEALTH     = "Health";
 ZCHECKER_CCMDMENU_ZCSUMMON_APANEL     = "Panel to add (last spawned only)";
@@ -458,8 +462,8 @@ ZCHECKER_CCMDMENU_ZCSETFLAG_SET0      = "Reset to 0";
 ZCHECKER_CCMDMENU_ZCSETSTATE_MENU     = "zcsetstate menu";
 ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL  = "State label";
 
-ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_I   = "zcsetproperty menu";
-ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_O   = "zcsetproperty menu";
+ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_INTERACTION = "zcsetproperty menu";
+ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_OTHER = "zcsetproperty menu";
 ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE    = "Values operation type";
 ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD  = "= World =";
 ZCHECKER_CCMDMENU_ZCSETPROP_POSX      = "X, mappixels";
