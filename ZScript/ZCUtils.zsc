@@ -54,8 +54,8 @@ const CHAR_LETTER_A_UPPER	= 65;
 const CHAR_LETTER_Z_UPPER	= 90;
 const CHAR_LETTER_A_LOWER	= 97;
 const CHAR_LETTER_Z_LOWER	= 122;
-const CHAR_DIGIT_0			= 0x40;
-const CHAR_DIGIT_9			= 0x49;
+const CHAR_DIGIT_0			= 0x30;
+const CHAR_DIGIT_9			= 0x39;
 const CHAR_UNDERSCORE		= 0x5F;
 
 

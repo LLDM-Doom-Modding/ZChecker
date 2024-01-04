@@ -23,7 +23,7 @@ OptionMenu "ZChecker_CommandsMenu_zcadd" {
     Title "$ZCHECKER_CCMDMENU_ZCADD_MENU_TITLE"
 
 	ZCCommandKeeper 2, "cvar:lldm_zcmenuarg_zcaddrem   0 static:zcadd"
-	ZCCommandExecute "ZCHECKER_CCMDMENU_EXECUTE"
+	ZCCommandExecute "$ZCHECKER_CCMDMENU_EXECUTE"
 	ZCCommandVisual " "
     StaticText " "
 
