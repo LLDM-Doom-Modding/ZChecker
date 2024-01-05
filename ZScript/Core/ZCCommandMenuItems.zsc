@@ -1072,15 +1072,14 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 	private float prevFloatValue;
 
 	OptionMenuItemZCNumberField Init( String label, int argindex, String identifier, float minimum = 0.0, float maximum = 100.0, float step = 1.0, int precision = 0, String prefix = "", float emptyval = 0.0, String emptyname = "$ZCHECKER_CCMDMENUITEM_DEFAULTSYMB", bool emptyaddshifted = false ) {
-		// Localization is for compatibility for GZDoom 4.11.0:
-		Super.Init( ZCGlobal.FreeLocalize( label ), argindex, identifier, prefix, 15 );
+		Super.Init( label, argindex, identifier, prefix, 15 );
 
 		mMinimum = min( minimum, maximum );
 		mMaximum = max( minimum, maximum );
 		mStep = max( 0.01, step );
 		mPrecision = max( 0, precision );
 		mEmptyValue = emptyval;
-		mEmptyValueName = emptyname;
+		mEmptyValueName = ZCGlobal.FreeLocalize( emptyname ); // Localization is for compatibility with GZDoom 4.11.0.
 		mEmptyIsShifted = emptyaddshifted;
 
 		return self;
