@@ -1072,7 +1072,8 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 	private float prevFloatValue;
 
 	OptionMenuItemZCNumberField Init( String label, int argindex, String identifier, float minimum = 0.0, float maximum = 100.0, float step = 1.0, int precision = 0, String prefix = "", float emptyval = 0.0, String emptyname = "$ZCHECKER_CCMDMENUITEM_DEFAULTSYMB", bool emptyaddshifted = false ) {
-		Super.Init( label, argindex, identifier, prefix, 15 );
+		// Localization is for compatibility for GZDoom 4.11.0:
+		Super.Init( ZCGlobal.FreeLocalize( label ), argindex, identifier, prefix, 15 );
 
 		mMinimum = min( minimum, maximum );
 		mMaximum = max( minimum, maximum );
