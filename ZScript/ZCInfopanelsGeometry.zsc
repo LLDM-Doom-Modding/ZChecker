@@ -13,7 +13,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		optionCVarName = "lldm_zcpanel_geomsectors";
 		optionLabel = "$ZCHECKER_INFOPANELS_GEOMSECTORS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_GEOMSECTORS";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_geomsectors";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_geomsectors";
 
 		printSecLights = printSecTextures = printSecOther = printSecPortal = printSecTerrain = false;
 	}
@@ -403,7 +403,7 @@ class ZCLinesGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		optionCVarName = "lldm_zcpanel_geomlines";
 		optionLabel = "$ZCHECKER_INFOPANELS_GEOMLINES";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_GEOMLINES";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_geomlines";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_geomlines";
 	}
 
 	override String GetInfo_play( Actor thing, ZCheckerField thingfield ) {

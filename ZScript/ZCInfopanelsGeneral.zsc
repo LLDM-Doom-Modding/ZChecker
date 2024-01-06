@@ -5,7 +5,7 @@ class ZCMainInfoPanel: ZCBaseInfoPanelPart {
 		optionCVarName = "lldm_zcpanel_main";
 		optionLabel = "$INFOPANELS_MAIN";
 		optionLabelExtraHotkeys = "$INFOPANELKEYS_MAIN";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_main";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_main";
 	}
 
 	override String GetInfo( Actor thing, ZCheckerField thingfield ) {
@@ -95,7 +95,7 @@ class ZCWorldPositionInfoPanel: ZCBaseInfoPanelPart {
 		optionCVarName = "lldm_zcpanel_worldpos";
 		optionLabel = "$INFOPANELS_WORLDPOS";
 		optionLabelExtraHotkeys = "$INFOPANELKEYS_WORLDPOS";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_worldpos";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_worldpos";
 	}
 
 	enum EAlternativeButtonNames {

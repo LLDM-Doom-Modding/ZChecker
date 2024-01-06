@@ -1,5 +1,7 @@
-// ZChecker submenus definitions.
+//
+// ZChecker informational panels submenu definitions.
 // Also see a "MENUDEF.General".
+//
 
 // Submenu options:
 
@@ -51,7 +53,7 @@ OptionValue "ZCheckerOption_panelstates_psprite_type" {
 
 // Submenus:
 
-OptionMenu "mcm_ZCheckerSubmenu_main" {
+OptionMenu "ZChecker_InfopanelSubmenu_main" {
 	Title "$ZCHECKER_PANELSUBMENU_MAIN_TITLE"
 	StaticText " "
 
@@ -60,7 +62,7 @@ OptionMenu "mcm_ZCheckerSubmenu_main" {
 	Option "$ZCHECKER_PANELSUBMENU_MAIN_PLAYERINFO", "lldm_zcpanel_var_mainplayers", "YesNo"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
+OptionMenu "ZChecker_InfopanelSubmenu_worldpos" {
 	Title "$ZCHECKER_PANELSUBMENU_WPOS_TITLE"
 	StaticText " "
 
@@ -73,7 +75,7 @@ OptionMenu "mcm_ZCheckerSubmenu_worldpos" {
 	Option "$ZCHECKER_PANELSUBMENU_WPOS_PLAYERBUTTONS", "lldm_zcpanel_var_wposplbuttons", "YesNo"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_inventory" {
+OptionMenu "ZChecker_InfopanelSubmenu_inventory" {
 	Title "$ZCHECKER_PANELSUBMENU_INV_TITLE"
 	StaticText " "
 
@@ -82,7 +84,7 @@ OptionMenu "mcm_ZCheckerSubmenu_inventory" {
 	Option "$ZCHECKER_PANELSUBMENU_INV_REVERSE", "lldm_zcpanel_var_invsortascend", "YesNo"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_states" {
+OptionMenu "ZChecker_InfopanelSubmenu_states" {
 	Title "$ZCHECKER_PANELSUBMENU_STATES_TITLE"
 	StaticText " "
 
@@ -104,7 +106,7 @@ OptionMenu "mcm_ZCheckerSubmenu_states" {
 	//ZCPSpriteInputField "$ZCHECKER_PANELSUBMENU_STATES_SPECIALID", "lldm_zcpanel_var_statepsprlayerid"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
+OptionMenu "ZChecker_InfopanelSubmenu_geomsectors" {
 	Title "$ZCHECKER_PANELSUBMENU_GSEC_TITLE"
 	StaticText " "
 
@@ -127,7 +129,7 @@ OptionMenu "mcm_ZCheckerSubmenu_geomsectors" {
 	Option "$ZCHECKER_PANELSUBMENU_GSEC_OTHER", "lldm_zcpanel_var_geomsecother", "YesNo"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
+OptionMenu "ZChecker_InfopanelSubmenu_geomlines" {
 	// [McM] Geometry lines right now is a dummy placeholder infopanel, without content.
 	Title "ZChecker panel: Lines geometry"
 	StaticText " "
@@ -145,7 +147,7 @@ OptionMenu "mcm_ZCheckerSubmenu_geomlines" {
 	Option "Line action", "lldm_zcpanel_var_geomlnaction", "ZCheckerOption_panelgeom_lineaction"
 }
 
-OptionMenu "mcm_ZCheckerSubmenu_sound" {
+OptionMenu "ZChecker_InfopanelSubmenu_sound" {
 	Title "$ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE"
 	StaticText " "
 	Option "$ZCHECKER_PANELSUBMENU_SNDDEFS_RARE", "lldm_zcpanel_var_soundsrare", "YesNo"

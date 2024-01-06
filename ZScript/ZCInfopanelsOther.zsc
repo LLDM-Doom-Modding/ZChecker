@@ -86,7 +86,7 @@ class ZCSoundDefinitionsInfoPanel: ZCBaseInfoPanelPart
 		optionCVarName = "lldm_zcpanel_sounddefs";
 		optionLabel = "$ZCHECKER_INFOPANELS_SOUNDDEFS";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_SOUNDDEFS";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_sound";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_sound";
 	}
 
 	String FormatSoundName( Sound sndname ) 

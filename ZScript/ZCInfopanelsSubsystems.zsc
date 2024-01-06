@@ -19,7 +19,7 @@ class ZCInventoryInfoPanel: ZCBaseInfoPanelPart {
 		optionCVarName = "lldm_zcpanel_inventory";
 		optionLabel = "$ZCHECKER_INFOPANELS_INVENTORY";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_INVENTORY";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_inventory";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_inventory";
 
 		sortPrevTypeOption = -1;
 
@@ -201,7 +201,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		optionCVarName = "lldm_zcpanel_states";
 		optionLabel = "$ZCHECKER_INFOPANELS_STATES";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_STATES";
-		optionSubmenuName = "mcm_ZCheckerSubmenu_states";
+		optionSubmenuName = "ZChecker_InfopanelSubmenu_states";
 
 		for ( int i = 0; i < MaxTestee; i++ )
 			prevLogStates.Push( new( 'ZCStatesInfoData' ) );
