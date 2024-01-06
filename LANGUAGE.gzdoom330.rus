@@ -339,7 +339,7 @@ ZCHECKER_CCMDMENULABEL_ZCSUMMON       = "Создать актор(ов)...";
 ZCHECKER_CCMDMENULABEL_ZCACT          = "Действие над актором...";
 ZCHECKER_CCMDMENULABEL_ZCGIVETAKE     = "Дать/забрать предмет...";
 ZCHECKER_CCMDMENULABEL_ZCSETFLAG      = "Установить флаг...";
-ZCHECKER_CCMDMENULABEL_ZCSETSTATE     = "Установить стейт...";
+ZCHECKER_CCMDMENULABEL_ZCSETSTATE     = "Установить состояние (стейт)...";
 ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION = "Установить свойства взаимодействия...";
 ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER = "Установить другие свойства...";
 ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE = "Копировать/переместить инфопанели...";
@@ -386,7 +386,7 @@ ZCHECKER_CCMDMENU_ZCREMOPT_PANEL_P3   = "Панель 3 (справа)";
 
 ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE = "zcgive/zctake. Инвентарь";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_IN       = "Название предмета";
-ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY = "Количество, 1..1E6";
+ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY = "Количество, до 1 млн";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITYNOTE = "Количество задается через стрелки влево/вправо или ввод с клавиатуры";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GT       = "Операция";
 ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE     = "Дать актору";
@@ -420,8 +420,8 @@ ZCHECKER_CCMDMENU_ZCSUMMON_A1         = "Аргумент 1";
 ZCHECKER_CCMDMENU_ZCSUMMON_A2         = "Аргумент 2";
 ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS   = "= Флаги =";
 ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS = "Дружественность";
-ZCHECKER_CCMDMENU_ZCSUMMON_INF        = "Инфайтинг";
-ZCHECKER_CCMDMENU_ZCSUMMON_PR         = "Правила создания снарядов";
+ZCHECKER_CCMDMENU_ZCSUMMON_INFIGHTING = "Инфайтинг";
+ZCHECKER_CCMDMENU_ZCSUMMON_PROJRULES  = "Правила создания снарядов"; // Not used.
 ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT    = "Отключить актора (флаг Dormant)";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_FREE = "Первая свободная панель";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P1 = "Панель 1 (слева)";
@@ -432,7 +432,7 @@ ZCHECKER_CCMDMENU_ZCSUMMONOPT_FOE     = "Враждебный";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT = "Отключить инфайтинг";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT = "Принудительный инфайтинг";
 ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT = "Да, отключить";
-ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ = "Нет, не применять";
+ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ = "Нет, не применять"; // Not used.
 
 ZCHECKER_CCMDMENU_ZCSETFLAG_MENU      = "zcsetflag. Манипулирование флагами";
 ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG      = "Название флага";
@@ -442,11 +442,11 @@ ZCHECKER_CCMDMENU_ZCSETFLAG_SET1      = "Установить в 1";
 ZCHECKER_CCMDMENU_ZCSETFLAG_SET0      = "Сбросить в 0";
 
 ZCHECKER_CCMDMENU_ZCSETSTATE_MENU     = "zcsetstate. Установка стейтов";
-ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL  = "Название стейта";
+ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL  = "Название состояния (стейта)";
 
 ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_INTERACTION = "zcsetprop. Установка свойств";
 ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_OTHER = "zcsetprop. Установка свойств";
-ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE    = "Операция над значениями";
+ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE    = "Операция";
 ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD  = "= Мир =";
 ZCHECKER_CCMDMENU_ZCSETPROP_POSX      = "X, в маппикселях";
 ZCHECKER_CCMDMENU_ZCSETPROP_POSY      = "Y, в маппикселях";
@@ -457,7 +457,7 @@ ZCHECKER_CCMDMENU_ZCSETPROP_VELZ      = "Скорость по Z, в маппи�
 ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE     = "Угол (angle, рыскание)";
 ZCHECKER_CCMDMENU_ZCSETPROP_PITCH     = "Наклонение (pitch, тангаж)";
 ZCHECKER_CCMDMENU_ZCSETPROP_ROLL      = "Крен (roll)";
-ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT = "= Взаимодействие =";
+ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT = "= Физика =";
 ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH    = "Здоровье";
 ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS    = "Радиус";
 ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT    = "Высота";
@@ -481,7 +481,7 @@ ZCHECKER_CCMDMENU_ZCSETPROP_ARG1      = "Аргумент 1";
 ZCHECKER_CCMDMENU_ZCSETPROP_ARG2      = "Аргумент 2";
 ZCHECKER_CCMDMENU_ZCSETPROP_ARG3      = "Аргумент 3";
 ZCHECKER_CCMDMENU_ZCSETPROP_ARG4      = "Аргумент 4";
-ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL   = "Действие (special/action)";
+ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL   = "Действие (action special)";
 ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE = "Установить";
 ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD  = "Добавить";
 ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF = "Добавить от игрока";
@@ -657,11 +657,11 @@ ZCHECKER_ZCTAKE_NOTINVCLASS           = "\"%s\" - не класс Inventory.";
 ZCHECKER_ZCSUMMON_HELP_TITLE          = "zcsummon <класс> [<количество=1>] [<разделенный запятыми список дополнительных свойств>]";
 ZCHECKER_ZCSUMMON_HELP_DESC           = "Создает <количество> <класс>ов аналогично встроенной одноименной команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (\"rel\" - относительно игрока):\
   ФЛАГИ   : f[riend]|foe, [no]infi[ght], notproj[ectile], dormant, nograv[ity]\
-  МИР     : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>\
+  МИР     : [rel]ang[le]:<угол>, [rel]pitch:<наклон>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>\
   СВОЙСТВА: hp|health:<hp>, [float]speed:<скорость>, aggr[essiveness]:<0-255>\
   ДРУГОЕ  : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>";
-ZCHECKER_ZCSUMMON_CLAMPINT            = "\c!%s (%i) вне диапазона [%i; %i]. \c-Ограничено до %i.";
-ZCHECKER_ZCSUMMON_CLAMPFLOAT          = "\c!%s (%f) вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.";
+ZCHECKER_ZCSUMMON_CLAMPINT            = "\c!%s (%i) лежит вне диапазона [%i; %i]. \c-Ограничено до %i.";
+ZCHECKER_ZCSUMMON_CLAMPFLOAT          = "\c!%s (%f) лежит вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.";
 ZCHECKER_ZCSUMMON_WRONGPANEL          = "\c!Неверный номер панели \"%s\".";
 ZCHECKER_ZCSUMMON_WRONGARG            = "\c!Неверный числовой аргумент для параметра %s.";
 ZCHECKER_ZCSUMMON_WRONGDIGIT          = "\c!Значение \"%s\" \c-для параметра \"%s\" - \c!не число\c-.";

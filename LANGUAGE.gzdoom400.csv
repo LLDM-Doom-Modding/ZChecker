@@ -355,7 +355,7 @@ unused),,,,
 ,,ZCHECKER_CCMDMENULABEL_ZCACT,Do something with actor...,Действие над актором...
 ,,ZCHECKER_CCMDMENULABEL_ZCGIVETAKE,Give/take item...,Дать/забрать предмет...
 ,,ZCHECKER_CCMDMENULABEL_ZCSETFLAG,Set flag...,Установить флаг...
-,,ZCHECKER_CCMDMENULABEL_ZCSETSTATE,Set state...,Установить стейт...
+,,ZCHECKER_CCMDMENULABEL_ZCSETSTATE,Set state...,Установить состояние (стейт)...
 ,,ZCHECKER_CCMDMENULABEL_ZCSETPROP_INTERACTION,Set interactive properties...,Установить свойства взаимодействия...
 ,,ZCHECKER_CCMDMENULABEL_ZCSETPROP_OTHER,Set other properties...,Установить другие свойства...
 ,,ZCHECKER_CCMDMENULABEL_ZCPANEL_COPYMOVE,Infopanels copy/move...,Копировать/переместить инфопанели...
@@ -402,7 +402,7 @@ unused),,,,
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_MENU_TITLE,zcgive/zctake menu,zcgive/zctake. Инвентарь
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_IN,Inventory name,Название предмета
-,,ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY,"Quantity, 1..1E6","Количество, 1..1E6"
+,,ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITY,"Quantity, up to 1M","Количество, до 1 млн"
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_QUANTITYNOTE,Quantity can be set with left/right arrows or keyboard input,Количество задаётся через стрелки влево/вправо или ввод с клавиатуры
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GT,Give/take,Операция
 ,,ZCHECKER_CCMDMENU_ZCGIVETAKE_GIVE,Give to actor,Дать актору
@@ -414,9 +414,9 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCACT_ACTION_KILL,Kill,Убить
 ,,ZCHECKER_CCMDMENU_ZCACT_ACTION_EK,Extreme kill,Жестоко убить
 ,,ZCHECKER_CCMDMENU_ZCACT_ACTION_RM,Remove,Удалить
-,,ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE,Freeze current state,Заморозить состояние
-,,ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP,Skip current state,Пропустить состояние
-,,ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT,Revert current state tics,Перезапустить состояние
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_FREEZE,Freeze state,Заморозить состояние
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_SKIP,Skip state,Пропустить состояние
+,,ZCHECKER_CCMDMENU_ZCACT_ACTION_REVERT,Revert state tics,Перезапустить состояние
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_TITLE,zcsummon menu,zcsummon. Создание акторов
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_ACTOR_SPAWN,Actor name,Название актора
@@ -436,8 +436,8 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_A2,Argument 2,Аргумент 2
 ,,ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS,= Flags =,= Флаги =
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS,Friendliness,Дружественность
-,,ZCHECKER_CCMDMENU_ZCSUMMON_INF,Infighting,Инфайтинг
-,,ZCHECKER_CCMDMENU_ZCSUMMON_PR,Projectile rules,Правила создания снарядов
+,,ZCHECKER_CCMDMENU_ZCSUMMON_INFIGHTING,Infighting,Инфайтинг
+,Not used.,ZCHECKER_CCMDMENU_ZCSUMMON_PROJRULES,Projectile rules,Правила создания снарядов
 ,,ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT,Dormant,Отключить актора (флаг Dormant)
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_FREE,First free panel,Первая свободная панель
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_PANEL_P1,Panel 1 (left),Панель 1 (слева)
@@ -448,7 +448,7 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_DINFIGHT,Disable infighting,Отключить инфайтинг
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FINFIGHT,Force infighting,Принудительный инфайтинг
 ,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_FDORMANT,Force dormant,"Да, отключить"
-,,ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ,Do not apply,"Нет, не применять"
+,Not used.,ZCHECKER_CCMDMENU_ZCSUMMONOPT_NOTPROJ,Do not apply,"Нет, не применять"
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_MENU,zcsetflag menu,zcsetflag. Манипулирование флагами
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_FLAG,Flag name,Название флага
@@ -458,11 +458,11 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSETFLAG_SET0,Reset to 0,Сбросить в 0
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSETSTATE_MENU,zcsetstate menu,zcsetstate. Установка стейтов
-,,ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL,State label,Название стейта
+,,ZCHECKER_CCMDMENU_ZCSETSTATE_STLABEL,State label,Название состояния (стейта)
 ,,,,
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_INTERACTION,zcsetproperty menu,zcsetprop. Установка свойств
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_TITLE_OTHER,zcsetproperty menu,zcsetprop. Установка свойств
-,,ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE,Values operation type,Операция над значениями
+,,ZCHECKER_CCMDMENU_ZCSETPROP_OPTYPE,Operation,Операция
 ,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_WORLD,= World =,= Мир =
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_POSX,"X, mappixels","X, в маппикселях"
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_POSY,"Y, mappixels","Y, в маппикселях"
@@ -473,7 +473,7 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_ANGLE,Angle,"Угол (angle, рыскание)"
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_PITCH,Pitch,"Наклонение (pitch, тангаж)"
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_ROLL,Roll,Крен (roll)
-,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT,= Interaction =,= Взаимодействие =
+,,ZCHECKER_CCMDMENU_ZCSETPROPDIV_INTERACT,= Physics =,= Физика =
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_HEALTH,Health,Здоровье
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_RADIUS,Radius,Радиус
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_HEIGHT,Height,Высота
@@ -497,7 +497,7 @@ unused),,,,
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG2,Argument 2,Аргумент 2
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG3,Argument 3,Аргумент 3
 ,,ZCHECKER_CCMDMENU_ZCSETPROP_ARG4,Argument 4,Аргумент 4
-,,ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL,Special/action,Действие (special/action)
+,,ZCHECKER_CCMDMENU_ZCSETPROP_SPECIAL,Action special,Действие (action special)
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPREPLACE,Replace,Установить
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADD,Add,Добавить
 ,,ZCHECKER_CCMDMENU_ZCSETPROPOPT_OPADDSELF,Add from player,Добавить от игрока
@@ -679,11 +679,11 @@ unused),,,,
   PROPERTY: hp|health:<hp>, [float]speed:<speed>, aggr[essiveness]:<0-255>
   OTHER   : panel|add[:<panel>], tid:<TID>, spec:<action>, a[rg]0:<arg0>,...,a[rg]4:<arg4>","Создаёт <количество> <класс>ов аналогично встроенной одноимённой команде. Дополнительные свойства могут быть перечислены через запятую без пробелов. Возможные значения (""rel"" — относительно игрока):
   ФЛАГИ   : f[riend]|foe, [no]infi[ght], notproj[ectile], dormant, nograv[ity]
-  МИР     : [rel]ang[le]:<угол>, [rel]pitch:<тангаж>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>
+  МИР     : [rel]ang[le]:<угол>, [rel]pitch:<наклон>, zofs:<маппикселей>, f[wd]ofs:<маппикселей>
   СВОЙСТВА: hp|health:<hp>, [float]speed:<скорость>, aggr[essiveness]:<0-255>
   ДРУГОЕ  : panel|add[:<панель>], tid:<TID>, spec:<действие>, a[rg]0:<арг0>,...,a[rg]4:<арг4>"
-,,ZCHECKER_ZCSUMMON_CLAMPINT,\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.,\c!%s (%i) вне диапазона [%i; %i]. \c-Ограничено до %i.
-,,ZCHECKER_ZCSUMMON_CLAMPFLOAT,\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.,\c!%s (%f) вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.
+,,ZCHECKER_ZCSUMMON_CLAMPINT,\c!%s (%i) isn't in range [%i; %i]. \c-Clamped to %i.,\c!%s (%i) лежит вне диапазона [%i; %i]. \c-Ограничено до %i.
+,,ZCHECKER_ZCSUMMON_CLAMPFLOAT,\c!%s (%f) isn't in range [%.3f; %.3f]. \c-Clamped to %.3f.,\c!%s (%f) лежит вне диапазона [%.3f; %.3f]. \c-Ограничено до %.3f.
 ,,ZCHECKER_ZCSUMMON_WRONGPANEL,"\c!Wrong panel number ""%s"".","\c!Неверный номер панели ""%s""."
 ,,ZCHECKER_ZCSUMMON_WRONGARG,\c!Wrong argument number for parameter %s.,\c!Неверный числовой аргумент для параметра %s.
 ,,ZCHECKER_ZCSUMMON_WRONGDIGIT,"\c!Value ""%s"" \c-for parameter ""%s"" \c!isn't a digit\c-.","\c!Значение ""%s"" \c-для параметра ""%s"" — \c!не число\c-."
@@ -812,7 +812,7 @@ unused),,,,
 ,,,,
 ," ""zcpanel"" (without ""zcpanel save|store|load"" because of unfinished/unclear subcommand UI):",,,
 ,,ZCHECKER_ZCPANELCTL_HELP_TITLE,zcpanel <panel> m[ove] <newpos>;zcpanel <panel> c[opy] <newpos>;zcpanel <panel> save|store|load <aliasname>;zcpanel [<panel>] info,zcpanel <панель> m[ove] <новая позиция>;zcpanel <панель> c[opy] <новая позиция>;zcpanel <панель> save|store|load <псевдоним>;zcpanel [<панель>] info
-,,ZCHECKER_ZCPANELCTL_HELP_DESC,"Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменен для расширения её функциональности."
+,,ZCHECKER_ZCPANELCTL_HELP_DESC,"Perform action with information panels: moving, saving and loading panel links to the actors. Also may show <info>rmation about inheritance if <panel> is provided, or about actors stashed aliases otherwise. Note that the CCMD syntax may be changed in the near future to extend its functionality.","Производит действие над информационными панелями: перемещение, сохранение и загрузку ссылок на акторов. Также может отображать информацию (<info>) о наследовании, если указана <панель>, и обо всех псевдонимах в ином случае. Учтите, в скором будущем синтаксис команды может быть изменён для расширения её функциональности."
 ,,ZCHECKER_ZCPANEL_NOACTORINPOS,There's no actor in position %i.,Актора в позиции %i нет.
 ,,ZCHECKER_ZCPANELINFO_ZCCLASSINFO,"\c~""zcclassinfo %s""","\c~""zcclassinfo %s"""
 ,,ZCHECKER_ZCPANELSAVE_ALIASEXISTS,"Alias ""%s"" already exists and is linked to the actor %s.","Псевдоним ""%s"" уже существует и связан с актором %s."

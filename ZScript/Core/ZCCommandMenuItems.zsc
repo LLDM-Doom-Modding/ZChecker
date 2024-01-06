@@ -1079,7 +1079,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 		mStep = max( 0.01, step );
 		mPrecision = max( 0, precision );
 		mEmptyValue = emptyval;
-		mEmptyValueName = ZCGlobal.FreeLocalize( emptyname ); // Localization is for compatibility with GZDoom 4.11.0.
+		mEmptyValueName = emptyname; // Localization is for compatibility with GZDoom 4.11.0.
 		mEmptyIsShifted = emptyaddshifted;
 
 		return self;
@@ -1096,7 +1096,7 @@ class OptionMenuItemZCNumberField: OptionMenuItemZCTextField {
 		float curvalue = GetFloatOption();
 
 		if ( IsCurrentValueEmpty( curvalue ) )
-			return mEmptyValueName;
+			return ZCGlobal.FreeLocalize( mEmptyValueName );
 
 		return String.Format( String.Format( "%%.%if", mPrecision ), curvalue );
 		//return String.Format( "%.3f", GetFloatOption() );

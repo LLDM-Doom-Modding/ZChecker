@@ -148,8 +148,8 @@ OptionMenu "ZChecker_CommandsMenu_zcsummon" {
 	ZCStaticText ""
 	ZCStaticText "$ZCHECKER_CCMDMENU_ZCSUMMONDIV_FLAGS", DARKBROWN
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_FRIENDLINESS",3, "+f/f", "ZCheckerOptionCCMD_zcsummon_flagsfriendliness"
-	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_INF", 		3, "+infi", "ZCheckerOptionCCMD_zcsummon_flagsinfighting"
-	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_PR", 			3, "+nprj", "ZCheckerOptionCCMD_zcsummon_flagnotproj"
+	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_INFIGHTING",	3, "+infi", "ZCheckerOptionCCMD_zcsummon_flagsinfighting"
+	//ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_PROJRULES",	3, "+nprj", "ZCheckerOptionCCMD_zcsummon_flagnotproj"
 	ZCOption "$ZCHECKER_CCMDMENU_ZCSUMMON_DORMANT", 	3, "+dt", "ZCheckerOptionCCMD_zcsummon_flagdormant"
 	ZCStaticText ""
 	ZCResetItems "$ZCHECKER_CCMDMENUITEM_RESETITEMS"

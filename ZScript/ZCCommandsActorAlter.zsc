@@ -391,8 +391,8 @@ struct ZCSummonExtraParameters play {
 		if ( isFloatSpeedSet )
 			clampfloat( floatspeed, "Float speed", 0.0, 32768.0 );
 
-		clampint( special, "Actor special", 0, 255 );
-		clampint( spawnhp, "Spawn health", 0, 0x7FFFFFFF );
+		clampint( special, "Actor action special", 0, 65535 );
+		clampint( spawnhp, "Spawn health", 1, 0x7FFFFFFF );
 
 		if ( aggresiveness != -1 )
 			clampint( aggresiveness, "Aggresiveness", 0, 255 );
@@ -576,7 +576,7 @@ class ZCSummonCommand: ZCConsoleCommand {
 			return;
 
 		if ( params.isAngled )
-			summoned.angle = ( params.isFaceangleRelative? summoned.AngleTo( splayer ) : 0.0 ) + params.faceangle;
+			summoned.angle = ( ( params.isFaceangleRelative? summoned.AngleTo( splayer ) + 180.0 : 0.0 ) + params.faceangle ) % 360.0;
 
 
 		double newpitch = params.facepitch;
