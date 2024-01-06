@@ -30,11 +30,11 @@ class ZCCommandKeeperItem ui {
 
 
 class ZCCommandKeeperArg ui {
-	const CVAR_ITEMS_SEPARATOR = ZCHECKER_AGRS_SEPARATOR; 	// Separator between items (between pairs "id:value") in one command.
+	const CVAR_ITEMS_SEPARATOR = ZCHECKER_ARGS_SEPARATOR; 	// Separator between items (between pairs "id:value") in one command.
 	const CVAR_IDVAL_SEPARATOR = ":";						// Separator between identifier and its value. Only the leftmost character will be treated as it.
 	const DEFAULT_ARG_DELIMITER = ",";
 	// So, hypothetical CVar for the "zcsummon" command may be saved as:
-	//	"#1:*card:3``#2:1``add:4``fwdofs:23.25``arg0:1``tid:unique``hp:999"
+	//	"#1:*card:3`#2:1`add:4`fwdofs:23.25`arg0:1`tid:unique`hp:999"
 
 	bool isstatic;		// Must not be changed with CVars etc. For example, command itself ("zcadd").
 	String defaultval;	// Default value to use on init. If "isstatic == true", used as an unchangeable string.
@@ -928,6 +928,7 @@ class OptionMenuItemZCTextField: OptionMenuItemTextField {
 	// Remove any dangerous characters etc.
 	virtual String FilterTextOption( String text ) {
 		text.Replace( " ", "" );
+		text.Replace( ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR, "" );
 		return text;
 	}
 
@@ -1012,6 +1013,8 @@ class OptionMenuItemZCClassnameField: OptionMenuItemZCTextField {
 	override String FilterTextOption( String text ) {
 		String outtext = "";
 		bool warnspaces = false;
+
+		text.Replace( ZCCommandKeeperArg.CVAR_ITEMS_SEPARATOR, "" );
 
 		for ( int i = 0; i < text.Length(); i++ ) {
 			int curchar = text.CharCodeAt( i );

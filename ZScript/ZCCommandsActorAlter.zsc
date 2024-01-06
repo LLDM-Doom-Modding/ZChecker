@@ -392,7 +392,7 @@ struct ZCSummonExtraParameters play {
 			clampfloat( floatspeed, "Float speed", 0.0, 32768.0 );
 
 		clampint( special, "Actor action special", 0, 65535 );
-		clampint( spawnhp, "Spawn health", 1, 0x7FFFFFFF );
+		clampint( spawnhp, "Spawn health", 0, 0x7FFFFFFF );
 
 		if ( aggresiveness != -1 )
 			clampint( aggresiveness, "Aggresiveness", 0, 255 );

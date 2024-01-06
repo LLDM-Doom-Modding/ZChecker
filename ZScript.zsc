@@ -372,7 +372,7 @@ class ZCheckerHandler: StaticEventHandler {
 				for ( int i = 0; i < MaxTestee; i++ ) {
 					// Warning! Hash may generate a format specifier ("%s" etc). Do not use any "printf()" output!
 					String hash = Testee[ i ].GetHash();
-					EventHandler.SendNetworkEvent( "zc_multiplayer_synctest" .. ZCHECKER_AGRS_SEPARATOR .. hash, i, consoleplayer );
+					EventHandler.SendNetworkEvent( "zc_multiplayer_synctest" .. ZCHECKER_ARGS_SEPARATOR .. hash, i, consoleplayer );
 				}
 			} else {
 				for ( int i = 0; i < MaxTestee; i++ )

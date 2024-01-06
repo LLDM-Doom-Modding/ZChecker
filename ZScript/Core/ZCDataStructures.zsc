@@ -71,18 +71,18 @@ class ZCheckerCCMDInfo play {
 		int curLoglevel = ZCGlobal.GetLoglevel();
 
 		e = initEvent;
-		e.Name.Split( args, ZCHECKER_AGRS_SEPARATOR, TOK_SKIPEMPTY );
+		e.Name.Split( args, ZCHECKER_ARGS_SEPARATOR, TOK_SKIPEMPTY );
 
 		// If debug is enabled, display maximal amount of arguments (sometimes 
 		//it saves about ten minutes of the bughunting...):
 		if ( curLoglevel >= LL_APIMessage ) {
 			int curpos = 0;
-			int separatorStrLen = ZCHECKER_AGRS_SEPARATOR.Length();
+			int separatorStrLen = ZCHECKER_ARGS_SEPARATOR.Length();
 
-			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR, curpos + separatorStrLen ) ) )
+			while ( curpos < e.Name.Length() && -1 != ( curpos = e.Name.IndexOf( ZCHECKER_ARGS_SEPARATOR, curpos + separatorStrLen ) ) )
 				maxArgsAmount++;
 
-			//console.printf( "maxArgsAmount " .. maxArgsAmount .. " as \"" .. e.Name .. "\" index " .. e.Name.IndexOf( ZCHECKER_AGRS_SEPARATOR ) );
+			//console.printf( "maxArgsAmount " .. maxArgsAmount .. " as \"" .. e.Name .. "\" index " .. e.Name.IndexOf( ZCHECKER_ARGS_SEPARATOR ) );
 		}
 
 
@@ -264,7 +264,7 @@ class ZCheckerField {
 		String outstr = mixStrings( mo.GetClassName(), String.Format( "%i%.2f%.2f%.2f%.2f", mo.tics + fieldPos * 10 + actorType * 100, mo.angle + mo.pitch, mo.pos.x, mo.pos.y, mo.pos.z ) );
 
 		outstr = mixStrings( outstr, ( mo.inv? mo.inv.GetClassName() .. "" : "<No_inventory>" ) );
-		outstr.Replace( ZCHECKER_AGRS_SEPARATOR, "a" );
+		outstr.Replace( ZCHECKER_ARGS_SEPARATOR, "a" );
 
 		return outstr;
 	}

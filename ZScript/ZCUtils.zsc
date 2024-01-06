@@ -3,7 +3,9 @@
 //
 
 // Main constants:
-const ZCHECKER_AGRS_SEPARATOR = "``";
+
+const ZCHECKER_ARGS_SEPARATOR = "`";
+
 
 // [McM] Reserved handler orders in other projects:
 //   AutoAmbient:    0x7FAA0004;
