@@ -35,7 +35,7 @@ unused),,,,
 ,,,,
 , === Menus ===,,,
 ,,,,
-,,ZCHECKER_MAINMENU_TITLE,ZChecker settings,Настройки ZChecker
+,,ZCHECKER_MAINMENU_TITLE,ZChecker menu,Меню ZChecker
 ,,ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR,\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in the options menu above.,"\cxОшибка\ci: ZChecker не может быть запущен.\n\ciБольше информации есть в меню, расположенном выше."
 ,,,,
 ,,ZCHECKER_MAINMENU_ZCHANDLER_ERROR,"\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker cannot be launched properly\ci.\n\n\ciPossible reason: usage of the \cu""\crEventHandlers = ...\cu""\n\cu(\cinot \cu""\cqAddEventHandlers = ...\cu"") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.","\cf---- ===== \cxОШИБКА \cf===== ----\n\cxНе удаётся обнаружить ZChecker static event handler;\n\cxневозможно верно запустить ZChecker\ci.\n\n\ciВероятная причина: использование \cu""\crEventHandlers = ...\cu""\n\cu(\ciне \cu""\cqAddEventHandlers = ...\cu"") \ciв каком-то из \ccMAPINFO\n\ciдля версий движка ниже GZDoom 4.8.0."
@@ -773,7 +773,7 @@ unused),,,,
 ,"File ""ZCCommandsMiscControl.zsc"":",,,
 ,,,,
 ," ""zcthinkers"":",,,
-,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> l[ist] [[:]<класс>];zcthinkers <тип> rm|rem[ove]|del[ete] [[:]<класс>:]<порядковый номер>;zcthinkers <тип> rm:all[:raw] <класс>;zcthinkers <тип> rm:everything;zcthinkers actors add[:<панель>] [[:]<класс>:]<порядковый номер>;zcaddlistget [[:]<класс>:]<порядковый номер> [<панель>]
+,,ZCHECKER_ZCTHINKERS_HELP_TITLE,zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[#]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[#]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[#]<classfilter>:]<numindex>;zcaddlistget [[[#]<classfilter>:]<numindex>] [<panel>],zcthinkers [l[ist]|t[ypes]];zcthinkers <тип> l[ist] [[#]<класс>];zcthinkers <тип> rm|rem[ove]|del[ete] [[#]<класс>:]<порядковый номер>;zcthinkers <тип> rm:all[:raw] <класс>;zcthinkers <тип> rm:everything;zcthinkers actors add[:<панель>] [[#]<класс>:]<порядковый номер>;zcaddlistget [[#]<класс>:]<порядковый номер> [<панель>]
 ,,ZCHECKER_ZCTHINKERS_HELP_DESC,"Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.","Производит одну из операций над одним или несколькими объектами класса Thinker, принадлежащими StatNum-множеству <тип>. Команда может выводить полный список всех объектов Thinker, удалять их из мира по индексу или по имени, добавлять произвольных акторов в инфопанели."
 ,,ZCHECKER_ZCTHINKERS_BOUNDSSTATNUM,StatNum is out of limits. Must be in range [0; %i].,StatNum лежит вне доступных пределов. Должен находиться в диапазоне [0; %i].
 ,,ZCHECKER_ZCTHINKERS_WRONGSTATNUM,"\c!Cannot recognize StatNum \c-""%s"".","\c!Неверный StatNum \c-""%s""."
@@ -1146,14 +1146,14 @@ You also may just use the `1Everything maps menu`1 to warp to any caterogy.","В
 ,,ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS,"The command allows you to partially control objects of the Thinker class - the base class for all objects directly interacting with the world; the Actor class also inherits from it. Each Thinker at every moment is a member of a single StatNum set (a logically separate group of objects interacting with the world). For example, there is a group of actors, a group of floor/ceiling movers, a group of inventory, a group of sector lighting effects, and many others.
 Use the ""`Czcthinkers <type> rm`x"" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.
 You may provide a direct StatNum value instead of its string alias.
-First symbol in the ""`g[[`y:`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon`g"" will check Demons and Spectres).
+First symbol in the ""`g[[`y#`g]<classfilter>:]`x"" might be ""`y:`x"" or ""`y#`x"". It stands for the inheritance check, not only the exact class (e.g. ""`g#demon`g"" will check Demons and Spectres).
 All StatNums are nominal: some modification may use non-standard distribution on sets.
 ""`Czcaddlistget`x"" is just a convenience alias which uses current the CCMD in question.
 Internal thinkers may be controlled by name if the argument ""rm:raw"" or its analog is provided. But they may be freely specified in default ""rm"" by their index number in list.
 Possible ""rm"" command flags: ""`g:all`x""/""`g:class`x"" (remove all Thinkers of this class); ""`g:raw`x""/""`g:internal`x"" (only with `g:all`x/`g:class`x, switches to raw classname parsing); and ""`g:everything`x"" (incompatible with others, destroys all Thinkers of the specified StatNum).","Команда позволяет частично контролировать объекты класса Thinker — базовый класс для всех объектов, напрямую работающих с миром; от него наследуется и класс Actor. Каждый Thinker в каждый момент времени входит в единственное StatNum-множество — в логически обособленную группу объектов взаимодействия с миром. Например, есть группа акторов, группа движителей полов/потолков, группа инвентаря, группа световых эффектов секторов и многие другие.
 Используйте команды семейства ""`Czcthinkers <тип> rm`x"" `yтолько если Вы знаете, что делаете`x; они без труда могут полностью сломать уровни и игру, вплоть до вылета движка.
 Вместо слов-идентификаторов можно использовать явный номер StatNum.
-Первым символом в последовательности ""`g[[`y:`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon`g"" будет проверять всех акторов Demon и Spectre).
+Первым символом в последовательности ""`g[[`y#`g]<класс>:]`x"" может быть ""`y:`x"" или ""`y#`x"". Он включает проверку по наследованию, а не по точному названию класса (например, ""`g#demon`g"" будет проверять всех акторов Demon и Spectre).
 Все StatNum условны: некоторые модификации могут использовать нестандартное распределение по множествам.
 ""`Czcaddlistget`x"" — лишь удобный псевдоним, на деле вызывающий рассматриваемую команду.
 Удаление внутренних классов Thinker по имени может проводиться с помощью аргумента ""rm:raw"" или его аналога. Однако указание подобного класса по списочному номеру работает и без того.

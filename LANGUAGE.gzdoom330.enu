@@ -39,7 +39,7 @@ ZCHECKER_NETEVENTINTC_FROMPLAYER      = "from player #";
 
 //  === Menus ===
 
-ZCHECKER_MAINMENU_TITLE               = "ZChecker settings";
+ZCHECKER_MAINMENU_TITLE               = "ZChecker menu";
 ZCHECKER_OPTIONSMENU_ZCHANDLER_ERROR  = "\cxError\ci: ZChecker cannot be initialized.\n\ciSee more info in the options menu above.";
 
 ZCHECKER_MAINMENU_ZCHANDLER_ERROR     = "\cf---- ===== \cxERROR \cf===== ----\n\cxCannot locate ZChecker static event handler;\n\cxZChecker cannot be launched properly\ci.\n\n\ciPossible reason: usage of the \cu\"\crEventHandlers = ...\cu\"\n\cu(\cinot \cu\"\cqAddEventHandlers = ...\cu\") \ciin some \ccMAPINFO\ci lump\n\cifor the engine versions before GZDoom 4.8.0.";
@@ -766,7 +766,7 @@ ZCHECKER_ZCEVMAPWARP_HELP_DESC        = "Warp to the \"Everything (simple)\" map
 // File "ZCCommandsMiscControl.zsc":
 
 //  "zcthinkers":
-ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[:]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[:]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[:]<classfilter>:]<numindex>;zcaddlistget [[[:]<classfilter>:]<numindex>] [<panel>]";
+ZCHECKER_ZCTHINKERS_HELP_TITLE        = "zcthinkers [l[ist]|t[ypes]];zcthinkers <type> l[ist] [[#]<classname>];zcthinkers <type> rm|rem[ove]|del[ete] [[#]<classfilter>:]<numindex>;zcthinkers <type> rm:all[:raw] <classname>;zcthinkers <type> rm:everything;zcthinkers actors add[:<panel>] [[#]<classfilter>:]<numindex>;zcaddlistget [[[#]<classfilter>:]<numindex>] [<panel>]";
 ZCHECKER_ZCTHINKERS_HELP_DESC         = "Perform one of the simple operations on a set or a single Thinker object of the StatNum <type>. May list thinkers, remove thinkers from world by list index or by name, add random Actors to infopanels.";
 ZCHECKER_ZCTHINKERS_BOUNDSSTATNUM     = "StatNum is out of limits. Must be in range [0; %i].";
 ZCHECKER_ZCTHINKERS_WRONGSTATNUM      = "\c!Cannot recognize StatNum \c-\"%s\".";
@@ -1020,7 +1020,7 @@ ZCHECKER_TOOLTIP_ZCEVGOTO_EXAMPLES    = "\"`Czcev goto doomimp`C\", \"`Czcev g d
 ZCHECKER_TOOLTIP_ZCTHINKERS_TIPS      = "The command allows you to partially control objects of the Thinker class - the base class for all objects directly interacting with the world; the Actor class also inherits from it. Each Thinker at every moment is a member of a single StatNum set (a logically separate group of objects interacting with the world). For example, there is a group of actors, a group of floor/ceiling movers, a group of inventory, a group of sector lighting effects, and many others.\
 Use the \"`Czcthinkers <type> rm`x\" commands `yonly if you know what you're doing`x; they can absolutely break levels and the whole game, up to the engine crash.\
 You may provide a direct StatNum value instead of its string alias.\
-First symbol in the \"`g[[`y:`g]<classfilter>:]`x\" might be \"`y:`x\" or \"`y#`x\". It stands for the inheritance check, not only the exact class (e.g. \"`g#demon`g\" will check Demons and Spectres).\
+First symbol in the \"`g[[`y#`g]<classfilter>:]`x\" might be \"`y:`x\" or \"`y#`x\". It stands for the inheritance check, not only the exact class (e.g. \"`g#demon`g\" will check Demons and Spectres).\
 All StatNums are nominal: some modification may use non-standard distribution on sets.\
 \"`Czcaddlistget`x\" is just a convenience alias which uses current the CCMD in question.\
 Internal thinkers may be controlled by name if the argument \"rm:raw\" or its analog is provided. But they may be freely specified in default \"rm\" by their index number in list.\
