@@ -487,9 +487,33 @@ class ZCGlobal: Thinker {
 	}
 
 
+	static clearscope bool, String tryGetCVar( String str ) {
+		if ( str.CharAt( 0 ) == "$" ) {
+			String cvarname = str.Mid( 1 );
+			CVar cv = CVar.GetCVar( cvarname );
+
+			if ( cv ) {
+				str = cv.GetString();
+				ZCGlobal.DataLog( LL_APIMessage, String.Format( "%stryGetCVar(). %sUsing CVar \"%s\"=\"%s\".", LLCOLOR_DARK, LLCOLOR_MAIN, cvarname, str ) );
+			} else {
+				ZCGlobal.DataLog( LL_Detailed, String.Format( "%stryGetCVar(). %sCannot find server CVar \"%s\".", cvarname ) );
+				return false, "";
+			}
+		}
+
+		return true, str;
+	} // of static clearscope bool, String tryGetCVar( String str ) {}
+
 	// Returns "true" is string is an integer; "converted" is a pointer:
 	static clearscope bool str2int_Ptr( in String str, out int converted, bool usesign = false ) {
 		bool isInteger = false;
+
+		bool successCVarTry;
+		[successCVarTry, str] = tryGetCVar( str );
+
+		if ( !successCVarTry )
+			return false;
+
 
 		if ( str.Length() ) {
 			bool isSigned = false;
@@ -516,6 +540,13 @@ class ZCGlobal: Thinker {
 	// Returns "true" is string is a float-value; "converted" is a pointer:
 	static clearscope bool str2double_Ptr( in String str, out double converted ) {
 		bool isDouble = false;
+
+		bool successCVarTry;
+		[successCVarTry, str] = tryGetCVar( str );
+
+		if ( !successCVarTry )
+			return false;
+
 
 		if ( str.Length() ) {
 			bool isSigned = false;
