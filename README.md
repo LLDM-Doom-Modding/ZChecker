@@ -1,5 +1,3 @@
-![изображение](https://github.com/LLDM-Doom-Modding/ZChecker/assets/34414934/f5d6465c-ef1e-4485-9c26-51949e8635ef)# ZChecker
-
 A universal debugger and actors exposition tool for G-/Q-/LZDoom written in ZScript. Minimal engine version is **GZDoom 3.3.1**.
 
 - Lastest release: [v0.87](https://github.com/LLDM-Doom-Modding/ZChecker/releases/tag/v0.87).
