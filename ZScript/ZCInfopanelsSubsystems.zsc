@@ -196,8 +196,16 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	transient CVar pspriteOverlaysModeCVar, pspriteExtraOverlayIDCVar;	// For PSprite layers/overlays.
 	protected int curstateFlagsType, curstateExtraInfo;					// Necessary for the "::addPSpriteState()".
 
+	// "Unexpected JIT error: Unknown REGT value passed to EmitPARAM" raises when the ".Left()" method calls for the const Strings.
+	String const_TicsStringVisualLeft, const_TicsStringVisualPassed;
+
+	const const_SameSprite = 2;
+
 
 	override void OnCreate( void ) {
+		const_TicsStringVisualLeft = "====================";
+		const_TicsStringVisualPassed = "++++++++++++++++++++";
+
 		optionCVarName = "lldm_zcpanel_states";
 		optionLabel = "$ZCHECKER_INFOPANELS_STATES";
 		optionLabelExtraHotkeys = "$ZCHECKER_INFOPANELKEYS_STATES";
@@ -207,29 +215,68 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			prevLogStates.Push( new( 'ZCStatesInfoData' ) );
 	}
 
-	protected String DecoratedState( State st ) {
-		// SpriteID: 0 == "TNT1A0", 1 == fixed, 2 == SameSprite.
-		return
-			String.Format( SAPPHIRE .. SpriteID( st.sprite ) .. LIGHTBLUE .. " %c " .. SAPPHIRE .. "%i\c-",
-						st.Frame + 65, st.Tics );
+
+	protected String UndecoratedState( State st ) {
+		return String.Format(
+				SpriteID( st.sprite ) .. " %c %i", ( st.bSameFrame? 0x23 : st.frame + 65 ), st.tics
+			);
 	}
+
+	protected String DecoratedState( State st, SpriteID prevsprite = -1, int prevframe = -1 ) {
+		// Note that function is optimized and thus can be unreadable.
+
+		// SpriteID: 0 == "TNT1A0", 1 == fixed, 2 == SameSprite.
+		SpriteID sprite = SpriteID( st.sprite );
+
+		if ( sprite == 0 )
+			return String.Format( "%sTNT1 A %i\c-", GRAY, st.tics );
+
+		String spritecolor;
+
+		if ( sprite != const_SameSprite ) {
+			spritecolor = SAPPHIRE;
+		} else {
+			spritecolor = DARKGREEN; // Same sprite.
+
+			if ( prevsprite != -1 )
+				sprite = prevsprite;
+		}
+
+		String framecolor = ( st.bSameFrame? GREEN : LIGHTBLUE );  // Same frame.
+		//String ticscolor = ( st.tics == 0? DARKGRAY : SAPPHIRE ); // Zero-delay tic.
+
+		//console.printf( sprite .. "/frame %i/tics %i", ( st.bSameFrame? ( prevframe != -1? prevframe + 65 : 0x2A ) : st.Frame + 65 ), st.tics );
+
+		return String.Format(
+			spritecolor .. sprite .. "%s %c %s%i\c-",
+			framecolor, ( st.bSameFrame? ( prevframe != -1? prevframe + 65 : 0x23 ) : st.frame + 65 ),
+			SAPPHIRE, st.tics
+		);
+	} // of protected String DecoratedState( State st, State prevst = NULL ) {}
+
 
 	protected void DoStatesLogging( Actor thing, ZCheckerField thingfield ) {
 		State curState = thing.CurState;
 		State st = curState;
+		SpriteID prevsprite = thing.sprite;
+		int prevframe = thing.frame;
 
 		if ( thingfield.actorType == ZCheckerField.IAT_StateProvider ) {
 			Actor weapOwner = getItemPlayerOwner( Inventory( thing ) );
 
-			if ( weapOwner.player.psprites )
-				curState = st = weapOwner.player.psprites.CurState;
+			if ( weapOwner && weapOwner.player ) {
+				PSprite pspr = weapOwner.player.psprites;
+				curState = st = pspr.CurState;
+				prevsprite = pspr.sprite;
+				prevframe = pspr.frame;
+			}
 		}
 
 		int fieldPos = thingfield.GetFieldPos();
 		State prevlogst = prevLogStates[ fieldPos ].st;
 
 		if ( prevlogst && prevlogst != st ) {
-			String logstr = ( fieldPos + 1 ) .. ". " .. DecoratedState( st );
+			String logstr;
 
 			/*String logstr = String.Format( "%i. \c-" .. SAPPHIRE .. "%s " .. LIGHTBLUE .. "%c " .. SAPPHIRE .. "%i\c-",
 							( fieldPos + 1 ),
@@ -243,12 +290,19 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				nextlogst = nextlogst.NextState;
 
 			bool stateForced = ( nextlogst != st );
+			bool sameStateFrame = ( ( st.sprite == const_SameSprite ) || st.bSameFrame );
 
-			if ( zeroSkipped || stateForced ) {
-				logstr = logstr .. DARKGRAY .. " (";
+			if ( zeroSkipped || stateForced || sameStateFrame ) {
+				if ( sameStateFrame ) {
+					logstr.AppendFormat( DARKGRAY .. "real \"%s%s\"", UndecoratedState( st ), DARKGRAY );
+				}
 
-				if ( zeroSkipped )
-					logstr = logstr .. GRAY .. "zero frames" .. DARKGRAY .. " skipped" .. ( stateForced? "; " : "" );
+				if ( zeroSkipped ) {
+					if ( logstr.Length() > 0 )
+						logstr = logstr .. "; ";
+
+					logstr = logstr .. DARKGRAY .. "zero states";
+				}
 
 				if ( stateForced ) {
 					State prevnextst = prevlogst;
@@ -256,13 +310,30 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 					if ( prevlogst.Tics == prevLogStateTics && prevlogst.NextState )
 						prevnextst = prevlogst.NextState;
 
-					logstr = logstr .. "forced from " .. prevLogStateTics .. "/" .. prevlogst.tics .. " tics, should have been \"" .. DecoratedState( prevnextst ) .. DARKGRAY .. "\"";
-				}
+					if ( logstr.Length() > 0 )
+						logstr = logstr .. "; ";
 
-				logstr = logstr .. ")";
-			}
+					logstr.AppendFormat(
+						"had to be \"%s%s\", forced at tic %i",
+						DecoratedState( prevnextst ), DARKGRAY, prevLogStateTics
+					);
+				} // of if ( stateForced ) {}
+
+				logstr = DARKGRAY .. " (" .. logstr .. ")";
+			} // of if ( zeroSkipped || stateForced || sameStateFrame ) {}
+
+			// Print to console:
+			logstr = ( fieldPos + 1 ) .. ". " .. DecoratedState( st, prevsprite, prevframe ) .. logstr;
 
 			ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, logstr );
+
+			// Save previous sprite/frame for :
+			if ( st.sprite != const_SameSprite )
+				prevsprite = st.sprite;
+
+			if ( !st.bSameFrame )
+				prevframe = st.frame;
+
 		} // of if ( prevlogst && prevlogst != st ) {}
 
 		prevLogStates[ fieldPos ].st = st;
@@ -361,8 +432,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				curState = st = weapOwner.player.psprites.CurState;
 		}
 
-		if ( statesAmount == 0 )
-			statesAmount = 0xFFFF;
+		if ( statesAmount <= 0 )
+			statesAmount = 0x1FFF;
 
 		// States and loops information:
 		prevstates.Clear();
@@ -370,10 +441,12 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		outStr = outStr .. ( isWeaponInHands? "PSprite states" : "States" );
 
 		if ( statesLogging ) {
+			// Do logging:
 			outStr = outStr .. DARKGRAY .. " [" .. LIGHTBLUE .. "logging" .. DARKGRAY .. "]";
 			DoStatesLogging( thing, thingfield );
 
 		} else if ( prevLogStates[ 0 ].st ) {
+			// Clean the logging cache:
 			for ( int i = 0; i < MaxTestee; i++ )
 				prevLogStates[ i ].st = NULL;
 		}
@@ -382,10 +455,12 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		bool loopFound = false;
 		int statesCnt = 0;
+		SpriteID prevsprite = thing.sprite;
+		int prevframe = thing.frame;
 
 		do {
 			prevstates.Push( st );
-			prevstatesstr.Push( DecoratedState( st ) );
+			prevstatesstr.Push( DecoratedState( st, prevsprite, prevframe ) );
 
 			st = st.NextState;
 
@@ -401,15 +476,23 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				}
 			}
 
+			if ( st ) {
+				if ( st.sprite != 2 )
+					prevsprite = st.sprite;
+
+				if ( !st.bSameFrame )
+					prevframe = st.frame;
+			}
+
 			statesCnt++;
 		} while ( st && st != curState && statesCnt < statesAmount && !loopFound );
 
 		for ( int i = 0; i < prevstatesstr.Size(); i++ )
-			outStr = outStr .. prevstatesstr[ i ] .. "\n";
+			outStr = outStr .. prevstatesstr[ i ] .. "\n"; //.AppendFormat( "%s\n", prevstatesstr[ i ] );
 
 		RemoveLastNewlineSymbol( outStr );
 
-		if ( statesAmount != 0xFFFF ) {
+		if ( statesAmount < 0x1FFF ) {
 			while ( statesCnt < statesAmount ) {
 				outStr = outStr .. "\n";
 				statesCnt++;
@@ -427,32 +510,48 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		if ( stateTicsCVar.GetBool() ) {
 			outStr = outStr .. "\n";
 
-			if ( st.Tics < 0 ) {
-				outStr = outStr .. DARKGREEN .. "===== static =====";
-			} else {
-				int ticsbarLeft = 1;
+			int sttics = st.tics;
 
+			if ( sttics == -1 ) {
+				outStr = outStr .. DARKGREEN .. "===== static =====";
+
+			} else if ( sttics > 0 ) {
+				int ticsbarLeft = 1;
 				int curtics = ( isWeaponInHands? weapOwner.player.psprites.Tics : thing.tics );
 
 				if ( curtics > 1 )
-					ticsbarLeft = int( 20 * ( curtics - 1 ) / ( st.Tics? st.Tics : 1 ) );
+					ticsbarLeft = int( 20 * ( curtics - 1 ) / ( sttics != 0? sttics : 1 ) );
 
 				if ( ticsbarLeft > 20 ) {
+					// Tics is set to the values greater than a state limit during state delay.
 					outStr = outStr .. LIGHTBLUE .. "<<<" .. GRAY;
+
 				} else {
-					String ticbar = DARKGREEN;
-    
+					// Form a string like "===>++++++++++++".
+					outStr.AppendFormat( "%s%s>%s%s%s",
+						DARKGREEN,
+						const_TicsStringVisualPassed.Left( 20 - ticsbarLeft ), BLACK,
+						const_TicsStringVisualLeft.Left( ticsbarLeft - 1 ), DARKGRAY
+					);
+
+					/*String ticbar = DARKGREEN;
+
 					for ( int i = 0; i < 20 - ticsbarLeft; i++ )
 						ticbar = ticbar .. "=";
 
-					ticbar = ticbar .. ">" .. BLACK;
+					ticbar = ticbar .. ;
 
 					for ( int i = 0; i < ticsbarLeft - 1; i++ )
-						ticbar = ticbar .. "+";
+						ticbar = ticbar .. "+";*/
 
-					outStr = outStr .. ticbar .. DARKGRAY;
+					//outStr = outStr .. ticbar .. DARKGRAY;
 				}
+
+			} else {
+				// When some state is set to "-2" and below.
+				outStr = outStr .. DARKGREEN .. "== pseudostatic ==";
 			}
+
 
 			if ( !isWeaponInHands )
 				outStr = outStr .. " (" .. thing.tics .. ")";
@@ -460,13 +559,13 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 				outStr = outStr .. " (" .. pspr.tics .. ")";
 		}
 
-
 		// Extra state information:
 		curstateExtraInfo = stateExtraInfoCVar.GetBool();
 		curstateFlagsType = stateFlagsCVar.GetInt();
 
 		if ( !curstateExtraInfo && !curstateFlagsType )
-			return outStr;
+			return outStr; // Nothing more to print.
+
 
 		if ( !isWeaponInHands ) {
 			tempFlagsStr = "";
@@ -557,6 +656,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		return outStr;
 	} // of override String GetInfo( Actor thing, ZCheckerField thingfield ) {}
+
 
 	override String GetSubmenuLabel( OptionMenuDescriptor desc ) {
 		ResetSubmenuItemsIterator();
