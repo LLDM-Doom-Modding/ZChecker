@@ -183,6 +183,9 @@ class ZCInvFieldData {
 
 class ZCStatesInfoData {
 	State st;
+
+	SpriteID lastsprite;
+	int lastframe;
 }
 
 class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
@@ -197,7 +200,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	protected int curstateFlagsType, curstateExtraInfo;					// Necessary for the "::addPSpriteState()".
 
 	// "Unexpected JIT error: Unknown REGT value passed to EmitPARAM" raises when the ".Left()" method calls for the const Strings.
-	String const_TicsStringVisualLeft, const_TicsStringVisualPassed;
+	String const_TicsStringVisualLeft, const_TicsStringVisualPassed, const_StatesEmptyLines;
 
 	const const_SameSprite = 2;
 
@@ -205,6 +208,9 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	override void OnCreate( void ) {
 		const_TicsStringVisualLeft = "====================";
 		const_TicsStringVisualPassed = "++++++++++++++++++++";
+		const_StatesEmptyLines = "\n\n\n\n\n\n\n\n\n\n"; // With total of 160 newlines.
+		const_StatesEmptyLines = const_StatesEmptyLines .. const_StatesEmptyLines .. const_StatesEmptyLines .. const_StatesEmptyLines;
+		const_StatesEmptyLines = const_StatesEmptyLines .. const_StatesEmptyLines .. const_StatesEmptyLines .. const_StatesEmptyLines;
 
 		optionCVarName = "lldm_zcpanel_states";
 		optionLabel = "$ZCHECKER_INFOPANELS_STATES";
@@ -218,11 +224,11 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 	protected String UndecoratedState( State st ) {
 		return String.Format(
-				SpriteID( st.sprite ) .. " %c %i", ( st.bSameFrame? 0x23 : st.frame + 65 ), st.tics
+				SpriteID( st.sprite ) .. " %c %i", ( st.bSameFrame? 0x23 : st.frame + CHAR_LETTER_A_UPPER ), st.tics
 			);
 	}
 
-	protected String DecoratedState( State st, SpriteID prevsprite = -1, int prevframe = -1 ) {
+	protected String DecoratedState( State st, SpriteID prevcopysprite = -1, int prevcopyframe = -1 ) {
 		// Note that function is optimized and thus can be unreadable.
 
 		// SpriteID: 0 == "TNT1A0", 1 == fixed, 2 == SameSprite.
@@ -238,18 +244,18 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		} else {
 			spritecolor = DARKGREEN; // Same sprite.
 
-			if ( prevsprite != -1 )
-				sprite = prevsprite;
+			if ( prevcopysprite != -1 )
+				sprite = prevcopysprite;
 		}
 
 		String framecolor = ( st.bSameFrame? GREEN : LIGHTBLUE );  // Same frame.
 		//String ticscolor = ( st.tics == 0? DARKGRAY : SAPPHIRE ); // Zero-delay tic.
 
-		//console.printf( sprite .. "/frame %i/tics %i", ( st.bSameFrame? ( prevframe != -1? prevframe + 65 : 0x2A ) : st.Frame + 65 ), st.tics );
+		//console.printf( sprite .. "/frame %i/tics %i", ( st.bSameFrame? ( prevcopyframe != -1? prevcopyframe + 65 : 0x2A ) : st.Frame + 65 ), st.tics );
 
 		return String.Format(
 			spritecolor .. sprite .. "%s %c %s%i\c-",
-			framecolor, ( st.bSameFrame? ( prevframe != -1? prevframe + 65 : 0x23 ) : st.frame + 65 ),
+			framecolor, ( st.bSameFrame? ( prevcopyframe != -1? prevcopyframe + CHAR_LETTER_A_UPPER : 0x23 ) : st.frame + CHAR_LETTER_A_UPPER ),
 			SAPPHIRE, st.tics
 		);
 	} // of protected String DecoratedState( State st, State prevst = NULL ) {}
@@ -258,8 +264,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 	protected void DoStatesLogging( Actor thing, ZCheckerField thingfield ) {
 		State curState = thing.CurState;
 		State st = curState;
-		SpriteID prevsprite = thing.sprite;
-		int prevframe = thing.frame;
+		SpriteID prevcopysprite = thing.sprite;
+		int prevcopyframe = thing.frame;
 
 		if ( thingfield.actorType == ZCheckerField.IAT_StateProvider ) {
 			Actor weapOwner = getItemPlayerOwner( Inventory( thing ) );
@@ -267,8 +273,8 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			if ( weapOwner && weapOwner.player ) {
 				PSprite pspr = weapOwner.player.psprites;
 				curState = st = pspr.CurState;
-				prevsprite = pspr.sprite;
-				prevframe = pspr.frame;
+				prevcopysprite = pspr.sprite;
+				prevcopyframe = pspr.frame;
 			}
 		}
 
@@ -323,16 +329,16 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			} // of if ( zeroSkipped || stateForced || sameStateFrame ) {}
 
 			// Print to console:
-			logstr = ( fieldPos + 1 ) .. ". " .. DecoratedState( st, prevsprite, prevframe ) .. logstr;
+			logstr = ( fieldPos + 1 ) .. ". " .. DecoratedState( st, prevcopysprite, prevcopyframe ) .. logstr;
 
 			ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, logstr );
 
-			// Save previous sprite/frame for :
+			// Save previous sprite/frame:
 			if ( st.sprite != const_SameSprite )
-				prevsprite = st.sprite;
+				prevcopysprite = st.sprite;
 
 			if ( !st.bSameFrame )
-				prevframe = st.frame;
+				prevcopyframe = st.frame;
 
 		} // of if ( prevlogst && prevlogst != st ) {}
 
@@ -340,10 +346,23 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 		prevLogStateTics = thing.Tics;
 	} // of protected void DoStatesLogging( Actor thing, ZCheckerField thingfield ) {}
 
+	protected void LogRealtimeSpriteFrameChange( Actor thing, ZCheckerField thingfield ) {
+		// Function is not used right now.
+		int fieldPos = thingfield.GetFieldPos();
+
+		ZCGlobal.ClearscopeLog( LL_Main | LL_NoDot, String.Format(
+				"%i. Sprite/frame changed to \"" .. TEXTCOLOR_RED .. "%s %c\c-\" from \"%s %c\" at tic %i.",
+				fieldPos + 1,
+				"" .. SpriteID( thing.sprite ), thing.frame + CHAR_LETTER_A_UPPER,
+				"" .. SpriteID( prevLogStates[ fieldPos ].lastsprite ), prevLogStates[ fieldPos ].lastframe + CHAR_LETTER_A_UPPER,
+				thing.tics
+			) );
+	}
+
+
 	protected void addFlag( bool flagcond, String flagname ) {
 		tempFlagsStr = tempFlagsStr .. ( flagcond? GREEN : BLACK ) .. flagname .. " ";
 	}
-
 
 	protected String addPSpriteState( PSprite pspr ) {
 		if ( !pspr || !pspr.CurState )
@@ -455,12 +474,12 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 		bool loopFound = false;
 		int statesCnt = 0;
-		SpriteID prevsprite = thing.sprite;
-		int prevframe = thing.frame;
+		SpriteID prevcopysprite = thing.sprite;
+		int prevcopyframe = thing.frame;
 
 		do {
 			prevstates.Push( st );
-			prevstatesstr.Push( DecoratedState( st, prevsprite, prevframe ) );
+			prevstatesstr.Push( DecoratedState( st, prevcopysprite, prevcopyframe ) );
 
 			st = st.NextState;
 
@@ -469,7 +488,7 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 			if ( loopFound = ( backloopStateIndex != prevstates.Size() ) ) {
 				// Difference the one-state loop (waiting) and the normal loop:
 				if ( backloopStateIndex == statesCnt ) {
-					prevstatesstr[ statesCnt ] = prevstatesstr[ statesCnt ] .. TEXTCOLOR_WHITE .. " (loop here)";
+					prevstatesstr[ statesCnt ] = prevstatesstr[ statesCnt ] .. TEXTCOLOR_WHITE .. " (wait)";
 				} else {
 					prevstatesstr[ backloopStateIndex ] = prevstatesstr[ backloopStateIndex ] .. TEXTCOLOR_WHITE .. " <<loop";
 					prevstatesstr[ statesCnt ] = prevstatesstr[ statesCnt ] .. TEXTCOLOR_WHITE .. " ^ loop";
@@ -478,26 +497,22 @@ class ZCStatesInfoPanel: ZCBaseInfoPanelPart {
 
 			if ( st ) {
 				if ( st.sprite != 2 )
-					prevsprite = st.sprite;
+					prevcopysprite = st.sprite;
 
 				if ( !st.bSameFrame )
-					prevframe = st.frame;
+					prevcopyframe = st.frame;
 			}
 
 			statesCnt++;
 		} while ( st && st != curState && statesCnt < statesAmount && !loopFound );
 
 		for ( int i = 0; i < prevstatesstr.Size(); i++ )
-			outStr = outStr .. prevstatesstr[ i ] .. "\n"; //.AppendFormat( "%s\n", prevstatesstr[ i ] );
+			outStr.AppendFormat( "%s\n", prevstatesstr[ i ] );
 
 		RemoveLastNewlineSymbol( outStr );
 
-		if ( statesAmount < 0x1FFF ) {
-			while ( statesCnt < statesAmount ) {
-				outStr = outStr .. "\n";
-				statesCnt++;
-			}
-		}
+		if ( statesAmount < 0x1FFF && statesCnt < statesAmount )
+			outStr.AppendFormat( const_StatesEmptyLines.Left( statesAmount - statesCnt - 1 ) );
 
 
 		st = curState;
