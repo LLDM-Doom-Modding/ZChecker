@@ -27,6 +27,13 @@
 #define LL_NoPrefix 0x8000
 
 
+// For saves compatibility between different ZChecker versions, the sum 
+//of (data + extra alignment) should always be equal to 8192 bytes:
+int alignbuffermain[ 1508 ] = { 1 };	// "len * sizeof( int32_t )" = "len * 4";
+str alignbufferoffset = "aa";			// "len * sizeof( char ) + 1" = "len + 1".
+
+
+
 script "ZChecker_CCMD_SetState" ( void ) {
 	str newStateName = ScriptCall( "ZCSetStateCommand", "ACS_GetStateName" );
 
