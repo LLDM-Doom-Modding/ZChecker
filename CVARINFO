@@ -26,7 +26,7 @@ user float lldm_zc_infopanel_starty		= 8.0;
 user float lldm_zc_infopanel_offsetx	= 30.0;
 user float lldm_zc_infopanel_scale		= 1.0;
 user float lldm_zc_infopanelparts_y_gap	= 0.55;
-user int lldm_zc_infopanel_fonttype		= 0;
+user int lldm_zc_infopanel_fonttype		= 5;
 
 user bool lldm_zc_infopanel_dimenabled		= true;
 user color lldm_zc_infopanel_dimcolor		= "00 00 00";
