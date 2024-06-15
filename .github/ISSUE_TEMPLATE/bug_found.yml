@@ -1,0 +1,50 @@
+name: Bug report
+description: Create a report about the bug in the project
+title: '[Bug] '
+labels: bug
+assignees: MorthimerMcMare
+
+body:
+  - type: textarea
+    id: desc
+    attributes:
+      label: Bug description
+      description: Describe the bug and the way to reproduce the behaviour. Screenshots may also be attached to this section.
+      placeholder: "What's happened and how to reproduce this?"
+      value: |
+        The bug is in the Informational panels / Console command / Project maps / <Other>.
+        
+        Description here.
+    validations:
+      required: true
+  - type: input
+    id: zc-version
+    attributes:
+      label: ZChecker project version
+      description: |
+        What version of the ZChecker are you using?
+        In general the version is specified in the modification file name. You can see it when the project is bootloading; the "zchelp -a" in-game console command will also show the version.
+      placeholder: 'E.g. release ("v0.87b"), commit index ("60b8a7c"), "last stable" etc'
+    validations:
+      required: true
+  - type: input
+    id: engine-version
+    attributes:
+      label: Engine version
+      description: |
+        What game engine are you using?
+      placeholder: "E.g. GZDoom 4.8.1, LZDoom 3.87c etc"
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Extra data
+      description: Add any other context related to the problem here.
+      placeholder: "Logs, configuration files, ..."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        * Make sure you have properly filled in the title of this bug report
