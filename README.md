@@ -30,9 +30,9 @@ The main supervision and monitoring tool. Up to 3 infopanels can be displayed on
 Generally, actors are added to the infopanels via CCMDs like `zcadd`.
 
 [<img alt="3 informational panels" src="https://i.imgur.com/CWiy1gN.png" width=384/>](https://i.imgur.com/CWiy1gN.png)
-[<img alt="Lithium" src="https://cdn.discordapp.com/attachments/909139474238308353/1129073425957269554/01e10dd979d123e3.png" width=384/>](https://cdn.discordapp.com/attachments/909139474238308353/1129073425957269554/01e10dd979d123e3.png)
+[<img alt="Lithium" src="https://i.imgur.com/XARJ7qY.png" width=384/>](https://i.imgur.com/XARJ7qY.png)
 [<img alt="Shut up and Bleed" src="https://i.imgur.com/Rk492nl.png" width=384/>](https://i.imgur.com/Rk492nl.png)
-[<img alt="Golden Souls 2" src="https://cdn.discordapp.com/attachments/909139474238308353/1129073427412697138/ee944a61545efec6.png" width=384/>](https://cdn.discordapp.com/attachments/909139474238308353/1129073427412697138/ee944a61545efec6.png)
+[<img alt="Golden Souls 2" src="https://i.imgur.com/lKTtFVa.png" width=384/>](https://i.imgur.com/lKTtFVa.png)
 
 
 ### 2. Console commands (CCMDs)
@@ -84,7 +84,7 @@ Due to the internal netevent resolution restrictions, you won't be able to provi
 
 These are test maps that have almost all of the currently loaded actors, including third party loaded modifications. All spawn settings are in the ZChecker "Everything" map menu.
 
-[<img alt="Colorful Hell" src="https://cdn.discordapp.com/attachments/909139474238308353/1129074980173394080/7d8bdb9868f16ec7.png" width=384/>](https://cdn.discordapp.com/attachments/909139474238308353/1129074980173394080/7d8bdb9868f16ec7.png)
+[<img alt="Colorful Hell" src="https://i.imgur.com/4qcTGeR.png" width=384/>](https://i.imgur.com/4qcTGeR.png)
 [<img alt="Shut Up and Bleed" src="https://i.imgur.com/64JTiue.png" width=384/>](https://i.imgur.com/64JTiue.png)
 [<img alt="Aliens: The Ultimate Doom" src="https://github.com/LLDM-Doom-Modding/ZChecker/assets/34414934/fd05f8b8-b1d9-4a2c-8013-a4781ceb855a" width=384/>](https://github.com/LLDM-Doom-Modding/ZChecker/assets/34414934/fd05f8b8-b1d9-4a2c-8013-a4781ceb855a)
 [<img alt="Reelism Gold" src="https://github.com/LLDM-Doom-Modding/ZChecker/assets/34414934/e46cdcdf-361b-440d-a090-95c0d72a327c" width=384/>](https://github.com/LLDM-Doom-Modding/ZChecker/assets/34414934/e46cdcdf-361b-440d-a090-95c0d72a327c)
