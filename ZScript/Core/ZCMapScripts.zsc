@@ -31,13 +31,19 @@ class ZCheckerEverythingMapInitSectorData play {
 		_SP_Last = SP_Ceiling
 	}
 
-	FColormap colormap;
 	double friction, movefactor;
 
 	int lightLevel[ _SP_Quantity ];
 	double glowHeight[ _SP_Quantity ];
 	Color glowColor[ _SP_Quantity ];
 	Color specialColor[ _SP_Quantity ];
+
+	// Compatibility with the GZDoom 4.12.x. "struct FColormap" copy:
+	Color		LightColor;
+	Color		FadeColor;
+	uint8		Desaturation;
+	uint8		BlendFactor; // ZScript does not provide the API to set the blend factor for sectors, so currently this field is unused.
+	uint16		FogDensity;
 
 
 	static ZCheckerEverythingMapInitSectorData Create( Sector sourcesec ) {
@@ -52,11 +58,11 @@ class ZCheckerEverythingMapInitSectorData play {
 			newdata.specialColor[ plane ] = sourcesec.SpecialColors[ plane ];
 		}
 
-		newdata.colormap.lightColor = sourcesec.colormap.lightColor;
-		newdata.colormap.fadeColor = sourcesec.colormap.fadeColor;
-		newdata.colormap.desaturation = sourcesec.colormap.desaturation;
-		newdata.colormap.blendFactor = sourcesec.colormap.blendFactor;
-		newdata.colormap.fogDensity = sourcesec.colormap.fogDensity;
+		newdata.lightColor = sourcesec.colormap.lightColor;
+		newdata.fadeColor = sourcesec.colormap.fadeColor;
+		newdata.desaturation = sourcesec.colormap.desaturation;
+		newdata.blendFactor = sourcesec.colormap.blendFactor;
+		newdata.fogDensity = sourcesec.colormap.fogDensity;
 
 		newdata.friction = sourcesec.friction;
 		newdata.movefactor = sourcesec.movefactor;
@@ -74,9 +80,9 @@ class ZCheckerEverythingMapInitSectorData play {
 			targetsec.SetSpecialColor( plane, specialColor[ plane ] );
 		}
 
-		targetsec.SetColor( colormap.lightColor, colormap.desaturation );
-		targetsec.SetFade( colormap.fadeColor );
-		targetsec.SetFogDensity( colormap.fogDensity );
+		targetsec.SetColor( lightColor, desaturation );
+		targetsec.SetFade( fadeColor );
+		targetsec.SetFogDensity( fogDensity );
 
 		targetsec.friction = friction;
 		targetsec.movefactor = movefactor;
