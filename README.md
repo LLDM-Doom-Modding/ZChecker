@@ -1,6 +1,6 @@
-A universal debugger and actors exposition tool for G-/Q-/LZDoom written in ZScript. Minimal engine version is **GZDoom 3.3.1**.
+A universal debugger and actors exposition tool for G-/Q-/LZDoom written in ZScript. Minimal engine version is **GZDoom 3.3.1**, tested up to **GZDoom 4.12.2**.
 
-- Lastest release: [v0.87](https://github.com/LLDM-Doom-Modding/ZChecker/releases/tag/v0.87).
+- The lastest release (as well as all other) [can be found here](https://github.com/LLDM-Doom-Modding/ZChecker/releases).
 - [Topic on ZDoom forums](https://forum.zdoom.org/viewtopic.php?t=78688).
 - [Topic on Doom Power](http://i.iddqd.ru/viewtopic.php?t=2497).
 
