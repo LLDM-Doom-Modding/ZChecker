@@ -25,9 +25,10 @@ class ZCGiveCommand: ZCConsoleCommand {
 		bool outValue = false;
 		int ccmdArgsSize = ccmd.args.Size();
 
-		if ( ccmdArgsSize == 2 || ccmdArgsSize == 3 )
+		if ( ccmdArgsSize == 2 || ccmdArgsSize == 3 ) {
 			if ( !str2int_Ptr( ccmd.args[ ccmdArgsSize - 1 ], +itemAmount ) )
-				itemAmount = -1;
+				itemAmount = -1; // A sentiel value.
+		}
 
 		if ( ccmdArgsSize == 1 ) {
 			itemName = ccmd.args[ 0 ];
@@ -37,8 +38,8 @@ class ZCGiveCommand: ZCConsoleCommand {
 		} else if ( ccmdArgsSize == 2 ) {
 			if ( itemAmount != -1 ) {
 				itemName = ccmd.args[ 0 ];
-				outValue = true;
 				testee = LinetraceActor();
+				outValue = true;
 			} else if ( PPS_Error != ( testeeStatus = ParsePositionString( testee ) ) ) {
 				itemAmount = 1;
 				itemName = ccmd.args[ 1 ];

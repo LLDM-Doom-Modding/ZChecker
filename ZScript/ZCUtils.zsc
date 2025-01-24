@@ -496,7 +496,7 @@ class ZCGlobal: Thinker {
 				str = cv.GetString();
 				ZCGlobal.DataLog( LL_APIMessage, String.Format( "%stryGetCVar(). %sUsing CVar \"%s\"=\"%s\".", LLCOLOR_DARK, LLCOLOR_MAIN, cvarname, str ) );
 			} else {
-				ZCGlobal.DataLog( LL_Detailed, String.Format( "%stryGetCVar(). %sCannot find server CVar \"%s\".", cvarname ) );
+				ZCGlobal.DataLog( LL_Detailed, String.Format( "%stryGetCVar(). %sCannot find server CVar \"%s\".", LLCOLOR_DARK, LLCOLOR_MAIN, cvarname ) );
 				return false, "";
 			}
 		}
