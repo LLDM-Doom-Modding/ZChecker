@@ -170,7 +170,7 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 			case 1: // Short flag names.
 				addSecFlag( Sector.SECF_SILENT, "qit" );
 				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "-fald" );
-				addSecFlag( Sector.SECF_FLOORDROP, "lftd" );
+				addSecFlag( Sector.SECF_FLOORDROP, "drop" );
 				addSecFlag( Sector.SECF_NORESPAWN, "-rspw" );
 				addSecFlag( Sector.SECF_FRICTION, "fric" );
 				addSecFlag( Sector.SECF_PUSH, "p" );
@@ -185,34 +185,34 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fflr" );
 				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "fclp" );
 				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "-flit" );
-				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "-fhs" );
-				addSecFlag2( Sector.SECMF_UNDERWATER, "wtr" );
-				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "wtr2" );
+				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "-hts" );
+				addSecFlag2( Sector.SECMF_UNDERWATER, "wat" );
+				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "fwat" );
 				addSecFlag2( Sector.SECMF_DRAWN, "vis" );
 				addSecFlag2( Sector.SECMF_HIDDEN, "hid" );
 				break;
 			case 2: // Long flag names.
 				addSecFlag( Sector.SECF_SILENT, "quiet" );
 				addSecFlag( Sector.SECF_NOFALLINGDAMAGE, "-falldmg" );
-				addSecFlag( Sector.SECF_FLOORDROP, "liftdrp" );
+				addSecFlag( Sector.SECF_FLOORDROP, "liftdrop" );
 				addSecFlag( Sector.SECF_NORESPAWN, "-respawn" );
-				addSecFlag( Sector.SECF_FRICTION, "frict" );
+				addSecFlag( Sector.SECF_FRICTION, "friction" );
 				addSecFlag( Sector.SECF_PUSH, "push" );
-				addSecFlag( Sector.SECF_SILENTMOVE, "movquiet" );
+				addSecFlag( Sector.SECF_SILENTMOVE, "silentmove" );
 				addSecFlag( Sector.SECF_DMGTERRAINFX, "terrainfx" );
 				addSecFlag( Sector.SECF_ENDGODMODE, "-iddqd" );
-				addSecFlag( Sector.SECF_ENDLEVEL, "endlvl" );
+				addSecFlag( Sector.SECF_ENDLEVEL, "endlevel" );
 				addSecFlag( Sector.SECF_HAZARD, "strifehzrd" );
-				addSecFlag( Sector.SECF_WASSECRET, "wassecr" );
-				addSecFlag( Sector.SECF_SECRET, "newsecr" );
+				addSecFlag( Sector.SECF_WASSECRET, "wassecret" );
+				addSecFlag( Sector.SECF_SECRET, "newsecret" );
 				addSecFlag( 2048, "-monsatk" ); // Not found in GZDoom 3.3.0.
-				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fakeflr" );
-				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "clipfakeplns" );
+				addSecFlag2( Sector.SECMF_FAKEFLOORONLY, "fakefloor" );
+				addSecFlag2( Sector.SECMF_CLIPFAKEPLANES, "clipfakeplanes" );
 				addSecFlag2( Sector.SECMF_NOFAKELIGHT, "-fakelit" );
-				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "-fakehghtsec" );
+				addSecFlag2( Sector.SECMF_IGNOREHEIGHTSEC, "-hghtsec" );
 				addSecFlag2( Sector.SECMF_UNDERWATER, "water" );
-				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "waterforc" );
-				addSecFlag2( Sector.SECMF_DRAWN, "drawn" );
+				addSecFlag2( Sector.SECMF_FORCEDUNDERWATER, "waterforce" );
+				addSecFlag2( Sector.SECMF_DRAWN, "alreadydrawn" );
 				addSecFlag2( Sector.SECMF_HIDDEN, "hidden" );
 				break;
 			case 0:
