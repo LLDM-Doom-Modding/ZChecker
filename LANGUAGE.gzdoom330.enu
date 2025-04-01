@@ -239,7 +239,8 @@ ZCHECKER_PANELSUBMENU_GSECNOTE_WIP    = "(Not released yet):";
 ZCHECKER_PANELSUBMENU_GSEC_OTHER      = "Other: water level, special, ...";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF   = "Disabled";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z coordinate";
-ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA = "Z coord + actor delta";
+ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA_FLOORZ = "Z + actor floorz/ceilz";
+ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA_SECDATA = "Z + actor sector data";
 
 ZCHECKER_PANELGEOMLNOPT_TYPE_LOS      = "On line of sight"; // Not used in the current version. >>>
 ZCHECKER_PANELGEOMLNOPT_TYPE_BLOCK    = "Blocking line"; // <...>

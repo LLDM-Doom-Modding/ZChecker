@@ -226,7 +226,8 @@ ZCHECKER_PANELSUBMENU_GSECNOTE_WIP    = "(Пока не реализровано
 ZCHECKER_PANELSUBMENU_GSEC_OTHER      = "Другое: уровень воды, действие, ...";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF   = "Не выводить";
 ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY = "Z-координата";
-ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA = "Z-коорд. + дельта до актора";
+ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA_FLOORZ = "Z + floorz/ceilz актора";
+ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA_SECDATA = "Z + данные секторов актора";
 
 
 ZCHECKER_PANELSUBMENU_SNDDEFS_TITLE   = "Панель ZChecker: Звуки (properties)";

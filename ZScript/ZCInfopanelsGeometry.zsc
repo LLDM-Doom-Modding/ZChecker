@@ -118,21 +118,38 @@ class ZCSectorsGeometryPanel: ZCBaseInfoPanelPart_PlayScope {
 		String info = ( fromnewline? "\n" : "" ) .. DARKGRAY .. "Sector " .. GRAY .. sec.Index() .. DARKGRAY .. ( sectorName == ""? ":" : " (" .. sectorName .. DARKGRAY .. "):" );
 		tempInfoSec = sec;
 
+		double floorz, ceilingz;
+
 		switch ( printSecHeightsMode ) {
 			case 1:
+				floorz = sec.floorplane.d * sec.floorplane.negiC;
+				ceilingz = sec.ceilingplane.d * sec.ceilingplane.negiC;
+
 				info.AppendFormat( "\n  Flr " .. DARKGREEN .. "%i" .. DARKGRAY .. "/Ceil " .. TAN .. "%i" .. DARKGRAY .. ".",
-									int( sec.floorplane.d * sec.floorplane.negiC ), int( sec.ceilingplane.d * sec.ceilingplane.negiC ) );
+									int( floorz ), int( ceilingz ) );
 				noextrainfo = false;
 				break;
+
 			case 2:
-				double floorz = sec.floorplane.d * sec.floorplane.negiC;
-				double ceilingz = sec.ceilingplane.d * sec.ceilingplane.negiC;
+				floorz = infothing.floorz;
+				ceilingz = infothing.ceilingz;
 
 				info.AppendFormat( "\n  Ceil " .. TAN .. "%-4i" .. DARKGRAY .. " (head delta " .. TAN.. "%i" .. DARKGRAY .. ");\n"
 								.. "  Flr " .. DARKGREEN .. "%-4i" .. DARKGRAY .. " (feet delta " .. DARKGREEN.. "%i" .. DARKGRAY .. ").",
 								int( ceilingz ), int( ceilingz - infothing.pos.z - infothing.height ), int( floorz ), int( infothing.pos.z - floorz ) );
 				noextrainfo = false;
 				break;
+
+			case 3:
+				floorz = sec.floorplane.d * sec.floorplane.negiC;
+				ceilingz = sec.ceilingplane.d * sec.ceilingplane.negiC;
+
+				info.AppendFormat( "\n  Ceil " .. TAN .. "%-4i" .. DARKGRAY .. " (head delta " .. TAN.. "%i" .. DARKGRAY .. ");\n"
+								.. "  Flr " .. DARKGREEN .. "%-4i" .. DARKGRAY .. " (feet delta " .. DARKGREEN.. "%i" .. DARKGRAY .. ").",
+								int( ceilingz ), int( ceilingz - infothing.pos.z - infothing.height ), int( floorz ), int( infothing.pos.z - floorz ) );
+				noextrainfo = false;
+				break;
+
 			case 0:
 			default:
 				break;

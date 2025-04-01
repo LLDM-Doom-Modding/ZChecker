@@ -235,7 +235,8 @@ unused),,,,
 ,,ZCHECKER_PANELSUBMENU_GSEC_OTHER,"Other: water level, special, ...","Другое: уровень воды, действие, ..."
 ,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_OFF,Disabled,Не выводить
 ,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZONLY,Z coordinate,Z-координата
-,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA,Z coord + actor delta,Z-коорд. + дельта до актора
+,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA_FLOORZ,Z + actor floorz/ceilz,Z + floorz/ceilz актора
+,,ZCHECKER_PANELGEOMSECOPT_HEIGHT_ZDELTA_SECDATA,Z + actor sector data,Z + данные секторов актора
 ,,,,
 ,Not used in the current version. >>>,ZCHECKER_PANELGEOMLNOPT_TYPE_LOS,On line of sight,
 ,<...>,ZCHECKER_PANELGEOMLNOPT_TYPE_BLOCK,Blocking line,
