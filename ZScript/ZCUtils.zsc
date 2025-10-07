@@ -120,7 +120,8 @@ class ZCGlobal: Thinker {
 	} // of static play ZCGlobal Get( void ) {}
 
 	static clearscope EZCheckerLogLevels GetLoglevelClearscope( void ) {
-		return ClearscopeGet().clearscopevars.curLogLevel;
+		ZCGlobal global = ClearscopeGet();
+		return (global? global.LoglevelClearscope() : LL_Main);
 	}
 	static play EZCheckerLogLevels GetLoglevel( void ) {
 		return Get().clearscopevars.curLogLevel;
